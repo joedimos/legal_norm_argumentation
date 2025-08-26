@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 from typing import Set, Tuple, Dict, List, Optional, FrozenSet
 import networkx as nx
 from collections import defaultdict
+from .pyreason_integration import PyReasonConnector
 import logging
 
 logger = logging.getLogger(__name__)
