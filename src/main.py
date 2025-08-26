@@ -1,7 +1,9 @@
 from argumentation import build_argument_graph, LegalArgument
+from src.argumentation import build_argument_graph
+from src.pyreason_integration import PyReasonConnector
 
 def main():
-    # Example arguments
+    
     arg1 = LegalArgument(
         id="A1",
         premises={"Contract exists"},
@@ -18,6 +20,13 @@ def main():
     )
 
     graph = build_argument_graph([arg1, arg2])
+
+    G = build_argument_graph()  # however you construct it
+
+
+    connector = PyReasonConnector(G)
+    results = connector.run_reasoning()
+    print(results)
 
     print("Nodes:", graph.nodes())
     print("Edges:", graph.edges())
