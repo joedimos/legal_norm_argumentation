@@ -146,3 +146,19 @@ class OptimizedAAF:
         for a in arg.attacks:
             G.add_edge(arg.id, a, relation="attacks")
     return G
+
+
+    def run_pyreason(self):
+    """
+    Convert current arguments and attacks into PyReason and run reasoning.
+    """
+        attacks = set()
+        for arg in self.arguments.values():
+            for attacked in arg.attacking_args:
+                if attacked in self.arguments:
+                    attacks.add((arg.id, attacked))
+
+        connector = PyReasonConnector(self.arguments, attacks)
+        results = connector.run_reasoning()
+        return results
+
