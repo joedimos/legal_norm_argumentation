@@ -4,6 +4,10 @@ import networkx as nx
 from collections import defaultdict
 import logging
 from pyreason_integration import PyReasonConnector  # absolute import
+import sys
+import os
+sys.path.append(os.path.dirname(__file__))
+from pyreason_integration import PyReasonConnector
 
 logger = logging.getLogger(__name__)
 
