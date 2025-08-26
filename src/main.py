@@ -1,5 +1,5 @@
-from src.argumentation import build_argument_graph, LegalArgument
-from src.pyreason_integration import PyReasonConnector
+from argumentation import build_argument_graph, LegalArgument
+from pyreason_integration import PyReasonConnector
 
 import logging
 logging.basicConfig(level=logging.INFO)
