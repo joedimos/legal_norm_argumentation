@@ -2,6 +2,9 @@ from argumentation import build_argument_graph, LegalArgument
 from src.argumentation import build_argument_graph
 from src.pyreason_integration import PyReasonConnector
 
+import logging
+logging.basicConfig(level=logging.INFO)
+
 def main():
     
     arg1 = LegalArgument(
