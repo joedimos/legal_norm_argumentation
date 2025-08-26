@@ -135,3 +135,13 @@ class OptimizedAAF:
         except Exception as e:
             logger.error("PageRank failed: %s", e)
             return {arg: 0.0 for arg in self.arguments}
+
+    def build_argument_graph(arguments: List[LegalArgument]):
+    G = nx.DiGraph()
+    for arg in arguments:
+        G.add_node(arg.id, premises=arg.premises, conclusion=arg.conclusion)
+        for s in arg.supports:
+            G.add_edge(arg.id, s, relation="supports")
+        for a in arg.attacks:
+            G.add_edge(arg.id, a, relation="attacks")
+    return G
