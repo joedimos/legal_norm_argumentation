@@ -1,38 +1,42 @@
-from argumentation import build_argument_graph, LegalArgument
-from src.argumentation import build_argument_graph
+from src.argumentation import build_argument_graph, LegalArgument
 from src.pyreason_integration import PyReasonConnector
 
 import logging
 logging.basicConfig(level=logging.INFO)
 
+
 def main():
-    
+    # Create arguments
     arg1 = LegalArgument(
         id="A1",
-        premises={"Contract exists"},
+        premise="Contract exists",
         conclusion="Agreement is binding",
-        supports=set(),
-        attacks=set()
+        supporting_args=set(),
+        attacking_args=set()
     )
     arg2 = LegalArgument(
         id="A2",
-        premises={"Clause is unconscionable"},
+        premise="Clause is unconscionable",
         conclusion="Agreement is not binding",
-        supports=set(),
-        attacks={"A1"}
+        supporting_args=set(),
+        attacking_args={"A1"}
     )
 
+    # Build argument graph
     graph = build_argument_graph([arg1, arg2])
 
-    G = build_argument_graph()  # however you construct it
-
-
-    connector = PyReasonConnector(G)
+    # Connect to PyReason
+    connector = PyReasonConnector(
+        arguments={arg.id: arg for arg in [arg1, arg2]},
+        attacks={(attacker, target) for arg in [arg1, arg2] for target in arg.attacking_args for attacker in [arg.id]}
+    )
     results = connector.run_reasoning()
-    print(results)
+    print("PyReason results:", results)
 
+    # Print graph structure
     print("Nodes:", graph.nodes())
     print("Edges:", graph.edges())
+
 
 if __name__ == "__main__":
     main()
