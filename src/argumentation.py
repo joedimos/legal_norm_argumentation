@@ -7,6 +7,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 @dataclass(frozen=True)
 class LegalArgument:
     """
@@ -31,6 +32,7 @@ class Sequent:
     consequents: FrozenSet[str]
     confidence: float
     is_contrapositive: bool = False
+
 
 class OptimizedAAF:
     """
@@ -73,10 +75,7 @@ class OptimizedAAF:
         return True
 
     def get_admissible_sets(self) -> List[Set[str]]:
-        """
-        Enumerate all admissible sets: conflict-free and defending themselves.
-        Note: uses brute-force powerset search, exponential in |arguments|.
-        """
+        """Enumerate all admissible sets: conflict-free and defending themselves."""
         admissible: List[Set[str]] = []
         args = list(self.arguments)
         n = len(args)
@@ -88,14 +87,12 @@ class OptimizedAAF:
         return admissible
 
     def get_preferred_extensions(self) -> List[Set[str]]:
-        """Return maximal (w.r.t. set inclusion) admissible sets = preferred extensions."""
+        """Return maximal admissible sets = preferred extensions."""
         admissible = self.get_admissible_sets()
         return [s for s in admissible if not any(s < t for t in admissible)]
 
     def get_stable_extensions(self) -> List[Set[str]]:
-        """
-        Return stable extensions: conflict-free sets that attack every outside argument.
-        """
+        """Return stable extensions: conflict-free sets that attack every outside argument."""
         stable: List[Set[str]] = []
         args = list(self.arguments)
         n = len(args)
@@ -137,28 +134,29 @@ class OptimizedAAF:
             logger.error("PageRank failed: %s", e)
             return {arg: 0.0 for arg in self.arguments}
 
+    @staticmethod
     def build_argument_graph(arguments: List[LegalArgument]):
-    G = nx.DiGraph()
-    for arg in arguments:
-        G.add_node(arg.id, premises=arg.premises, conclusion=arg.conclusion)
-        for s in arg.supports:
-            G.add_edge(arg.id, s, relation="supports")
-        for a in arg.attacks:
-            G.add_edge(arg.id, a, relation="attacks")
-    return G
-
+        """Build a NetworkX graph from LegalArgument objects."""
+        G = nx.DiGraph()
+        for arg in arguments:
+            G.add_node(arg.id, premise=arg.premise, conclusion=arg.conclusion)
+            for s in arg.supporting_args:
+                G.add_edge(arg.id, s, relation="supports")
+            for a in arg.attacking_args:
+                G.add_edge(arg.id, a, relation="attacks")
+        return G
 
     def run_pyreason(self):
-    """
-    Convert current arguments and attacks into PyReason and run reasoning.
-    """
+        """
+        Convert current arguments and attacks into PyReason and run reasoning.
+        """
         attacks = set()
-        for arg in self.arguments.values():
-            for attacked in arg.attacking_args:
+        for arg in self.arguments:
+            # assuming self.arguments is a dict of LegalArgument objects
+            for attacked in self.arguments[arg].attacking_args:
                 if attacked in self.arguments:
-                    attacks.add((arg.id, attacked))
+                    attacks.add((arg, attacked))
 
         connector = PyReasonConnector(self.arguments, attacks)
         results = connector.run_reasoning()
         return results
-
