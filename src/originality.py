@@ -1,10 +1,15 @@
-from typing import List, Dict, Tuple, Set, Optional
+from typing import List, Dict, Tuple, Set
 from dataclasses import dataclass, field
 import logging
-from .argumentation import LegalArgument, Sequent, OptimizedAAF
+
+# External dependencies
+import networkx as nx
+from pyreason import PyReason, Fact, Rule, Query
+
+# Local imports
+from .argumentation import LegalArgument, Sequent
 from .norm_extraction import extract_norms
 from .models import nlp
-import networkx as nx
 
 logger = logging.getLogger(__name__)
 
@@ -12,8 +17,57 @@ logger = logging.getLogger(__name__)
 ORIGINALITY_KEYWORDS = {
     "empreinte de la personnalité", "author's personality",
     "choix créatifs libres", "free creative choices",
-    "dictated by technical function"
-}
+    "dictated by technical"
+    
+    
+class PyReasonBridge:
+    """
+    Bridge layer between our LegalArgument/Sequent representation
+    and the PyReason reasoning engine.
+    """
+
+    def __init__(self):
+        self.engine = PyReason()
+        self.facts: Dict[str, Fact] = {}
+        self.rules: Dict[str, Rule] = {}
+
+    def add_argument_as_fact(self, arg: LegalArgument) -> None:
+        """
+        Translate a LegalArgument into a PyReason Fact.
+        """
+        fact_id = f"fact_{arg.id}"
+        fact = Fact(
+            predicate=arg.conclusion.replace(" ", "_").lower(),
+            truth_value=(sum(arg.confidence) / 2.0),
+            meta={"premise": arg.premise, "id": arg.id}
+        )
+        self.facts[arg.id] = fact
+        self.engine.add_fact(fact)
+
+    def add_sequent_as_rule(self, sequent: Sequent) -> None:
+        """
+        Translate a Sequent into a PyReason Rule.
+        """
+        antecedent_preds = [
+            self.facts[a].predicate for a in sequent.antecedents if a in self.facts
+        ]
+        consequent_preds = [
+            self.facts[c].predicate for c in sequent.consequents if c in self.facts
+        ]
+        if not antecedent_preds or not consequent_preds:
+            return
+
+        rule_expr = " & ".join(antecedent_preds) + " -> " + " & ".join(consequent_preds)
+        rule = Rule(rule_expr, weight=sequent.confidence)
+        self.rules[rule_expr] = rule
+        self.engine.add_rule(rule)
+
+    def query(self, predicate: str) -> float:
+        """
+        Query the truth value of a predicate after reasoning.
+        """
+        q = Query(predicate)
+        return self.engine.evaluate_query(q)
 
 
 # -------------------------
@@ -22,7 +76,7 @@ ORIGINALITY_KEYWORDS = {
 class OriginalityAnnotator:
     """
     Extracts originality-related claims from text, builds legal arguments,
-    constructs sequents, and attaches them to a legal reasoner.
+    constructs sequents, and attaches them to the reasoner.
     """
 
     def __init__(self, reasoner: "LogicBasedLegalReasoner"):
@@ -35,10 +89,6 @@ class OriginalityAnnotator:
     # Claim extraction
     # -------------------------
     def extract_originality_claims(self, text: str) -> List[Dict]:
-        """
-        Identify candidate originality claims in the text.
-        Returns a list of dicts with premise, conclusion, and confidence.
-        """
         claims = []
         t = text.lower()
 
@@ -74,20 +124,13 @@ class OriginalityAnnotator:
     # Argument construction
     # -------------------------
     def _create_arguments_from_claims(self, claims: List[Dict]) -> Dict[str, LegalArgument]:
-        """
-        Convert extracted claims into LegalArgument objects, adding
-        supporting and attacking relationships.
-        """
         arguments: Dict[str, LegalArgument] = {}
-
         for i, claim in enumerate(claims):
             conf = claim.get("confidence", 0.8)
             low, high = conf * 0.8, conf
 
             supports_originality = "not" not in claim["conclusion"].lower()
-
             if supports_originality:
-                # Originality hypothesis
                 orig_id = f"is_original_{i}"
                 arguments[orig_id] = LegalArgument(
                     id=orig_id,
@@ -98,7 +141,6 @@ class OriginalityAnnotator:
                     attacking_args=set(),
                     sequent_type="hypothesis",
                 )
-                # Protection conclusion
                 prot_id = f"copyright_protected_{i}"
                 arguments[prot_id] = LegalArgument(
                     id=prot_id,
@@ -110,7 +152,6 @@ class OriginalityAnnotator:
                     sequent_type="conclusion",
                 )
             else:
-                # Non-originality hypothesis
                 not_id = f"not_original_{i}"
                 arguments[not_id] = LegalArgument(
                     id=not_id,
@@ -121,7 +162,6 @@ class OriginalityAnnotator:
                     attacking_args=set(),
                     sequent_type="hypothesis",
                 )
-                # No protection conclusion
                 notprot_id = f"copyright_not_protected_{i}"
                 arguments[notprot_id] = LegalArgument(
                     id=notprot_id,
@@ -133,12 +173,10 @@ class OriginalityAnnotator:
                     sequent_type="conclusion",
                 )
 
-        # Create basic attack links between opposing claims
         self._link_attacks(arguments)
         return arguments
 
     def _link_attacks(self, arguments: Dict[str, LegalArgument]) -> None:
-        """Establish mutual attacks between originality and non-originality claims."""
         ids = list(arguments.keys())
         for i, a_id in enumerate(ids):
             for b_id in ids[i + 1:]:
@@ -154,7 +192,6 @@ class OriginalityAnnotator:
     # Sequent construction
     # -------------------------
     def construct_sequents(self) -> None:
-        """Generate sequents linking originality claims to copyright protection outcomes."""
         args = self._current_arguments
         originality_args = {k for k in args if "is_original" in k}
         protection_args = {k for k in args if "copyright_protected" in k}
@@ -185,11 +222,6 @@ class OriginalityAnnotator:
     # Orchestration
     # -------------------------
     def annotate_originality(self, text: str) -> Dict:
-        """
-        Full pipeline: extract claims, build arguments, construct attacks and sequents,
-        and attach arguments to the global reasoner.
-        """
-        # Reset state
         self._current_arguments.clear()
         self._current_attacks.clear()
         self.sequents = []
@@ -198,21 +230,17 @@ class OriginalityAnnotator:
         if not claims:
             return {"arguments": {}, "attacks": set(), "sequents": [], "norms": []}
 
-        # Build arguments & attacks
         self._current_arguments = self._create_arguments_from_claims(claims)
         for arg in self._current_arguments.values():
             for attacked in arg.attacking_args:
                 if attacked in self._current_arguments:
                     self._current_attacks.add((arg.id, attacked))
 
-        # Construct sequents
         self.construct_sequents()
 
-        # Register with reasoner
         for arg in self._current_arguments.values():
             self.reasoner.add_argument(arg)
 
-        # Norm extraction
         norms = extract_norms(text, use_transformer=False)
 
         return {
@@ -229,14 +257,14 @@ class OriginalityAnnotator:
 class LogicBasedLegalReasoner:
     """
     Coordinates argument construction, applies IP-specific rules,
-    and performs AAF reasoning with the OptimizedAAF backend.
+    and performs reasoning via PyReason.
     """
 
     def __init__(self):
         self.arguments: Dict[str, LegalArgument] = {}
         self.annotator = OriginalityAnnotator(self)
+        self.pyreason = PyReasonBridge()
 
-        # High-level interpretive rules
         self.ip_rules = {
             "imprint_of_personality": lambda arg_id: self._arg_confidence_mean(arg_id) > 0.7,
             "creative_choices": lambda arg_id: self._arg_confidence_mean(arg_id) > 0.7,
@@ -244,48 +272,32 @@ class LogicBasedLegalReasoner:
         }
 
     def add_argument(self, arg: LegalArgument) -> None:
-        """Register a new argument in the global pool."""
         self.arguments[arg.id] = arg
+        self.pyreason.add_argument_as_fact(arg)
 
     def _arg_confidence_mean(self, arg_id: str) -> float:
-        """Compute the mean confidence for a given argument."""
         arg = self.arguments.get(arg_id)
         if not arg:
             return 0.0
         return sum(arg.confidence) / 2.0
 
     def analyze_legal_case(self, text: str) -> Dict:
-        """
-        Main entrypoint: extract arguments, build AAF, compute extensions,
-        and evaluate sequents.
-        """
         result = self.annotator.annotate_originality(text)
 
-        # AAF reasoning
-        args_ids = set(result["arguments"].keys())
-        aaf = OptimizedAAF(args_ids, result["attacks"])
-        aaf_summary = {
-            "preferred": [list(s) for s in aaf.get_preferred_extensions()],
-            "stable": [list(s) for s in aaf.get_stable_extensions()],
-            "has_cycle": aaf.has_cycle(),
-        }
-
-        # Evaluate sequents (naive: min confidence propagation)
-        sequent_eval = []
         for s in result["sequents"]:
-            min_ant = min((self._arg_confidence_mean(a) for a in s.antecedents), default=0.0)
-            min_con = min((self._arg_confidence_mean(c) for c in s.consequents), default=0.0)
-            sequent_eval.append({
-                "antecedents": list(s.antecedents),
-                "consequents": list(s.consequents),
-                "confidence": s.confidence,
-                "valid": (min_con >= min_ant - 0.2),
-            })
+            self.pyreason.add_sequent_as_rule(s)
+
+        # Run PyReason reasoning
+        originality_score = self.pyreason.query("the_work_is_original.")
+        protection_score = self.pyreason.query("copyright_protection_likely_applies.")
 
         return {
             "arguments": result["arguments"],
             "attacks": list(result["attacks"]),
-            "sequents": sequent_eval,
-            "aaf": aaf_summary,
+            "sequents": [s.__dict__ for s in result["sequents"]],
             "norms": result["norms"],
+            "pyreason_eval": {
+                "originality_score": originality_score,
+                "protection_score": protection_score,
+            },
         }
