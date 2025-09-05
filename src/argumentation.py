@@ -47,10 +47,7 @@ class Sequent:
 # -------------------------
 class OptimizedAAF:
     """
-    Optimized Abstract Argumentation Framework (Dung-style) with NetworkX support
-    and a proper PyReason integration.
-    """
-
+  
     def __init__(
         self,
         arguments: List[LegalArgument],
