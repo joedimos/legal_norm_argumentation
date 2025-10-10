@@ -2,10 +2,8 @@ from typing import List, Dict, Optional
 import re
 import logging
 
-# Local imports
 from .models import nlp, load_transformer_classifier
 
-# PyReason imports (ensure `pyreason` is the correct package name)
 from pyreason import PyReason, Fact, Rule, Query
 
 logger = logging.getLogger(__name__)
