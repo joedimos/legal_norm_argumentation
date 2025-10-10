@@ -1,28 +1,34 @@
 from typing import List, Dict, Optional
 import re
 import logging
+
+# Local imports
 from .models import nlp, load_transformer_classifier
+
+# PyReason imports (ensure `pyreason` is the correct package name)
 from pyreason import PyReason, Fact, Rule, Query
 
 logger = logging.getLogger(__name__)
 
-# -------------------------
 # Keywords
-# -------------------------
-DEONTIC_KEYWORDS = {
+
+DEONTIC_KEYWORDS: Dict[str, List[str]] = {
     "obligation": ["shall", "must", "is required to", "required to"],
     "permission": ["may", "is permitted to", "is allowed to"],
-    "prohibition": ["shall not", "must not", "is prohibited", "is forbidden"]
+    "prohibition": ["shall not", "must not", "is prohibited", "is forbidden"],
 }
 
 
-# -------------------------
 # Rule-based norm extractor
-# -------------------------
-def rule_based_norms(text: str) -> List[Dict]:
+
+def rule_based_norms(text: str) -> List[Dict[str, str]]:
+    """
+    Extracts deontic norms (obligation, permission, prohibition) from text using keyword heuristics.
+    """
     doc_text = text.replace("\n", " ")
     sentences = re.split(r'(?<=[\.\;\:])\s+', doc_text)
-    norms = []
+    norms: List[Dict[str, str]] = []
+
     for s in sentences:
         s_lower = s.lower()
         for modality, kws in DEONTIC_KEYWORDS.items():
@@ -37,11 +43,14 @@ def rule_based_norms(text: str) -> List[Dict]:
                         "agent": agent,
                         "action": action,
                     })
-                    break
+                    break  # prevent duplicate modality hits for same sentence
     return norms
 
 
 def extract_agent_simple(sentence: str) -> str:
+    """
+    Heuristic extraction of the agent in a deontic sentence (the subject before the modal verb).
+    """
     m = re.search(
         r'(.{1,80}?)\b(shall|must|may|is required to|is permitted to|shall not|must not)\b',
         sentence,
@@ -53,33 +62,42 @@ def extract_agent_simple(sentence: str) -> str:
 
 
 def extract_action_simple(sentence: str, trigger: str) -> str:
+    """
+    Heuristic extraction of the action following a modal trigger.
+    """
     idx = sentence.lower().find(trigger)
     if idx >= 0:
         return sentence[idx + len(trigger):].strip()
     return ""
 
 
-# -------------------------
 # Optional transformer-based classifier
-# -------------------------
+
 _transformer = None
+
+
 def classify_sentence_modality(sentence: str) -> Optional[Dict]:
+    """
+    Optionally classifies a sentence’s modality using a transformer-based classifier.
+    Returns a dictionary of classification results if available.
+    """
     global _transformer
     if _transformer is None:
         _transformer = load_transformer_classifier()
+
     if _transformer is None:
+        logger.warning("Transformer classifier not available.")
         return None
+
     try:
-        res = _transformer(sentence, top_k=3)
-        return res
+        return _transformer(sentence, top_k=3)
     except Exception as e:
         logger.error("Transformer classification failed: %s", e)
         return None
 
 
-# -------------------------
 # PyReason Bridge
-# -------------------------
+
 class PyReasonNormBridge:
     """
     Converts extracted norms into PyReason facts/rules and evaluates them.
@@ -109,34 +127,47 @@ class PyReasonNormBridge:
     def add_conflict_rules(self) -> None:
         """
         Add some simple deontic logic consistency rules:
-        - prohibition(agent, action) -> not permission(agent, action)
-        - obligation(agent, action) -> not prohibition(agent, action)
+        - prohibition(A, X) -> ~permission(A, X)
+        - obligation(A, X) -> ~prohibition(A, X)
         """
-        self.rules.append(Rule("prohibition(A, X) -> ~permission(A, X)"))
-        self.rules.append(Rule("obligation(A, X) -> ~prohibition(A, X)"))
+        conflict_rules = [
+            Rule("prohibition(A, X) -> ~permission(A, X)"),
+            Rule("obligation(A, X) -> ~prohibition(A, X)")
+        ]
 
-        for r in self.rules:
+        self.rules.extend(conflict_rules)
+        for r in conflict_rules:
             self.engine.add_rule(r)
 
-    def query(self, predicate: str) -> float:
-        q = Query(predicate)
-        return self.engine.evaluate_query(q)
+    def query(self, predicate: str) -> Optional[float]:
+        """
+        Query the reasoning engine for a given predicate and return its evaluated truth value.
+        """
+        try:
+            q = Query(predicate)
+            return self.engine.evaluate_query(q)
+        except Exception as e:
+            logger.error("PyReason query failed: %s", e)
+            return None
 
 
-# -------------------------
 # High-level API
-# -------------------------
-def extract_norms(text: str, use_transformer: bool = False, use_pyreason: bool = True) -> List[Dict]:
+
+def extract_norms(
+    text: str,
+    use_transformer: bool = False,
+    use_pyreason: bool = True
+) -> List[Dict]:
+    """
+    Extracts and optionally classifies deontic norms from text.
+    Optionally evaluates them using PyReason.
+    """
     norms = rule_based_norms(text)
 
     # Optionally enrich with transformer classification
     if use_transformer:
         for n in norms:
-            try:
-                cls = classify_sentence_modality(n["sentence"])
-                n["transformer"] = cls
-            except Exception:
-                n["transformer"] = None
+            n["transformer"] = classify_sentence_modality(n["sentence"])
 
     # Optionally integrate with PyReason
     if use_pyreason and norms:
@@ -144,17 +175,12 @@ def extract_norms(text: str, use_transformer: bool = False, use_pyreason: bool =
         bridge.add_norms(norms)
         bridge.add_conflict_rules()
 
-        # Run queries for each norm type
         for n in norms:
             agent = n["agent"].replace(" ", "_").lower() or "unspecified_agent"
             action = n["action"].replace(" ", "_").lower() or "unspecified_action"
             modality = n["modality"]
 
             predicate = f"{modality}({agent},{action})"
-            try:
-                n["pyreason_eval"] = bridge.query(predicate)
-            except Exception as e:
-                logger.error("PyReason query failed: %s", e)
-                n["pyreason_eval"] = None
+            n["pyreason_eval"] = bridge.query(predicate)
 
     return norms
