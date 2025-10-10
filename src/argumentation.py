@@ -6,16 +6,14 @@ import networkx as nx
 
 logger = logging.getLogger(__name__)
 
-# --- PyReason connector import (robust: relative first, then absolute) ---
 try:
-    from .pyreason_integration import PyReasonConnector  # if module is in the same package
-except Exception:
-    from pyreason_integration import PyReasonConnector  # fallback absolute import
+    from .pyreason_integration import PyReasonConnector
+except ImportError:
+    from pyreason_integration import PyReasonConnector
 
 
-# -------------------------
 # Data classes
-# -------------------------
+
 @dataclass(frozen=True)
 class LegalArgument:
     """
@@ -42,12 +40,16 @@ class Sequent:
     is_contrapositive: bool = False
 
 
-# -------------------------
 # Optimized AAF + PyReason
-# -------------------------
+
 class OptimizedAAF:
     """
-  
+    Optimized Abstract Argumentation Framework with PyReason integration.
+    
+    Implements Dung-style semantics (admissible, preferred, stable extensions)
+    and integrates with PyReason for probabilistic reasoning over arguments.
+    """
+    
     def __init__(
         self,
         arguments: List[LegalArgument],
@@ -104,14 +106,16 @@ class OptimizedAAF:
                 if not self.attack_graph.has_edge(src, dst):
                     self.attack_graph.add_edge(src, dst, relation="supports")
 
-    # -------------------------------
+    
     # Dung-style semantics operations
-    # -------------------------------
+
     def is_conflict_free(self, S: Set[str]) -> bool:
+        """Check if set S is conflict-free (no internal attacks)"""
         subset = S & set(self.arguments.keys())
         return all(not (self.attacks_dict.get(arg, set()) & subset) for arg in subset)
 
     def defends(self, S: Set[str], a: str) -> bool:
+        """Check if set S defends argument a against all attackers"""
         if a not in self.arguments:
             return False
         subset = S & set(self.arguments.keys())
@@ -121,6 +125,7 @@ class OptimizedAAF:
         return True
 
     def get_admissible_sets(self) -> List[Set[str]]:
+        """Compute all admissible sets"""
         admissible: List[Set[str]] = []
         ids = list(self.arguments.keys())
         n = len(ids)
@@ -132,10 +137,12 @@ class OptimizedAAF:
         return admissible
 
     def get_preferred_extensions(self) -> List[Set[str]]:
+        """Compute preferred extensions (maximal admissible sets)"""
         admissible = self.get_admissible_sets()
         return [s for s in admissible if not any(s < t for t in admissible)]
 
     def get_stable_extensions(self) -> List[Set[str]]:
+        """Compute stable extensions"""
         stable: List[Set[str]] = []
         ids = list(self.arguments.keys())
         n = len(ids)
@@ -149,6 +156,7 @@ class OptimizedAAF:
         return stable
 
     def has_cycle(self) -> bool:
+        """Check if the attack graph contains cycles"""
         try:
             return any(len(scc) > 1 for scc in nx.strongly_connected_components(self.attack_graph))
         except Exception as e:
@@ -156,6 +164,7 @@ class OptimizedAAF:
             return False
 
     def shortest_attack_path(self, start: str, goal: str) -> Optional[List[str]]:
+        """Find shortest attack path between two arguments"""
         try:
             # Only consider the attack subgraph for shortest attack paths
             attack_only = nx.DiGraph(
@@ -169,6 +178,7 @@ class OptimizedAAF:
             return None
 
     def pagerank_influence(self) -> Dict[str, float]:
+        """Compute PageRank influence scores for arguments"""
         try:
             # PageRank on attack-only edges (typical in AAF influence analysis)
             attack_only = nx.DiGraph(
@@ -183,6 +193,19 @@ class OptimizedAAF:
 
     @staticmethod
     def build_argument_graph(arguments: List[LegalArgument]) -> nx.DiGraph:
+        """
+        Build a NetworkX DiGraph from a list of LegalArgument objects.
+        
+        Parameters
+        ----------
+        arguments : List[LegalArgument]
+            List of legal arguments
+            
+        Returns
+        -------
+        nx.DiGraph
+            Directed graph representation of the argumentation framework
+        """
         G = nx.DiGraph()
         for arg in arguments:
             G.add_node(arg.id, premise=arg.premise, conclusion=arg.conclusion)
@@ -190,18 +213,22 @@ class OptimizedAAF:
                 G.add_edge(arg.id, s, relation="supports")
             for a in arg.attacking_args:
                 G.add_edge(arg.id, a, relation="attacks")
-        return 
+        return G  # FIXED: Added missing return statement
         
-        
-    def run_pyreason(self) -> Dict:
+    def run_pyreason(self, timesteps: int = 10) -> Dict:
         """
         Push the AAF (arguments + attacks + supports + confidences) into PyReason
         via PyReasonConnector and return its results.
 
-        Supports both:
-            connector.run_reasoning(arguments=..., attacks=..., supports=...)
-        and a legacy:
-            connector.run_reasoning(arguments, attacks)
+        Parameters
+        ----------
+        timesteps : int, optional
+            Number of reasoning timesteps (default: 10)
+
+        Returns
+        -------
+        Dict
+            PyReason reasoning results including acceptance, defeat, and convergence info
         """
         try:
             # Prepare rich argument payload for PyReason (id -> metadata)
@@ -216,19 +243,86 @@ class OptimizedAAF:
 
             connector = PyReasonConnector()
 
-            # First try the keyword-arg API (preferred)
-            try:
-                results = connector.run_reasoning(
-                    arguments=arg_payload,
-                    attacks=set(self._attacks),
-                    supports=set(self._supports),
-                )
-                return results
-            except TypeError:
-                # Fall back to a simpler API (older connector versions)
-                results = connector.run_reasoning(arg_payload, set(self._attacks))
-                return results
+            # Call PyReasonConnector with all parameters
+            logger.info(f"Running PyReason with {len(arg_payload)} arguments, "
+                       f"{len(self._attacks)} attacks, {len(self._supports)} supports")
+            
+            results = connector.run_reasoning(
+                arguments=arg_payload,
+                attacks=set(self._attacks),
+                supports=set(self._supports),
+                timesteps=timesteps
+            )
+            
+            logger.info(f"PyReason completed. Results: {len(results)} entries")
+            return results
 
+        except TypeError as te:
+            # Handle API mismatch
+            logger.error(f"PyReasonConnector API mismatch: {te}. "
+                        "Check that your PyReasonConnector.run_reasoning() signature matches.")
+            return {"error": "API_mismatch", "details": str(te)}
         except Exception as e:
-            logger.error("PyReason run failed: %s", e)
-            return {}
+            logger.error(f"PyReason run failed: {e}", exc_info=True)
+            return {"error": "reasoning_failed", "details": str(e)}
+    
+    # Additional utility methods
+    
+    def get_argument_status(self, arg_id: str) -> Dict:
+        """
+        Get comprehensive status of an argument including:
+        - Its attackers and targets
+        - Support relationships
+        - Confidence bounds
+        
+        Parameters
+        ----------
+        arg_id : str
+            Argument identifier
+            
+        Returns
+        -------
+        Dict
+            Status information for the argument
+        """
+        if arg_id not in self.arguments:
+            return {"error": "Argument not found"}
+        
+        arg = self.arguments[arg_id]
+        return {
+            "id": arg_id,
+            "premise": arg.premise,
+            "conclusion": arg.conclusion,
+            "confidence": arg.confidence,
+            "attackers": list(self.attackers_dict.get(arg_id, set())),
+            "attacks": list(self.attacks_dict.get(arg_id, set())),
+            "supporting": list(arg.supporting_args),
+            "attacking": list(arg.attacking_args),
+            "sequent_type": arg.sequent_type
+        }
+    
+    def export_to_dict(self) -> Dict:
+        """
+        Export the entire AAF to a dictionary format suitable for serialization.
+        
+        Returns
+        -------
+        Dict
+            Complete AAF representation
+        """
+        return {
+            "arguments": [
+                {
+                    "id": arg.id,
+                    "premise": arg.premise,
+                    "conclusion": arg.conclusion,
+                    "confidence": arg.confidence,
+                    "supporting_args": list(arg.supporting_args),
+                    "attacking_args": list(arg.attacking_args),
+                    "sequent_type": arg.sequent_type
+                }
+                for arg in self.arguments.values()
+            ],
+            "attacks": list(self._attacks),
+            "supports": list(self._supports)
+        }
