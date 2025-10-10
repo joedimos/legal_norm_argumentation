@@ -12,14 +12,14 @@ def main():
         premise="Contract exists",
         conclusion="Agreement is binding",
         supporting_args=set(),
-        attacking_args=set()
+        attacking_args=set(),
     )
     arg2 = LegalArgument(
         id="A2",
         premise="Clause is unconscionable",
         conclusion="Agreement is not binding",
         supporting_args=set(),
-        attacking_args={"A1"}
+        attacking_args={"A1"},
     )
 
     # Build argument graph
@@ -28,12 +28,16 @@ def main():
     # Connect to PyReason
     connector = PyReasonConnector(
         arguments={arg.id: arg for arg in [arg1, arg2]},
-        attacks={(attacker, target) for arg in [arg1, arg2] for target in arg.attacking_args for attacker in [arg.id]}
+        attacks={(arg.id, target) for arg in [arg1, arg2] for target in arg.attacking_args},
     )
+
     results = connector.run_reasoning()
-    print("PyReason results:", results)
+    print("\nPyReason results:")
+    for k, v in results.items():
+        print(f"  {k}: {v}")
 
     # Print graph structure
+    print("\nArgument Graph:")
     print("Nodes:", graph.nodes())
     print("Edges:", graph.edges())
 
