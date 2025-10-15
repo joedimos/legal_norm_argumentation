@@ -6,13 +6,12 @@ import networkx as nx
 import pyreason as pr
 
 
-from .argumentation import LegalArgument, Sequent
-from .norm_extraction import extract_norms
-from .models import nlp
+from argumentation import LegalArgument, Sequent
+from norm_extraction import extract_norms
+from models import nlp
 
 logger = logging.getLogger(__name__)
 
-# --- Keywords ---
 ORIGINALITY_KEYWORDS = {
     "empreinte de la personnalité", "author's personality",
     "choix créatifs libres", "free creative choices",
@@ -29,7 +28,7 @@ class PyReasonBridge:
     """
 
     def __init__(self):
-        self.graph = pr.Graph()
+        self.graph = None  # Will be initialized as NetworkX graph
         self.arguments: Dict[str, LegalArgument] = {}
         self.facts_added: Set[str] = set()
         self.rules_added: Set[str] = set()
@@ -40,6 +39,7 @@ class PyReasonBridge:
         if not self.initialized:
             pr.reset()
             pr.reset_rules()
+            self.graph = nx.DiGraph()  # Use NetworkX DiGraph
             self.initialized = True
             logger.info("PyReason environment initialized")
 
@@ -125,11 +125,14 @@ class PyReasonBridge:
                 lower = upper = arg.confidence
             
             # Set acceptance based on confidence
+            # PyReason Fact format: Fact(node, predicate, lower, upper, start_time, end_time)
             pr.add_fact(pr.Fact(
                 arg_id,
                 'accepted',
-                [lower, upper],
-                timestep=0
+                lower,
+                upper,
+                0,  # start_time
+                0   # end_time
             ))
             self.facts_added.add(f"{arg_id}_accepted")
             
@@ -140,8 +143,10 @@ class PyReasonBridge:
                 pr.add_fact(pr.Fact(
                     arg_id,
                     'original',
-                    [lower * 0.9, upper],
-                    timestep=0
+                    lower * 0.9,
+                    upper,
+                    0,
+                    0
                 ))
                 self.facts_added.add(f"{arg_id}_original")
             
@@ -149,8 +154,10 @@ class PyReasonBridge:
                 pr.add_fact(pr.Fact(
                     arg_id,
                     'technical_function',
-                    [lower, upper],
-                    timestep=0
+                    lower,
+                    upper,
+                    0,
+                    0
                 ))
                 self.facts_added.add(f"{arg_id}_technical")
             
@@ -158,8 +165,10 @@ class PyReasonBridge:
                 pr.add_fact(pr.Fact(
                     arg_id,
                     'creative',
-                    [lower, upper],
-                    timestep=0
+                    lower,
+                    upper,
+                    0,
+                    0
                 ))
                 self.facts_added.add(f"{arg_id}_creative")
         
@@ -180,6 +189,10 @@ class PyReasonBridge:
             Reasoning results with acceptance, defeat, and protection scores
         """
         try:
+            # Ensure graph is initialized
+            if not self.initialized:
+                self.initialize()
+            
             # Load graph
             pr.load_graph(self.graph)
             logger.info(f"Loaded graph with {len(self.arguments)} nodes")
@@ -224,45 +237,20 @@ class PyReasonBridge:
                     node_data = interpretation[final_timestep][arg_id]
                     
                     # Extract predicates with bounds
-                    if 'accepted' in node_data:
-                        bounds = node_data['accepted']
-                        results['accepted'][arg_id] = {
-                            'lower': bounds[0],
-                            'upper': bounds[1],
-                            'mean': (bounds[0] + bounds[1]) / 2
-                        }
-                    
-                    if 'defeated' in node_data:
-                        bounds = node_data['defeated']
-                        results['defeated'][arg_id] = {
-                            'lower': bounds[0],
-                            'upper': bounds[1],
-                            'mean': (bounds[0] + bounds[1]) / 2
-                        }
-                    
-                    if 'reinstated' in node_data:
-                        bounds = node_data['reinstated']
-                        results['reinstated'][arg_id] = {
-                            'lower': bounds[0],
-                            'upper': bounds[1],
-                            'mean': (bounds[0] + bounds[1]) / 2
-                        }
-                    
-                    if 'original' in node_data:
-                        bounds = node_data['original']
-                        results['original'][arg_id] = {
-                            'lower': bounds[0],
-                            'upper': bounds[1],
-                            'mean': (bounds[0] + bounds[1]) / 2
-                        }
-                    
-                    if 'protected' in node_data:
-                        bounds = node_data['protected']
-                        results['protected'][arg_id] = {
-                            'lower': bounds[0],
-                            'upper': bounds[1],
-                            'mean': (bounds[0] + bounds[1]) / 2
-                        }
+                    for predicate in ['accepted', 'defeated', 'reinstated', 'original', 'protected']:
+                        if predicate in node_data:
+                            bounds = node_data[predicate]
+                            # Handle both list and tuple formats
+                            if isinstance(bounds, (list, tuple)) and len(bounds) >= 2:
+                                lower, upper = bounds[0], bounds[1]
+                            else:
+                                lower = upper = bounds
+                            
+                            results[predicate][arg_id] = {
+                                'lower': lower,
+                                'upper': upper,
+                                'mean': (lower + upper) / 2
+                            }
             
             # Check convergence
             if len(interpretation) >= 2:
@@ -329,10 +317,6 @@ class PyReasonBridge:
             return 0.0
         return sum(protection_scores) / len(protection_scores)
 
-
-# -------------------------
-# OriginalityAnnotator
-# -------------------------
 class OriginalityAnnotator:
     """
     Extracts originality-related claims from text, builds legal arguments,
@@ -512,10 +496,6 @@ class OriginalityAnnotator:
             "norms": norms,
         }
 
-
-# -------------------------
-# LogicBasedLegalReasoner
-# -------------------------
 class LogicBasedLegalReasoner:
     """
     Coordinates argument construction, applies IP-specific rules,
