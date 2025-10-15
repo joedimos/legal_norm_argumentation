@@ -1,8 +1,8 @@
 import os
 import pandas as pd
 import logging
-from .utils import flatten_text_columns
-from .originality import LogicBasedLegalReasoner
+from utils import flatten_text_columns
+from originality import LogicBasedLegalReasoner
 from typing import Optional
 
 logger = logging.getLogger(__name__)
