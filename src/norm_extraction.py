@@ -1,184 +1,300 @@
-from typing import List, Dict, Optional
+
+from typing import List, Dict, Set, Optional
 import re
-import logging
+from models import nlp, load_transformer_classifier
 
-from .models import nlp, load_transformer_classifier
-
-from pyreason import PyReason, Fact, Rule, Query
-
-logger = logging.getLogger(__name__)
-
-# Keywords
-
-DEONTIC_KEYWORDS: Dict[str, List[str]] = {
-    "obligation": ["shall", "must", "is required to", "required to"],
-    "permission": ["may", "is permitted to", "is allowed to"],
-    "prohibition": ["shall not", "must not", "is prohibited", "is forbidden"],
-}
+import pyreason as pr
 
 
-# Rule-based norm extractor
-
-def rule_based_norms(text: str) -> List[Dict[str, str]]:
+def extract_norms(text: str, use_transformer: bool = False) -> List[Dict]:
     """
-    Extracts deontic norms (obligation, permission, prohibition) from text using keyword heuristics.
+    Extract legal norms from text.
+    
+    Parameters
+    ----------
+    text : str
+        Legal text to analyze
+    use_transformer : bool
+        Whether to use transformer-based classification (if available)
+    
+    Returns
+    -------
+    List[Dict]
+        List of extracted norms with metadata
     """
-    doc_text = text.replace("\n", " ")
-    sentences = re.split(r'(?<=[\.\;\:])\s+', doc_text)
-    norms: List[Dict[str, str]] = []
-
-    for s in sentences:
-        s_lower = s.lower()
-        for modality, kws in DEONTIC_KEYWORDS.items():
-            for kw in kws:
-                if kw in s_lower:
-                    agent = extract_agent_simple(s)
-                    action = extract_action_simple(s, kw)
-                    norms.append({
-                        "sentence": s.strip(),
-                        "modality": modality,
-                        "trigger": kw,
-                        "agent": agent,
-                        "action": action,
-                    })
-                    break  # prevent duplicate modality hits for same sentence
-    return norms
-
-
-def extract_agent_simple(sentence: str) -> str:
-    """
-    Heuristic extraction of the agent in a deontic sentence (the subject before the modal verb).
-    """
-    m = re.search(
-        r'(.{1,80}?)\b(shall|must|may|is required to|is permitted to|shall not|must not)\b',
-        sentence,
-        flags=re.I,
-    )
-    if m:
-        return m.group(1).strip(",;: ")
-    return ""
-
-
-def extract_action_simple(sentence: str, trigger: str) -> str:
-    """
-    Heuristic extraction of the action following a modal trigger.
-    """
-    idx = sentence.lower().find(trigger)
-    if idx >= 0:
-        return sentence[idx + len(trigger):].strip()
-    return ""
-
-
-# Optional transformer-based classifier
-
-_transformer = None
-
-
-def classify_sentence_modality(sentence: str) -> Optional[Dict]:
-    """
-    Optionally classifies a sentence’s modality using a transformer-based classifier.
-    Returns a dictionary of classification results if available.
-    """
-    global _transformer
-    if _transformer is None:
-        _transformer = load_transformer_classifier()
-
-    if _transformer is None:
-        logger.warning("Transformer classifier not available.")
-        return None
-
-    try:
-        return _transformer(sentence, top_k=3)
-    except Exception as e:
-        logger.error("Transformer classification failed: %s", e)
-        return None
-
-
-# PyReason Bridge
-
-class PyReasonNormBridge:
-    """
-    Converts extracted norms into PyReason facts/rules and evaluates them.
-    """
-
-    def __init__(self):
-        self.engine = PyReason()
-        self.facts: List[Fact] = []
-        self.rules: List[Rule] = []
-
-    def add_norms(self, norms: List[Dict]) -> None:
-        """
-        Add norms as PyReason facts, using modality/agent/action encoding.
-        Example predicate:
-          obligation(agent_X, action_Y).
-        """
-        for n in norms:
-            agent = n["agent"].replace(" ", "_").lower() or "unspecified_agent"
-            action = n["action"].replace(" ", "_").lower() or "unspecified_action"
-            modality = n["modality"]
-
-            predicate = f"{modality}({agent},{action})"
-            fact = Fact(predicate=predicate, truth_value=1.0, meta=n)
-            self.facts.append(fact)
-            self.engine.add_fact(fact)
-
-    def add_conflict_rules(self) -> None:
-        """
-        Add some simple deontic logic consistency rules:
-        - prohibition(A, X) -> ~permission(A, X)
-        - obligation(A, X) -> ~prohibition(A, X)
-        """
-        conflict_rules = [
-            Rule("prohibition(A, X) -> ~permission(A, X)"),
-            Rule("obligation(A, X) -> ~prohibition(A, X)")
-        ]
-
-        self.rules.extend(conflict_rules)
-        for r in conflict_rules:
-            self.engine.add_rule(r)
-
-    def query(self, predicate: str) -> Optional[float]:
-        """
-        Query the reasoning engine for a given predicate and return its evaluated truth value.
-        """
-        try:
-            q = Query(predicate)
-            return self.engine.evaluate_query(q)
-        except Exception as e:
-            logger.error("PyReason query failed: %s", e)
-            return None
-
-
-# High-level API
-
-def extract_norms(
-    text: str,
-    use_transformer: bool = False,
-    use_pyreason: bool = True
-) -> List[Dict]:
-    """
-    Extracts and optionally classifies deontic norms from text.
-    Optionally evaluates them using PyReason.
-    """
-    norms = rule_based_norms(text)
-
-    # Optionally enrich with transformer classification
+    norms = []
+    
+    # Simple pattern-based extraction
+    # Look for modal verbs and legal language patterns
+    patterns = [
+        r'(shall|must|may|should|ought to)\s+([^.!?]+)',
+        r'(is|are)\s+(required|prohibited|permitted|allowed|forbidden)\s+to\s+([^.!?]+)',
+        r'(no|any)\s+person\s+(shall|may|must)\s+([^.!?]+)',
+    ]
+    
+    for pattern in patterns:
+        matches = re.finditer(pattern, text, re.IGNORECASE)
+        for match in matches:
+            norm = {
+                'text': match.group(0),
+                'modal': match.group(1) if match.lastindex >= 1 else None,
+                'type': classify_norm_type(match.group(0)),
+                'confidence': 0.7  # Default confidence
+            }
+            norms.append(norm)
+    
+    # Use transformer if requested and available
     if use_transformer:
-        for n in norms:
-            n["transformer"] = classify_sentence_modality(n["sentence"])
-
-    # Optionally integrate with PyReason
-    if use_pyreason and norms:
-        bridge = PyReasonNormBridge()
-        bridge.add_norms(norms)
-        bridge.add_conflict_rules()
-
-        for n in norms:
-            agent = n["agent"].replace(" ", "_").lower() or "unspecified_agent"
-            action = n["action"].replace(" ", "_").lower() or "unspecified_action"
-            modality = n["modality"]
-
-            predicate = f"{modality}({agent},{action})"
-            n["pyreason_eval"] = bridge.query(predicate)
-
+        try:
+            classifier = load_transformer_classifier()
+            for norm in norms:
+                # Enhance with transformer-based classification
+                prediction = classifier(norm['text'])
+                if prediction:
+                    norm['confidence'] = prediction[0].get('score', 0.7)
+        except Exception as e:
+            print(f"Warning: Transformer classification failed: {e}")
+    
     return norms
+
+
+def classify_norm_type(text: str) -> str:
+    """
+    Classify the type of legal norm.
+    
+    Parameters
+    ----------
+    text : str
+        Norm text
+        
+    Returns
+    -------
+    str
+        Norm type (obligation, prohibition, permission)
+    """
+    text_lower = text.lower()
+    
+    if any(word in text_lower for word in ['must', 'shall', 'required', 'obliged']):
+        return 'obligation'
+    elif any(word in text_lower for word in ['prohibited', 'forbidden', 'not allowed', 'may not']):
+        return 'prohibition'
+    elif any(word in text_lower for word in ['may', 'permitted', 'allowed', 'can']):
+        return 'permission'
+    else:
+        return 'unknown'
+
+
+def extract_deontic_operators(text: str) -> List[Dict]:
+    """
+    Extract deontic operators (obligatory, permitted, forbidden) from text.
+    
+    Parameters
+    ----------
+    text : str
+        Legal text
+        
+    Returns
+    -------
+    List[Dict]
+        List of deontic operators with context
+    """
+    operators = []
+    
+    # Deontic logic patterns
+    obligation_patterns = ['must', 'shall', 'is required to', 'has a duty to', 'obliged to']
+    permission_patterns = ['may', 'is permitted to', 'is allowed to', 'can']
+    prohibition_patterns = ['must not', 'shall not', 'is prohibited from', 'is forbidden to']
+    
+    for pattern in obligation_patterns:
+        if pattern in text.lower():
+            operators.append({
+                'type': 'obligation',
+                'operator': 'O',
+                'pattern': pattern,
+                'text': text
+            })
+    
+    for pattern in permission_patterns:
+        if pattern in text.lower():
+            operators.append({
+                'type': 'permission',
+                'operator': 'P',
+                'pattern': pattern,
+                'text': text
+            })
+    
+    for pattern in prohibition_patterns:
+        if pattern in text.lower():
+            operators.append({
+                'type': 'prohibition',
+                'operator': 'F',
+                'pattern': pattern,
+                'text': text
+            })
+    
+    return operators
+
+
+def extract_conditional_norms(text: str) -> List[Dict]:
+    """
+    Extract conditional norms (if-then structures) from text.
+    
+    Parameters
+    ----------
+    text : str
+        Legal text
+        
+    Returns
+    -------
+    List[Dict]
+        List of conditional norms
+    """
+    conditionals = []
+    
+    # Pattern for conditional structures
+    if_then_pattern = r'[Ii]f\s+([^,]+),\s+then\s+([^.]+)'
+    matches = re.finditer(if_then_pattern, text)
+    
+    for match in matches:
+        conditionals.append({
+            'condition': match.group(1).strip(),
+            'consequence': match.group(2).strip(),
+            'full_text': match.group(0),
+            'type': 'conditional'
+        })
+    
+    # Alternative pattern: when... (consequence)
+    when_pattern = r'[Ww]hen\s+([^,]+),\s+([^.]+)'
+    matches = re.finditer(when_pattern, text)
+    
+    for match in matches:
+        conditionals.append({
+            'condition': match.group(1).strip(),
+            'consequence': match.group(2).strip(),
+            'full_text': match.group(0),
+            'type': 'conditional'
+        })
+    
+    return conditionals
+
+
+def extract_legal_entities(text: str) -> List[Dict]:
+    """
+    Extract legal entities mentioned in the text.
+    
+    Parameters
+    ----------
+    text : str
+        Legal text
+        
+    Returns
+    -------
+    List[Dict]
+        List of legal entities
+    """
+    entities = []
+    
+    # Use spaCy for NER if available
+    try:
+        doc = nlp(text)
+        for ent in doc.ents:
+            if ent.label_ in ['PERSON', 'ORG', 'GPE', 'LAW']:
+                entities.append({
+                    'text': ent.text,
+                    'type': ent.label_,
+                    'start': ent.start_char,
+                    'end': ent.end_char
+                })
+    except Exception as e:
+        print(f"Warning: Entity extraction failed: {e}")
+    
+    return entities
+
+
+def analyze_norm_conflicts(norms: List[Dict]) -> List[Dict]:
+    """
+    Analyze potential conflicts between norms.
+    
+    Parameters
+    ----------
+    norms : List[Dict]
+        List of extracted norms
+        
+    Returns
+    -------
+    List[Dict]
+        List of potential conflicts
+    """
+    conflicts = []
+    
+    for i, norm1 in enumerate(norms):
+        for norm2 in norms[i+1:]:
+            # Check if one is obligation and other is prohibition for similar content
+            if norm1['type'] == 'obligation' and norm2['type'] == 'prohibition':
+                # Simple similarity check (can be enhanced)
+                if has_similar_content(norm1['text'], norm2['text']):
+                    conflicts.append({
+                        'norm1': norm1,
+                        'norm2': norm2,
+                        'type': 'obligation-prohibition',
+                        'severity': 'high'
+                    })
+    
+    return conflicts
+
+
+def has_similar_content(text1: str, text2: str, threshold: float = 0.5) -> bool:
+    """
+    Check if two texts have similar content (simple word overlap).
+    
+    Parameters
+    ----------
+    text1 : str
+        First text
+    text2 : str
+        Second text
+    threshold : float
+        Similarity threshold
+        
+    Returns
+    -------
+    bool
+        True if texts are similar
+    """
+    words1 = set(text1.lower().split())
+    words2 = set(text2.lower().split())
+    
+    intersection = words1.intersection(words2)
+    union = words1.union(words2)
+    
+    if not union:
+        return False
+    
+    similarity = len(intersection) / len(union)
+    return similarity >= threshold
+
+
+# Main extraction function
+def extract_all_norms(text: str, use_transformer: bool = False) -> Dict:
+    """
+    Extract all types of norms from text.
+    
+    Parameters
+    ----------
+    text : str
+        Legal text to analyze
+    use_transformer : bool
+        Whether to use transformer models
+        
+    Returns
+    -------
+    Dict
+        Dictionary containing all extracted norm information
+    """
+    return {
+        'norms': extract_norms(text, use_transformer),
+        'deontic_operators': extract_deontic_operators(text),
+        'conditionals': extract_conditional_norms(text),
+        'entities': extract_legal_entities(text),
+        'conflicts': []  # Will be populated after norm extraction
+    }
