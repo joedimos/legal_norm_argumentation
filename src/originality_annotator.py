@@ -1,6 +1,6 @@
 from typing import List, Dict, Set, Tuple
-from .argumentation import LegalArgument, Sequent, OptimizedAAF, PyReasonConnector
-from .norm_extraction import extract_norms
+from argumentation import LegalArgument, Sequent, OptimizedAAF, PyReasonConnector
+from norm_extraction import extract_norms
 import logging
 
 logger = logging.getLogger(__name__)
