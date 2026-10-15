@@ -26,7 +26,7 @@ class Settings(BaseSettings):
 
     environment: Literal["development", "test", "production"] = "development"
     service_name: str = "legal-norm-argumentation"
-    service_version: str = "0.4.0"
+    service_version: str = "0.5.0"
     build_revision: str | None = Field(default=None, pattern=r"^[0-9a-f]{40}$")
     database_url: str = "sqlite+pysqlite:///./vle_legato.db"
     database_pool_size: int = Field(default=10, ge=1, le=100)
@@ -44,6 +44,10 @@ class Settings(BaseSettings):
     log_level: str = "INFO"
     otlp_endpoint: str | None = None
     otlp_headers: str | None = None
+    legifrance_enabled: bool = True
+    legifrance_timeout_seconds: float = Field(default=12.0, ge=2.0, le=60.0)
+    legifrance_request_delay_seconds: float = Field(default=0.2, ge=0.0, le=5.0)
+    legifrance_max_articles_per_run: int = Field(default=50, ge=1, le=100)
 
     @field_validator("database_url")
     @classmethod
