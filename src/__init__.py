@@ -1,8 +1,5 @@
-"""Legal norm extraction and argumentation research prototype."""
+"""VLE-LEGATO legal norm formalisation, reasoning, verification, and audit toolkit."""
 
-__all__ = [
-    "argumentation",
-    "norm_extraction",
-    "review",
-    "verification",
-]
+from .normative_model import FactContext, Modality, NormInterpretation, Predicate, SourceAuthority, SourceKind
+
+__all__ = ["FactContext", "Modality", "NormInterpretation", "Predicate", "SourceAuthority", "SourceKind"]

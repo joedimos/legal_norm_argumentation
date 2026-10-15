@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/vle-legato/norm-interpretation.schema.json",
+  "title": "NormInterpretation",
+  "type": "object",
+  "required": ["id", "source_norm_id", "modality", "subject", "action", "conditions", "exceptions", "authority", "confidence", "canonical", "semantic_hash"],
+  "properties": {
+    "id": {"type": "string", "minLength": 1},
+    "source_norm_id": {"type": "string", "minLength": 1},
+    "modality": {"enum": ["obligation", "prohibition", "permission", "recommendation"]},
+    "subject": {"type": "string", "minLength": 1},
+    "action": {"type": "string", "minLength": 1},
+    "conditions": {"type": "array"},
+    "exceptions": {"type": "array"},
+    "references": {"type": "array", "items": {"type": "string"}},
+    "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+    "canonical": {"type": "string"},
+    "semantic_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "authority": {"type": "object"}
+  },
+  "additionalProperties": true
+}

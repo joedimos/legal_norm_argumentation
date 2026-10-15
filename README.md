@@ -1,109 +1,123 @@
-# Legal Norm Argumentation — VLE/LEGATO Research Prototype
+# Legal Norm Argumentation — VLE/LEGATO End-to-End Research Toolkit
 
-A research prototype for **faithful norm extraction, legal/normative argumentation, human review, and auditable verification**. The repository is organized around three connected problems:
+A research implementation for the **full normative-AI lifecycle**: extracting norms from natural language, preserving source meaning and ambiguity, producing typed formal interpretations, reasoning about exceptions and conflicts, evaluating system behaviour for compliance, generating counterexamples, tracking provenance, benchmarking accuracy, and producing evidence-gated readiness reports.
 
-1. **Extract and formalize norms faithfully** from laws, regulations, standards, policies, ethical principles, and other normative text.
-2. **Reason with those norms** while keeping attacks, supports, conflicts, uncertainty, conditions, and exceptions explicit.
-3. **Verify and audit the formalization/reasoning pipeline** rather than treating syntactic validity as evidence of legal or ethical correctness.
+The architecture is aligned with the 2026 VLE-LEGATO agenda: **LEGATO** covers autoformalisation and validation of norms; **VLE** covers integration, normative reasoning, verification, auditing, monitoring and certification evidence.
 
-This is not a legal decision system, and extracted rules are not authoritative legal interpretations. Extraction output is intentionally represented as **reviewable candidates** with provenance and uncertainty.
+> This repository is a research toolkit. It does not provide legal advice and does not itself certify legal, ethical, regulatory, or standards compliance.
 
-## Implemented architecture
+## Coverage
 
-### 1. Faithful extraction and traceability
-
-`src/norm_extraction.py` returns norm candidates with:
-
-- stable candidate IDs;
-- exact source spans and original sentences;
-- deontic modality;
-- actor and action;
-- explicit conditions and exceptions;
-- cross-reference metadata;
-- ambiguity flags;
-- confidence metadata and review status.
-
-The extractor preserves the source sentence instead of silently rewriting it into a stronger logical claim. Optional transformer output is auxiliary evidence only.
-
-### 2. Argumentation semantics
-
-`src/argumentation.py` implements:
-
-- conflict-free sets and defence;
-- the Dung characteristic function;
-- admissible, preferred, stable, and grounded semantics;
-- grounded `in/out/undec` labels;
-- self-attack/cycle handling;
-- attack paths and influence analysis;
-- separate support and attack graphs.
-
-`LegalArgument` remains the primary representation. String IDs are accepted as a backwards-compatible shorthand.
-
-### 3. Human review with invalidation
-
-`src/review.py` binds each human review to a semantic fingerprint. If modality, actor, action, condition, exception, provenance, references, or ambiguity metadata changes, a prior approval becomes **stale** and must be reviewed again.
-
-### 4. Verification / audit layer
-
-`src/verification.py` checks:
-
-- source-span integrity;
-- missing actor/action;
-- unknown modality;
-- likely omitted conditions/exceptions;
-- deontic source sentences omitted from the supplied candidate set.
-
-The faithfulness score is a diagnostic signal, **not a certification result**.
-
-### 5. Optional PyReason backend
-
-`src/pyreason_connector.py` is isolated from the core so extraction, Dung semantics, human review, and auditing remain testable without PyReason. The adapter fails closed with a structured error if the installed PyReason/Python combination is unavailable or incompatible.
-
-`requirements-pyreason.txt` pins the existing stable 3.7 line only for Python versions in its published compatibility range. PyReason compatibility should be validated independently before it is used for research results.
+| Research requirement | Implementation |
+|---|---|
+| Norm extraction with source traceability | `src/norm_extraction.py` |
+| Conditions, exceptions, cross-references | extraction + `src/references.py` |
+| Typed formal representation | `src/normative_model.py` |
+| Alternative interpretations / ambiguity | `InterpretationSet`, `src/formalization.py` |
+| Semantic/behavioural equivalence testing | `behaviorally_equivalent` |
+| Human-in-the-loop validation | `src/review.py` |
+| Versioning / normative knowledge governance | `src/knowledge_base.py` |
+| Source-faithfulness auditing | `src/verification.py` |
+| Dung argumentation semantics | `src/argumentation.py` |
+| Exceptions and defeasible activation | `src/defeasible.py` |
+| Lex superior / specialis / posterior | `src/priority.py` |
+| Compliance evaluation | `src/compliance.py` |
+| Counterexample generation | `generate_counterexamples` |
+| Continuous compliance monitoring | `src/monitoring.py` |
+| Source→decision evidence lineage | `src/traceability.py`, `src/lifecycle.py` |
+| Extraction/compliance benchmark metrics | `src/benchmark.py` |
+| Upstream uncertainty propagation metric | `propagation_report` |
+| Certification-readiness evidence gates | `src/certification.py` |
+| Optional probabilistic reasoning backend | `src/pyreason_connector.py` |
+| Reproducible CI | `.github/workflows/ci.yml` |
 
 ## Install
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate          # Windows: .venv\Scripts\activate
-python -m pip install -r requirements.txt
-python -m spacy download en_core_web_sm   # optional; enables entity NER
+python -m pip install -e '.[dev]'
 ```
 
-For a compatible environment where the optional PyReason backend is required:
+Optional NER model:
 
 ```bash
-python -m pip install -r requirements-pyreason.txt
+python -m spacy download en_core_web_sm
+```
+
+Optional integrations:
+
+```bash
+python -m pip install -e '.[transformers]'
+python -m pip install -e '.[pyreason]'
 ```
 
 ## CLI
 
 ```bash
-python -m src.cli extract \
-  --source-id example-policy \
-  --text "If a breach is likely, the controller must notify the authority unless an exception applies."
+python -m src.cli extract --source-id policy-1 \
+  --text "If risk is high, the operator must notify unless notification is legally barred."
 
-python -m src.cli audit \
-  --source-id example-policy \
-  --text "If a breach is likely, the controller must notify the authority unless an exception applies."
+python -m src.cli audit --source-id policy-1 --text-file policy.txt
+python -m src.cli formalize --source-id policy-1 --text-file policy.txt
+
+python -m src.cli comply --source-id policy-1 --text-file policy.txt \
+  --facts '{"risk is high": true, "notification is legally barred": false}' \
+  --actions '["notify"]'
+
+python -m src.cli lifecycle --source-id policy-1 --text-file policy.txt \
+  --facts '{}' --actions '[]'
 ```
 
-## Python example
+`--assume-reviewed` exists only for demonstrations/tests. Real workflows should use actual review records.
 
-```python
-from src.norm_extraction import extract_norms
-from src.review import ReviewLedger
-from src.verification import audit_extraction
+## Core semantic rule: uncertainty is preserved
 
-text = "The operator must retain the audit log unless deletion is required by law."
-norms = extract_norms(text, source_id="policy-7")
-report = audit_extraction(text, norms)
-assert not report["possible_omissions"]
+The system deliberately fails closed. An ambiguous candidate is not silently selected; an unknown condition does not become true; an unresolved normative conflict does not become compliance; and a passing research-readiness report never becomes a claim of legal certification.
 
-ledger = ReviewLedger()
-ledger.record(norms[0], "approved", reviewer="human-reviewer")
-assert ledger.status(norms[0]) == "approved"
+## Architecture
+
+```text
+normative source
+    │
+    ▼
+extraction + source spans ──────► extraction audit
+    │                              │
+    ▼                              ▼
+interpretation set ◄──────── human review
+    │
+    ▼
+typed formal norm ───────────────► versioned knowledge base
+    │                                    │
+    ├────────► cross-reference graph ◄───┘
+    │
+    ▼
+activation / exceptions / temporal scope
+    │
+    ▼
+conflict detection ──► priority analysis ──► unresolved conflict gate
+    │
+    ▼
+compliance evaluation / monitoring
+    │
+    ├────────► bounded counterexamples
+    │
+    ▼
+evidence graph ──► benchmark metrics ──► certification-readiness gates
 ```
+
+## Key modules
+
+- `normative_model.py`: modalities, predicates, authority/temporal metadata, provenance and interpretation sets.
+- `formalization.py`: candidate → typed interpretation; alternative interpretations require explicit selection.
+- `priority.py`: explicit `lex superior`, `lex specialis`, `lex posterior`; unresolved when metadata is insufficient.
+- `defeasible.py`: conditions, exceptions, temporal applicability and priority defeat.
+- `compliance.py`: obligation/prohibition/permission evaluation and bounded counterexamples.
+- `monitoring.py`: incremental event-trace compliance evaluation.
+- `traceability.py`: immutable evidence nodes/edges and lineage.
+- `benchmark.py`: extraction, compliance and error-propagation metrics.
+- `certification.py`: research-readiness gates that explicitly do **not** claim legal certification.
+- `lifecycle.py`: end-to-end LEGATO→VLE orchestration.
 
 ## Tests
 
@@ -111,10 +125,14 @@ assert ledger.status(norms[0]) == "approved"
 python -m pytest -q
 ```
 
-The suite includes an exhaustive invariant check over **all 512 directed attack graphs on three labeled arguments**, including self-attacks, plus focused extraction, originality, dataset-state, review, and verification tests.
+The argumentation suite exhaustively checks all **512 directed attack graphs on three labelled arguments**. The expanded lifecycle tests cover formalisation, ambiguity, exception/temporal activation, priority, compliance, counterexamples, provenance, benchmark metrics, governance, reference resolution, monitoring and readiness gates.
 
-## Research boundaries
+## Documentation
 
-The repository establishes a testable research foundation, not a complete legal-compliance certification system. Regex extraction does not fully resolve legal scope, incorporation by reference, temporal applicability, jurisdiction, authority hierarchy, or defeasibility. Conflict detection cannot by itself decide *lex specialis*, *lex superior*, or *lex posterior*. A reasoning engine can establish what follows from an encoding under its semantics; it does not establish that the encoding faithfully represents the governing norm.
+- `docs/ARCHITECTURE_AND_METHODOLOGY.md` — semantics, fail-closed rules, threat model and limitations.
+- `docs/BENCHMARKING.md` — benchmark design and reproducibility requirements.
+- `schemas/norm-interpretation.schema.json` — machine-readable interchange schema.
 
-**Verification of formalization precedes claims about verification of compliance.**
+## Important limitations
+
+This is substantially more complete than an extractor/argument graph, but it intentionally does not pretend to solve open problems. The built-in predicate/effect semantics are a reference model, not full temporal deontic logic; authority ranks and specificity must come from validated metadata; cross-reference resolution is only as authoritative as its supplied corpus; and high-stakes conclusions require expert review and external governance.

@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "legal-norm-argumentation"
+version = "0.2.0"
+description = "VLE-LEGATO toolkit for norm extraction, formalisation, reasoning, verification, audit, and compliance"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "networkx>=3.2,<4",
+  "pandas>=2.0,<4",
+  "spacy>=3.7,<4",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8,<10"]
+transformers = ["transformers>=4.40,<6"]
+pyreason = ["pyreason==3.7.0; python_version < '3.11'"]
+
+[project.scripts]
+vle-legato = "src.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
