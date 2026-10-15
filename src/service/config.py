@@ -66,7 +66,7 @@ class Settings(BaseSettings):
         return [APIKeyEntry.model_validate(item) for item in raw]
 
     @model_validator(mode="after")
-    def validate_production_settings(self) -> "Settings":
+    def validate_production_settings(self) -> Settings:
         if self.environment != "production":
             return self
         if not self.database_url.startswith("postgresql+psycopg://"):

@@ -1,11 +1,17 @@
 from __future__ import annotations
 
 import json
+import os
 
+import pytest
+from fastapi import HTTPException
 from fastapi.testclient import TestClient
+from pydantic import ValidationError
 
 from src.service.app import create_app
 from src.service.config import Settings
+from src.service.database import Database
+from src.service.rate_limit import DatabaseRateLimiter
 
 OPERATOR_TOKEN = "operator-token-abcdefghijklmnopqrstuvwxyz-123456"
 REVIEWER_TOKEN = "reviewer-token-abcdefghijklmnopqrstuvwxyz-123456"
@@ -177,15 +183,16 @@ def test_request_body_limit(tmp_path):
         response = client.post(
             "/v1/sources",
             content=b"x" * 1200,
-            headers={**auth(OPERATOR_TOKEN), "Content-Type": "application/json", "Idempotency-Key": "body-limit-001"},
+            headers={
+                **auth(OPERATOR_TOKEN),
+                "Content-Type": "application/json",
+                "Idempotency-Key": "body-limit-001",
+            },
         )
         assert response.status_code == 413
 
 
 def test_postgres_migration_readiness_when_configured():
-    import os
-    import pytest
-
     url = os.environ.get("VLE_TEST_POSTGRES_URL")
     if not url:
         pytest.skip("VLE_TEST_POSTGRES_URL not configured")
@@ -208,20 +215,11 @@ def test_postgres_migration_readiness_when_configured():
 
 
 def test_production_settings_fail_closed():
-    import pytest
-    from pydantic import ValidationError
-
     with pytest.raises(ValidationError):
         Settings(environment="production", database_url="sqlite+pysqlite:///unsafe.db", api_keys_json="[]")
 
 
 def test_database_rate_limit_is_shared_state(tmp_path):
-    import pytest
-    from fastapi import HTTPException
-
-    from src.service.database import Database
-    from src.service.rate_limit import DatabaseRateLimiter
-
     cfg = settings(tmp_path)
     db = Database(cfg)
     db.create_schema_for_tests()

@@ -79,7 +79,7 @@ jobs:
           push: false
           tags: legal-norm-argumentation:ci
           load: true
-      - uses: aquasecurity/trivy-action@0.31.0
+      - uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: legal-norm-argumentation:ci
           format: table

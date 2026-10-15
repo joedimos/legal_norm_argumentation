@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import hashlib
-from typing import Dict, Mapping, Optional, Sequence
+from collections.abc import Mapping, Sequence
 
 from .certification import readiness_report
 from .compliance import evaluate
@@ -33,10 +33,10 @@ def run_lifecycle(
     candidates: Sequence[Mapping],
     extraction_audit: Mapping,
     context: FactContext,
-    authorities: Optional[Mapping[str, SourceAuthority]] = None,
-    review_statuses: Optional[Sequence[str]] = None,
-    interpretation_selections: Optional[Mapping[str, Mapping[str, str]]] = None,
-) -> Dict:
+    authorities: Mapping[str, SourceAuthority] | None = None,
+    review_statuses: Sequence[str] | None = None,
+    interpretation_selections: Mapping[str, Mapping[str, str]] | None = None,
+) -> dict:
     formal_sets = formalize_candidates(candidates, authorities=authorities)
     selections = interpretation_selections or {}
     resolved_sets = []

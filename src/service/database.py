@@ -1,7 +1,7 @@
 from __future__ import annotations
 
+from collections.abc import Iterator
 from contextlib import contextmanager
-from typing import Iterator
 
 from sqlalchemy import create_engine, inspect, text
 from sqlalchemy.engine import Engine
@@ -52,7 +52,15 @@ class Database:
             tables = set(inspect(self.engine).get_table_names())
         except Exception:
             return False
-        required = {"source_documents", "candidate_reviews", "interpretation_selections", "lifecycle_runs", "audit_events", "idempotency_records", "rate_limit_buckets"}
+        required = {
+            "source_documents",
+            "candidate_reviews",
+            "interpretation_selections",
+            "lifecycle_runs",
+            "audit_events",
+            "idempotency_records",
+            "rate_limit_buckets",
+        }
         if not required.issubset(tables):
             return False
         if require_migrations and "alembic_version" not in tables:

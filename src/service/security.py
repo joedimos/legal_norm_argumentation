@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import hashlib
 import hmac
+from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Callable
 
 from fastapi import Depends, HTTPException, Request, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer

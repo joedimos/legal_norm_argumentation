@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from fastapi import HTTPException, status
 from sqlalchemy import select
@@ -19,7 +19,7 @@ class DatabaseRateLimiter:
         self.limit = limit_per_minute
 
     def consume(self, key_hash: str) -> None:
-        window_start = datetime.now(timezone.utc).replace(second=0, microsecond=0)
+        window_start = datetime.now(UTC).replace(second=0, microsecond=0)
         count = 0
         with self.database.session() as session:
             dialect = session.get_bind().dialect.name

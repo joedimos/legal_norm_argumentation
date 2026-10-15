@@ -1,10 +1,11 @@
 from __future__ import annotations
 
-from datetime import datetime, timedelta, timezone
 import hashlib
 import json
 import uuid
-from typing import Any, Mapping
+from collections.abc import Mapping
+from datetime import UTC, datetime, timedelta
+from typing import Any
 
 from sqlalchemy import delete, desc, select, text
 from sqlalchemy.orm import Session
@@ -24,19 +25,27 @@ from .db_models import (
 
 def canonical_hash(payload: Any) -> str:
     raw = json.dumps(payload, sort_keys=True, ensure_ascii=False, default=str, separators=(",", ":"))
-    return hashlib.sha256(raw.encode("utf-8")).hexdigest()
+    return hashlib.sha256(raw.encode()).hexdigest()
 
 
 def idempotency_hash(actor: str, endpoint: str, key: str) -> str:
-    return hashlib.sha256(f"{actor}\0{endpoint}\0{key}".encode("utf-8")).hexdigest()
+    return hashlib.sha256(f"{actor}\0{endpoint}\0{key}".encode()).hexdigest()
 
 
-def create_source(session: Session, *, source_key: str, content: str, candidates: list[dict[str, Any]], extraction_audit: dict[str, Any], created_by: str) -> SourceDocumentRecord:
+def create_source(
+    session: Session,
+    *,
+    source_key: str,
+    content: str,
+    candidates: list[dict[str, Any]],
+    extraction_audit: dict[str, Any],
+    created_by: str,
+) -> SourceDocumentRecord:
     record = SourceDocumentRecord(
         id=str(uuid.uuid4()),
         source_key=source_key,
         content=content,
-        content_hash=hashlib.sha256(content.encode("utf-8")).hexdigest(),
+        content_hash=hashlib.sha256(content.encode()).hexdigest(),
         candidates=candidates,
         extraction_audit=extraction_audit,
         created_by=created_by,
@@ -48,7 +57,10 @@ def create_source(session: Session, *, source_key: str, content: str, candidates
 
 def find_source_by_key_hash(session: Session, source_key: str, content_hash: str) -> SourceDocumentRecord | None:
     return session.execute(
-        select(SourceDocumentRecord).where(SourceDocumentRecord.source_key == source_key, SourceDocumentRecord.content_hash == content_hash)
+        select(SourceDocumentRecord).where(
+            SourceDocumentRecord.source_key == source_key,
+            SourceDocumentRecord.content_hash == content_hash,
+        )
     ).scalar_one_or_none()
 
 
@@ -60,7 +72,15 @@ def get_candidate(source: SourceDocumentRecord, candidate_id: str) -> dict[str, 
     return next((item for item in source.candidates if item.get("id") == candidate_id), None)
 
 
-def add_review(session: Session, *, source: SourceDocumentRecord, candidate: Mapping[str, Any], decision: str, reviewer: str, note: str | None) -> CandidateReviewRecord:
+def add_review(
+    session: Session,
+    *,
+    source: SourceDocumentRecord,
+    candidate: Mapping[str, Any],
+    decision: str,
+    reviewer: str,
+    note: str | None,
+) -> CandidateReviewRecord:
     record = CandidateReviewRecord(
         id=str(uuid.uuid4()),
         source_id=source.id,
@@ -98,7 +118,15 @@ def review_statuses(session: Session, source: SourceDocumentRecord) -> list[str]
     return statuses
 
 
-def add_interpretation_selection(session: Session, *, source: SourceDocumentRecord, candidate: Mapping[str, Any], interpretation_id: str, rationale: str, reviewer: str) -> InterpretationSelectionRecord:
+def add_interpretation_selection(
+    session: Session,
+    *,
+    source: SourceDocumentRecord,
+    candidate: Mapping[str, Any],
+    interpretation_id: str,
+    rationale: str,
+    reviewer: str,
+) -> InterpretationSelectionRecord:
     record = InterpretationSelectionRecord(
         id=str(uuid.uuid4()),
         source_id=source.id,
@@ -116,7 +144,10 @@ def add_interpretation_selection(session: Session, *, source: SourceDocumentReco
 def latest_selection(session: Session, source_id: str, candidate_id: str) -> InterpretationSelectionRecord | None:
     return session.execute(
         select(InterpretationSelectionRecord)
-        .where(InterpretationSelectionRecord.source_id == source_id, InterpretationSelectionRecord.candidate_id == candidate_id)
+        .where(
+            InterpretationSelectionRecord.source_id == source_id,
+            InterpretationSelectionRecord.candidate_id == candidate_id,
+        )
         .order_by(desc(InterpretationSelectionRecord.created_at), desc(InterpretationSelectionRecord.id))
         .limit(1)
     ).scalar_one_or_none()
@@ -128,11 +159,24 @@ def interpretation_selections(session: Session, source: SourceDocumentRecord) ->
         candidate_id = str(candidate.get("id", ""))
         selection = latest_selection(session, source.id, candidate_id)
         if selection and selection.candidate_fingerprint == semantic_fingerprint(candidate):
-            result[candidate_id] = {"selected_id": selection.interpretation_id, "rationale": selection.rationale}
+            result[candidate_id] = {
+                "selected_id": selection.interpretation_id,
+                "rationale": selection.rationale,
+            }
     return result
 
 
-def create_run(session: Session, *, source_id: str, requested_by: str, high_stakes: bool, decision_authorized: bool, request_payload: Mapping[str, Any], context_payload: Mapping[str, Any], result_payload: Mapping[str, Any]) -> LifecycleRunRecord:
+def create_run(
+    session: Session,
+    *,
+    source_id: str,
+    requested_by: str,
+    high_stakes: bool,
+    decision_authorized: bool,
+    request_payload: Mapping[str, Any],
+    context_payload: Mapping[str, Any],
+    result_payload: Mapping[str, Any],
+) -> LifecycleRunRecord:
     record = LifecycleRunRecord(
         id=str(uuid.uuid4()),
         source_id=source_id,
@@ -152,11 +196,22 @@ def get_run(session: Session, run_id: str) -> LifecycleRunRecord | None:
     return session.get(LifecycleRunRecord, run_id)
 
 
-def append_audit(session: Session, *, actor: str, action: str, resource_type: str, resource_id: str, request_id: str, payload: Any) -> AuditEventRecord:
+def append_audit(
+    session: Session,
+    *,
+    actor: str,
+    action: str,
+    resource_type: str,
+    resource_id: str,
+    request_id: str,
+    payload: Any,
+) -> AuditEventRecord:
     if session.get_bind().dialect.name == "postgresql":
         session.execute(text("SELECT pg_advisory_xact_lock(726593201)"))
-    previous = session.execute(select(AuditEventRecord).order_by(desc(AuditEventRecord.sequence)).limit(1)).scalar_one_or_none()
-    created_at = datetime.now(timezone.utc)
+    previous = session.execute(
+        select(AuditEventRecord).order_by(desc(AuditEventRecord.sequence)).limit(1)
+    ).scalar_one_or_none()
+    created_at = datetime.now(UTC)
     payload_hash = canonical_hash(payload)
     previous_hash = previous.event_hash if previous else None
     event_material = {
@@ -187,23 +242,49 @@ def append_audit(session: Session, *, actor: str, action: str, resource_type: st
 
 
 def audit_for_resource(session: Session, resource_id: str) -> list[AuditEventRecord]:
-    return list(session.execute(select(AuditEventRecord).where(AuditEventRecord.resource_id == resource_id).order_by(AuditEventRecord.sequence)).scalars())
+    return list(
+        session.execute(
+            select(AuditEventRecord)
+            .where(AuditEventRecord.resource_id == resource_id)
+            .order_by(AuditEventRecord.sequence)
+        ).scalars()
+    )
 
 
-def get_idempotent(session: Session, *, actor: str, endpoint: str, key: str, request_hash: str) -> IdempotencyRecord | None:
+def get_idempotent(
+    session: Session,
+    *,
+    actor: str,
+    endpoint: str,
+    key: str,
+    request_hash: str,
+) -> IdempotencyRecord | None:
     key_hash = idempotency_hash(actor, endpoint, key)
     record = session.execute(
-        select(IdempotencyRecord).where(IdempotencyRecord.key_hash == key_hash, IdempotencyRecord.expires_at > datetime.now(timezone.utc))
+        select(IdempotencyRecord).where(
+            IdempotencyRecord.key_hash == key_hash,
+            IdempotencyRecord.expires_at > datetime.now(UTC),
+        )
     ).scalar_one_or_none()
     if record is not None and record.request_hash != request_hash:
         raise ValueError("idempotency key was already used with a different request")
     return record
 
 
-def store_idempotent(session: Session, *, actor: str, endpoint: str, key: str, request_hash: str, response_payload: Mapping[str, Any], status_code: int, ttl_seconds: int) -> IdempotencyRecord:
+def store_idempotent(
+    session: Session,
+    *,
+    actor: str,
+    endpoint: str,
+    key: str,
+    request_hash: str,
+    response_payload: Mapping[str, Any],
+    status_code: int,
+    ttl_seconds: int,
+) -> IdempotencyRecord:
     key_digest = idempotency_hash(actor, endpoint, key)
     record = session.get(IdempotencyRecord, key_digest)
-    expires_at = datetime.now(timezone.utc) + timedelta(seconds=ttl_seconds)
+    expires_at = datetime.now(UTC) + timedelta(seconds=ttl_seconds)
     if record is None:
         record = IdempotencyRecord(
             key_hash=key_digest,
@@ -222,7 +303,7 @@ def store_idempotent(session: Session, *, actor: str, endpoint: str, key: str, r
         record.response_payload = dict(response_payload)
         record.status_code = status_code
         record.expires_at = expires_at
-        record.created_at = datetime.now(timezone.utc)
+        record.created_at = datetime.now(UTC)
     session.flush()
     return record
 
@@ -233,9 +314,9 @@ def verify_audit_chain(session: Session) -> dict[str, Any]:
     for event in events:
         created_at = event.created_at
         if created_at.tzinfo is None:
-            created_at = created_at.replace(tzinfo=timezone.utc)
+            created_at = created_at.replace(tzinfo=UTC)
         else:
-            created_at = created_at.astimezone(timezone.utc)
+            created_at = created_at.astimezone(UTC)
         material = {
             "actor": event.actor,
             "action": event.action,
@@ -248,14 +329,27 @@ def verify_audit_chain(session: Session) -> dict[str, Any]:
         }
         expected_hash = canonical_hash(material)
         if event.previous_hash != previous_hash or event.event_hash != expected_hash:
-            return {"valid": False, "event_count": len(events), "broken_sequence": event.sequence, "head_hash": events[-1].event_hash if events else None}
+            return {
+                "valid": False,
+                "event_count": len(events),
+                "broken_sequence": event.sequence,
+                "head_hash": events[-1].event_hash if events else None,
+            }
         previous_hash = event.event_hash
-    return {"valid": True, "event_count": len(events), "broken_sequence": None, "head_hash": previous_hash}
+    return {
+        "valid": True,
+        "event_count": len(events),
+        "broken_sequence": None,
+        "head_hash": previous_hash,
+    }
 
 
 def cleanup_ephemeral_state(session: Session, *, rate_limit_retention_minutes: int = 120) -> dict[str, int]:
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     idem = session.execute(delete(IdempotencyRecord).where(IdempotencyRecord.expires_at <= now))
     cutoff = now - timedelta(minutes=rate_limit_retention_minutes)
     rate = session.execute(delete(RateLimitBucket).where(RateLimitBucket.window_start < cutoff))
-    return {"idempotency_records_deleted": int(idem.rowcount or 0), "rate_limit_buckets_deleted": int(rate.rowcount or 0)}
+    return {
+        "idempotency_records_deleted": int(idem.rowcount or 0),
+        "rate_limit_buckets_deleted": int(rate.rowcount or 0),
+    }
