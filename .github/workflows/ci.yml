@@ -34,7 +34,7 @@ jobs:
           cache: pip
       - run: python -m pip install --upgrade pip
       - run: python -m pip install -e '.[dev]'
-      - run: ruff check --diff src/service src/legifrance.py src/formalization.py src/lifecycle.py src/temporal.py src/temporal_deontic.py src/model_checking.py src/conflicts.py src/preferences.py src/audit_bundle.py src/research.py src/research_benchmark.py src/priority.py src/defeasible.py src/compliance.py src/normative_model.py src/norm_extraction.py src/cli.py tests/test_service.py tests/test_legifrance.py tests/test_norm_extraction.py tests/test_research_logic.py tests/test_audit_bundle.py tests/test_research_benchmark.py
+      - run: ruff check src/service src/legifrance.py src/formalization.py src/lifecycle.py src/temporal.py src/temporal_deontic.py src/model_checking.py src/conflicts.py src/preferences.py src/audit_bundle.py src/research.py src/research_benchmark.py src/priority.py src/defeasible.py src/compliance.py src/normative_model.py src/norm_extraction.py src/cli.py tests/test_service.py tests/test_legifrance.py tests/test_norm_extraction.py tests/test_research_logic.py tests/test_audit_bundle.py tests/test_research_benchmark.py
       - run: bandit -q -r src/service src/legifrance.py src/audit_bundle.py src/model_checking.py src/research.py src/temporal.py src/temporal_deontic.py
       - run: pip-audit -r requirements-prod.txt
 
