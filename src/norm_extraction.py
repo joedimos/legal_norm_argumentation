@@ -146,7 +146,7 @@ def _split_scope(sentence: str, modal_match: re.Match[str]) -> tuple[str | None,
 
 
 def _stable_id(source_id: str, start: int, end: int, sentence: str) -> str:
-    digest = hashlib.sha256(f"{source_id}:{start}:{end}:{sentence}".encode("utf-8")).hexdigest()[:16]
+    digest = hashlib.sha256(f"{source_id}:{start}:{end}:{sentence}".encode()).hexdigest()[:16]
     return f"norm-{digest}"
 
 
