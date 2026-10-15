@@ -1,15 +1,38 @@
 # Légifrance ingestion
 
-VLE–LEGATO can ingest public French statutory material directly from **Légifrance**, the official public service for dissemination of French law. The implementation is intentionally narrow: it does not accept arbitrary URLs and it does not treat downloaded text as automatically faithful formal law.
+VLE–LEGATO can ingest public French statutory material from **Légifrance**, the official public service for dissemination of French law. The implementation is intentionally narrow: it does not accept arbitrary URLs and it does not treat downloaded text as automatically faithful formal law.
 
 ## Supported corpora
 
 Two fixed legislative corpora are exposed:
 
-- `ip` — **Code de la propriété intellectuelle** (`LEGITEXT000006069414`), including copyright and industrial-property provisions exposed by the legislative code page.
-- `competition` — **Code de commerce, Livre IV: De la liberté des prix et de la concurrence** (`LEGITEXT000005634379`, `LEGISCTA000006113741`).
+- `ip` — **Code de la propriété intellectuelle** (`LEGITEXT000006069414`).
+- `competition` — **Code de commerce, Livre IV: De la liberté des prix et de la concurrence** (`LEGITEXT000005634379`, section `LEGISCTA000006113741`).
 
-The collector discovers article links only under `https://www.legifrance.gouv.fr/codes/article_lc/`. Redirects are revalidated against the same HTTPS host and `/codes/` namespace, preventing the ingestion endpoint from becoming a general-purpose URL fetcher.
+## Provider strategy
+
+Production deployments should use the official **PISTE Légifrance API**. PISTE exposes the LEGI consultation service through OAuth2 client credentials. The application calls `/consult/legiPart` for a fixed LEGI text identifier and an effective date, then reads structured `sections` and `articles` rather than scraping site navigation.
+
+For competition law, the structured response is restricted to the known Livre IV section CID. If an API version returns a flattened tree, article `pathTitle` values are used as a conservative fallback and must identify both Livre IV and the competition-law title.
+
+`VLE_LEGIFRANCE_SOURCE=auto` selects PISTE whenever both credentials are configured. Otherwise it falls back to the bounded public-HTML collector. HTML mode remains available for development and compatibility but should not be relied on as the primary production transport because public website requests may be rate-limited or refused independently of the public availability of the legal data.
+
+The HTML fallback accepts article links only under `https://www.legifrance.gouv.fr/codes/article_lc/`. Redirects are revalidated against the same HTTPS host and `/codes/` namespace, preventing the ingestion endpoint from becoming a general-purpose URL fetcher.
+
+## PISTE configuration
+
+Register an application on PISTE and inject the credentials through the deployment secret manager. Do not commit them.
+
+```text
+VLE_LEGIFRANCE_SOURCE=auto
+VLE_LEGIFRANCE_PISTE_ENVIRONMENT=production
+VLE_LEGIFRANCE_PISTE_CLIENT_ID=<secret>
+VLE_LEGIFRANCE_PISTE_CLIENT_SECRET=<secret>
+```
+
+Use `VLE_LEGIFRANCE_SOURCE=piste` to require the official API and fail configuration when credentials are absent. `html` explicitly selects the bounded HTML fallback. `sandbox` can be selected for the PISTE environment during integration testing.
+
+Credentials are represented as Pydantic `SecretStr` settings. They are used only in the OAuth exchange and are never added to API responses, provenance, source text, audit events or UI state.
 
 ## Web console
 
@@ -25,16 +48,9 @@ or:
 uvicorn src.service.app_with_ui:app --host 0.0.0.0 --port 8000
 ```
 
-The console supports:
+The console supports corpus selection, bounded article batches and offsets, authenticated collection, source/version browsing, candidate/review status, provenance and extracted norm inspection. The public corpus endpoint also reports the active provider (`piste` or `html`) without exposing credentials.
 
-- corpus selection for IP or competition law;
-- bounded article batches and offsets;
-- authenticated collection using an operator API key;
-- source/version registry browsing;
-- candidate counts and human-review status;
-- source provenance and extracted norm inspection.
-
-The browser stores the API key in `sessionStorage` only. No key is embedded in the application bundle and no third-party JavaScript is loaded.
+The browser stores the VLE API key in `sessionStorage` only. No key is embedded in the application bundle and no third-party JavaScript is loaded.
 
 ## API
 
@@ -61,7 +77,7 @@ Content-Type: application/json
 {"corpus":"competition","limit":20,"offset":0}
 ```
 
-A changed article creates a new source version. An unchanged article is not duplicated. Both outcomes are written to the existing audit chain. Légifrance provenance is stored in `extraction_audit.provenance` with the provider, corpus, article identifier, official URL and retrieval mode.
+A changed article creates a new source version. An unchanged article is not duplicated. Both outcomes are written to the existing audit chain. Légifrance provenance is stored in `extraction_audit.provenance` with provider, corpus, article identifier, official URL and retrieval mode (`piste_api` or `public_html`).
 
 ## Unattended synchronization
 
@@ -82,35 +98,24 @@ Each page is fetched before its database transaction starts, then committed inde
 
 ## Safety bounds
 
-Environment controls:
-
 ```text
 VLE_LEGIFRANCE_ENABLED=true
+VLE_LEGIFRANCE_SOURCE=auto
 VLE_LEGIFRANCE_TIMEOUT_SECONDS=12
 VLE_LEGIFRANCE_REQUEST_DELAY_SECONDS=0.2
 VLE_LEGIFRANCE_MAX_ARTICLES_PER_RUN=50
 VLE_LEGIFRANCE_MAX_FULL_SYNC_ARTICLES=2500
 ```
 
-Additional protections include:
-
-- HTTPS-only fixed host validation;
-- fixed `/codes/` namespace validation;
-- article-only link acceptance during discovery;
-- manual redirect validation rather than unrestricted redirect following;
-- retry/backoff for transient `429` and `5xx` responses;
-- response-size limits;
-- per-request article limits and full-sync total bounds;
-- hash-based versioning and database uniqueness constraints;
-- existing API-key rate limiting for interactive ingestion.
+Protections include fixed official hosts/endpoints, fixed corpus identifiers, OAuth credentials kept out of evidence, response-size limits, transient-error retry/backoff, per-run/full-sync article bounds, HTML redirect revalidation, hash-based source versioning, database uniqueness constraints, and the existing API-key role/rate-limit layer.
 
 ## French norm extraction
 
-The rule-based extraction layer now recognizes French obligation, prohibition and permission forms such as:
+The rule-based extraction layer recognizes French obligation, prohibition and permission forms such as:
 
 - `doit`, `doivent`, `est tenu de` → obligation;
-- `ne doit pas`, `est interdit`, `sont prohibées` → prohibition;
-- `peut`, `peuvent`, `est autorisé` → permission;
+- `ne doit pas`, `ne peut`, `est interdit`, `sont prohibées`, `illicite` → prohibition;
+- `peut`, `peuvent`, `a le droit de`, `est autorisé` → permission;
 - `lorsque`, `si`, `dès lors que` → conditions;
 - `sauf`, `sauf si`, `à l'exception de`, `sous réserve de` → exceptions.
 
@@ -118,4 +123,4 @@ These candidates remain **reviewable hypotheses**, not certified legal formaliza
 
 ## Operational note
 
-Public Légifrance HTML is an external dependency. The collector fails visibly if it cannot discover article links or extract enough legal text, rather than silently treating a layout failure as an empty corpus. CI uses deterministic fixtures; live collection should additionally be monitored in deployment because the external page structure can change independently of this repository.
+PISTE is the preferred production transport because it is the machine-oriented official interface. Public HTML remains an external presentation surface and may change or reject automated requests. The collector fails visibly rather than silently treating a transport/layout failure as an empty corpus. CI uses deterministic structured and HTML fixtures so tests do not depend on external availability; live provider health should still be monitored in deployment.
