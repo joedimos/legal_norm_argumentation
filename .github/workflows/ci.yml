@@ -79,10 +79,12 @@ jobs:
           push: false
           tags: legal-norm-argumentation:ci
           load: true
+          provenance: false
+          sbom: false
       - name: Runtime smoke test
         run: >-
           docker run --rm legal-norm-argumentation:ci
-          python -c "from importlib.metadata import version, PackageNotFoundError; assert version('urllib3') == '2.8.0'; assert version('msgpack') == '1.2.3'; import fastapi, spacy, sqlalchemy, src.service.app; print('runtime-smoke-ok')"
+          python -c "from importlib.metadata import version; assert version('urllib3') == '2.8.0'; assert version('msgpack') == '1.2.3'; assert tuple(map(int, version('setuptools').split('.')[:2])) >= (84, 0); import fastapi, spacy, sqlalchemy, src.service.app; print('runtime-smoke-ok')"
       - name: Generate Trivy report
         uses: aquasecurity/trivy-action@v0.36.0
         with:
@@ -108,3 +110,17 @@ jobs:
           exit-code: "1"
           ignore-unfixed: true
           severity: HIGH,CRITICAL
+      - name: Generate final-image CycloneDX SBOM
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: legal-norm-argumentation:ci
+          format: cyclonedx
+          output: sbom.cdx.json
+          exit-code: "0"
+      - name: Upload final-image SBOM
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom-cyclonedx
+          path: sbom.cdx.json
+          if-no-files-found: error
+          retention-days: 30
