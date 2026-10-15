@@ -138,8 +138,42 @@ def test_auto_provider_prefers_piste_only_when_credentials_exist(tmp_path):
         )
     )
     assert isinstance(piste_client, PisteLegifranceClient)
-    assert piste_client.client_id == "client-id"
-    assert piste_client.client_secret == "client-secret"
+    assert not hasattr(piste_client, "client_secret")
+    assert "client-secret" not in repr(piste_client)
+
+
+def test_piste_full_sync_pages_reuse_one_corpus_download(monkeypatch):
+    client = PisteLegifranceClient(client_id="client-id", client_secret="client-secret")
+    calls = 0
+
+    def fake_legi_part(*, text_id: str) -> dict:
+        nonlocal calls
+        calls += 1
+        assert text_id == "LEGITEXT000006069414"
+        return {
+            "articles": [
+                {
+                    "id": "LEGIARTI000IP1",
+                    "num": "L111-1",
+                    "etat": "VIGUEUR",
+                    "content": "<p>L'auteur jouit du droit de respecter son oeuvre.</p>",
+                },
+                {
+                    "id": "LEGIARTI000IP2",
+                    "num": "L111-2",
+                    "etat": "VIGUEUR",
+                    "content": "<p>L'auteur peut autoriser la reproduction de son oeuvre.</p>",
+                },
+            ],
+            "sections": [],
+        }
+
+    monkeypatch.setattr(client, "_legi_part", fake_legi_part)
+    first = client.fetch_corpus("ip", limit=1, offset=0)
+    second = client.fetch_corpus("ip", limit=1, offset=1)
+    assert first.provisions[0].article == "L111-1"
+    assert second.provisions[0].article == "L111-2"
+    assert calls == 1
 
 
 def test_french_conditions_and_exceptions_compile_to_clean_predicates():
