@@ -229,3 +229,40 @@ def test_database_rate_limit_is_shared_state(tmp_path):
         limiter.consume("key-hash")
     assert exc.value.status_code == 429
     db.dispose()
+
+
+def test_audit_bundle_requires_auditor_and_freezes_review_evidence(tmp_path):
+    import io
+    import zipfile
+
+    from src.audit_bundle import verify_bundle
+
+    with TestClient(create_app(settings(tmp_path, build_revision="a" * 40))) as client:
+        source = ingest(client, "The operator must retain logs.")
+        sid = source["id"]
+        run = client.post(
+            f"/v1/sources/{sid}/evaluate", json={"high_stakes": True},
+            headers={**auth(OPERATOR_TOKEN), "Idempotency-Key": "bundle-evaluation-001"},
+        )
+        assert run.status_code == 409
+        rid = run.json()["run_id"]
+        url = f"/v1/runs/{rid}/audit-bundle"
+        assert client.get(url).status_code == 401
+        assert client.get(url, headers=auth(OPERATOR_TOKEN)).status_code == 403
+        first = client.get(url, headers=auth(REVIEWER_TOKEN))
+        assert first.status_code == 200
+        assert first.headers["cache-control"] == "no-store"
+        assert verify_bundle(first.content, expected_manifest_digest=first.headers["x-audit-manifest-sha256"])["valid"]
+        with zipfile.ZipFile(io.BytesIO(first.content)) as archive:
+            review = json.loads(archive.read("reviews.json"))
+            assert review["statuses"] == ["unreviewed"]
+            assert json.loads(archive.read("run.json"))["decision_authorized"] is False
+            assert json.loads(archive.read("runtime.json"))["code_revision"] == "a" * 40
+        approved = client.post(
+            f"/v1/sources/{sid}/reviews",
+            json={"candidate_id": source["candidates"][0]["id"], "decision": "approved"},
+            headers={**auth(REVIEWER_TOKEN), "Idempotency-Key": "bundle-review-001"},
+        )
+        assert approved.status_code == 201
+        assert client.get(url, headers=auth(REVIEWER_TOKEN)).content == first.content
+        assert client.get("/v1/runs/missing/audit-bundle", headers=auth(REVIEWER_TOKEN)).status_code == 404

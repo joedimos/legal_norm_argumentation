@@ -353,3 +353,26 @@ def cleanup_ephemeral_state(session: Session, *, rate_limit_retention_minutes: i
         "idempotency_records_deleted": int(idem.rowcount or 0),
         "rate_limit_buckets_deleted": int(rate.rowcount or 0),
     }
+
+
+def review_evidence_snapshot(session: Session, source: SourceDocumentRecord) -> dict:
+    """Freeze current review identity and fingerprint with the decision, not export time."""
+    reviews = []
+    selections = []
+    for candidate in source.candidates:
+        cid = str(candidate.get("id", ""))
+        review = latest_review(session, source.id, cid)
+        if review:
+            reviews.append({"id": review.id, "candidate_id": cid,
+                            "candidate_fingerprint": review.candidate_fingerprint,
+                            "decision": review.decision, "reviewer": review.reviewer,
+                            "note": review.note, "created_at": review.created_at.isoformat()})
+        selection = latest_selection(session, source.id, cid)
+        if selection:
+            selections.append({"id": selection.id, "candidate_id": cid,
+                               "candidate_fingerprint": selection.candidate_fingerprint,
+                               "interpretation_id": selection.interpretation_id,
+                               "rationale": selection.rationale, "reviewer": selection.reviewer,
+                               "created_at": selection.created_at.isoformat()})
+    return {"reviews": reviews, "interpretation_selections": selections,
+            "statuses": review_statuses(session, source)}

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "legal-norm-argumentation"
-version = "0.3.0"
+version = "0.4.0"
 description = "Production-hardened VLE-LEGATO toolkit for norm extraction, formalisation, reasoning, audit, and compliance"
 readme = "README.md"
 requires-python = ">=3.12,<3.14"
@@ -29,6 +29,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+verification = ["z3-solver==5.3.0.0"]
 dev = [
   "pytest==8.4.2",
   "httpx==0.28.1",

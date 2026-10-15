@@ -53,3 +53,13 @@ For suspected incorrect normative behavior, stop automated downstream actioning,
 ## Data retention
 
 The service intentionally exposes no DELETE/UPDATE endpoints for governed source, review, selection, run or audit records. PostgreSQL triggers reject mutation of those tables. Any legally required retention/deletion process must be a separately governed administrative procedure.
+
+## Research evidence exports
+
+Set `VLE_BUILD_REVISION` to the deployed 40-character Git SHA to record code
+provenance in new evaluations. Auditors can download `/v1/runs/{run_id}/audit-bundle`.
+Keep its `X-Audit-Manifest-SHA256` header in a separately trusted receipt and
+verify with `python -m src.cli verify-bundle --input audit.zip
+--expected-manifest-digest <sha256>` (on one shell line). The endpoint preserves
+the reviews and runtime at evaluation time; legacy runs report missing snapshots.
+See [RESEARCH_PHASE_2.md](RESEARCH_PHASE_2.md) for size limits and trust boundaries.

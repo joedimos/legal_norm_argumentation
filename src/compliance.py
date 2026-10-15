@@ -1,8 +1,8 @@
 from __future__ import annotations
 
+from collections.abc import Sequence
 from dataclasses import asdict, dataclass
 from itertools import product
-from typing import Dict, List, Optional, Sequence
 
 from .defeasible import reason
 from .normative_model import FactContext, Modality, NormInterpretation
@@ -22,18 +22,24 @@ def _action_seen(norm: NormInterpretation, context: FactContext) -> bool:
     return norm.action in context.observed_actions
 
 
-def evaluate(norms: Sequence[NormInterpretation], context: FactContext) -> Dict:
+def evaluate(norms: Sequence[NormInterpretation], context: FactContext) -> dict:
     reasoning = reason(norms, context)
     applicable = {item["norm_id"] for item in reasoning["conclusions"] if item["status"] == "applicable"}
-    findings: List[ComplianceFinding] = []
+    findings: list[ComplianceFinding] = []
 
     for norm in norms:
         activation_status = reasoning["activations"][norm.id]["status"]
         if norm.id not in applicable:
-            if activation_status == "undetermined":
+            if activation_status == "undetermined" or any(
+                c["norm_id"] == norm.id and c["status"] == "undetermined" for c in reasoning["conclusions"]
+            ):
                 findings.append(ComplianceFinding(norm.id, "unknown", norm.modality.value, norm.subject, norm.action, "Applicability cannot be established from available facts."))
             continue
 
+        if norm.deadline or norm.object is not None:
+            findings.append(ComplianceFinding(norm.id, "unknown", norm.modality.value, norm.subject, norm.action,
+                                              "Deadline/object requires reviewed temporal, structured action observations."))
+            continue
         performed = _action_seen(norm, context)
         if norm.modality == Modality.OBLIGATION:
             status = "satisfied" if performed else "violated"
@@ -59,14 +65,14 @@ def evaluate(norms: Sequence[NormInterpretation], context: FactContext) -> Dict:
     }
 
 
-def generate_counterexamples(norms: Sequence[NormInterpretation], fact_names: Sequence[str], actor: Optional[str] = None, max_contexts: int = 256) -> List[Dict]:
+def generate_counterexamples(norms: Sequence[NormInterpretation], fact_names: Sequence[str], actor: str | None = None, max_contexts: int = 256) -> list[dict]:
     """Bounded counterexample generation over a finite boolean context space."""
     if 2 ** len(fact_names) > max_contexts:
         raise ValueError("counterexample search space exceeds max_contexts")
     actions = sorted({norm.action for norm in norms})
-    counterexamples: List[Dict] = []
+    counterexamples: list[dict] = []
     for values in product((False, True), repeat=len(fact_names)):
-        facts = dict(zip(fact_names, values))
+        facts = dict(zip(fact_names, values, strict=True))
         traces = [()] + [(action,) for action in actions]
         for trace in traces:
             context = FactContext(facts=facts, actor=actor, observed_actions=trace)

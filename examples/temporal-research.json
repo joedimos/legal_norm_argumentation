@@ -1,0 +1,39 @@
+{
+  "schema": "vle-research/v1",
+  "norms": [
+    {
+      "norm": {
+        "id": "o",
+        "modality": "obligation",
+        "subject": "operator",
+        "action": "notify"
+      },
+      "start": 0,
+      "end": 2,
+      "mode": "achievement"
+    },
+    {
+      "norm": {
+        "id": "p",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "notify"
+      },
+      "start": 1,
+      "end": 2,
+      "mode": "achievement"
+    }
+  ],
+  "trace": [
+    {
+      "action:[\"operator\",\"notify\",null]": true
+    },
+    {
+      "action:[\"operator\",\"notify\",null]": false
+    },
+    {
+      "action:[\"operator\",\"notify\",null]": false
+    }
+  ],
+  "closed": true
+}

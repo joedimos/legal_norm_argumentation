@@ -29,6 +29,12 @@ The architecture is aligned with the 2026 VLE-LEGATO agenda: **LEGATO** covers a
 | Upstream uncertainty propagation metric | `propagation_report` |
 | Certification-readiness evidence gates | `src/certification.py` |
 | Optional probabilistic reasoning backend | `src/pyreason_connector.py` |
+| Bounded finite-trace temporal/deontic semantics | `src/temporal.py`, `src/temporal_deontic.py` |
+| Structured target/scope/window conflicts | `src/conflicts.py` |
+| Explicit preference-aware argumentation | `src/preferences.py`, `src/research.py` |
+| Exhaustive and optional Z3 verification | `src/model_checking.py` |
+| Versioned 62-case semantic benchmark | `benchmarks/research-v1.json` |
+| Deterministic auditor-only evidence exports | `src/audit_bundle.py`, `/v1/runs/{run_id}/audit-bundle` |
 | Reproducible CI | `.github/workflows/ci.yml` |
 
 ## Install
@@ -49,7 +55,7 @@ Optional integrations:
 
 ```bash
 python -m pip install -e '.[transformers]'
-python -m pip install -e '.[pyreason]'
+python -m pip install -e '.[verification]'
 ```
 
 ## CLI
@@ -133,6 +139,22 @@ The argumentation suite exhaustively checks all **512 directed attack graphs on 
 - `docs/BENCHMARKING.md` — benchmark design and reproducibility requirements.
 - `schemas/norm-interpretation.schema.json` — machine-readable interchange schema.
 
+## Research phase 2
+
+```bash
+python -m pip install -e '.[dev,verification]'
+python -m src.cli research --input examples/temporal-research.json
+python -m src.cli verify --input examples/verify-response.json
+python -m src.cli benchmark --backend exhaustive
+python -m src.cli benchmark --backend z3
+```
+
+See [the phase 2 semantic contract and audit workflow](docs/RESEARCH_PHASE_2.md).
+The existing service uses the scoped single-state lifecycle. Reviewed temporal
+inputs run through the Python/CLI research path. The auditor endpoint exports
+historical source, request, reasoning, review and runtime evidence as a deterministic
+archive with offline integrity verification.
+
 ## Important limitations
 
-This is substantially more complete than an extractor/argument graph, but it intentionally does not pretend to solve open problems. The built-in predicate/effect semantics are a reference model, not full temporal deontic logic; authority ranks and specificity must come from validated metadata; cross-reference resolution is only as authoritative as its supplied corpus; and high-stakes conclusions require expert review and external governance.
+This is substantially more complete than an extractor/argument graph, but it intentionally does not pretend to solve open problems. The temporal extension is an explicit finite-trace operational fragment with bounded verification, not full temporal deontic logic or unbounded certification; authority ranks and specificity must come from validated metadata; cross-reference resolution is only as authoritative as its supplied corpus; and high-stakes conclusions require expert review and external governance.
