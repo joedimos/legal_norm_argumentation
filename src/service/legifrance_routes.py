@@ -7,11 +7,12 @@ from fastapi.responses import HTMLResponse
 from sqlalchemy import desc, select
 from sqlalchemy.orm import Session
 
-from src.legifrance import CORPORA, LegifranceClient, LegifranceError
+from src.legifrance import CORPORA, LegifranceError
 
 from .config import Settings
 from .db_models import SourceDocumentRecord
 from .legifrance_ingestion import ingest_legifrance_batch, source_summary
+from .legifrance_provider import build_legifrance_client, provider_name
 from .schemas import LegifranceScrapeRequest
 from .security import Principal, require_roles
 from .web_ui import HTML
@@ -47,6 +48,8 @@ def list_legifrance_corpora(request: Request) -> dict:
     settings: Settings = request.app.state.settings
     return {
         "enabled": settings.legifrance_enabled,
+        "provider": provider_name(settings),
+        "configured_source": settings.legifrance_source,
         "max_articles_per_run": settings.legifrance_max_articles_per_run,
         "corpora": [
             {
@@ -93,11 +96,8 @@ def scrape_legifrance(
             detail=f"limit exceeds configured maximum of {settings.legifrance_max_articles_per_run}",
         )
 
-    client = LegifranceClient(
-        timeout_seconds=settings.legifrance_timeout_seconds,
-        request_delay_seconds=settings.legifrance_request_delay_seconds,
-    )
     try:
+        client = build_legifrance_client(settings)
         batch = client.fetch_corpus(payload.corpus, limit=payload.limit, offset=payload.offset)
     except (LegifranceError, ValueError) as exc:
         raise HTTPException(status_code=502, detail=f"Légifrance collection failed: {exc}") from exc
