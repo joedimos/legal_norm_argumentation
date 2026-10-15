@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-import re
 from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import replace
+from re import I, compile
 
 from .normative_model import (
     InterpretationSet,
@@ -15,18 +15,18 @@ from .normative_model import (
 )
 
 
-_CONDITION_PREFIX_RE = re.compile(
+_CONDITION_PREFIX_RE = compile(
     r"^(?:(?:if|when|whenever|where|provided\s+that|subject\s+to|"
     r"si|lorsque|quand|dès\s+lors\s+que|dans\s+le\s+cas\s+où|sous\s+réserve\s+que)\s+|"
     r"lorsqu['’])",
-    flags=re.I,
+    flags=I,
 )
 
-_EXCEPTION_PREFIX_RE = re.compile(
+_EXCEPTION_PREFIX_RE = compile(
     r"^(?:unless|except(?:\s+where|\s+when|\s+if)?|save\s+where|provided\s+however\s+that|"
     r"sauf(?:\s+si|\s+lorsque|\s+dans\s+le\s+cas\s+où)?|à\s+l['’]exception\s+de|hormis|"
     r"sous\s+réserve\s+de)\s+",
-    flags=re.I,
+    flags=I,
 )
 
 
