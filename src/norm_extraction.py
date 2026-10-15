@@ -14,22 +14,32 @@ _MODAL_RE = re.compile(
     r"\b(shall\s+not|must\s+not|may\s+not|shall|must|may|should|ought\s+to|"
     r"is\s+required\s+to|are\s+required\s+to|is\s+prohibited\s+from|"
     r"are\s+prohibited\s+from|is\s+permitted\s+to|are\s+permitted\s+to|"
-    r"is\s+allowed\s+to|are\s+allowed\s+to)\b",
+    r"is\s+allowed\s+to|are\s+allowed\s+to|"
+    r"ne\s+(?:doit|doivent|peut|peuvent)\s+pas|"
+    r"(?:doit|doivent|devra|devront)|(?:peut|peuvent)|"
+    r"(?:est|sont)\s+(?:tenu(?:e|s|es)?\s+de|obligatoire(?:s)?|"
+    r"interdit(?:e|s|es)?|prohib[ée](?:e|s|es)?|autorisé(?:e|s|es)?|"
+    r"permis(?:e|es)?)|il\s+est\s+(?:interdit|obligatoire|permis)\s+de)\b",
     re.IGNORECASE,
 )
 
 _CONDITION_RE = re.compile(
-    r"^(?P<condition>(?:if|when|whenever|where|provided\s+that|subject\s+to)\b.+?)(?:,|;)(?P<body>.+)$",
+    r"^(?P<condition>(?:if|when|whenever|where|provided\s+that|subject\s+to|"
+    r"si|lorsque|lorsqu['’]|quand|dès\s+lors\s+que|dans\s+le\s+cas\s+où|"
+    r"sous\s+réserve\s+que)\b.+?)(?:,|;)(?P<body>.+)$",
     re.IGNORECASE | re.DOTALL,
 )
 
 _EXCEPTION_RE = re.compile(
-    r"\b(?P<marker>unless|except(?:\s+where|\s+when|\s+if)?|save\s+where|provided\s+however\s+that)\b(?P<exception>.+)$",
+    r"\b(?P<marker>unless|except(?:\s+where|\s+when|\s+if)?|save\s+where|"
+    r"provided\s+however\s+that|sauf(?:\s+si|\s+lorsque|\s+dans\s+le\s+cas\s+où)?|"
+    r"à\s+l['’]exception\s+de|hormis|sous\s+réserve\s+de)\b(?P<exception>.+)$",
     re.IGNORECASE | re.DOTALL,
 )
 
 _REFERENCE_RE = re.compile(
-    r"\b(?:section|article|paragraph|subsection|annex|schedule|rule|regulation)\s+[A-Za-z0-9().-]+",
+    r"\b(?:section|article|articles|paragraph|paragraphe|subsection|annex|annexe|schedule|rule|regulation)"
+    r"\s+[A-Za-zÀ-ÖØ-öø-ÿ0-9().\-\s]+?(?=\s(?:du|de|et|ou|qui|dont|dans|sur|,|;|\.|$)|[,;.])",
     re.IGNORECASE,
 )
 
@@ -39,7 +49,6 @@ def _sentences(text: str) -> Iterable[Tuple[str, int, int]]:
     for match in re.finditer(r"\S(?:.*?\S)?(?:[.!?](?=\s|$)|$)", text, re.DOTALL):
         raw = match.group(0)
         # Avoid consuming multiple paragraphs as one sentence when punctuation is sparse.
-        cursor = 0
         for part in re.finditer(r"[^\n]+", raw):
             sentence = part.group(0).strip()
             if not sentence:
@@ -48,16 +57,69 @@ def _sentences(text: str) -> Iterable[Tuple[str, int, int]]:
             start = match.start() + part.start() + left
             end = start + len(sentence)
             yield sentence, start, end
-            cursor = part.end()
 
 
 def classify_norm_type(text: str) -> str:
     lowered = text.lower()
-    if any(token in lowered for token in ("shall not", "must not", "may not", "prohibited", "forbidden")):
+    if any(
+        token in lowered
+        for token in (
+            "shall not",
+            "must not",
+            "may not",
+            "prohibited",
+            "forbidden",
+            "ne doit pas",
+            "ne doivent pas",
+            "ne peut pas",
+            "ne peuvent pas",
+            "interdit",
+            "interdite",
+            "interdits",
+            "interdites",
+            "prohibé",
+            "prohibée",
+            "prohibés",
+            "prohibées",
+        )
+    ):
         return "prohibition"
-    if any(token in lowered for token in ("shall", "must", "required", "ought to")):
+    if any(
+        token in lowered
+        for token in (
+            "shall",
+            "must",
+            "required",
+            "ought to",
+            "doit",
+            "doivent",
+            "devra",
+            "devront",
+            "est tenu de",
+            "est tenue de",
+            "sont tenus de",
+            "sont tenues de",
+            "il est obligatoire de",
+        )
+    ):
         return "obligation"
-    if any(token in lowered for token in ("may", "permitted", "allowed")):
+    if any(
+        token in lowered
+        for token in (
+            "may",
+            "permitted",
+            "allowed",
+            "peut",
+            "peuvent",
+            "autorisé",
+            "autorisée",
+            "autorisés",
+            "autorisées",
+            "est permis",
+            "est permise",
+            "il est permis de",
+        )
+    ):
         return "permission"
     if "should" in lowered:
         return "recommendation"
@@ -80,7 +142,7 @@ def extract_norms(
     use_transformer: bool = False,
     source_id: str = "inline",
 ) -> List[Dict]:
-    """Extract reviewable norm candidates with exact provenance.
+    """Extract reviewable English/French norm candidates with exact provenance.
 
     The function does not claim that a candidate is a faithful formalisation.
     It preserves conditions/exceptions and surfaces ambiguity for later review.
@@ -108,8 +170,6 @@ def extract_norms(
 
         actor, action = _split_scope(scoped_sentence, modal)
         if exception_match:
-            local_start = exception_match.start()
-            # action is relative to the scoped sentence after the modal; trim exception cleanly.
             after_modal = scoped_sentence[modal.end() :]
             exc_in_after = _EXCEPTION_RE.search(after_modal)
             if exc_in_after:
@@ -121,7 +181,12 @@ def extract_norms(
             ambiguity_flags.append("missing_actor")
         if not action:
             ambiguity_flags.append("missing_action")
-        if re.search(r"\b(it|they|this|that|such|thereof|therein)\b", sentence, re.IGNORECASE):
+        if re.search(
+            r"\b(it|they|this|that|such|thereof|therein|celui-ci|celle-ci|ceux-ci|celles-ci|"
+            r"ledit|ladite|lesdits|lesdites)\b",
+            sentence,
+            re.IGNORECASE,
+        ):
             ambiguity_flags.append("possible_anaphora")
         if modality == "unknown":
             ambiguity_flags.append("unknown_modality")
@@ -204,7 +269,7 @@ def extract_legal_entities(text: str) -> List[Dict]:
 
 
 def _token_set(value: str) -> set[str]:
-    return {token for token in re.findall(r"[a-z0-9]+", value.lower()) if len(token) > 2}
+    return {token for token in re.findall(r"[a-z0-9à-öø-ÿ]+", value.lower()) if len(token) > 2}
 
 
 def has_similar_content(text1: str, text2: str, threshold: float = 0.5) -> bool:
