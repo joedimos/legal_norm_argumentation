@@ -15,12 +15,12 @@ class LegifranceProvider(Protocol):
 def build_legifrance_client(settings: Settings) -> LegifranceProvider:
     """Choose the configured official-source transport without exposing credentials."""
     mode = settings.legifrance_source
-    if mode in {"auto", "piste"} and settings.has_piste_credentials:
-        assert settings.legifrance_piste_client_id is not None
-        assert settings.legifrance_piste_client_secret is not None
+    client_id = settings.legifrance_piste_client_id
+    client_secret = settings.legifrance_piste_client_secret
+    if mode in {"auto", "piste"} and client_id is not None and client_secret is not None:
         return PisteLegifranceClient(
-            client_id=settings.legifrance_piste_client_id.get_secret_value(),
-            client_secret=settings.legifrance_piste_client_secret.get_secret_value(),
+            client_id=client_id.get_secret_value(),
+            client_secret=client_secret.get_secret_value(),
             environment=settings.legifrance_piste_environment,
             timeout_seconds=settings.legifrance_timeout_seconds,
         )
