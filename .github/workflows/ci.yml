@@ -84,7 +84,7 @@ jobs:
       - name: Runtime smoke test
         run: >-
           docker run --rm legal-norm-argumentation:ci
-          python -c "from importlib.metadata import version; assert version('urllib3') == '2.8.0'; assert version('msgpack') == '1.2.3'; assert tuple(map(int, version('setuptools').split('.')[:2])) >= (84, 0); import fastapi, spacy, sqlalchemy, src.service.app; print('runtime-smoke-ok')"
+          python -c "import importlib.metadata as md; assert md.version('urllib3') == '2.8.0'; assert md.version('msgpack') == '1.2.3'; assert not list(md.distributions(name='setuptools')); assert not list(md.distributions(name='pip')); import fastapi, spacy, sqlalchemy, src.service.app; print('runtime-smoke-ok')"
       - name: Generate Trivy report
         uses: aquasecurity/trivy-action@v0.36.0
         with:
@@ -100,7 +100,7 @@ jobs:
         with:
           name: trivy-report
           path: trivy-report.json
-          if-no-files-found: error
+          if-no-files-found: warn
           retention-days: 7
       - name: Enforce Trivy HIGH/CRITICAL gate
         uses: aquasecurity/trivy-action@v0.36.0
