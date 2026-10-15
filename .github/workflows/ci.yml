@@ -79,7 +79,25 @@ jobs:
           push: false
           tags: legal-norm-argumentation:ci
           load: true
-      - uses: aquasecurity/trivy-action@v0.36.0
+      - name: Generate Trivy report
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: legal-norm-argumentation:ci
+          format: json
+          output: trivy-report.json
+          exit-code: "0"
+          ignore-unfixed: true
+          severity: HIGH,CRITICAL
+      - name: Upload Trivy report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-report
+          path: trivy-report.json
+          if-no-files-found: error
+          retention-days: 7
+      - name: Enforce Trivy HIGH/CRITICAL gate
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: legal-norm-argumentation:ci
           format: table
