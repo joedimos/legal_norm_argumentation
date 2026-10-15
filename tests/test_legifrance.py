@@ -5,17 +5,19 @@ import json
 from fastapi.testclient import TestClient
 
 from src.formalization import candidate_to_interpretations
-from src.legifrance import LegalProvision, ScrapeBatch, parse_article_links, parse_article_text
+from src.legifrance import LegalProvision, LegifranceClient, ScrapeBatch, parse_article_links, parse_article_text
+from src.legifrance_piste import PisteLegifranceClient, provisions_from_piste_payload
 from src.service.app_with_ui import create_app
 from src.service.config import Settings
+from src.service.legifrance_provider import build_legifrance_client
 
 OPERATOR_TOKEN = "legifrance-operator-token-abcdefghijklmnopqrstuvwxyz-123456"
 READER_TOKEN = "legifrance-reader-token-abcdefghijklmnopqrstuvwxyz-12345678"
 METRICS_TOKEN = "legifrance-metrics-token-abcdefghijklmnopqrstuvwxyz-1234567"
 
 
-def _settings(tmp_path) -> Settings:
-    return Settings(
+def _settings(tmp_path, **overrides) -> Settings:
+    payload = dict(
         environment="test",
         database_url=f"sqlite+pysqlite:///{tmp_path / 'legifrance.db'}",
         api_keys_json=json.dumps(
@@ -31,6 +33,8 @@ def _settings(tmp_path) -> Settings:
         legifrance_request_delay_seconds=0,
         legifrance_max_articles_per_run=25,
     )
+    payload.update(overrides)
+    return Settings(**payload)
 
 
 def _auth(token: str) -> dict[str, str]:
@@ -67,6 +71,77 @@ def test_legifrance_html_parsers_are_bounded_to_article_links_and_legal_text():
     assert text == "Sont prohibées les pratiques qui empêchent le libre jeu de la concurrence."
 
 
+def test_piste_payload_uses_structured_competition_section_and_in_force_articles():
+    payload = {
+        "articles": [{"id": "LEGIARTI000ROOT", "num": "R1", "etat": "VIGUEUR", "content": "<p>Root ignored.</p>"}],
+        "sections": [
+            {
+                "cid": "LEGISCTA000000OTHER",
+                "title": "Livre III",
+                "articles": [
+                    {"id": "LEGIARTI000OTHER", "num": "L300-1", "etat": "VIGUEUR", "content": "<p>Other law.</p>"}
+                ],
+                "sections": [],
+            },
+            {
+                "cid": "LEGISCTA000006113741",
+                "title": "Livre IV : De la liberté des prix et de la concurrence",
+                "articles": [
+                    {
+                        "id": "LEGIARTI000COMP1",
+                        "num": "L420-1",
+                        "etat": "VIGUEUR",
+                        "content": "<p>Sont prohibées les pratiques qui empêchent la concurrence.</p>",
+                    },
+                    {
+                        "id": "LEGIARTI000OLD",
+                        "num": "L420-0",
+                        "etat": "ABROGE",
+                        "content": "<p>Ancien texte sans vigueur actuelle.</p>",
+                    },
+                ],
+                "sections": [
+                    {
+                        "cid": "LEGISCTA000CHILD",
+                        "title": "Chapitre II",
+                        "articles": [
+                            {
+                                "id": "LEGIARTI000COMP2",
+                                "num": "L430-1",
+                                "etat": "VIGUEUR",
+                                "content": "<p>L'Autorité peut examiner une concentration.</p>",
+                            }
+                        ],
+                        "sections": [],
+                    }
+                ],
+            },
+        ],
+    }
+    provisions = provisions_from_piste_payload(payload, corpus="competition")
+    assert [item.article for item in provisions] == ["L420-1", "L430-1"]
+    assert all(item.provenance["retrieval_mode"] == "piste_api" for item in provisions)
+    assert all("PISTE" in item.provenance["provider"] for item in provisions)
+    assert provisions[0].url.endswith("/LEGIARTI000COMP1/")
+
+
+def test_auto_provider_prefers_piste_only_when_credentials_exist(tmp_path):
+    html_client = build_legifrance_client(_settings(tmp_path, legifrance_source="auto"))
+    assert isinstance(html_client, LegifranceClient)
+
+    piste_client = build_legifrance_client(
+        _settings(
+            tmp_path,
+            legifrance_source="auto",
+            legifrance_piste_client_id="client-id",
+            legifrance_piste_client_secret="client-secret",
+        )
+    )
+    assert isinstance(piste_client, PisteLegifranceClient)
+    assert piste_client.client_id == "client-id"
+    assert piste_client.client_secret == "client-secret"
+
+
 def test_french_conditions_and_exceptions_compile_to_clean_predicates():
     result = candidate_to_interpretations(
         {
@@ -98,6 +173,7 @@ def test_web_console_and_corpus_catalog_are_public_but_sources_require_auth(tmp_
 
         corpora = client.get("/v1/legifrance/corpora")
         assert corpora.status_code == 200
+        assert corpora.json()["provider"] == "html"
         assert {item["key"] for item in corpora.json()["corpora"]} == {"ip", "competition"}
 
         assert client.get("/v1/sources").status_code == 401
@@ -106,9 +182,6 @@ def test_web_console_and_corpus_catalog_are_public_but_sources_require_auth(tmp_
 def test_scrape_ingests_french_norms_versions_changes_and_deduplicates(tmp_path, monkeypatch):
     class FakeClient:
         calls = 0
-
-        def __init__(self, **_kwargs):
-            pass
 
         def fetch_corpus(self, corpus: str, *, limit: int, offset: int) -> ScrapeBatch:
             assert corpus == "competition"
@@ -135,7 +208,8 @@ def test_scrape_ingests_french_norms_versions_changes_and_deduplicates(tmp_path,
                 errors=(),
             )
 
-    monkeypatch.setattr("src.service.legifrance_routes.LegifranceClient", FakeClient)
+    fake = FakeClient()
+    monkeypatch.setattr("src.service.legifrance_routes.build_legifrance_client", lambda _settings: fake)
 
     with TestClient(create_app(_settings(tmp_path))) as client:
         payload = {"corpus": "competition", "limit": 1, "offset": 0}
