@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 from collections.abc import Iterator
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
@@ -14,12 +15,7 @@ from src.verification import audit_extraction
 
 from .config import Settings
 from .db_models import SourceDocumentRecord
-from .repository import (
-    append_audit,
-    create_source,
-    find_source_by_key_hash,
-    review_statuses,
-)
+from .repository import append_audit, create_source, find_source_by_key_hash, review_statuses
 from .schemas import LegifranceScrapeRequest
 from .security import Principal, require_roles
 from .web_ui import HTML
@@ -141,8 +137,6 @@ def scrape_legifrance(
     for provision in batch.provisions:
         source_key = provision.source_key
         source_text = provision.source_text
-        import hashlib
-
         content_hash = hashlib.sha256(source_text.encode("utf-8")).hexdigest()
         existing = find_source_by_key_hash(session, source_key, content_hash)
         if existing is not None:
