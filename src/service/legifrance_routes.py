@@ -10,12 +10,13 @@ from sqlalchemy.orm import Session
 from src.legifrance import CORPORA, LegifranceError
 
 from .config import Settings
-from .db_models import SourceDocumentRecord
+from .db_models import LifecycleRunRecord, SourceDocumentRecord
 from .legifrance_ingestion import ingest_legifrance_batch, source_summary
 from .legifrance_provider import build_legifrance_client, provider_name
+from .repository import get_source, interpretation_selections
 from .schemas import LegifranceScrapeRequest
 from .security import Principal, require_roles
-from .web_ui import HTML
+from .web_ui_v2 import HTML
 
 router = APIRouter()
 
@@ -24,6 +25,23 @@ def _db_session(request: Request) -> Iterator[Session]:
     database = request.app.state.db
     with database.session() as session:
         yield session
+
+
+def _run_summary(run: LifecycleRunRecord) -> dict:
+    result = run.result_payload or {}
+    readiness = result.get("readiness") or {}
+    compliance = result.get("compliance") or {}
+    return {
+        "id": run.id,
+        "source_id": run.source_id,
+        "requested_by": run.requested_by,
+        "high_stakes": run.high_stakes,
+        "decision_authorized": run.decision_authorized,
+        "created_at": run.created_at.isoformat(),
+        "readiness_status": readiness.get("status"),
+        "failed_gates": readiness.get("failed_gates", []),
+        "compliance_status": compliance.get("status"),
+    }
 
 
 @router.get("/", include_in_schema=False, response_class=HTMLResponse)
@@ -41,6 +59,14 @@ def web_console() -> HTMLResponse:
             "X-Content-Type-Options": "nosniff",
         },
     )
+
+
+@router.get("/v1/session")
+def session_info(
+    principal: Principal = Depends(require_roles("reader", "operator", "reviewer", "auditor")),
+) -> dict:
+    """Expose only the authenticated subject and roles needed to drive the console UX."""
+    return {"subject": principal.subject, "roles": sorted(principal.roles)}
 
 
 @router.get("/v1/legifrance/corpora")
@@ -78,6 +104,39 @@ def list_sources(
     statement = statement.order_by(desc(SourceDocumentRecord.created_at), desc(SourceDocumentRecord.id)).limit(limit)
     sources = session.execute(statement).scalars().all()
     return {"sources": [source_summary(session, source) for source in sources], "count": len(sources)}
+
+
+@router.get("/v1/console/sources/{source_id}/state")
+def source_console_state(
+    source_id: str,
+    session: Session = Depends(_db_session),
+    principal: Principal = Depends(require_roles("reader", "operator", "reviewer", "auditor")),
+) -> dict:
+    del principal
+    source = get_source(session, source_id)
+    if source is None:
+        raise HTTPException(status_code=404, detail="source not found")
+    return {
+        "source_id": source.id,
+        "created_by": source.created_by,
+        "interpretation_selections": interpretation_selections(session, source),
+    }
+
+
+@router.get("/v1/console/runs")
+def list_console_runs(
+    source_id: str | None = Query(default=None, max_length=36),
+    limit: int = Query(default=50, ge=1, le=100),
+    session: Session = Depends(_db_session),
+    principal: Principal = Depends(require_roles("reader", "operator", "reviewer", "auditor")),
+) -> dict:
+    del principal
+    statement = select(LifecycleRunRecord)
+    if source_id:
+        statement = statement.where(LifecycleRunRecord.source_id == source_id)
+    statement = statement.order_by(desc(LifecycleRunRecord.created_at), desc(LifecycleRunRecord.id)).limit(limit)
+    runs = session.execute(statement).scalars().all()
+    return {"runs": [_run_summary(run) for run in runs], "count": len(runs)}
 
 
 @router.post("/v1/legifrance/scrape")
