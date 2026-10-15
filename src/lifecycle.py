@@ -5,7 +5,7 @@ from typing import Dict, Mapping, Optional, Sequence
 
 from .certification import readiness_report
 from .compliance import evaluate
-from .formalization import formalize_candidates
+from .formalization import formalize_candidates, select_interpretation
 from .normative_model import FactContext, InterpretationSet, SourceAuthority
 from .traceability import EvidenceGraph
 
@@ -35,8 +35,21 @@ def run_lifecycle(
     context: FactContext,
     authorities: Optional[Mapping[str, SourceAuthority]] = None,
     review_statuses: Optional[Sequence[str]] = None,
+    interpretation_selections: Optional[Mapping[str, Mapping[str, str]]] = None,
 ) -> Dict:
     formal_sets = formalize_candidates(candidates, authorities=authorities)
+    selections = interpretation_selections or {}
+    resolved_sets = []
+    for item in formal_sets:
+        selection = selections.get(item.source_norm_id)
+        if selection:
+            selected_id = selection.get("selected_id")
+            rationale = selection.get("rationale")
+            if selected_id and rationale:
+                item = select_interpretation(item, selected_id, rationale)
+        resolved_sets.append(item)
+    formal_sets = resolved_sets
+
     selected, unresolved = selected_norms(formal_sets)
     compliance = evaluate(selected, context) if selected else {
         "status": "indeterminate",
@@ -55,7 +68,13 @@ def run_lifecycle(
     for item in formal_sets:
         for interpretation in item.interpretations:
             fid = f"formal:{interpretation.id}"
-            evidence.add(fid, "formal_interpretation", interpretation.to_dict())
+            evidence.add(
+                fid,
+                "formal_interpretation",
+                interpretation.to_dict(),
+                selected=item.selected_id == interpretation.id,
+                selection_rationale=item.selection_rationale,
+            )
             evidence.link(f"candidate:{item.source_norm_id}", fid, "formalizes")
     decision_id = f"compliance:{evidence._hash(compliance)[:16]}"
     evidence.add(decision_id, "compliance_report", compliance)
@@ -77,6 +96,7 @@ def run_lifecycle(
             {
                 "source_norm_id": item.source_norm_id,
                 "selected_id": item.selected_id,
+                "selection_rationale": item.selection_rationale,
                 "unresolved": item.unresolved,
                 "interpretations": [x.to_dict() for x in item.interpretations],
             }
