@@ -1,3 +1,4 @@
+from src.formalization import candidate_to_interpretations
 from src.norm_extraction import analyze_norm_conflicts, extract_norms
 
 
@@ -42,3 +43,70 @@ def test_simple_obligation_prohibition_conflict_detection():
     ]
     conflicts = analyze_norm_conflicts(norms)
     assert conflicts and conflicts[0]["requires_legal_priority_analysis"] is True
+
+
+def test_french_prohibition_is_extracted():
+    text = "Sont prohibées les pratiques qui ont pour objet d'empêcher le libre jeu de la concurrence."
+    norm = extract_norms(text, source_id="code-commerce-l420-1")[0]
+    assert norm["modality"] == "prohibition"
+    assert norm["modal"].lower() == "sont prohibées"
+    assert "pratiques" in norm["action"].lower()
+
+
+def test_french_obligation_condition_and_exception_are_preserved():
+    text = "Lorsque le seuil est franchi, l'entreprise doit notifier l'autorité sauf si une exemption s'applique."
+    norm = extract_norms(text)[0]
+    assert norm["modality"] == "obligation"
+    assert norm["condition"].lower().startswith("lorsque le seuil est franchi")
+    assert norm["actor"].lower() == "l'entreprise"
+    assert norm["action"].lower() == "notifier l'autorité"
+    assert norm["exception"].lower().startswith("sauf si une exemption")
+
+
+def test_french_permission_is_extracted():
+    text = "L'Autorité de la concurrence peut imposer des mesures conservatoires."
+    norm = extract_norms(text)[0]
+    assert norm["modality"] == "permission"
+    assert norm["actor"] == "L'Autorité de la concurrence"
+    assert norm["action"] == "imposer des mesures conservatoires"
+
+
+def test_french_negative_potestative_form_is_prohibition():
+    text = "Le titulaire ne peut céder ce droit sans l'accord requis."
+    norm = extract_norms(text)[0]
+    assert norm["modality"] == "prohibition"
+    assert norm["actor"] == "Le titulaire"
+    assert norm["modal"].lower() == "ne peut"
+    assert norm["action"] == "céder ce droit sans l'accord requis"
+
+
+def test_french_nul_ne_peut_is_not_misread_as_permission():
+    text = "Nul ne peut reproduire l'œuvre sans autorisation."
+    norm = extract_norms(text)[0]
+    assert norm["modality"] == "prohibition"
+    assert norm["actor"] == "Nul"
+    assert norm["action"] == "reproduire l'œuvre sans autorisation"
+
+
+def test_french_illicit_copular_form_preserves_prohibited_act():
+    text = "Toute reproduction faite sans autorisation est illicite."
+    norm = extract_norms(text)[0]
+    assert norm["modality"] == "prohibition"
+    assert norm["actor"] is None
+    assert norm["action"] == "Toute reproduction faite sans autorisation"
+    assert "missing_actor" in norm["ambiguity_flags"]
+
+
+def test_french_condition_and_exception_are_normalized_in_formalization():
+    text = "Lorsque le seuil est franchi, l'entreprise doit notifier l'autorité sauf si une exemption s'applique."
+    candidate = extract_norms(text, source_id="competition-test")[0]
+    interpretation = candidate_to_interpretations(candidate).interpretations[0]
+    assert interpretation.conditions[0].name == "le seuil est franchi"
+    assert interpretation.exceptions[0].name == "une exemption s'applique"
+
+
+def test_elided_french_lorsque_is_normalized_in_formalization():
+    text = "Lorsqu’un seuil est franchi, l'entreprise doit notifier l'autorité."
+    candidate = extract_norms(text, source_id="competition-elision")[0]
+    interpretation = candidate_to_interpretations(candidate).interpretations[0]
+    assert interpretation.conditions[0].name == "un seuil est franchi"

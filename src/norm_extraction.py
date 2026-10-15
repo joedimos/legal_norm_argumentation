@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import re
-from typing import Dict, Iterable, List, Optional, Tuple
+from collections.abc import Iterable
 
 try:
     from .models import load_transformer_classifier, nlp
@@ -14,32 +14,42 @@ _MODAL_RE = re.compile(
     r"\b(shall\s+not|must\s+not|may\s+not|shall|must|may|should|ought\s+to|"
     r"is\s+required\s+to|are\s+required\s+to|is\s+prohibited\s+from|"
     r"are\s+prohibited\s+from|is\s+permitted\s+to|are\s+permitted\s+to|"
-    r"is\s+allowed\s+to|are\s+allowed\s+to)\b",
+    r"is\s+allowed\s+to|are\s+allowed\s+to|"
+    r"ne\s+(?:doit|doivent|peut|peuvent)\s+pas|"
+    r"ne\s+(?:peut|peuvent)|"
+    r"(?:doit|doivent|devra|devront|devrait|devraient)|(?:peut|peuvent)|"
+    r"(?:a|ont)\s+(?:le\s+)?droit\s+de|(?:jouit|jouissent)\s+du\s+droit\s+de|"
+    r"(?:est|sont)\s+(?:tenu(?:e|s|es)?\s+de|obligatoire(?:s)?|"
+    r"interdit(?:e|s|es)?|prohib(?:é|ée|és|ées)|illicite(?:s)?|autorisé(?:e|s|es)?|"
+    r"permis(?:e|es)?)|il\s+est\s+(?:interdit|obligatoire|illicite|permis)\s+de)\b",
     re.IGNORECASE,
 )
 
 _CONDITION_RE = re.compile(
-    r"^(?P<condition>(?:if|when|whenever|where|provided\s+that|subject\s+to)\b.+?)(?:,|;)(?P<body>.+)$",
+    r"^(?P<condition>(?:if|when|whenever|where|provided\s+that|subject\s+to|"
+    r"si|lorsque|lorsqu['’]|quand|dès\s+lors\s+que|dans\s+le\s+cas\s+où|"
+    r"sous\s+réserve\s+que)\b.+?)(?:,|;)(?P<body>.+)$",
     re.IGNORECASE | re.DOTALL,
 )
 
 _EXCEPTION_RE = re.compile(
-    r"\b(?P<marker>unless|except(?:\s+where|\s+when|\s+if)?|save\s+where|provided\s+however\s+that)\b(?P<exception>.+)$",
+    r"\b(?P<marker>unless|except(?:\s+where|\s+when|\s+if)?|save\s+where|"
+    r"provided\s+however\s+that|sauf(?:\s+si|\s+lorsque|\s+dans\s+le\s+cas\s+où)?|"
+    r"à\s+l['’]exception\s+de|hormis|sous\s+réserve\s+de)\b(?P<exception>.+)$",
     re.IGNORECASE | re.DOTALL,
 )
 
 _REFERENCE_RE = re.compile(
-    r"\b(?:section|article|paragraph|subsection|annex|schedule|rule|regulation)\s+[A-Za-z0-9().-]+",
+    r"\b(?:section|article|articles|paragraph|paragraphe|subsection|annex|annexe|schedule|rule|regulation)"
+    r"\s+[A-Za-zÀ-ÖØ-öø-ÿ0-9().\-]+(?:\s+[A-Za-zÀ-ÖØ-öø-ÿ0-9().\-]+){0,5}",
     re.IGNORECASE,
 )
 
 
-def _sentences(text: str) -> Iterable[Tuple[str, int, int]]:
+def _sentences(text: str) -> Iterable[tuple[str, int, int]]:
     """Yield sentence-like spans without losing exact source offsets."""
     for match in re.finditer(r"\S(?:.*?\S)?(?:[.!?](?=\s|$)|$)", text, re.DOTALL):
         raw = match.group(0)
-        # Avoid consuming multiple paragraphs as one sentence when punctuation is sparse.
-        cursor = 0
         for part in re.finditer(r"[^\n]+", raw):
             sentence = part.group(0).strip()
             if not sentence:
@@ -48,30 +58,95 @@ def _sentences(text: str) -> Iterable[Tuple[str, int, int]]:
             start = match.start() + part.start() + left
             end = start + len(sentence)
             yield sentence, start, end
-            cursor = part.end()
 
 
 def classify_norm_type(text: str) -> str:
     lowered = text.lower()
-    if any(token in lowered for token in ("shall not", "must not", "may not", "prohibited", "forbidden")):
+    if any(
+        token in lowered
+        for token in (
+            "shall not",
+            "must not",
+            "may not",
+            "prohibited",
+            "forbidden",
+            "ne doit pas",
+            "ne doivent pas",
+            "ne peut pas",
+            "ne peuvent pas",
+            "ne peut",
+            "ne peuvent",
+            "nul ne peut",
+            "personne ne peut",
+            "interdit",
+            "interdite",
+            "interdits",
+            "interdites",
+            "prohibé",
+            "prohibée",
+            "prohibés",
+            "prohibées",
+            "illicite",
+            "illicites",
+        )
+    ):
         return "prohibition"
-    if any(token in lowered for token in ("shall", "must", "required", "ought to")):
+    if any(
+        token in lowered
+        for token in (
+            "shall",
+            "must",
+            "required",
+            "ought to",
+            "doit",
+            "doivent",
+            "devra",
+            "devront",
+            "est tenu de",
+            "est tenue de",
+            "sont tenus de",
+            "sont tenues de",
+            "il est obligatoire de",
+        )
+    ):
         return "obligation"
-    if any(token in lowered for token in ("may", "permitted", "allowed")):
+    if any(
+        token in lowered
+        for token in (
+            "may",
+            "permitted",
+            "allowed",
+            "peut",
+            "peuvent",
+            "a le droit de",
+            "ont le droit de",
+            "a droit de",
+            "ont droit de",
+            "jouit du droit de",
+            "jouissent du droit de",
+            "autorisé",
+            "autorisée",
+            "autorisés",
+            "autorisées",
+            "est permis",
+            "est permise",
+            "il est permis de",
+        )
+    ):
         return "permission"
-    if "should" in lowered:
+    if any(token in lowered for token in ("should", "devrait", "devraient")):
         return "recommendation"
     return "unknown"
 
 
-def _split_scope(sentence: str, modal_match: re.Match[str]) -> Tuple[Optional[str], str]:
+def _split_scope(sentence: str, modal_match: re.Match[str]) -> tuple[str | None, str]:
     actor = sentence[: modal_match.start()].strip(" ,;:") or None
     action = sentence[modal_match.end() :].strip(" ,;:.")
     return actor, action
 
 
 def _stable_id(source_id: str, start: int, end: int, sentence: str) -> str:
-    digest = hashlib.sha256(f"{source_id}:{start}:{end}:{sentence}".encode("utf-8")).hexdigest()[:16]
+    digest = hashlib.sha256(f"{source_id}:{start}:{end}:{sentence}".encode()).hexdigest()[:16]
     return f"norm-{digest}"
 
 
@@ -79,14 +154,14 @@ def extract_norms(
     text: str,
     use_transformer: bool = False,
     source_id: str = "inline",
-) -> List[Dict]:
-    """Extract reviewable norm candidates with exact provenance.
+) -> list[dict]:
+    """Extract reviewable English/French norm candidates with exact provenance.
 
     The function does not claim that a candidate is a faithful formalisation.
     It preserves conditions/exceptions and surfaces ambiguity for later review.
     """
     classifier = load_transformer_classifier() if use_transformer else None
-    results: List[Dict] = []
+    results: list[dict] = []
 
     for sentence, start, end in _sentences(text):
         modal = _MODAL_RE.search(sentence)
@@ -108,20 +183,27 @@ def extract_norms(
 
         actor, action = _split_scope(scoped_sentence, modal)
         if exception_match:
-            local_start = exception_match.start()
-            # action is relative to the scoped sentence after the modal; trim exception cleanly.
             after_modal = scoped_sentence[modal.end() :]
             exc_in_after = _EXCEPTION_RE.search(after_modal)
             if exc_in_after:
                 action = after_modal[: exc_in_after.start()].strip(" ,;:.")
 
         modality = classify_norm_type(scoped_sentence)
-        ambiguity_flags: List[str] = []
+        if modality == "prohibition" and not action and actor and re.match(r"^(?:est|sont)\s+", modal.group(0), re.I):
+            action = actor
+            actor = None
+
+        ambiguity_flags: list[str] = []
         if actor is None:
             ambiguity_flags.append("missing_actor")
         if not action:
             ambiguity_flags.append("missing_action")
-        if re.search(r"\b(it|they|this|that|such|thereof|therein)\b", sentence, re.IGNORECASE):
+        if re.search(
+            r"\b(it|they|this|that|such|thereof|therein|celui-ci|celle-ci|ceux-ci|celles-ci|"
+            r"ledit|ladite|lesdits|lesdites)\b",
+            sentence,
+            re.IGNORECASE,
+        ):
             ambiguity_flags.append("possible_anaphora")
         if modality == "unknown":
             ambiguity_flags.append("unknown_modality")
@@ -162,7 +244,7 @@ def extract_norms(
     return results
 
 
-def extract_deontic_operators(text: str) -> List[Dict]:
+def extract_deontic_operators(text: str) -> list[dict]:
     return [
         {
             "type": norm["modality"],
@@ -179,7 +261,7 @@ def extract_deontic_operators(text: str) -> List[Dict]:
     ]
 
 
-def extract_conditional_norms(text: str) -> List[Dict]:
+def extract_conditional_norms(text: str) -> list[dict]:
     return [
         {
             "condition": norm["condition"],
@@ -192,7 +274,7 @@ def extract_conditional_norms(text: str) -> List[Dict]:
     ]
 
 
-def extract_legal_entities(text: str) -> List[Dict]:
+def extract_legal_entities(text: str) -> list[dict]:
     if nlp is None:
         return []
     doc = nlp(text)
@@ -204,7 +286,7 @@ def extract_legal_entities(text: str) -> List[Dict]:
 
 
 def _token_set(value: str) -> set[str]:
-    return {token for token in re.findall(r"[a-z0-9]+", value.lower()) if len(token) > 2}
+    return {token for token in re.findall(r"[a-z0-9à-öø-ÿ]+", value.lower()) if len(token) > 2}
 
 
 def has_similar_content(text1: str, text2: str, threshold: float = 0.5) -> bool:
@@ -214,8 +296,8 @@ def has_similar_content(text1: str, text2: str, threshold: float = 0.5) -> bool:
     return len(left & right) / len(left | right) >= threshold
 
 
-def analyze_norm_conflicts(norms: List[Dict]) -> List[Dict]:
-    conflicts: List[Dict] = []
+def analyze_norm_conflicts(norms: list[dict]) -> list[dict]:
+    conflicts: list[dict] = []
     for i, left in enumerate(norms):
         for right in norms[i + 1 :]:
             modalities = {left.get("modality") or left.get("type"), right.get("modality") or right.get("type")}
@@ -236,7 +318,7 @@ def analyze_norm_conflicts(norms: List[Dict]) -> List[Dict]:
     return conflicts
 
 
-def extract_all_norms(text: str, use_transformer: bool = False, source_id: str = "inline") -> Dict:
+def extract_all_norms(text: str, use_transformer: bool = False, source_id: str = "inline") -> dict:
     norms = extract_norms(text, use_transformer=use_transformer, source_id=source_id)
     return {
         "norms": norms,

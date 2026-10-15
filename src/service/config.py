@@ -26,7 +26,7 @@ class Settings(BaseSettings):
 
     environment: Literal["development", "test", "production"] = "development"
     service_name: str = "legal-norm-argumentation"
-    service_version: str = "0.4.0"
+    service_version: str = "0.5.0"
     build_revision: str | None = Field(default=None, pattern=r"^[0-9a-f]{40}$")
     database_url: str = "sqlite+pysqlite:///./vle_legato.db"
     database_pool_size: int = Field(default=10, ge=1, le=100)
@@ -44,6 +44,15 @@ class Settings(BaseSettings):
     log_level: str = "INFO"
     otlp_endpoint: str | None = None
     otlp_headers: str | None = None
+    legifrance_enabled: bool = True
+    legifrance_source: Literal["auto", "piste", "html"] = "auto"
+    legifrance_piste_environment: Literal["production", "sandbox"] = "production"
+    legifrance_piste_client_id: SecretStr | None = None
+    legifrance_piste_client_secret: SecretStr | None = None
+    legifrance_timeout_seconds: float = Field(default=12.0, ge=2.0, le=60.0)
+    legifrance_request_delay_seconds: float = Field(default=0.2, ge=0.0, le=5.0)
+    legifrance_max_articles_per_run: int = Field(default=50, ge=1, le=100)
+    legifrance_max_full_sync_articles: int = Field(default=2500, ge=1, le=10_000)
 
     @field_validator("database_url")
     @classmethod
@@ -65,6 +74,10 @@ class Settings(BaseSettings):
         if not isinstance(raw, list):
             raise ValueError("VLE_API_KEYS_JSON must be a JSON array")
         return [APIKeyEntry.model_validate(item) for item in raw]
+
+    @property
+    def has_piste_credentials(self) -> bool:
+        return self.legifrance_piste_client_id is not None and self.legifrance_piste_client_secret is not None
 
     @model_validator(mode="after")
     def validate_production_settings(self) -> Settings:
@@ -91,6 +104,11 @@ class Settings(BaseSettings):
             raise ValueError("production requires a reviewer or admin principal")
         if self.metrics_bearer_token is None or len(self.metrics_bearer_token.get_secret_value()) < 32:
             raise ValueError("production requires a metrics bearer token of at least 32 characters")
+        if self.legifrance_enabled and self.legifrance_source in {"auto", "piste"} and not self.has_piste_credentials:
+            raise ValueError(
+                "production Légifrance auto/piste mode requires PISTE credentials; "
+                "set VLE_LEGIFRANCE_SOURCE=html only for an explicit HTML fallback"
+            )
         return self
 
 
