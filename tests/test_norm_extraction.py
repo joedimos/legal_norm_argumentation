@@ -42,3 +42,29 @@ def test_simple_obligation_prohibition_conflict_detection():
     ]
     conflicts = analyze_norm_conflicts(norms)
     assert conflicts and conflicts[0]["requires_legal_priority_analysis"] is True
+
+
+def test_french_prohibition_is_extracted():
+    text = "Sont prohibées les pratiques qui ont pour objet d'empêcher le libre jeu de la concurrence."
+    norm = extract_norms(text, source_id="code-commerce-l420-1")[0]
+    assert norm["modality"] == "prohibition"
+    assert norm["modal"].lower() == "sont prohibées"
+    assert "pratiques" in norm["action"].lower()
+
+
+def test_french_obligation_condition_and_exception_are_preserved():
+    text = "Lorsque le seuil est franchi, l'entreprise doit notifier l'autorité sauf si une exemption s'applique."
+    norm = extract_norms(text)[0]
+    assert norm["modality"] == "obligation"
+    assert norm["condition"].lower().startswith("lorsque le seuil est franchi")
+    assert norm["actor"].lower() == "l'entreprise"
+    assert norm["action"].lower() == "notifier l'autorité"
+    assert norm["exception"].lower().startswith("sauf si une exemption")
+
+
+def test_french_permission_is_extracted():
+    text = "L'Autorité de la concurrence peut imposer des mesures conservatoires."
+    norm = extract_norms(text)[0]
+    assert norm["modality"] == "permission"
+    assert norm["actor"] == "L'Autorité de la concurrence"
+    assert norm["action"] == "imposer des mesures conservatoires"
