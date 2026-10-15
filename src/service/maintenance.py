@@ -4,11 +4,12 @@ import argparse
 import json
 import uuid
 
-from src.legifrance import CORPORA, LegifranceClient, LegifranceError
+from src.legifrance import CORPORA, LegifranceError
 
 from .config import Settings, get_settings
 from .database import Database
 from .legifrance_ingestion import ingest_legifrance_batch
+from .legifrance_provider import build_legifrance_client
 from .repository import cleanup_ephemeral_state, verify_audit_chain
 
 
@@ -45,10 +46,10 @@ def _sync_legifrance(database: Database, settings: Settings, args: argparse.Name
         raise SystemExit("--offset must be non-negative")
 
     corpora = list(CORPORA) if args.sync_legifrance == "all" else [args.sync_legifrance]
-    client = LegifranceClient(
-        timeout_seconds=settings.legifrance_timeout_seconds,
-        request_delay_seconds=settings.legifrance_request_delay_seconds,
-    )
+    try:
+        client = build_legifrance_client(settings)
+    except (LegifranceError, ValueError) as exc:
+        raise SystemExit(f"Légifrance provider configuration failed: {exc}") from exc
     summaries: list[dict] = []
 
     for corpus in corpora:
