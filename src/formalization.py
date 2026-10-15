@@ -14,7 +14,6 @@ from .normative_model import (
     stable_interpretation_id,
 )
 
-
 _CONDITION_PREFIX_RE = re.compile(
     r"^(?:(?:if|when|whenever|where|provided\s+that|subject\s+to|"
     r"si|lorsque|quand|dès\s+lors\s+que|dans\s+le\s+cas\s+où|sous\s+réserve\s+que)\s+|"
