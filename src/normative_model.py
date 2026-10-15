@@ -1,21 +1,22 @@
 from __future__ import annotations
 
+import hashlib
+import json
+from collections.abc import Mapping
 from dataclasses import asdict, dataclass, field
 from datetime import date
 from enum import Enum
-import hashlib
-import json
-from typing import Any, Dict, Mapping, Optional, Tuple
+from typing import Any
 
 
-class Modality(str, Enum):
+class Modality(str, Enum):  # noqa: UP042 - preserve public Enum string behavior
     OBLIGATION = "obligation"
     PROHIBITION = "prohibition"
     PERMISSION = "permission"
     RECOMMENDATION = "recommendation"
 
 
-class SourceKind(str, Enum):
+class SourceKind(str, Enum):  # noqa: UP042 - preserve public Enum string behavior
     LAW = "law"
     REGULATION = "regulation"
     STANDARD = "standard"
@@ -29,16 +30,27 @@ class SourceKind(str, Enum):
 @dataclass(frozen=True)
 class SourceAuthority:
     kind: SourceKind = SourceKind.OTHER
-    issuer: Optional[str] = None
-    instrument: Optional[str] = None
-    jurisdiction: Optional[str] = None
-    authority_rank: Optional[int] = None
-    enacted_on: Optional[str] = None
-    effective_from: Optional[str] = None
-    effective_to: Optional[str] = None
-    version: Optional[str] = None
+    issuer: str | None = None
+    instrument: str | None = None
+    jurisdiction: str | None = None
+    authority_rank: int | None = None
+    enacted_on: str | None = None
+    effective_from: str | None = None
+    effective_to: str | None = None
+    version: str | None = None
 
-    def is_effective(self, on_date: Optional[str]) -> Optional[bool]:
+    def __post_init__(self) -> None:
+        for value in (self.enacted_on, self.effective_from, self.effective_to):
+            if value is not None:
+                parsed = date.fromisoformat(value)
+                if parsed.isoformat() != value:
+                    raise ValueError("dates must use canonical YYYY-MM-DD format")
+        if self.effective_from and self.effective_to and self.effective_from > self.effective_to:
+            raise ValueError("effective_from must not follow effective_to")
+        if self.authority_rank is not None and type(self.authority_rank) is not int:
+            raise ValueError("authority_rank must be an integer")
+
+    def is_effective(self, on_date: str | None) -> bool | None:
         if on_date is None:
             return None
         current = date.fromisoformat(on_date)
@@ -52,10 +64,10 @@ class SourceAuthority:
 @dataclass(frozen=True)
 class SourceProvenance:
     source_id: str
-    span: Tuple[int, int]
+    span: tuple[int, int]
     quote: str
-    document_hash: Optional[str] = None
-    locator: Optional[str] = None
+    document_hash: str | None = None
+    locator: str | None = None
 
 
 @dataclass(frozen=True)
@@ -67,10 +79,12 @@ class Predicate:
         if not self.name.strip():
             raise ValueError("predicate name must be non-empty")
 
-    def evaluate(self, facts: Mapping[str, bool]) -> Optional[bool]:
+    def evaluate(self, facts: Mapping[str, bool]) -> bool | None:
         if self.name not in facts:
             return None
-        value = bool(facts[self.name])
+        value = facts[self.name]
+        if type(value) is not bool:
+            raise ValueError("predicate facts must be boolean")
         return not value if self.negated else value
 
     def canonical(self) -> str:
@@ -84,15 +98,15 @@ class NormInterpretation:
     modality: Modality
     subject: str
     action: str
-    conditions: Tuple[Predicate, ...] = ()
-    exceptions: Tuple[Predicate, ...] = ()
-    object: Optional[str] = None
-    deadline: Optional[str] = None
-    references: Tuple[str, ...] = ()
+    conditions: tuple[Predicate, ...] = ()
+    exceptions: tuple[Predicate, ...] = ()
+    object: str | None = None
+    deadline: str | None = None
+    references: tuple[str, ...] = ()
     authority: SourceAuthority = field(default_factory=SourceAuthority)
     confidence: float = 1.0
-    assumptions: Tuple[str, ...] = ()
-    provenance: Optional[SourceProvenance] = None
+    assumptions: tuple[str, ...] = ()
+    provenance: SourceProvenance | None = None
     interpretation_label: str = "primary"
 
     def __post_init__(self) -> None:
@@ -125,7 +139,7 @@ class NormInterpretation:
         raw = json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
         return hashlib.sha256(raw.encode("utf-8")).hexdigest()
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         data = asdict(self)
         data["modality"] = self.modality.value
         data["authority"]["kind"] = self.authority.kind.value
@@ -137,11 +151,11 @@ class NormInterpretation:
 @dataclass(frozen=True)
 class InterpretationSet:
     source_norm_id: str
-    interpretations: Tuple[NormInterpretation, ...]
-    selected_id: Optional[str] = None
-    selection_rationale: Optional[str] = None
+    interpretations: tuple[NormInterpretation, ...]
+    selected_id: str | None = None
+    selection_rationale: str | None = None
 
-    def selected(self) -> Optional[NormInterpretation]:
+    def selected(self) -> NormInterpretation | None:
         if self.selected_id is None:
             return None
         return next((item for item in self.interpretations if item.id == self.selected_id), None)
@@ -154,12 +168,12 @@ class InterpretationSet:
 @dataclass(frozen=True)
 class FactContext:
     facts: Mapping[str, bool]
-    actor: Optional[str] = None
-    observed_actions: Tuple[str, ...] = ()
-    at_date: Optional[str] = None
+    actor: str | None = None
+    observed_actions: tuple[str, ...] = ()
+    at_date: str | None = None
     metadata: Mapping[str, Any] = field(default_factory=dict)
 
 
 def stable_interpretation_id(source_norm_id: str, label: str, canonical: str) -> str:
-    digest = hashlib.sha256(f"{source_norm_id}:{label}:{canonical}".encode("utf-8")).hexdigest()[:16]
+    digest = hashlib.sha256(f"{source_norm_id}:{label}:{canonical}".encode()).hexdigest()[:16]
     return f"formal-{digest}"

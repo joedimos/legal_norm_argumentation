@@ -1,0 +1,46 @@
+{
+  "property": {
+    "op": "eventually",
+    "args": [
+      {
+        "op": "atom",
+        "name": "notified"
+      }
+    ]
+  },
+  "horizon": 3,
+  "assumptions": [
+    {
+      "op": "atom",
+      "name": "breach"
+    },
+    {
+      "op": "always",
+      "args": [
+        {
+          "op": "or",
+          "args": [
+            {
+              "op": "not",
+              "args": [
+                {
+                  "op": "atom",
+                  "name": "breach"
+                }
+              ]
+            },
+            {
+              "op": "next",
+              "args": [
+                {
+                  "op": "atom",
+                  "name": "notified"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

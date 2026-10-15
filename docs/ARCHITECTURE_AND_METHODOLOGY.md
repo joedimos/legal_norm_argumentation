@@ -58,6 +58,10 @@ evidence graph ──► benchmark metrics ──► certification-readiness gat
 
 - `lifecycle.py`: connects formalisation to compliance and constructs a source-to-decision evidence graph.
 - `traceability.py`: immutable evidence nodes, typed links, lineage and graph hashes.
+- `research.py`, `temporal.py`, `temporal_deontic.py`: reviewed finite-trace research inputs and bounded deontic semantics.
+- `model_checking.py`: exhaustive and optional Z3 bounded verification.
+- `conflicts.py`, `preferences.py`: scoped conflicts and preference-based defeat.
+- `audit_bundle.py`: deterministic, offline-verifiable evidence archives.
 - `cli.py`: executable entry point for extraction, audit, formalisation, compliance and lifecycle runs.
 
 ## Semantic commitments
@@ -106,3 +110,10 @@ Not solved by this repository alone: authoritative statutory interpretation, con
 ## Deployment posture
 
 Use the toolkit as an inspectable research/evidence layer with expert review. Preserve source documents independently, pin corpus versions, treat unresolved states as blocking for high-stakes decisions, and retain external audit logs for operational deployments.
+
+## Phase 2 semantic contract
+
+See [RESEARCH_PHASE_2.md](RESEARCH_PHASE_2.md) for exact temporal boundaries,
+preference reduction, bounded solver claims, benchmark protocol and audit-export
+trust assumptions. The legacy lifecycle now uses scope inclusion and grounded
+defeat semantics; unknown applicability also blocks readiness.

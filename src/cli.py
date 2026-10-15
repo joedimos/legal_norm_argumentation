@@ -8,8 +8,8 @@ from typing import Any
 from .compliance import evaluate
 from .formalization import formalize_candidates
 from .lifecycle import run_lifecycle
-from .normative_model import FactContext
 from .norm_extraction import extract_all_norms, extract_norms
+from .normative_model import FactContext
 from .verification import audit_extraction
 
 
@@ -53,7 +53,21 @@ def main() -> None:
     lifecycle.add_argument("--at-date")
     lifecycle.add_argument("--assume-reviewed", action="store_true", help="Demo/testing convenience only")
 
+    for name in ("verify", "research"):
+        command = subs.add_parser(name)
+        command.add_argument("--input", required=True, help="Path to a versioned JSON research request")
+        command.add_argument("--bundle", help="Write an audit ZIP containing request, result and runtime")
+        command.add_argument("--revision", help="Full Git SHA of the executing build")
+    benchmark = subs.add_parser("benchmark")
+    benchmark.add_argument("--corpus", default="benchmarks/research-v1.json")
+    benchmark.add_argument("--backend", choices=("exhaustive", "z3"), default="exhaustive")
+    bundle = subs.add_parser("verify-bundle")
+    bundle.add_argument("--input", required=True)
+    bundle.add_argument("--expected-manifest-digest")
+
     args = parser.parse_args()
+    if args.command in {"verify", "research", "benchmark", "verify-bundle"}:
+        raise SystemExit(_research_command(args))
     text = _read_text(args)
     norms = extract_norms(text, source_id=args.source_id)
 
@@ -81,6 +95,42 @@ def main() -> None:
             payload = run_lifecycle(text=text, source_id=args.source_id, candidates=norms, extraction_audit=audit, context=context, review_statuses=statuses)
 
     print(json.dumps(payload, indent=2, ensure_ascii=False, default=str))
+
+
+def _research_command(args) -> int:
+    from .audit_bundle import MAX_BYTES, create_bundle, runtime_evidence, verify_bundle
+    from .model_checking import verify_request
+    from .research import run_research
+    from .research_benchmark import run_benchmarks
+
+    try:
+        if args.command == "benchmark":
+            payload = run_benchmarks(args.corpus, backend=args.backend)
+            code = 0 if payload["all_passed"] else 1
+        else:
+            with Path(args.input).open("rb") as handle:
+                raw = handle.read(MAX_BYTES + 1)
+            if len(raw) > MAX_BYTES:
+                raise ValueError("input exceeds 16 MiB limit")
+            if args.command == "verify-bundle":
+                payload = verify_bundle(raw, expected_manifest_digest=args.expected_manifest_digest)
+                code = 0 if payload["valid"] else 1
+            else:
+                request = json.loads(raw)
+                payload = verify_request(request) if args.command == "verify" else run_research(request)
+                code = 0 if payload["status"] in {"verified_bounded", "compliant"} else 1
+                if args.bundle:
+                    archive, root = create_bundle({"request.json": request, "result.json": payload,
+                                                   "runtime.json": runtime_evidence(revision=args.revision)},
+                                                  metadata={"kind": args.command, "legal_certification": False})
+                    # Refuse to silently replace an existing evidence bundle.
+                    with Path(args.bundle).open("xb") as handle:
+                        handle.write(archive)
+                    payload = {**payload, "bundle_manifest_digest": root}
+    except (OSError, ValueError, TypeError, KeyError, RecursionError) as exc:
+        payload, code = {"error": str(exc)}, 2
+    print(json.dumps(payload, indent=2, ensure_ascii=False, allow_nan=False))
+    return code
 
 
 if __name__ == "__main__":

@@ -10,6 +10,7 @@ from fastapi.responses import JSONResponse, Response
 from prometheus_client import CONTENT_TYPE_LATEST, generate_latest
 from sqlalchemy.orm import Session
 
+from src.audit_bundle import create_bundle, digest, runtime_evidence
 from src.formalization import formalize_candidates
 from src.lifecycle import run_lifecycle
 from src.norm_extraction import extract_norms
@@ -38,6 +39,7 @@ from .repository import (
     get_source,
     interpretation_selections,
     latest_review,
+    review_evidence_snapshot,
     review_statuses,
     store_idempotent,
     verify_audit_chain,
@@ -392,6 +394,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             review_statuses=statuses,
             interpretation_selections=selections,
         )
+        result["review_evidence"] = review_evidence_snapshot(session, source)
+        result["runtime_evidence"] = runtime_evidence(revision=settings.build_revision)
         ready = result.get("readiness", {}).get("status") == "research_ready"
         authorized = (not payload.high_stakes) or ready
         run = create_run(
@@ -457,6 +461,47 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             "created_at": run.created_at.isoformat(),
             "result": result,
         }
+
+    @app.get("/v1/runs/{run_id}/audit-bundle")
+    def export_audit_bundle(
+        run_id: str,
+        session: Session = Depends(db_session),
+        principal: Principal = Depends(require_roles("auditor")),
+    ):
+        run = get_run(session, run_id)
+        if run is None:
+            raise HTTPException(status_code=404, detail="run not found")
+        source = get_source(session, run.source_id)
+        result = dict(run.result_payload)
+        artifacts = {
+            "source.json": {"id": source.id, "source_id": source.source_key, "text": source.content,
+                            "content_hash": source.content_hash, "candidates": source.candidates,
+                            "extraction_audit": source.extraction_audit},
+            "run.json": {"id": run.id, "source_id": run.source_id, "requested_by": run.requested_by,
+                         "request_hash": run.request_hash, "context": run.context_payload,
+                         "high_stakes": run.high_stakes, "decision_authorized": run.decision_authorized,
+                         "created_at": run.created_at.isoformat(), "result": result},
+            "reviews.json": result.get("review_evidence", {"available": False, "reason": "historical_run"}),
+            "runtime.json": result.get("runtime_evidence", {"available": False, "reason": "historical_run"}),
+            "audit-events.json": [{"sequence": e.sequence, "actor": e.actor, "action": e.action,
+                                   "resource_id": e.resource_id, "request_id": e.request_id,
+                                   "payload_hash": e.payload_hash, "previous_hash": e.previous_hash,
+                                   "event_hash": e.event_hash, "created_at": e.created_at.isoformat()}
+                                  for e in audit_for_resource(session, run.id)],
+        }
+        try:
+            archive, manifest_digest = create_bundle(artifacts, metadata={
+                "kind": "lifecycle_run", "run_id": run.id, "legal_certification": False,
+                "audit_chain_scope": "resource_subset_not_full_chain",
+                "historical_evidence_complete": "review_evidence" in result and "runtime_evidence" in result,
+            })
+        except ValueError as exc:
+            raise HTTPException(status_code=413, detail="audit bundle exceeds export constraints") from exc
+        return Response(content=archive, media_type="application/zip", headers={
+            "Content-Disposition": f'attachment; filename="audit-{run.id}.zip"',
+            "X-Audit-Manifest-SHA256": manifest_digest,
+            "ETag": f'"{digest(archive)}"', "Cache-Control": "no-store",
+        })
 
     @app.get("/v1/audit-chain/verify")
     def verify_chain(

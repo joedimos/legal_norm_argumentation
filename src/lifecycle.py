@@ -83,10 +83,18 @@ def run_lifecycle(
 
     readiness = readiness_report(
         extraction_audit=extraction_audit,
-        review_statuses=list(review_statuses or []),
+        review_statuses=(list(review_statuses) if review_statuses is not None and len(review_statuses) == len(candidates)
+                         else ["unreviewed"]),
         unresolved_interpretations=len(unresolved),
         unresolved_conflicts=len(compliance.get("reasoning", {}).get("unresolved_conflicts", [])),
     )
+    if compliance["status"] == "indeterminate" or any(
+        finding["status"] == "unknown" for finding in compliance.get("findings", [])
+    ):
+        readiness["gates"].append({"gate": "determinate_reasoning", "passed": False,
+                                   "explanation": "Unknown applicability or unresolved argumentation blocks readiness."})
+        readiness["failed_gates"].append("determinate_reasoning")
+        readiness["status"] = "not_ready"
     readiness_id = f"readiness:{evidence._hash(readiness)[:16]}"
     evidence.add(readiness_id, "readiness_report", readiness)
     evidence.link(decision_id, readiness_id, "evidence_for")
