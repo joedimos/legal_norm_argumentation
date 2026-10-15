@@ -4,6 +4,7 @@ import json
 
 from fastapi.testclient import TestClient
 
+from src.formalization import candidate_to_interpretations
 from src.legifrance import LegalProvision, ScrapeBatch, parse_article_links, parse_article_text
 from src.service.app_with_ui import create_app
 from src.service.config import Settings
@@ -64,6 +65,28 @@ def test_legifrance_html_parsers_are_bounded_to_article_links_and_legal_text():
     """
     text = parse_article_text(article_html, article="L420-1")
     assert text == "Sont prohibées les pratiques qui empêchent le libre jeu de la concurrence."
+
+
+def test_french_conditions_and_exceptions_compile_to_clean_predicates():
+    result = candidate_to_interpretations(
+        {
+            "id": "fr-norm-1",
+            "source_id": "legifrance:competition:l-test",
+            "source_span": [0, 100],
+            "sentence": "Lorsqu’elle franchit le seuil, l'entreprise doit notifier sauf si une exemption s'applique.",
+            "modality": "obligation",
+            "actor": "l'entreprise",
+            "action": "notifier",
+            "condition": "Lorsqu’elle franchit le seuil",
+            "exception": "sauf si une exemption s'applique",
+            "confidence": 0.9,
+            "ambiguity_flags": [],
+        }
+    )
+    norm = result.selected()
+    assert norm is not None
+    assert norm.conditions[0].name == "elle franchit le seuil"
+    assert norm.exceptions[0].name == "une exemption s'applique"
 
 
 def test_web_console_and_corpus_catalog_are_public_but_sources_require_auth(tmp_path):
