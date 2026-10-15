@@ -16,10 +16,12 @@ _MODAL_RE = re.compile(
     r"are\s+prohibited\s+from|is\s+permitted\s+to|are\s+permitted\s+to|"
     r"is\s+allowed\s+to|are\s+allowed\s+to|"
     r"ne\s+(?:doit|doivent|peut|peuvent)\s+pas|"
+    r"ne\s+(?:peut|peuvent)|"
     r"(?:doit|doivent|devra|devront)|(?:peut|peuvent)|"
+    r"(?:a|ont)\s+(?:le\s+)?droit\s+de|(?:jouit|jouissent)\s+du\s+droit\s+de|"
     r"(?:est|sont)\s+(?:tenu(?:e|s|es)?\s+de|obligatoire(?:s)?|"
-    r"interdit(?:e|s|es)?|prohib(?:é|ée|és|ées)|autorisé(?:e|s|es)?|"
-    r"permis(?:e|es)?)|il\s+est\s+(?:interdit|obligatoire|permis)\s+de)\b",
+    r"interdit(?:e|s|es)?|prohib(?:é|ée|és|ées)|illicite(?:s)?|autorisé(?:e|s|es)?|"
+    r"permis(?:e|es)?)|il\s+est\s+(?:interdit|obligatoire|illicite|permis)\s+de)\b",
     re.IGNORECASE,
 )
 
@@ -73,6 +75,9 @@ def classify_norm_type(text: str) -> str:
             "ne doivent pas",
             "ne peut pas",
             "ne peuvent pas",
+            "nul ne peut",
+            "personne ne peut",
+            "personne ne peuvent",
             "interdit",
             "interdite",
             "interdits",
@@ -81,6 +86,8 @@ def classify_norm_type(text: str) -> str:
             "prohibée",
             "prohibés",
             "prohibées",
+            "illicite",
+            "illicites",
         )
     ):
         return "prohibition"
@@ -111,6 +118,12 @@ def classify_norm_type(text: str) -> str:
             "allowed",
             "peut",
             "peuvent",
+            "a le droit de",
+            "ont le droit de",
+            "a droit de",
+            "ont droit de",
+            "jouit du droit de",
+            "jouissent du droit de",
             "autorisé",
             "autorisée",
             "autorisés",
@@ -121,7 +134,7 @@ def classify_norm_type(text: str) -> str:
         )
     ):
         return "permission"
-    if "should" in lowered:
+    if any(token in lowered for token in ("should", "devrait", "devraient")):
         return "recommendation"
     return "unknown"
 
@@ -176,6 +189,12 @@ def extract_norms(
                 action = after_modal[: exc_in_after.start()].strip(" ,;:.")
 
         modality = classify_norm_type(scoped_sentence)
+        # French codes often express an unlawful act as "X est illicite/interdit".
+        # Preserve X as the action while leaving the actor unresolved for human review.
+        if modality == "prohibition" and not action and actor and re.match(r"^(?:est|sont)\s+", modal.group(0), re.I):
+            action = actor
+            actor = None
+
         ambiguity_flags: list[str] = []
         if actor is None:
             ambiguity_flags.append("missing_actor")
