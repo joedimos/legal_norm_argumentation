@@ -11,6 +11,9 @@ The architecture is aligned with the 2026 VLE-LEGATO agenda: **LEGATO** covers a
 | Research requirement | Implementation |
 |---|---|
 | Norm extraction with source traceability | `src/norm_extraction.py` |
+| French obligation/prohibition/permission extraction | bilingual rules in `src/norm_extraction.py` |
+| Official French-law acquisition | `src/legifrance.py`, `src/service/legifrance_ingestion.py` |
+| Web operations console | `src/service/web_ui.py`, `src/service/app_with_ui.py` |
 | Conditions, exceptions, cross-references | extraction + `src/references.py` |
 | Typed formal representation | `src/normative_model.py` |
 | Alternative interpretations / ambiguity | `InterpretationSet`, `src/formalization.py` |
@@ -58,6 +61,37 @@ python -m pip install -e '.[transformers]'
 python -m pip install -e '.[verification]'
 ```
 
+## Web console and French-law ingestion
+
+The production service includes a self-contained web console at `/` and a bounded public-source collector for two official Légifrance corpora:
+
+- **Code de la propriété intellectuelle** — French intellectual-property law.
+- **Code de commerce, Livre IV** — French pricing and competition law.
+
+Start the application:
+
+```bash
+vle-legato-api
+# or
+uvicorn src.service.app_with_ui:app --host 0.0.0.0 --port 8000
+```
+
+Open `http://localhost:8000/`. The console accepts an API key for the current browser tab only, lets an operator collect bounded article batches, and exposes the resulting source versions, candidate norms, provenance and review state.
+
+The collector accepts no arbitrary URL. It follows only validated HTTPS links under `www.legifrance.gouv.fr/codes/`, records source provenance in the extraction audit, creates a new source version when official text changes, and records both ingestion and unchanged refresh checks in the existing audit chain.
+
+For unattended refreshes:
+
+```bash
+# One bounded page from each corpus
+vle-legato-maintenance --sync-legifrance all --limit 50
+
+# Traverse every discovered article in bounded pages
+vle-legato-maintenance --sync-legifrance all --limit 50 --full
+```
+
+See [`docs/LEGIFRANCE_INGESTION.md`](docs/LEGIFRANCE_INGESTION.md) for API examples, deployment controls, full-sync bounds and operational caveats.
+
 ## CLI
 
 ```bash
@@ -84,7 +118,9 @@ The system deliberately fails closed. An ambiguous candidate is not silently sel
 ## Architecture
 
 ```text
-normative source
+authoritative/manual normative source
+    │
+    ├──── Légifrance bounded acquisition + provenance/version hash
     │
     ▼
 extraction + source spans ──────► extraction audit
@@ -114,6 +150,10 @@ evidence graph ──► benchmark metrics ──► certification-readiness gat
 
 ## Key modules
 
+- `legifrance.py`: fixed-corpus public HTML discovery and bounded article retrieval from Légifrance.
+- `service/legifrance_ingestion.py`: source hashing, version persistence, provenance and audit events.
+- `service/legifrance_routes.py`: authenticated collection and source-registry API plus the console route.
+- `service/web_ui.py`: dependency-free web operations console.
 - `normative_model.py`: modalities, predicates, authority/temporal metadata, provenance and interpretation sets.
 - `formalization.py`: candidate → typed interpretation; alternative interpretations require explicit selection.
 - `priority.py`: explicit `lex superior`, `lex specialis`, `lex posterior`; unresolved when metadata is insufficient.
@@ -131,12 +171,13 @@ evidence graph ──► benchmark metrics ──► certification-readiness gat
 python -m pytest -q
 ```
 
-The argumentation suite exhaustively checks all **512 directed attack graphs on three labelled arguments**. The expanded lifecycle tests cover formalisation, ambiguity, exception/temporal activation, priority, compliance, counterexamples, provenance, benchmark metrics, governance, reference resolution, monitoring and readiness gates.
+The argumentation suite exhaustively checks all **512 directed attack graphs on three labelled arguments**. The expanded lifecycle tests cover formalisation, ambiguity, exception/temporal activation, priority, compliance, counterexamples, provenance, benchmark metrics, governance, reference resolution, monitoring and readiness gates. Légifrance tests use deterministic HTML/network fixtures so CI does not depend on external availability while still testing URL restrictions, parsing, French extraction, versioning and authenticated ingestion.
 
 ## Documentation
 
 - `docs/ARCHITECTURE_AND_METHODOLOGY.md` — semantics, fail-closed rules, threat model and limitations.
 - `docs/BENCHMARKING.md` — benchmark design and reproducibility requirements.
+- `docs/LEGIFRANCE_INGESTION.md` — French-law acquisition, web console, API and unattended refresh operations.
 - `schemas/norm-interpretation.schema.json` — machine-readable interchange schema.
 
 ## Research phase 2
@@ -157,4 +198,4 @@ archive with offline integrity verification.
 
 ## Important limitations
 
-This is substantially more complete than an extractor/argument graph, but it intentionally does not pretend to solve open problems. The temporal extension is an explicit finite-trace operational fragment with bounded verification, not full temporal deontic logic or unbounded certification; authority ranks and specificity must come from validated metadata; cross-reference resolution is only as authoritative as its supplied corpus; and high-stakes conclusions require expert review and external governance.
+This is substantially more complete than an extractor/argument graph, but it intentionally does not pretend to solve open problems. The temporal extension is an explicit finite-trace operational fragment with bounded verification, not full temporal deontic logic or unbounded certification; authority ranks and specificity must come from validated metadata; cross-reference resolution is only as authoritative as its supplied corpus; public Légifrance HTML is an external interface whose structure can change; and high-stakes conclusions require expert review and external governance.
