@@ -22,7 +22,10 @@ COPY alembic.ini ./alembic.ini
 RUN python -m pip install --upgrade pip setuptools==84.0.0 \
     && python -m pip install -r requirements-prod.txt \
     && python -m pip install --no-deps . \
-    && python -m pip check
+    && python -m pip check \
+    && python -c "from importlib.metadata import version; assert version('urllib3') == '2.8.0'; assert version('msgpack') == '1.2.3'; import fastapi, spacy, sqlalchemy, src.service.app" \
+    && python -m pip uninstall --yes setuptools pip \
+    && rm -rf /usr/local/lib/python3.13/ensurepip /root/.cache
 
 USER 10001:10001
 EXPOSE 8000
