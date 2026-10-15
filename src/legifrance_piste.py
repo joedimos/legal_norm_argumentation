@@ -10,7 +10,7 @@ from typing import Any, Final, Literal
 import urllib3
 from urllib3.util import Retry, Timeout
 
-from .legifrance import CORPORA, LEGIFRANCE_ORIGIN, LegalProvision, LegifranceError, ScrapeBatch
+from .legifrance import CORPORA, LEGIFRANCE_ORIGIN, LegifranceError, ScrapeBatch
 
 _PRODUCTION_OAUTH: Final = "https://oauth.piste.gouv.fr/api/oauth/token"
 _PRODUCTION_API: Final = "https://api.piste.gouv.fr/dila/legifrance/lf-engine-app"
@@ -60,6 +60,41 @@ def html_to_text(value: str) -> str:
     return "\n".join(line for line in lines if line).strip()
 
 
+@dataclass(frozen=True)
+class PisteLegalProvision:
+    corpus: str
+    corpus_label: str
+    article: str
+    url: str
+    text: str
+
+    @property
+    def source_key(self) -> str:
+        compact = re.sub(r"\s+", "", self.article).lower()
+        return f"legifrance:{self.corpus}:{compact}"
+
+    @property
+    def source_text(self) -> str:
+        return (
+            "Source officielle: Légifrance\n"
+            f"Corpus: {self.corpus_label}\n"
+            f"Article: {self.article}\n"
+            f"URL: {self.url}\n\n"
+            f"{self.text.strip()}"
+        )
+
+    @property
+    def provenance(self) -> dict[str, str]:
+        return {
+            "provider": "Légifrance PISTE / DILA",
+            "corpus": self.corpus,
+            "corpus_label": self.corpus_label,
+            "article": self.article,
+            "url": self.url,
+            "retrieval_mode": "piste_api",
+        }
+
+
 def _walk_articles(section: dict[str, Any]) -> list[dict[str, Any]]:
     articles = [item for item in section.get("articles", []) if isinstance(item, dict)]
     for child in section.get("sections", []):
@@ -98,7 +133,6 @@ def _competition_articles(payload: dict[str, Any]) -> list[dict[str, Any]]:
     if target is not None:
         return _walk_articles(target)
 
-    # Fail-safe compatibility fallback for payloads where the section tree is flattened.
     selected: list[dict[str, Any]] = []
     for article in _all_articles(payload):
         path_titles = article.get("pathTitle") or []
@@ -108,12 +142,12 @@ def _competition_articles(payload: dict[str, Any]) -> list[dict[str, Any]]:
     return selected
 
 
-def provisions_from_piste_payload(payload: dict[str, Any], *, corpus: str) -> tuple[LegalProvision, ...]:
+def provisions_from_piste_payload(payload: dict[str, Any], *, corpus: str) -> tuple[PisteLegalProvision, ...]:
     if corpus not in CORPORA:
         raise ValueError(f"unknown Légifrance corpus: {corpus}")
     articles = _competition_articles(payload) if corpus == "competition" else _all_articles(payload)
     spec = CORPORA[corpus]
-    provisions: list[LegalProvision] = []
+    provisions: list[PisteLegalProvision] = []
     seen: set[str] = set()
 
     for article in articles:
@@ -133,14 +167,12 @@ def provisions_from_piste_payload(payload: dict[str, Any], *, corpus: str) -> tu
             continue
         seen.add(key)
         provisions.append(
-            LegalProvision(
+            PisteLegalProvision(
                 corpus=corpus,
                 corpus_label=spec.label,
                 article=number,
                 url=f"{LEGIFRANCE_ORIGIN}/codes/article_lc/{article_id}/",
                 text=text,
-                provider="Légifrance PISTE / DILA",
-                retrieval_mode="piste_api",
             )
         )
     return tuple(provisions)
@@ -187,7 +219,7 @@ class PisteLegifranceClient:
         )
         self._http = urllib3.PoolManager(num_pools=2, cert_reqs="CERT_REQUIRED")
 
-    def _json_response(self, response: urllib3.BaseHTTPResponse, *, operation: str) -> dict[str, Any]:
+    def _json_response(self, response: Any, *, operation: str) -> dict[str, Any]:
         if response.status != 200:
             raise LegifranceError(f"PISTE {operation} returned HTTP {response.status}")
         if len(response.data) > self.max_response_bytes:
@@ -261,6 +293,6 @@ class PisteLegifranceClient:
             seed_url=spec.seed_url,
             discovered=len(provisions),
             selected=len(selected),
-            provisions=selected,
+            provisions=selected,  # type: ignore[arg-type]
             errors=(),
         )
