@@ -19,7 +19,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
 def main() -> None:
     """Launch the integrated service from the installed console script."""
-    host = os.getenv("VLE_HOST", "0.0.0.0")
+    # The interactive console script defaults to loopback. Container and deployment
+    # manifests bind explicitly as needed, and VLE_HOST remains an operator override.
+    host = os.getenv("VLE_HOST", "127.0.0.1")
     port = int(os.getenv("VLE_PORT", "8000"))
     uvicorn.run(
         "src.service.app_with_ui:app",
