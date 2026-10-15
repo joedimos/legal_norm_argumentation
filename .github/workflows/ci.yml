@@ -79,6 +79,10 @@ jobs:
           push: false
           tags: legal-norm-argumentation:ci
           load: true
+      - name: Runtime smoke test
+        run: >-
+          docker run --rm legal-norm-argumentation:ci
+          python -c "from importlib.metadata import version, PackageNotFoundError; assert version('urllib3') == '2.8.0'; assert version('msgpack') == '1.2.3'; import fastapi, spacy, sqlalchemy, src.service.app; print('runtime-smoke-ok')"
       - name: Generate Trivy report
         uses: aquasecurity/trivy-action@v0.36.0
         with:
