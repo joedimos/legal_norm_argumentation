@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from collections.abc import Iterable, Mapping, Sequence
-from dataclasses import replace
-from re import I, compile
+import collections.abc
+import dataclasses
+import re
 
 from .normative_model import (
     InterpretationSet,
@@ -15,18 +15,18 @@ from .normative_model import (
 )
 
 
-_CONDITION_PREFIX_RE = compile(
+_CONDITION_PREFIX_RE = re.compile(
     r"^(?:(?:if|when|whenever|where|provided\s+that|subject\s+to|"
     r"si|lorsque|quand|dès\s+lors\s+que|dans\s+le\s+cas\s+où|sous\s+réserve\s+que)\s+|"
     r"lorsqu['’])",
-    flags=I,
+    flags=re.I,
 )
 
-_EXCEPTION_PREFIX_RE = compile(
+_EXCEPTION_PREFIX_RE = re.compile(
     r"^(?:unless|except(?:\s+where|\s+when|\s+if)?|save\s+where|provided\s+however\s+that|"
     r"sauf(?:\s+si|\s+lorsque|\s+dans\s+le\s+cas\s+où)?|à\s+l['’]exception\s+de|hormis|"
     r"sous\s+réserve\s+de)\s+",
-    flags=I,
+    flags=re.I,
 )
 
 
@@ -45,7 +45,7 @@ def _exception_predicate(clause: str | None) -> tuple[Predicate, ...]:
 
 
 def candidate_to_interpretations(
-    candidate: Mapping,
+    candidate: collections.abc.Mapping,
     authority: SourceAuthority | None = None,
 ) -> InterpretationSet:
     source_norm_id = str(candidate.get("id") or "")
@@ -83,7 +83,7 @@ def candidate_to_interpretations(
         assumptions=assumptions,
         provenance=provenance,
     )
-    primary = replace(base, id=stable_interpretation_id(source_norm_id, "primary", base.canonical()))
+    primary = dataclasses.replace(base, id=stable_interpretation_id(source_norm_id, "primary", base.canonical()))
     return InterpretationSet(
         source_norm_id=source_norm_id,
         interpretations=(primary,),
@@ -93,8 +93,8 @@ def candidate_to_interpretations(
 
 
 def formalize_candidates(
-    candidates: Sequence[Mapping],
-    authorities: Mapping[str, SourceAuthority] | None = None,
+    candidates: collections.abc.Sequence[collections.abc.Mapping],
+    authorities: collections.abc.Mapping[str, SourceAuthority] | None = None,
 ) -> list[InterpretationSet]:
     authorities = authorities or {}
     return [candidate_to_interpretations(c, authorities.get(str(c.get("source_id")))) for c in candidates]
@@ -106,15 +106,15 @@ def add_alternative(
     label: str,
     subject: str | None = None,
     action: str | None = None,
-    conditions: Sequence[Predicate] | None = None,
-    exceptions: Sequence[Predicate] | None = None,
-    assumptions: Sequence[str] = (),
+    conditions: collections.abc.Sequence[Predicate] | None = None,
+    exceptions: collections.abc.Sequence[Predicate] | None = None,
+    assumptions: collections.abc.Sequence[str] = (),
     confidence: float | None = None,
 ) -> InterpretationSet:
     if not interpretation_set.interpretations:
         raise ValueError("cannot extend an empty interpretation set")
     base = interpretation_set.interpretations[0]
-    draft = replace(
+    draft = dataclasses.replace(
         base,
         id="pending",
         subject=subject or base.subject,
@@ -125,7 +125,7 @@ def add_alternative(
         confidence=base.confidence if confidence is None else confidence,
         interpretation_label=label,
     )
-    draft = replace(draft, id=stable_interpretation_id(base.source_norm_id, label, draft.canonical()))
+    draft = dataclasses.replace(draft, id=stable_interpretation_id(base.source_norm_id, label, draft.canonical()))
     return InterpretationSet(interpretation_set.source_norm_id, interpretation_set.interpretations + (draft,), None, None)
 
 
@@ -146,7 +146,10 @@ def select_interpretation(
     )
 
 
-def behavioral_signature(interpretation: NormInterpretation, contexts: Iterable[Mapping[str, bool]]) -> tuple:
+def behavioral_signature(
+    interpretation: NormInterpretation,
+    contexts: collections.abc.Iterable[collections.abc.Mapping[str, bool]],
+) -> tuple:
     signature = []
     for facts in contexts:
         cond = tuple(predicate.evaluate(facts) for predicate in interpretation.conditions)
@@ -158,7 +161,7 @@ def behavioral_signature(interpretation: NormInterpretation, contexts: Iterable[
 def behaviorally_equivalent(
     left: NormInterpretation,
     right: NormInterpretation,
-    contexts: Iterable[Mapping[str, bool]],
+    contexts: collections.abc.Iterable[collections.abc.Mapping[str, bool]],
 ) -> bool:
     contexts = list(contexts)
     return behavioral_signature(left, contexts) == behavioral_signature(right, contexts)
