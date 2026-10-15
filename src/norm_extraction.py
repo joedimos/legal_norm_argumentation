@@ -17,7 +17,7 @@ _MODAL_RE = re.compile(
     r"is\s+allowed\s+to|are\s+allowed\s+to|"
     r"ne\s+(?:doit|doivent|peut|peuvent)\s+pas|"
     r"ne\s+(?:peut|peuvent)|"
-    r"(?:doit|doivent|devra|devront)|(?:peut|peuvent)|"
+    r"(?:doit|doivent|devra|devront|devrait|devraient)|(?:peut|peuvent)|"
     r"(?:a|ont)\s+(?:le\s+)?droit\s+de|(?:jouit|jouissent)\s+du\s+droit\s+de|"
     r"(?:est|sont)\s+(?:tenu(?:e|s|es)?\s+de|obligatoire(?:s)?|"
     r"interdit(?:e|s|es)?|prohib(?:é|ée|és|ées)|illicite(?:s)?|autorisé(?:e|s|es)?|"
@@ -50,7 +50,6 @@ def _sentences(text: str) -> Iterable[tuple[str, int, int]]:
     """Yield sentence-like spans without losing exact source offsets."""
     for match in re.finditer(r"\S(?:.*?\S)?(?:[.!?](?=\s|$)|$)", text, re.DOTALL):
         raw = match.group(0)
-        # Avoid consuming multiple paragraphs as one sentence when punctuation is sparse.
         for part in re.finditer(r"[^\n]+", raw):
             sentence = part.group(0).strip()
             if not sentence:
@@ -75,9 +74,10 @@ def classify_norm_type(text: str) -> str:
             "ne doivent pas",
             "ne peut pas",
             "ne peuvent pas",
+            "ne peut",
+            "ne peuvent",
             "nul ne peut",
             "personne ne peut",
-            "personne ne peuvent",
             "interdit",
             "interdite",
             "interdits",
@@ -189,8 +189,6 @@ def extract_norms(
                 action = after_modal[: exc_in_after.start()].strip(" ,;:.")
 
         modality = classify_norm_type(scoped_sentence)
-        # French codes often express an unlawful act as "X est illicite/interdit".
-        # Preserve X as the action while leaving the actor unresolved for human review.
         if modality == "prohibition" and not action and actor and re.match(r"^(?:est|sont)\s+", modal.group(0), re.I):
             action = actor
             actor = None
