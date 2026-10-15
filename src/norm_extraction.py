@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import re
-from typing import Dict, Iterable, List, Optional, Tuple
+from collections.abc import Iterable
 
 try:
     from .models import load_transformer_classifier, nlp
@@ -18,7 +18,7 @@ _MODAL_RE = re.compile(
     r"ne\s+(?:doit|doivent|peut|peuvent)\s+pas|"
     r"(?:doit|doivent|devra|devront)|(?:peut|peuvent)|"
     r"(?:est|sont)\s+(?:tenu(?:e|s|es)?\s+de|obligatoire(?:s)?|"
-    r"interdit(?:e|s|es)?|prohib[ée](?:e|s|es)?|autorisé(?:e|s|es)?|"
+    r"interdit(?:e|s|es)?|prohib(?:é|ée|és|ées)|autorisé(?:e|s|es)?|"
     r"permis(?:e|es)?)|il\s+est\s+(?:interdit|obligatoire|permis)\s+de)\b",
     re.IGNORECASE,
 )
@@ -39,12 +39,12 @@ _EXCEPTION_RE = re.compile(
 
 _REFERENCE_RE = re.compile(
     r"\b(?:section|article|articles|paragraph|paragraphe|subsection|annex|annexe|schedule|rule|regulation)"
-    r"\s+[A-Za-zÀ-ÖØ-öø-ÿ0-9().\-\s]+?(?=\s(?:du|de|et|ou|qui|dont|dans|sur|,|;|\.|$)|[,;.])",
+    r"\s+[A-Za-zÀ-ÖØ-öø-ÿ0-9().\-]+(?:\s+[A-Za-zÀ-ÖØ-öø-ÿ0-9().\-]+){0,5}",
     re.IGNORECASE,
 )
 
 
-def _sentences(text: str) -> Iterable[Tuple[str, int, int]]:
+def _sentences(text: str) -> Iterable[tuple[str, int, int]]:
     """Yield sentence-like spans without losing exact source offsets."""
     for match in re.finditer(r"\S(?:.*?\S)?(?:[.!?](?=\s|$)|$)", text, re.DOTALL):
         raw = match.group(0)
@@ -126,7 +126,7 @@ def classify_norm_type(text: str) -> str:
     return "unknown"
 
 
-def _split_scope(sentence: str, modal_match: re.Match[str]) -> Tuple[Optional[str], str]:
+def _split_scope(sentence: str, modal_match: re.Match[str]) -> tuple[str | None, str]:
     actor = sentence[: modal_match.start()].strip(" ,;:") or None
     action = sentence[modal_match.end() :].strip(" ,;:.")
     return actor, action
@@ -141,14 +141,14 @@ def extract_norms(
     text: str,
     use_transformer: bool = False,
     source_id: str = "inline",
-) -> List[Dict]:
+) -> list[dict]:
     """Extract reviewable English/French norm candidates with exact provenance.
 
     The function does not claim that a candidate is a faithful formalisation.
     It preserves conditions/exceptions and surfaces ambiguity for later review.
     """
     classifier = load_transformer_classifier() if use_transformer else None
-    results: List[Dict] = []
+    results: list[dict] = []
 
     for sentence, start, end in _sentences(text):
         modal = _MODAL_RE.search(sentence)
@@ -176,7 +176,7 @@ def extract_norms(
                 action = after_modal[: exc_in_after.start()].strip(" ,;:.")
 
         modality = classify_norm_type(scoped_sentence)
-        ambiguity_flags: List[str] = []
+        ambiguity_flags: list[str] = []
         if actor is None:
             ambiguity_flags.append("missing_actor")
         if not action:
@@ -227,7 +227,7 @@ def extract_norms(
     return results
 
 
-def extract_deontic_operators(text: str) -> List[Dict]:
+def extract_deontic_operators(text: str) -> list[dict]:
     return [
         {
             "type": norm["modality"],
@@ -244,7 +244,7 @@ def extract_deontic_operators(text: str) -> List[Dict]:
     ]
 
 
-def extract_conditional_norms(text: str) -> List[Dict]:
+def extract_conditional_norms(text: str) -> list[dict]:
     return [
         {
             "condition": norm["condition"],
@@ -257,7 +257,7 @@ def extract_conditional_norms(text: str) -> List[Dict]:
     ]
 
 
-def extract_legal_entities(text: str) -> List[Dict]:
+def extract_legal_entities(text: str) -> list[dict]:
     if nlp is None:
         return []
     doc = nlp(text)
@@ -279,8 +279,8 @@ def has_similar_content(text1: str, text2: str, threshold: float = 0.5) -> bool:
     return len(left & right) / len(left | right) >= threshold
 
 
-def analyze_norm_conflicts(norms: List[Dict]) -> List[Dict]:
-    conflicts: List[Dict] = []
+def analyze_norm_conflicts(norms: list[dict]) -> list[dict]:
+    conflicts: list[dict] = []
     for i, left in enumerate(norms):
         for right in norms[i + 1 :]:
             modalities = {left.get("modality") or left.get("type"), right.get("modality") or right.get("type")}
@@ -301,7 +301,7 @@ def analyze_norm_conflicts(norms: List[Dict]) -> List[Dict]:
     return conflicts
 
 
-def extract_all_norms(text: str, use_transformer: bool = False, source_id: str = "inline") -> Dict:
+def extract_all_norms(text: str, use_transformer: bool = False, source_id: str = "inline") -> dict:
     norms = extract_norms(text, use_transformer=use_transformer, source_id=source_id)
     return {
         "norms": norms,
