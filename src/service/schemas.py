@@ -10,6 +10,12 @@ class SourceCreateRequest(BaseModel):
     text: str = Field(min_length=1, max_length=500_000)
 
 
+class LegifranceScrapeRequest(BaseModel):
+    corpus: Literal["ip", "competition"]
+    limit: int = Field(default=20, ge=1, le=100)
+    offset: int = Field(default=0, ge=0, le=100_000)
+
+
 class ReviewCreateRequest(BaseModel):
     candidate_id: str = Field(min_length=1, max_length=128)
     decision: Literal["approved", "rejected", "needs_revision"]
