@@ -104,8 +104,11 @@ class Settings(BaseSettings):
             raise ValueError("production requires a reviewer or admin principal")
         if self.metrics_bearer_token is None or len(self.metrics_bearer_token.get_secret_value()) < 32:
             raise ValueError("production requires a metrics bearer token of at least 32 characters")
-        if self.legifrance_source == "piste" and not self.has_piste_credentials:
-            raise ValueError("VLE_LEGIFRANCE_SOURCE=piste requires PISTE client id and client secret")
+        if self.legifrance_enabled and self.legifrance_source in {"auto", "piste"} and not self.has_piste_credentials:
+            raise ValueError(
+                "production Légifrance auto/piste mode requires PISTE credentials; "
+                "set VLE_LEGIFRANCE_SOURCE=html only for an explicit HTML fallback"
+            )
         return self
 
 
