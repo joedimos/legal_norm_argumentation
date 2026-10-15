@@ -7,8 +7,11 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 
-RUN groupadd --system --gid 10001 app && \
-    useradd --system --uid 10001 --gid app --home-dir /nonexistent --shell /usr/sbin/nologin app
+RUN apt-get update \
+    && apt-get upgrade --yes \
+    && rm -rf /var/lib/apt/lists/* \
+    && groupadd --system --gid 10001 app \
+    && useradd --system --uid 10001 --gid app --home-dir /nonexistent --shell /usr/sbin/nologin app
 
 COPY requirements-prod.txt pyproject.toml README.md ./
 COPY src ./src
@@ -16,9 +19,10 @@ COPY schemas ./schemas
 COPY migrations ./migrations
 COPY alembic.ini ./alembic.ini
 
-RUN python -m pip install --upgrade pip && \
-    python -m pip install -r requirements-prod.txt && \
-    python -m pip install --no-deps .
+RUN python -m pip install --upgrade pip setuptools==84.0.0 \
+    && python -m pip install -r requirements-prod.txt \
+    && python -m pip install --no-deps . \
+    && python -m pip check
 
 USER 10001:10001
 EXPOSE 8000

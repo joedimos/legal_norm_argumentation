@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=80", "wheel"]
+requires = ["setuptools==84.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -23,6 +23,9 @@ dependencies = [
   "opentelemetry-api==1.45.1",
   "opentelemetry-sdk==1.45.1",
   "opentelemetry-exporter-otlp-proto-http==1.45.1",
+  "urllib3==2.8.0",
+  "msgpack==1.2.3",
+  "setuptools==84.0.0",
 ]
 
 [project.optional-dependencies]
