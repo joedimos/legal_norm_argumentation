@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import re
+import time
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from html.parser import HTMLParser
@@ -198,8 +199,8 @@ class PisteLegifranceClient:
     ) -> None:
         if not client_id or not client_secret:
             raise ValueError("PISTE client id and secret are required")
-        self.client_id = client_id
-        self.client_secret = client_secret
+        self._client_id = client_id
+        self._client_secret = client_secret
         self.max_response_bytes = max_response_bytes
         self.endpoints = PisteEndpoints(
             oauth_url=_PRODUCTION_OAUTH if environment == "production" else _SANDBOX_OAUTH,
@@ -218,6 +219,9 @@ class PisteLegifranceClient:
             raise_on_status=False,
         )
         self._http = urllib3.PoolManager(num_pools=2, cert_reqs="CERT_REQUIRED")
+        self._access_token_value: str | None = None
+        self._access_token_expires_at = 0.0
+        self._corpus_cache: dict[str, tuple[PisteLegalProvision, ...]] = {}
 
     def _json_response(self, response: Any, *, operation: str) -> dict[str, Any]:
         if response.status != 200:
@@ -233,13 +237,16 @@ class PisteLegifranceClient:
         return payload
 
     def _access_token(self) -> str:
+        now = time.monotonic()
+        if self._access_token_value and now < self._access_token_expires_at:
+            return self._access_token_value
         response = self._http.request(
             "POST",
             self.endpoints.oauth_url,
             fields={
                 "grant_type": "client_credentials",
-                "client_id": self.client_id,
-                "client_secret": self.client_secret,
+                "client_id": self._client_id,
+                "client_secret": self._client_secret,
                 "scope": "openid",
             },
             encode_multipart=False,
@@ -252,6 +259,9 @@ class PisteLegifranceClient:
         token = str(payload.get("access_token") or "")
         if not token:
             raise LegifranceError("PISTE OAuth response did not contain an access token")
+        expires_in = max(60, int(payload.get("expires_in") or 300))
+        self._access_token_value = token
+        self._access_token_expires_at = now + max(30, expires_in - 30)
         return token
 
     def _legi_part(self, *, text_id: str) -> dict[str, Any]:
@@ -274,6 +284,17 @@ class PisteLegifranceClient:
         )
         return self._json_response(response, operation="LEGI consultation")
 
+    def _provisions(self, corpus: str) -> tuple[PisteLegalProvision, ...]:
+        cached = self._corpus_cache.get(corpus)
+        if cached is not None:
+            return cached
+        payload = self._legi_part(text_id=_TEXT_IDS[corpus])
+        provisions = provisions_from_piste_payload(payload, corpus=corpus)
+        if not provisions:
+            raise LegifranceError(f"PISTE returned no in-force articles for {corpus}")
+        self._corpus_cache[corpus] = provisions
+        return provisions
+
     def fetch_corpus(self, corpus: str, *, limit: int = 20, offset: int = 0) -> ScrapeBatch:
         if corpus not in CORPORA:
             raise ValueError(f"unknown Légifrance corpus: {corpus}")
@@ -282,10 +303,7 @@ class PisteLegifranceClient:
         if not 0 <= offset <= 100_000:
             raise ValueError("offset must be between 0 and 100000")
 
-        payload = self._legi_part(text_id=_TEXT_IDS[corpus])
-        provisions = provisions_from_piste_payload(payload, corpus=corpus)
-        if not provisions:
-            raise LegifranceError(f"PISTE returned no in-force articles for {corpus}")
+        provisions = self._provisions(corpus)
         selected = provisions[offset : offset + limit]
         spec = CORPORA[corpus]
         return ScrapeBatch(
