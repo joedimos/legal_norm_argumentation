@@ -48,6 +48,7 @@ class Settings(BaseSettings):
     legifrance_timeout_seconds: float = Field(default=12.0, ge=2.0, le=60.0)
     legifrance_request_delay_seconds: float = Field(default=0.2, ge=0.0, le=5.0)
     legifrance_max_articles_per_run: int = Field(default=50, ge=1, le=100)
+    legifrance_max_full_sync_articles: int = Field(default=2500, ge=1, le=10_000)
 
     @field_validator("database_url")
     @classmethod
