@@ -6,7 +6,7 @@ import uuid
 
 from src.legifrance import CORPORA, LegifranceClient, LegifranceError
 
-from .config import get_settings
+from .config import Settings, get_settings
 from .database import Database
 from .legifrance_ingestion import ingest_legifrance_batch
 from .repository import cleanup_ephemeral_state, verify_audit_chain
@@ -30,9 +30,7 @@ def _parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def _sync_legifrance(database: Database, args: argparse.Namespace) -> list[dict]:
-    settings = database_settings = get_settings()
-    del database_settings
+def _sync_legifrance(database: Database, settings: Settings, args: argparse.Namespace) -> list[dict]:
     if args.sync_legifrance == "none":
         return []
     if not settings.legifrance_enabled:
@@ -92,7 +90,7 @@ def main() -> None:
     settings = get_settings()
     database = Database(settings)
     try:
-        sync = _sync_legifrance(database, args)
+        sync = _sync_legifrance(database, settings, args)
         with database.session() as session:
             cleanup = cleanup_ephemeral_state(session)
             chain = verify_audit_chain(session)
