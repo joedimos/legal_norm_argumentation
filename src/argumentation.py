@@ -1,328 +1,271 @@
-from dataclasses import dataclass
-from typing import Set, Tuple, Dict, List, Optional, FrozenSet
-import logging
+from __future__ import annotations
+
 from collections import defaultdict
+from dataclasses import dataclass
+from itertools import combinations
+from typing import Dict, FrozenSet, Iterable, List, Optional, Sequence, Set, Tuple, Union
+import logging
+
 import networkx as nx
 
 logger = logging.getLogger(__name__)
 
-try:
-    from .pyreason_integration import PyReasonConnector
-except ImportError:
-    from pyreason_integration import PyReasonConnector
-
-
-# Data classes
 
 @dataclass(frozen=True)
 class LegalArgument:
-    """
-    Represents a legal argument with a premise, conclusion, and links
-    to supporting/attacking arguments.
-    """
+    """A reviewable legal/normative argument."""
+
     id: str
-    premise: str
-    conclusion: str
+    premise: str = ""
+    conclusion: str = ""
     confidence: Tuple[float, float] = (0.8, 1.0)
     supporting_args: FrozenSet[str] = frozenset()
     attacking_args: FrozenSet[str] = frozenset()
     sequent_type: str = "hypothesis"
+    source_norm_ids: FrozenSet[str] = frozenset()
+
+    def __post_init__(self) -> None:
+        low, high = self.confidence
+        if not (0.0 <= low <= high <= 1.0):
+            raise ValueError("confidence must satisfy 0 <= low <= high <= 1")
+        if not self.id:
+            raise ValueError("argument id must be non-empty")
 
 
 @dataclass(frozen=True)
 class Sequent:
-    """
-    Represents a sequent in argumentation, with antecedents leading to consequents.
-    """
     antecedents: FrozenSet[str]
     consequents: FrozenSet[str]
     confidence: float
     is_contrapositive: bool = False
 
 
-# Optimized AAF + PyReason
+ArgumentInput = Union[LegalArgument, str]
+
 
 class OptimizedAAF:
+    """Dung-style abstract argumentation with support edges kept separate.
+
+    The core semantics depend only on ``attacks``. Support is retained as
+    metadata and for downstream structured/bipolar reasoning; it is never
+    silently treated as a Dung attack.
     """
-    Optimized Abstract Argumentation Framework with PyReason integration.
-    
-    Implements Dung-style semantics (admissible, preferred, stable extensions)
-    and integrates with PyReason for probabilistic reasoning over arguments.
-    """
-    
+
     def __init__(
         self,
-        arguments: List[LegalArgument],
+        arguments: Iterable[ArgumentInput],
         attacks: Optional[Set[Tuple[str, str]]] = None,
         supports: Optional[Set[Tuple[str, str]]] = None,
-    ):
-        """
-        Parameters
-        ----------
-        arguments : List[LegalArgument]
-            Full argument objects (we'll keep id->object mapping internally).
-        attacks : Optional[Set[Tuple[str, str]]]
-            Optional explicit (attacker, target) pairs. If None, derived from arguments' attacking_args.
-        supports : Optional[Set[Tuple[str, str]]]
-            Optional explicit (arg, supports_arg) pairs. If None, derived from arguments' supporting_args.
-        """
-        # Keep full objects for metadata; use keys for AAF ops
-        self.arguments: Dict[str, LegalArgument] = {a.id: a for a in arguments}
+    ) -> None:
+        normalized: List[LegalArgument] = []
+        for arg in arguments:
+            if isinstance(arg, LegalArgument):
+                normalized.append(arg)
+            elif isinstance(arg, str):
+                normalized.append(LegalArgument(id=arg, premise=arg, conclusion=arg))
+            else:
+                raise TypeError(f"Unsupported argument type: {type(arg)!r}")
 
-        # Graphs / indices
-        self.attack_graph = nx.DiGraph()
-        self.attacks_dict: Dict[str, Set[str]] = defaultdict(set)
-        self.attackers_dict: Dict[str, Set[str]] = defaultdict(set)
+        self.arguments: Dict[str, LegalArgument] = {a.id: a for a in normalized}
+        if len(self.arguments) != len(normalized):
+            raise ValueError("argument ids must be unique")
 
-        # Add nodes
-        self.attack_graph.add_nodes_from(self.arguments.keys())
-
-        # Build edges (attacks/supports)
         derived_attacks: Set[Tuple[str, str]] = set()
         derived_supports: Set[Tuple[str, str]] = set()
+        for arg in normalized:
+            derived_attacks.update((arg.id, target) for target in arg.attacking_args)
+            derived_supports.update((arg.id, target) for target in arg.supporting_args)
 
-        for a in arguments:
-            for t in a.attacking_args:
-                if t in self.arguments:
-                    derived_attacks.add((a.id, t))
-            for s in a.supporting_args:
-                if s in self.arguments:
-                    derived_supports.add((a.id, s))
+        self._attacks = set(attacks) if attacks is not None else derived_attacks
+        self._supports = set(supports) if supports is not None else derived_supports
+        self._validate_edges(self._attacks, "attack")
+        self._validate_edges(self._supports, "support")
 
-        self._attacks: Set[Tuple[str, str]] = attacks if attacks is not None else derived_attacks
-        self._supports: Set[Tuple[str, str]] = supports if supports is not None else derived_supports
+        self.attacks_dict: Dict[str, Set[str]] = defaultdict(set)
+        self.attackers_dict: Dict[str, Set[str]] = defaultdict(set)
+        self.supports_dict: Dict[str, Set[str]] = defaultdict(set)
+        self.supporters_dict: Dict[str, Set[str]] = defaultdict(set)
 
-        # Populate attack indices + graph edges
-        for attacker, target in self._attacks:
-            if attacker in self.arguments and target in self.arguments:
-                self.attacks_dict[attacker].add(target)
-                self.attackers_dict[target].add(attacker)
-                self.attack_graph.add_edge(attacker, target, relation="attacks")
+        self.attack_graph = nx.DiGraph()
+        self.support_graph = nx.DiGraph()
+        self.attack_graph.add_nodes_from(self.arguments)
+        self.support_graph.add_nodes_from(self.arguments)
 
-        # Add support edges to the graph (not used by Dung semantics, but useful for analysis / PyReason)
-        for src, dst in self._supports:
-            if src in self.arguments and dst in self.arguments:
-                # Avoid overwriting an existing attack edge attribute
-                if not self.attack_graph.has_edge(src, dst):
-                    self.attack_graph.add_edge(src, dst, relation="supports")
+        for source, target in self._attacks:
+            self.attacks_dict[source].add(target)
+            self.attackers_dict[target].add(source)
+            self.attack_graph.add_edge(source, target)
+        for source, target in self._supports:
+            self.supports_dict[source].add(target)
+            self.supporters_dict[target].add(source)
+            self.support_graph.add_edge(source, target)
 
-    
-    # Dung-style semantics operations
+    def _validate_edges(self, edges: Set[Tuple[str, str]], relation: str) -> None:
+        known = set(self.arguments)
+        dangling = [(a, b) for a, b in edges if a not in known or b not in known]
+        if dangling:
+            raise ValueError(f"{relation} edges reference unknown arguments: {dangling}")
 
-    def is_conflict_free(self, S: Set[str]) -> bool:
-        """Check if set S is conflict-free (no internal attacks)"""
-        subset = S & set(self.arguments.keys())
-        return all(not (self.attacks_dict.get(arg, set()) & subset) for arg in subset)
+    @property
+    def attacks(self) -> Set[Tuple[str, str]]:
+        return set(self._attacks)
 
-    def defends(self, S: Set[str], a: str) -> bool:
-        """Check if set S defends argument a against all attackers"""
-        if a not in self.arguments:
+    @property
+    def supports(self) -> Set[Tuple[str, str]]:
+        return set(self._supports)
+
+    def is_conflict_free(self, candidate: Set[str]) -> bool:
+        subset = set(candidate)
+        if not subset <= set(self.arguments):
             return False
-        subset = S & set(self.arguments.keys())
-        for attacker in self.attackers_dict.get(a, set()):
-            if not any(attacker in self.attacks_dict.get(defender, set()) for defender in subset):
-                return False
-        return True
+        return all((source, target) not in self._attacks for source in subset for target in subset)
+
+    def defends(self, candidate: Set[str], argument: str) -> bool:
+        if argument not in self.arguments:
+            return False
+        subset = set(candidate)
+        if not subset <= set(self.arguments):
+            return False
+        return all(
+            any((defender, attacker) in self._attacks for defender in subset)
+            for attacker in self.attackers_dict.get(argument, set())
+        )
+
+    def characteristic(self, candidate: Set[str]) -> Set[str]:
+        """Dung characteristic function F(S): arguments defended by S."""
+        subset = set(candidate)
+        return {arg for arg in self.arguments if self.defends(subset, arg)}
 
     def get_admissible_sets(self) -> List[Set[str]]:
-        """Compute all admissible sets"""
+        ids = list(self.arguments)
         admissible: List[Set[str]] = []
-        ids = list(self.arguments.keys())
-        n = len(ids)
-
-        for mask in range(1, 1 << n):
-            subset = {ids[i] for i in range(n) if (mask >> i) & 1}
-            if self.is_conflict_free(subset) and all(self.defends(subset, a) for a in subset):
-                admissible.append(subset)
+        for size in range(len(ids) + 1):
+            for values in combinations(ids, size):
+                subset = set(values)
+                if self.is_conflict_free(subset) and all(self.defends(subset, a) for a in subset):
+                    admissible.append(subset)
         return admissible
 
     def get_preferred_extensions(self) -> List[Set[str]]:
-        """Compute preferred extensions (maximal admissible sets)"""
         admissible = self.get_admissible_sets()
-        return [s for s in admissible if not any(s < t for t in admissible)]
+        return [candidate for candidate in admissible if not any(candidate < other for other in admissible)]
 
     def get_stable_extensions(self) -> List[Set[str]]:
-        """Compute stable extensions"""
+        ids = list(self.arguments)
         stable: List[Set[str]] = []
-        ids = list(self.arguments.keys())
-        n = len(ids)
-
-        for mask in range(1, 1 << n):
-            subset = {ids[i] for i in range(n) if (mask >> i) & 1}
-            if self.is_conflict_free(subset):
-                outside = set(ids) - subset
-                if all(any(out in self.attacks_dict.get(defender, set()) for defender in subset) for out in outside):
-                    stable.append(subset)
+        for size in range(len(ids) + 1):
+            for values in combinations(ids, size):
+                candidate = set(values)
+                if not self.is_conflict_free(candidate):
+                    continue
+                outside = set(ids) - candidate
+                if all(any((inside, target) in self._attacks for inside in candidate) for target in outside):
+                    stable.append(candidate)
         return stable
 
+    def get_grounded_extension(self) -> Set[str]:
+        current: Set[str] = set()
+        while True:
+            nxt = self.characteristic(current)
+            if nxt == current:
+                return current
+            current = nxt
+
+    def grounded_labeling(self) -> Dict[str, str]:
+        accepted = self.get_grounded_extension()
+        rejected = {target for source in accepted for target in self.attacks_dict.get(source, set())}
+        return {
+            arg: ("in" if arg in accepted else "out" if arg in rejected else "undec")
+            for arg in self.arguments
+        }
+
     def has_cycle(self) -> bool:
-        """Check if the attack graph contains cycles"""
-        try:
-            return any(len(scc) > 1 for scc in nx.strongly_connected_components(self.attack_graph))
-        except Exception as e:
-            logger.error("Error checking cycles: %s", e)
-            return False
+        return not nx.is_directed_acyclic_graph(self.attack_graph)
 
     def shortest_attack_path(self, start: str, goal: str) -> Optional[List[str]]:
-        """Find shortest attack path between two arguments"""
         try:
-            # Only consider the attack subgraph for shortest attack paths
-            attack_only = nx.DiGraph(
-                ((u, v, d) for u, v, d in self.attack_graph.edges(data=True) if d.get("relation") == "attacks")
-            )
-            return nx.shortest_path(attack_only, source=start, target=goal)
+            return nx.shortest_path(self.attack_graph, source=start, target=goal)
         except (nx.NodeNotFound, nx.NetworkXNoPath):
-            return None
-        except Exception as e:
-            logger.error("Error computing shortest path: %s", e)
             return None
 
     def pagerank_influence(self) -> Dict[str, float]:
-        """Compute PageRank influence scores for arguments"""
-        try:
-            # PageRank on attack-only edges (typical in AAF influence analysis)
-            attack_only = nx.DiGraph(
-                ((u, v) for u, v, d in self.attack_graph.edges(data=True) if d.get("relation") == "attacks")
-            )
-            # Ensure all nodes are present even if isolated
-            attack_only.add_nodes_from(self.arguments.keys())
-            return nx.pagerank(attack_only, alpha=0.85)
-        except Exception as e:
-            logger.error("PageRank failed: %s", e)
-            return {arg_id: 0.0 for arg_id in self.arguments.keys()}
+        if not self.arguments:
+            return {}
+        return nx.pagerank(self.attack_graph, alpha=0.85)
 
     @staticmethod
-    def build_argument_graph(arguments: List[LegalArgument]) -> nx.DiGraph:
-        """
-        Build a NetworkX DiGraph from a list of LegalArgument objects.
-        
-        Parameters
-        ----------
-        arguments : List[LegalArgument]
-            List of legal arguments
-            
-        Returns
-        -------
-        nx.DiGraph
-            Directed graph representation of the argumentation framework
-        """
-        G = nx.DiGraph()
+    def build_argument_graph(arguments: Sequence[LegalArgument]) -> nx.MultiDiGraph:
+        graph = nx.MultiDiGraph()
+        ids = {arg.id for arg in arguments}
         for arg in arguments:
-            G.add_node(arg.id, premise=arg.premise, conclusion=arg.conclusion)
-            for s in arg.supporting_args:
-                G.add_edge(arg.id, s, relation="supports")
-            for a in arg.attacking_args:
-                G.add_edge(arg.id, a, relation="attacks")
-        return G  # FIXED: Added missing return statement
-        
-    def run_pyreason(self, timesteps: int = 10) -> Dict:
-        """
-        Push the AAF (arguments + attacks + supports + confidences) into PyReason
-        via PyReasonConnector and return its results.
-
-        Parameters
-        ----------
-        timesteps : int, optional
-            Number of reasoning timesteps (default: 10)
-
-        Returns
-        -------
-        Dict
-            PyReason reasoning results including acceptance, defeat, and convergence info
-        """
-        try:
-            # Prepare rich argument payload for PyReason (id -> metadata)
-            arg_payload: Dict[str, Dict] = {}
-            for arg_id, arg in self.arguments.items():
-                arg_payload[arg_id] = {
-                    "premise": arg.premise,
-                    "conclusion": arg.conclusion,
-                    "confidence": arg.confidence,
-                    "sequent_type": arg.sequent_type,
-                }
-
-            connector = PyReasonConnector()
-
-            # Call PyReasonConnector with all parameters
-            logger.info(f"Running PyReason with {len(arg_payload)} arguments, "
-                       f"{len(self._attacks)} attacks, {len(self._supports)} supports")
-            
-            results = connector.run_reasoning(
-                arguments=arg_payload,
-                attacks=set(self._attacks),
-                supports=set(self._supports),
-                timesteps=timesteps
+            graph.add_node(
+                arg.id,
+                premise=arg.premise,
+                conclusion=arg.conclusion,
+                confidence=arg.confidence,
             )
-            
-            logger.info(f"PyReason completed. Results: {len(results)} entries")
-            return results
+        for arg in arguments:
+            for target in arg.attacking_args:
+                if target in ids:
+                    graph.add_edge(arg.id, target, relation="attacks")
+            for target in arg.supporting_args:
+                if target in ids:
+                    graph.add_edge(arg.id, target, relation="supports")
+        return graph
 
-        except TypeError as te:
-            # Handle API mismatch
-            logger.error(f"PyReasonConnector API mismatch: {te}. "
-                        "Check that your PyReasonConnector.run_reasoning() signature matches.")
-            return {"error": "API_mismatch", "details": str(te)}
-        except Exception as e:
-            logger.error(f"PyReason run failed: {e}", exc_info=True)
-            return {"error": "reasoning_failed", "details": str(e)}
-    
-    # Additional utility methods
-    
+    def run_pyreason(self, timesteps: int = 10) -> Dict:
+        """Use the optional PyReason adapter without making it a core dependency."""
+        try:
+            from .pyreason_connector import PyReasonConnector
+        except ImportError:  # pragma: no cover - direct script fallback
+            from pyreason_connector import PyReasonConnector
+
+        payload = {
+            arg_id: {
+                "premise": arg.premise,
+                "conclusion": arg.conclusion,
+                "confidence": arg.confidence,
+            }
+            for arg_id, arg in self.arguments.items()
+        }
+        return PyReasonConnector().run_reasoning(
+            arguments=payload,
+            attacks=self._attacks,
+            supports=self._supports,
+            timesteps=timesteps,
+        )
+
     def get_argument_status(self, arg_id: str) -> Dict:
-        """
-        Get comprehensive status of an argument including:
-        - Its attackers and targets
-        - Support relationships
-        - Confidence bounds
-        
-        Parameters
-        ----------
-        arg_id : str
-            Argument identifier
-            
-        Returns
-        -------
-        Dict
-            Status information for the argument
-        """
         if arg_id not in self.arguments:
             return {"error": "Argument not found"}
-        
         arg = self.arguments[arg_id]
         return {
             "id": arg_id,
             "premise": arg.premise,
             "conclusion": arg.conclusion,
             "confidence": arg.confidence,
-            "attackers": list(self.attackers_dict.get(arg_id, set())),
-            "attacks": list(self.attacks_dict.get(arg_id, set())),
-            "supporting": list(arg.supporting_args),
-            "attacking": list(arg.attacking_args),
-            "sequent_type": arg.sequent_type
+            "attackers": sorted(self.attackers_dict.get(arg_id, set())),
+            "attacks": sorted(self.attacks_dict.get(arg_id, set())),
+            "supporters": sorted(self.supporters_dict.get(arg_id, set())),
+            "supports": sorted(self.supports_dict.get(arg_id, set())),
+            "grounded_label": self.grounded_labeling()[arg_id],
         }
-    
+
     def export_to_dict(self) -> Dict:
-        """
-        Export the entire AAF to a dictionary format suitable for serialization.
-        
-        Returns
-        -------
-        Dict
-            Complete AAF representation
-        """
         return {
             "arguments": [
                 {
                     "id": arg.id,
                     "premise": arg.premise,
                     "conclusion": arg.conclusion,
-                    "confidence": arg.confidence,
-                    "supporting_args": list(arg.supporting_args),
-                    "attacking_args": list(arg.attacking_args),
-                    "sequent_type": arg.sequent_type
+                    "confidence": list(arg.confidence),
+                    "source_norm_ids": sorted(arg.source_norm_ids),
                 }
                 for arg in self.arguments.values()
             ],
-            "attacks": list(self._attacks),
-            "supports": list(self._supports)
+            "attacks": sorted([list(edge) for edge in self._attacks]),
+            "supports": sorted([list(edge) for edge in self._supports]),
+            "grounded": sorted(self.get_grounded_extension()),
+            "preferred": [sorted(x) for x in self.get_preferred_extensions()],
+            "stable": [sorted(x) for x in self.get_stable_extensions()],
         }

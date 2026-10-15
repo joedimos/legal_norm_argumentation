@@ -1,0 +1,4 @@
+-r requirements.txt
+# Optional backend. PyReason currently has Python-version compatibility constraints;
+# install it only in an environment supported by the version you select.
+pyreason==3.7.0; python_version < "3.11"

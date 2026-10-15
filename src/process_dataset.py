@@ -1,62 +1,60 @@
-import os
-import pandas as pd
+from __future__ import annotations
+
 import logging
-from utils import flatten_text_columns
-from originality import LogicBasedLegalReasoner
-from typing import Optional
+from typing import Optional, Tuple
+
+import pandas as pd
+
+try:
+    from .originality import LogicBasedLegalReasoner
+    from .utils import flatten_text_columns
+except ImportError:  # pragma: no cover
+    from originality import LogicBasedLegalReasoner
+    from utils import flatten_text_columns
 
 logger = logging.getLogger(__name__)
+PREFERRED_TEXT_COLS = ["text", "decision_text", "content", "case_body", "full_text"]
 
-PREFERRED_TEXT_COLS = ['text', 'decision_text', 'content', 'case_body', 'full_text']
 
-def load_dataset(csv_path: str) -> Optional[pd.DataFrame]:
+def load_dataset(csv_path: str) -> Tuple[Optional[pd.DataFrame], Optional[str]]:
     try:
-        df = pd.read_csv(csv_path, encoding='utf-8', on_bad_lines='warn')
-        text_col = next((c for c in PREFERRED_TEXT_COLS if c in df.columns), None)
+        df = pd.read_csv(csv_path, encoding="utf-8", on_bad_lines="warn")
+        text_col = next((column for column in PREFERRED_TEXT_COLS if column in df.columns), None)
         if text_col is None:
-            # try to merge common text columns if present
-            candidates = [c for c in df.columns if 'text' in c.lower() or 'body' in c.lower()]
+            candidates = [column for column in df.columns if "text" in column.lower() or "body" in column.lower()]
             if not candidates:
-                logger.error("No text-like column found in CSV.")
-                return None
+                return None, None
             df = flatten_text_columns(df, candidates)
             text_col = "_combined_text"
-        logger.info("Loaded dataset with shape: %s", df.shape)
         return df, text_col
-    except Exception as e:
-        logger.exception("Failed to load dataset: %s", e)
+    except Exception as exc:
+        logger.exception("Failed to load dataset: %s", exc)
         return None, None
 
-def run_pipeline(csv_path: str, out_csv: str = "results_summary.csv", max_cases: Optional[int] = 100):
-    loader = load_dataset(csv_path)
-    if loader is None:
-        logger.error("Dataset load failed.")
-        return
-    df, text_col = loader
-    n = min(max_cases, len(df)) if max_cases else len(df)
-    reasoner = LogicBasedLegalReasoner()
+
+def run_pipeline(csv_path: str, out_csv: str = "results_summary.csv", max_cases: Optional[int] = 100) -> pd.DataFrame:
+    df, text_col = load_dataset(csv_path)
+    if df is None or text_col is None:
+        raise ValueError("Dataset load failed or no text-like column was found")
+
+    count = min(max_cases, len(df)) if max_cases is not None else len(df)
     results = []
-    for i in range(n):
-        case = df.iloc[i]
-        text = str(case[text_col]) if pd.notna(case[text_col]) else ""
+    for row_index in range(count):
+        text = str(df.iloc[row_index][text_col]) if pd.notna(df.iloc[row_index][text_col]) else ""
         if not text.strip():
-            logger.warning("Empty text at row %d; skipping", i)
-            results.append({"row": i, "status": "empty"})
+            results.append({"row": row_index, "status": "empty"})
             continue
-        logger.info("Processing row %d", i)
-        try:
-            analysis = reasoner.analyze_legal_case(text[:20000])  # limit length for speed
-            results.append({
-                "row": i,
+        analysis = LogicBasedLegalReasoner().analyze_legal_case(text[:20000], run_pyreason=False)
+        results.append(
+            {
+                "row": row_index,
+                "status": "ok",
                 "arguments_count": len(analysis["arguments"]),
                 "attacks_count": len(analysis["attacks"]),
-                "preferred_extensions": len(analysis["aaf"].get("preferred", [])),
-                "stable_extensions": len(analysis["aaf"].get("stable", []))
-            })
-        except Exception as e:
-            logger.exception("Error processing row %d: %s", i, e)
-            results.append({"row": i, "status": "error", "error": str(e)})
-    # save
-    outdf = pd.DataFrame(results)
-    outdf.to_csv(out_csv, index=False)
-    logger.info("Saved summary to %s", out_csv)
+                "preferred_extensions": len(analysis["aaf"]["preferred"]),
+                "stable_extensions": len(analysis["aaf"]["stable"]),
+            }
+        )
+    output = pd.DataFrame(results)
+    output.to_csv(out_csv, index=False)
+    return output

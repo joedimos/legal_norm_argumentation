@@ -1,13 +1,11 @@
-import logging
-from typing import List
+from __future__ import annotations
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
-logger = logging.getLogger("legal-norm-extraction")
+from typing import Iterable
+import pandas as pd
 
 
-def flatten_text_columns(df, text_cols):
-    """Concatenate multiple potential text columns into a single string column."""
-    import pandas as pd
-    df = df.copy()
-    df["_combined_text"] = df[text_cols].fillna("").agg(" ".join, axis=1)
-    return df
+def flatten_text_columns(df: pd.DataFrame, columns: Iterable[str]) -> pd.DataFrame:
+    result = df.copy()
+    cols = list(columns)
+    result["_combined_text"] = result[cols].fillna("").astype(str).agg("\n".join, axis=1)
+    return result

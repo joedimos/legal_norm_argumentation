@@ -1,2 +1,8 @@
-# package initializer
-__version__ = "0.1.0"
+"""Legal norm extraction and argumentation research prototype."""
+
+__all__ = [
+    "argumentation",
+    "norm_extraction",
+    "review",
+    "verification",
+]
