@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from dataclasses import replace
 import re
+from dataclasses import replace
 from typing import Iterable, List, Mapping, Optional, Sequence, Tuple
 
 from .normative_model import (
@@ -15,17 +15,32 @@ from .normative_model import (
 )
 
 
+_CONDITION_PREFIX_RE = re.compile(
+    r"^(?:if|when|whenever|where|provided\s+that|subject\s+to|"
+    r"si|lorsque|lorsqu['’]|quand|dès\s+lors\s+que|dans\s+le\s+cas\s+où|"
+    r"sous\s+réserve\s+que)\s+",
+    flags=re.I,
+)
+
+_EXCEPTION_PREFIX_RE = re.compile(
+    r"^(?:unless|except(?:\s+where|\s+when|\s+if)?|save\s+where|provided\s+however\s+that|"
+    r"sauf(?:\s+si|\s+lorsque|\s+dans\s+le\s+cas\s+où)?|à\s+l['’]exception\s+de|hormis|"
+    r"sous\s+réserve\s+de)\s+",
+    flags=re.I,
+)
+
+
 def _predicate_from_clause(clause: Optional[str]) -> Tuple[Predicate, ...]:
     if not clause:
         return ()
-    cleaned = re.sub(r"^(if|when|whenever|where|provided\s+that|subject\s+to)\s+", "", clause, flags=re.I).strip(" ,.;")
+    cleaned = _CONDITION_PREFIX_RE.sub("", clause).strip(" ,.;")
     return (Predicate(cleaned),) if cleaned else ()
 
 
 def _exception_predicate(clause: Optional[str]) -> Tuple[Predicate, ...]:
     if not clause:
         return ()
-    cleaned = re.sub(r"^(unless|except(?:\s+where|\s+when|\s+if)?|save\s+where|provided\s+however\s+that)\s+", "", clause, flags=re.I).strip(" ,.;")
+    cleaned = _EXCEPTION_PREFIX_RE.sub("", clause).strip(" ,.;")
     return (Predicate(cleaned),) if cleaned else ()
 
 
@@ -74,7 +89,10 @@ def candidate_to_interpretations(candidate: Mapping, authority: Optional[SourceA
     )
 
 
-def formalize_candidates(candidates: Sequence[Mapping], authorities: Optional[Mapping[str, SourceAuthority]] = None) -> List[InterpretationSet]:
+def formalize_candidates(
+    candidates: Sequence[Mapping],
+    authorities: Optional[Mapping[str, SourceAuthority]] = None,
+) -> List[InterpretationSet]:
     authorities = authorities or {}
     return [candidate_to_interpretations(c, authorities.get(str(c.get("source_id")))) for c in candidates]
 
@@ -108,12 +126,21 @@ def add_alternative(
     return InterpretationSet(interpretation_set.source_norm_id, interpretation_set.interpretations + (draft,), None, None)
 
 
-def select_interpretation(interpretation_set: InterpretationSet, interpretation_id: str, rationale: str) -> InterpretationSet:
+def select_interpretation(
+    interpretation_set: InterpretationSet,
+    interpretation_id: str,
+    rationale: str,
+) -> InterpretationSet:
     if not any(item.id == interpretation_id for item in interpretation_set.interpretations):
         raise ValueError("selected interpretation does not exist")
     if not rationale.strip():
         raise ValueError("selection rationale is required")
-    return InterpretationSet(interpretation_set.source_norm_id, interpretation_set.interpretations, interpretation_id, rationale.strip())
+    return InterpretationSet(
+        interpretation_set.source_norm_id,
+        interpretation_set.interpretations,
+        interpretation_id,
+        rationale.strip(),
+    )
 
 
 def behavioral_signature(interpretation: NormInterpretation, contexts: Iterable[Mapping[str, bool]]) -> Tuple:
@@ -125,6 +152,10 @@ def behavioral_signature(interpretation: NormInterpretation, contexts: Iterable[
     return tuple(signature)
 
 
-def behaviorally_equivalent(left: NormInterpretation, right: NormInterpretation, contexts: Iterable[Mapping[str, bool]]) -> bool:
+def behaviorally_equivalent(
+    left: NormInterpretation,
+    right: NormInterpretation,
+    contexts: Iterable[Mapping[str, bool]],
+) -> bool:
     contexts = list(contexts)
     return behavioral_signature(left, contexts) == behavioral_signature(right, contexts)
