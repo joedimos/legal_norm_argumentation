@@ -1,0 +1,19 @@
+{
+  "schema": "vle-experiment/v1",
+  "kind": "uncertainty",
+  "horizon": 2,
+  "property": {
+    "op": "eventually",
+    "args": [
+      {
+        "op": "atom",
+        "name": "notify"
+      }
+    ]
+  },
+  "observations": [
+    {
+      "notify": false
+    }
+  ]
+}

@@ -126,7 +126,10 @@ service requests as temporal research inputs.
 ## Formal verification backends
 
 `src/model_checking.py` checks `assumptions => property` over **all complete traces
-of exactly the declared horizon**. Checking horizon N does not establish validity
+of exactly the declared horizon**. Optional partial `observations` now restrict the trace domain; results retain
+those constraints and the unknown-cell count. See [phase 3](RESEARCH_PHASE_3.md)
+for completion semantics and amendment experiments. Without observations this
+remains unrestricted bounded verification. Checking horizon N does not establish validity
 at smaller horizons or for infinite traces. It uses either:
 
 1. Exhaustive Boolean trace enumeration, independently evaluated by the AST

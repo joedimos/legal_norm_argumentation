@@ -6,12 +6,12 @@ Inconsistent assumptions are reported separately, never as a vacuous proof.
 from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, replace
 from functools import cache
 from itertools import product
 from time import monotonic
 
-from .temporal import MAX_STEPS, Formula, evaluate_formula, validate_formula
+from .temporal import MAX_STEPS, Formula, evaluate_formula, validate_formula, validate_trace
 
 
 @dataclass(frozen=True)
@@ -25,6 +25,8 @@ class VerificationResult:
     counterexample: tuple[dict[str, bool], ...] | None = None
     backend_version: str | None = None
     semantics: str = "LTLf-complete-valuations-v1"
+    observation_constraints: tuple[tuple[int, str, bool], ...] = ()
+    unknown_cells: int | None = None
 
     def to_dict(self):
         return asdict(self)
@@ -33,6 +35,7 @@ class VerificationResult:
 def verify(
     property: Formula, *, horizon: int, assumptions: Sequence[Formula] = (),
     backend: str = "exhaustive", max_traces: int = 65536, timeout_ms: int = 5000,
+    observations: Sequence[Mapping[str, bool | None]] | None = None,
 ) -> VerificationResult:
     if type(horizon) is not int or not 1 <= horizon <= MAX_STEPS:
         raise ValueError(f"horizon must be 1-{MAX_STEPS}")
@@ -45,18 +48,36 @@ def verify(
     names = validate_formula(property)
     for assumption in assumptions:
         names |= validate_formula(assumption)
+    if observations is not None:
+        if not isinstance(observations, (list, tuple)):
+            raise ValueError("observations must be a trace array")
+        validate_trace(observations)
+        if len(observations) > horizon:
+            raise ValueError("observations extend beyond the verification horizon")
+        for state in observations:
+            for name in state:
+                if not name.strip() or len(name) > 512:
+                    raise ValueError("observation atoms require 1-512 characters")
+                names.add(name)
+    fixed = {(name, t): value for t, state in enumerate(observations or ())
+             for name, value in state.items() if value is not None}
     names = tuple(sorted(names))
     if len(names) > 64:
         raise ValueError("at most 64 atoms are supported")
     if backend not in {"exhaustive", "z3"}:
         raise ValueError("backend must be exhaustive or z3")
+    constraints = tuple(sorted((t, name, value) for (name, t), value in fixed.items()))
+    unknown_cells = len(names) * horizon - len(fixed)
     if backend == "z3":
-        return _verify_z3(property, horizon, assumptions, names, timeout_ms)
+        return replace(_verify_z3(property, horizon, assumptions, names, timeout_ms, fixed),
+                       observation_constraints=constraints, unknown_cells=unknown_cells)
 
     def result(status, reason, checked=0, trace=None):
-        return VerificationResult(status, backend, horizon, names, reason, checked, trace)
+        return VerificationResult(status, backend, horizon, names, reason, checked, trace,
+                                  observation_constraints=constraints, unknown_cells=unknown_cells)
 
-    bits = len(names) * horizon
+    unknowns = [(name, t) for t in range(horizon) for name in names if (name, t) not in fixed]
+    bits = len(unknowns)
     if bits > max_traces.bit_length() or 2 ** bits > max_traces:
         return result("unknown", "state_space_limit")
     started = monotonic()
@@ -65,8 +86,8 @@ def verify(
     for values in product((False, True), repeat=bits):
         if (monotonic() - started) * 1000 >= timeout_ms:
             return result("unknown", "timeout", checked)
-        trace = tuple(dict(zip(names, values[t * len(names):(t + 1) * len(names)], strict=True))
-                      for t in range(horizon))
+        assignment = {**fixed, **dict(zip(unknowns, values, strict=True))}
+        trace = tuple({name: assignment[name, t] for name in names} for t in range(horizon))
         checked += 1
         if not all(evaluate_formula(a, trace) is True for a in assumptions):
             continue
@@ -78,7 +99,7 @@ def verify(
     return result("verified_bounded", "exhaustive_within_declared_horizon", checked)
 
 
-def _verify_z3(property, horizon, assumptions, names, timeout_ms):
+def _verify_z3(property, horizon, assumptions, names, timeout_ms, fixed):
     try:
         import z3
     except ImportError:
@@ -126,6 +147,7 @@ def _verify_z3(property, horizon, assumptions, names, timeout_ms):
 
     solver = z3.Solver(ctx=context)
     try:
+        solver.add([variables[key] == value for key, value in fixed.items()])
         solver.add([encode(a, 0) for a in assumptions])
         negated_property = z3.Not(encode(property, 0))
     except TimeoutError:
@@ -153,16 +175,16 @@ def _verify_z3(property, horizon, assumptions, names, timeout_ms):
     trace = tuple({name: z3.is_true(model.eval(variables[name, t], model_completion=True))
                    for name in names} for t in range(horizon))
     # Replay solver evidence through the independent interpreter before release.
-    if evaluate_formula(property, trace) is not False or not all(
+    if (evaluate_formula(property, trace) is not False or not all(
         evaluate_formula(a, trace) is True for a in assumptions
-    ):
+    ) or any(trace[t][name] != value for (name, t), value in fixed.items())):
         return result("unknown", "counterexample_replay_failed")
     return result("counterexample", "property_false", trace)
 
 
 def verify_request(payload: Mapping) -> dict:
     if not isinstance(payload, Mapping) or set(payload) - {
-        "property", "horizon", "assumptions", "backend", "max_traces", "timeout_ms"
+        "property", "horizon", "assumptions", "backend", "max_traces", "timeout_ms", "observations"
     }:
         raise ValueError("invalid verification request fields")
     if "property" not in payload or "horizon" not in payload:
@@ -174,4 +196,5 @@ def verify_request(payload: Mapping) -> dict:
                   assumptions=[Formula.from_dict(a) for a in assumptions],
                   backend=payload.get("backend", "exhaustive"),
                   max_traces=payload.get("max_traces", 65536),
-                  timeout_ms=payload.get("timeout_ms", 5000)).to_dict()
+                  timeout_ms=payload.get("timeout_ms", 5000),
+                  observations=payload.get("observations")).to_dict()

@@ -1,0 +1,444 @@
+{
+  "schema": "vle-experiment-corpus/v1",
+  "cases": [
+    {
+      "id": "tautology-with-missing-observations",
+      "expected_status": "definitely_true",
+      "request": {
+        "schema": "vle-experiment/v1",
+        "kind": "uncertainty",
+        "horizon": 2,
+        "property": {
+          "op": "or",
+          "args": [
+            {
+              "op": "atom",
+              "name": "notify"
+            },
+            {
+              "op": "not",
+              "args": [
+                {
+                  "op": "atom",
+                  "name": "notify"
+                }
+              ]
+            }
+          ]
+        },
+        "observations": [
+          {}
+        ]
+      }
+    },
+    {
+      "id": "unknown-action",
+      "expected_status": "contingent",
+      "request": {
+        "schema": "vle-experiment/v1",
+        "kind": "uncertainty",
+        "horizon": 2,
+        "property": {
+          "op": "atom",
+          "name": "notify"
+        },
+        "observations": [
+          {}
+        ]
+      }
+    },
+    {
+      "id": "known-action",
+      "expected_status": "definitely_true",
+      "request": {
+        "schema": "vle-experiment/v1",
+        "kind": "uncertainty",
+        "horizon": 2,
+        "property": {
+          "op": "atom",
+          "name": "notify"
+        },
+        "observations": [
+          {
+            "notify": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "known-omission",
+      "expected_status": "definitely_false",
+      "request": {
+        "schema": "vle-experiment/v1",
+        "kind": "uncertainty",
+        "horizon": 2,
+        "property": {
+          "op": "atom",
+          "name": "notify"
+        },
+        "observations": [
+          {
+            "notify": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "inconsistent-evidence",
+      "expected_status": "inconsistent_evidence",
+      "request": {
+        "schema": "vle-experiment/v1",
+        "kind": "uncertainty",
+        "horizon": 2,
+        "property": {
+          "op": "atom",
+          "name": "notify"
+        },
+        "observations": [
+          {
+            "notify": false
+          }
+        ],
+        "assumptions": [
+          {
+            "op": "atom",
+            "name": "notify"
+          }
+        ]
+      }
+    },
+    {
+      "id": "future-completion",
+      "expected_status": "contingent",
+      "request": {
+        "schema": "vle-experiment/v1",
+        "kind": "uncertainty",
+        "horizon": 2,
+        "property": {
+          "op": "eventually",
+          "args": [
+            {
+              "op": "atom",
+              "name": "notify"
+            }
+          ]
+        },
+        "observations": [
+          {
+            "notify": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "deadline-missed",
+      "expected_status": "definitely_false",
+      "request": {
+        "schema": "vle-experiment/v1",
+        "kind": "uncertainty",
+        "horizon": 2,
+        "property": {
+          "op": "eventually",
+          "args": [
+            {
+              "op": "atom",
+              "name": "notify"
+            }
+          ]
+        },
+        "observations": [
+          {
+            "notify": false
+          },
+          {
+            "notify": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "maintenance-broken",
+      "expected_status": "definitely_false",
+      "request": {
+        "schema": "vle-experiment/v1",
+        "kind": "uncertainty",
+        "horizon": 2,
+        "property": {
+          "op": "always",
+          "args": [
+            {
+              "op": "atom",
+              "name": "notify"
+            }
+          ]
+        },
+        "observations": [
+          {
+            "notify": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "contradiction",
+      "expected_status": "definitely_false",
+      "request": {
+        "schema": "vle-experiment/v1",
+        "kind": "uncertainty",
+        "horizon": 2,
+        "property": {
+          "op": "and",
+          "args": [
+            {
+              "op": "atom",
+              "name": "notify"
+            },
+            {
+              "op": "not",
+              "args": [
+                {
+                  "op": "atom",
+                  "name": "notify"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "strong-next-boundary",
+      "expected_status": "definitely_false",
+      "request": {
+        "schema": "vle-experiment/v1",
+        "kind": "uncertainty",
+        "horizon": 1,
+        "property": {
+          "op": "next",
+          "args": [
+            {
+              "op": "atom",
+              "name": "notify"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "weak-next-boundary",
+      "expected_status": "definitely_true",
+      "request": {
+        "schema": "vle-experiment/v1",
+        "kind": "uncertainty",
+        "horizon": 1,
+        "property": {
+          "op": "weak_next",
+          "args": [
+            {
+              "op": "atom",
+              "name": "notify"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "identical-amendment",
+      "expected_status": "equivalent_bounded",
+      "request": {
+        "schema": "vle-experiment/v1",
+        "kind": "amendment",
+        "horizon": 2,
+        "before": {
+          "op": "atom",
+          "name": "notify"
+        },
+        "after": {
+          "op": "atom",
+          "name": "notify"
+        }
+      }
+    },
+    {
+      "id": "new-maintenance-duty",
+      "expected_status": "strict_strengthening",
+      "request": {
+        "schema": "vle-experiment/v1",
+        "kind": "amendment",
+        "horizon": 2,
+        "before": {
+          "op": "eventually",
+          "args": [
+            {
+              "op": "atom",
+              "name": "notify"
+            }
+          ]
+        },
+        "after": {
+          "op": "always",
+          "args": [
+            {
+              "op": "atom",
+              "name": "notify"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "relaxed-duty",
+      "expected_status": "strict_weakening",
+      "request": {
+        "schema": "vle-experiment/v1",
+        "kind": "amendment",
+        "horizon": 2,
+        "before": {
+          "op": "always",
+          "args": [
+            {
+              "op": "atom",
+              "name": "notify"
+            }
+          ]
+        },
+        "after": {
+          "op": "eventually",
+          "args": [
+            {
+              "op": "atom",
+              "name": "notify"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "removed-waiver",
+      "expected_status": "strict_strengthening",
+      "request": {
+        "schema": "vle-experiment/v1",
+        "kind": "amendment",
+        "horizon": 2,
+        "before": {
+          "op": "or",
+          "args": [
+            {
+              "op": "atom",
+              "name": "waiver"
+            },
+            {
+              "op": "atom",
+              "name": "notify"
+            }
+          ]
+        },
+        "after": {
+          "op": "atom",
+          "name": "notify"
+        }
+      }
+    },
+    {
+      "id": "added-waiver",
+      "expected_status": "strict_weakening",
+      "request": {
+        "schema": "vle-experiment/v1",
+        "kind": "amendment",
+        "horizon": 2,
+        "before": {
+          "op": "atom",
+          "name": "notify"
+        },
+        "after": {
+          "op": "or",
+          "args": [
+            {
+              "op": "atom",
+              "name": "waiver"
+            },
+            {
+              "op": "atom",
+              "name": "notify"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "incompatible-interpretations",
+      "expected_status": "incomparable",
+      "request": {
+        "schema": "vle-experiment/v1",
+        "kind": "amendment",
+        "horizon": 2,
+        "before": {
+          "op": "atom",
+          "name": "notify"
+        },
+        "after": {
+          "op": "not",
+          "args": [
+            {
+              "op": "atom",
+              "name": "notify"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "evidence-restricts-impact",
+      "expected_status": "equivalent_bounded",
+      "request": {
+        "schema": "vle-experiment/v1",
+        "kind": "amendment",
+        "horizon": 2,
+        "before": {
+          "op": "or",
+          "args": [
+            {
+              "op": "atom",
+              "name": "waiver"
+            },
+            {
+              "op": "atom",
+              "name": "notify"
+            }
+          ]
+        },
+        "after": {
+          "op": "atom",
+          "name": "notify"
+        },
+        "observations": [
+          {
+            "waiver": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "inconsistent-amendment-context",
+      "expected_status": "inconsistent_evidence",
+      "request": {
+        "schema": "vle-experiment/v1",
+        "kind": "amendment",
+        "horizon": 2,
+        "before": {
+          "op": "atom",
+          "name": "notify"
+        },
+        "after": {
+          "op": "atom",
+          "name": "waiver"
+        },
+        "assumptions": [
+          {
+            "op": "false"
+          }
+        ]
+      }
+    }
+  ]
+}
