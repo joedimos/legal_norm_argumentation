@@ -1,0 +1,66 @@
+{
+  "schema": "vle-family/v1",
+  "context": {
+    "jurisdiction": "FR",
+    "as_of": "2026-10-27",
+    "actor": "synthetic operator",
+    "capacity": "research fixture"
+  },
+  "documents": [
+    {
+      "id": "synthetic-rule",
+      "version": "1",
+      "kind": "normative",
+      "language": "fr",
+      "jurisdiction": "FR",
+      "effective_from": "2020-01-01",
+      "effective_to": null,
+      "text": "Politique synthétique de recherche : notifier, sauf autorisation documentée. Ce texte n'est pas une loi.",
+      "sha256": "1f2195f7b1cb6ee67ffb828c8fa2bc79d5ece347f44aedec2af83acdf8b544b6"
+    }
+  ],
+  "interpretations": [
+    {
+      "id": "i0",
+      "property": {
+        "op": "or",
+        "args": [
+          {
+            "op": "atom",
+            "name": "authorization"
+          },
+          {
+            "op": "atom",
+            "name": "notify"
+          }
+        ]
+      },
+      "source_refs": [
+        {
+          "document_id": "synthetic-rule",
+          "start": 0,
+          "end": 104,
+          "quote": "Politique synthétique de recherche : notifier, sauf autorisation documentée. Ce texte n'est pas une loi."
+        }
+      ],
+      "rationale": "Synthetic assumed mapping; independent expert review is pending."
+    },
+    {
+      "id": "i1",
+      "property": {
+        "op": "atom",
+        "name": "notify"
+      },
+      "source_refs": [
+        {
+          "document_id": "synthetic-rule",
+          "start": 0,
+          "end": 104,
+          "quote": "Politique synthétique de recherche : notifier, sauf autorisation documentée. Ce texte n'est pas une loi."
+        }
+      ],
+      "rationale": "Synthetic assumed mapping; independent expert review is pending."
+    }
+  ],
+  "horizon": 1
+}

@@ -10,11 +10,9 @@ from math import inf
 from time import monotonic
 
 from .audit_bundle import canonical_json, digest
+from .observation_strategy import PlanningLimit as _LimitReached
+from .observation_strategy import optimal_strategy
 from .temporal import MAX_STEPS, Formula, evaluate_formula, validate_formula, validate_trace
-
-
-class _LimitReached(Exception):
-    pass
 
 
 def plan_evidence(request: dict) -> dict:
@@ -89,7 +87,6 @@ def plan_evidence(request: dict) -> dict:
                         "timeout_ms": timeout_ms, "semantics": "noiseless_finite_boolean_queries_v1"},
               "optimal_in_scope": False, "plan": None, "worst_case_cost": None}
     started = monotonic()
-    states = {}
     feasible = []
 
     def check_limit():
@@ -123,35 +120,10 @@ def plan_evidence(request: dict) -> dict:
             return {**result, "status": "inconsistent_evidence", "reason": "no_admissible_completion"}
         masks = [sum(1 << i for i, a in enumerate(feasible) if a[indices[t, n]]) for t, n, _ in queries]
 
-        def solve(state):
-            check_limit()
-            if state in states:
-                return states[state][0]
-            if len(states) >= max_states:
-                raise _LimitReached("planning_state_limit")
-            # Reserve the state before recursion so the bound counts live states.
-            states[state] = (inf, None)
-            positives = state & true_mask
-            if not positives or positives == state:
-                states[state] = (0, "true" if positives else "false")
-                return 0
-            best, choice = inf, None
-            for index, ((_, _, cost), mask) in enumerate(zip(queries, masks, strict=True)):
-                low, high = state & ~mask, state & mask
-                if not low or not high:
-                    continue  # This cell is already determined under this evidence.
-                left = solve(low)
-                if left == inf:
-                    continue
-                value = cost + max(left, solve(high))
-                if value < best:
-                    best, choice = value, index
-            states[state] = best, choice
-            return best
-
-        root = (1 << len(feasible)) - 1
-        cost = solve(root)
-        result["planning_states"] = len(states)
+        strategy = optimal_strategy(world_count=len(feasible), true_mask=true_mask, masks=masks,
+                                    queries=queries, max_states=max_states, check_limit=check_limit)
+        cost = strategy["cost"]
+        result["planning_states"] = strategy["states"]
         if cost == inf:
             # Find opposite-label completions indistinguishable by ALL allowed queries.
             seen = {}
@@ -165,27 +137,7 @@ def plan_evidence(request: dict) -> dict:
                             "indistinguishable_witnesses": [trace(other), trace(assignment)]}
                 seen[signature] = truth, assignment
             raise RuntimeError("unresolvable state has no indistinguishability witness")
-        nodes, ids = [], {}
-
-        def emit(state):
-            check_limit()
-            if state in ids:
-                return ids[state]
-            node_id = f"n{len(ids)}"
-            ids[state] = node_id
-            value, choice = states[state]
-            node = {"id": node_id, "completion_count": state.bit_count(), "worst_case_cost": value}
-            nodes.append(node)
-            if choice in {"true", "false"}:
-                node["verdict"] = "definitely_true" if choice == "true" else "definitely_false"
-            else:
-                t, name, price = queries[choice]
-                node.update({"step": t, "atom": name, "cost": price,
-                             "on_false": emit(state & ~masks[choice]), "on_true": emit(state & masks[choice])})
-            return node_id
-
-        root_id = emit(root)
         return {**result, "status": "already_decided" if cost == 0 else "planned",
-                "optimal_in_scope": True, "worst_case_cost": cost, "plan": {"root": root_id, "nodes": nodes}}
+                "optimal_in_scope": True, "worst_case_cost": cost, "plan": strategy["plan"]}
     except _LimitReached as exc:
-        return {**result, "status": "unknown", "reason": str(exc), "planning_states": len(states)}
+        return {**result, "status": "unknown", "reason": str(exc), "planning_states": exc.states}
