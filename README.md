@@ -238,6 +238,35 @@ optimality claim. Costs and query availability are explicit assumptions.
 See [the evidence-planning contract and study protocol](docs/EVIDENCE_PLANNING.md)
 for bounds, audit exports, the weighted adaptive example, and independent tests.
 
+## Interpretation families and statutory alignment
+
+```bash
+python -m src.cli family --input examples/interpretation-family.json
+python -m src.cli family-benchmark
+```
+
+The next research milestone distinguishes factual uncertainty from formal
+interpretation disagreement. It preserves source/version/quote provenance,
+requires content-bound family and grounding reviews for a reviewed result,
+retains infeasible alternatives as blockers, and computes bounded factual-query
+plans across interpretation worlds. Opposite verdicts under identical complete
+facts yield a review witness instead of an impossible factual clarification plan.
+
+The 15 new fixtures are synthetic and explicitly unreviewed. Read the
+[semantic and governance contract](docs/INTERPRETATION_FAMILIES.md) and
+[independent annotation protocol](docs/FAMILY_ANNOTATION_PROTOCOL.md). The [bounded response workflow](docs/RESPONSE_ALIGNMENT.md) additionally checks
+provided candidate revisions against separately reviewed hypothetical behavior
+mappings. `response:` actions cannot be promoted to observations or factual
+queries. It stops on stale mappings, interpretive/grounding disagreement,
+repeated text and revision limits. Run:
+
+```bash
+python -m src.cli statutory-revise --input examples/statutory-revision.json
+```
+
+The controller makes no live model calls. Authenticated expert review and
+production authorization remain outside this CLI research path.
+
 ## Important limitations
 
 This is substantially more complete than an extractor/argument graph, but it intentionally does not pretend to solve open problems. The temporal extension is an explicit finite-trace operational fragment with bounded verification, not full temporal deontic logic or unbounded certification; authority ranks and specificity must come from validated metadata; cross-reference resolution is only as authoritative as its supplied corpus; public Légifrance HTML is an external interface whose structure can change; and high-stakes conclusions require expert review and external governance.

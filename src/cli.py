@@ -53,7 +53,7 @@ def main() -> None:
     lifecycle.add_argument("--at-date")
     lifecycle.add_argument("--assume-reviewed", action="store_true", help="Demo/testing convenience only")
 
-    for name in ("verify", "research", "experiment", "plan-evidence"):
+    for name in ("verify", "research", "experiment", "plan-evidence", "family", "statutory-revise"):
         command = subs.add_parser(name)
         command.add_argument("--input", required=True, help="Path to a versioned JSON research request")
         command.add_argument("--bundle", help="Write an audit ZIP containing request, result and runtime")
@@ -64,12 +64,20 @@ def main() -> None:
     experiments = subs.add_parser("experiment-benchmark")
     experiments.add_argument("--input", default="benchmarks/experiments-v1.json")
     experiments.add_argument("--backend", choices=("exhaustive", "z3"), default="exhaustive")
+    families = subs.add_parser("family-benchmark")
+    families.add_argument("--input", default="benchmarks/families-v1.json")
+    review = subs.add_parser("family-review")
+    review.add_argument("--input", required=True)
+    review.add_argument("--scope", choices=("family", "grounding", "behavior"), required=True)
+    review.add_argument("--reviewer", required=True)
+    review.add_argument("--notes", required=True)
+    review.add_argument("--decision", choices=("approved", "rejected", "needs_revision"), default="approved")
     bundle = subs.add_parser("verify-bundle")
     bundle.add_argument("--input", required=True)
     bundle.add_argument("--expected-manifest-digest")
 
     args = parser.parse_args()
-    if args.command in {"verify", "research", "experiment", "plan-evidence", "benchmark", "experiment-benchmark", "verify-bundle"}:
+    if args.command in {"verify", "research", "experiment", "plan-evidence", "family", "statutory-revise", "family-review", "family-benchmark", "benchmark", "experiment-benchmark", "verify-bundle"}:
         raise SystemExit(_research_command(args))
     text = _read_text(args)
     norms = extract_norms(text, source_id=args.source_id)
@@ -104,9 +112,12 @@ def _research_command(args) -> int:
     from .audit_bundle import MAX_BYTES, create_bundle, runtime_evidence, verify_bundle
     from .evidence_planning import plan_evidence
     from .experiments import run_experiment, run_experiment_suite
+    from .family_contract import record_family_review
+    from .interpretation_family import analyze_family, run_family_benchmark
     from .model_checking import verify_request
     from .research import run_research
     from .research_benchmark import run_benchmarks
+    from .response_alignment import run_revision_sequence
 
     try:
         if args.command == "benchmark":
@@ -134,9 +145,15 @@ def _research_command(args) -> int:
                     payload = run_experiment_suite(request, backend=args.backend)
                     print(json.dumps(payload, indent=2, ensure_ascii=False, allow_nan=False))
                     return 0 if payload["all_passed"] else 1
-                runner = {"verify": verify_request, "research": run_research, "experiment": run_experiment, "plan-evidence": plan_evidence}[args.command]
+                if args.command in {"family-review", "family-benchmark"}:
+                    payload = (run_family_benchmark(request) if args.command == "family-benchmark" else
+                               record_family_review(request, scope=args.scope, reviewer=args.reviewer,
+                                                    notes=args.notes, decision=args.decision))
+                    print(json.dumps(payload, indent=2, ensure_ascii=False, allow_nan=False))
+                    return 0 if args.command == "family-review" or payload["all_passed"] else 1
+                runner = {"statutory-revise": run_revision_sequence, "family": analyze_family, "verify": verify_request, "research": run_research, "experiment": run_experiment, "plan-evidence": plan_evidence}[args.command]
                 payload = runner(request)
-                code = 0 if payload["status"] in {"verified_bounded", "compliant", "definitely_true", "equivalent_bounded", "planned", "already_decided"} else 1
+                code = 0 if payload["status"] in {"verified_bounded", "compliant", "definitely_true", "equivalent_bounded", "planned", "already_decided", "robust_satisfied", "model_satisfied"} else 1
                 if args.bundle:
                     archive, root = create_bundle({"request.json": request, "result.json": payload,
                                                    "runtime.json": runtime_evidence(revision=args.revision)},

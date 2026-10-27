@@ -16,3 +16,11 @@ reasoning and directional amendment impact. Run `python -m src.cli
 experiment-benchmark --backend exhaustive` or `--backend z3`. These are separate
 from the 62 phase-2 fixtures; no existing labels or thresholds are changed.
 See `docs/RESEARCH_PHASE_3.md` for the semantic contract and research protocol.
+
+## Interpretation families
+
+`families-v1.json` contains 15 synthetic, unreviewed source-to-model fixtures.
+Run `python -m src.cli family-benchmark`. The score tests computational analysis
+labels only; every fixture remains `review_required` at top level. No independent
+legal annotations, approvals, corpus coverage, or legal-accuracy claims are
+implied. See `docs/FAMILY_ANNOTATION_PROTOCOL.md` for independent collection.
