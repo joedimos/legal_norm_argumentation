@@ -1,0 +1,22 @@
+{
+  "schema": "vle-experiment/v1",
+  "kind": "amendment",
+  "horizon": 2,
+  "before": {
+    "op": "or",
+    "args": [
+      {
+        "op": "atom",
+        "name": "waiver"
+      },
+      {
+        "op": "atom",
+        "name": "notify"
+      }
+    ]
+  },
+  "after": {
+    "op": "atom",
+    "name": "notify"
+  }
+}

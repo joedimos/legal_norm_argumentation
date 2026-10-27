@@ -8,3 +8,11 @@ A non-passing case returns exit status 1. CI saves complete JSON reports for bot
 backends, including the corpus SHA-256. Changing a label requires a documented
 semantic justification and corpus-version change. This is not a held-out dataset
 and its passing score is not a claim about legal extraction accuracy.
+
+## Completion and amendment experiments
+
+`experiments-v1.json` adds 19 synthetic cases for exact-horizon partial-evidence
+reasoning and directional amendment impact. Run `python -m src.cli
+experiment-benchmark --backend exhaustive` or `--backend z3`. These are separate
+from the 62 phase-2 fixtures; no existing labels or thresholds are changed.
+See `docs/RESEARCH_PHASE_3.md` for the semantic contract and research protocol.

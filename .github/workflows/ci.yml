@@ -34,8 +34,8 @@ jobs:
           cache: pip
       - run: python -m pip install --upgrade pip
       - run: python -m pip install -e '.[dev]'
-      - run: ruff check src/service src/legifrance.py src/legifrance_piste.py src/formalization.py src/lifecycle.py src/temporal.py src/temporal_deontic.py src/model_checking.py src/conflicts.py src/preferences.py src/audit_bundle.py src/research.py src/research_benchmark.py src/priority.py src/defeasible.py src/compliance.py src/normative_model.py src/norm_extraction.py src/cli.py tests/test_service.py tests/test_legifrance.py tests/test_web_console_workflow.py tests/test_norm_extraction.py tests/test_research_logic.py tests/test_audit_bundle.py tests/test_research_benchmark.py
-      - run: bandit -q -r src/service src/legifrance.py src/legifrance_piste.py src/audit_bundle.py src/model_checking.py src/research.py src/temporal.py src/temporal_deontic.py
+      - run: ruff check src/service src/legifrance.py src/legifrance_piste.py src/formalization.py src/lifecycle.py src/temporal.py src/temporal_deontic.py src/model_checking.py src/conflicts.py src/preferences.py src/audit_bundle.py src/research.py src/research_benchmark.py src/experiments.py src/evidence_planning.py src/priority.py src/defeasible.py src/compliance.py src/normative_model.py src/norm_extraction.py src/cli.py tests/test_service.py tests/test_legifrance.py tests/test_web_console_workflow.py tests/test_norm_extraction.py tests/test_research_logic.py tests/test_audit_bundle.py tests/test_research_benchmark.py tests/test_experiments.py tests/test_evidence_planning.py
+      - run: bandit -q -r src/service src/legifrance.py src/legifrance_piste.py src/audit_bundle.py src/model_checking.py src/experiments.py src/evidence_planning.py src/research.py src/temporal.py src/temporal_deontic.py
       - run: pip-audit -r requirements-prod.txt
 
   research-verification:
@@ -48,11 +48,15 @@ jobs:
           cache: pip
       - run: python -m pip install --upgrade pip
       - run: python -m pip install -e '.[dev,verification]'
-      - run: python -m pytest -q tests/test_research_logic.py tests/test_research_benchmark.py tests/test_audit_bundle.py
+      - run: python -m pytest -q tests/test_research_logic.py tests/test_research_benchmark.py tests/test_audit_bundle.py tests/test_experiments.py tests/test_evidence_planning.py
       - name: Exhaustive semantic benchmark
         run: python -m src.cli benchmark --backend exhaustive > benchmark-exhaustive.json
       - name: SMT semantic benchmark
         run: python -m src.cli benchmark --backend z3 > benchmark-z3.json
+      - name: Completion and amendment experiments (exhaustive)
+        run: python -m src.cli experiment-benchmark --backend exhaustive > benchmark-experiments-exhaustive.json
+      - name: Completion and amendment experiments (SMT)
+        run: python -m src.cli experiment-benchmark --backend z3 > benchmark-experiments-z3.json
       - uses: actions/upload-artifact@v4
         if: always()
         with:

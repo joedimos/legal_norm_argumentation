@@ -19,7 +19,7 @@ COPY schemas ./schemas
 COPY migrations ./migrations
 COPY alembic.ini ./alembic.ini
 
-RUN python -m pip install --upgrade pip setuptools==84.0.0 \
+RUN python -m pip install --upgrade pip setuptools==84.1.0 \
     && python -m pip install -r requirements-prod.txt \
     && python -m pip install --no-deps . \
     && python -m pip check \

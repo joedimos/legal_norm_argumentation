@@ -196,6 +196,48 @@ inputs run through the Python/CLI research path. The auditor endpoint exports
 historical source, request, reasoning, review and runtime evidence as a deterministic
 archive with offline integrity verification.
 
+## Research phase 3: uncertainty and amendment impact
+
+The framework now supports bounded reasoning over incomplete observations and
+behavioral comparison of alternative or amended formal interpretations:
+
+```bash
+python -m src.cli experiment --input examples/uncertainty-experiment.json
+python -m src.cli experiment --input examples/amendment-experiment.json
+python -m src.cli experiment-benchmark --backend exhaustive
+python -m src.cli experiment-benchmark --backend z3
+```
+
+Uncertainty analysis quantifies over Boolean completions at an explicit horizon,
+returning definite truth/falsity or two witnesses establishing contingency.
+Amendment analysis reports equivalence, strict strengthening, strict weakening,
+or incomparable changes, with added/removed behavior witnesses. Inconsistent
+evidence and incomplete computation never count as a positive result. The
+existing Kleene evaluator, HTTP lifecycle and authorization gates retain their
+semantics. `verify` also accepts partial `observations`, records those constraints,
+and enumerates only unknown cells.
+
+The new 19-case synthetic suite supplements the existing 62 research fixtures.
+See [the phase 3 semantics and research protocol](docs/RESEARCH_PHASE_3.md) for
+reproduction commands, audit exports, limitations, and four falsifiable research
+directions. These capabilities enable research; novelty and legal accuracy are
+not established by passing synthetic tests.
+
+## Evidence acquisition research
+
+```bash
+python -m src.cli plan-evidence --input examples/evidence-plan.json
+```
+
+The bounded evidence planner computes an adaptive strategy with minimum worst-case
+observation cost over all feasible Boolean completions. It returns a decision DAG,
+or opposite-verdict witnesses proving that the available queries cannot resolve
+the result. Enumeration/state/time limits produce `unknown` without a partial
+optimality claim. Costs and query availability are explicit assumptions.
+
+See [the evidence-planning contract and study protocol](docs/EVIDENCE_PLANNING.md)
+for bounds, audit exports, the weighted adaptive example, and independent tests.
+
 ## Important limitations
 
 This is substantially more complete than an extractor/argument graph, but it intentionally does not pretend to solve open problems. The temporal extension is an explicit finite-trace operational fragment with bounded verification, not full temporal deontic logic or unbounded certification; authority ranks and specificity must come from validated metadata; cross-reference resolution is only as authoritative as its supplied corpus; public Légifrance HTML is an external interface whose structure can change; and high-stakes conclusions require expert review and external governance.
