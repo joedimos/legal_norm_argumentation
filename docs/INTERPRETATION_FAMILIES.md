@@ -177,3 +177,11 @@ minimax kernel.
    failures, latency and human effort under matched budgets.
 
 These are future milestones, not capabilities asserted by the current interface.
+
+## Response-grounding follow-on
+
+The [response-alignment contract](RESPONSE_ALIGNMENT.md) adds separately reviewed
+`behavior` mappings and a `behavior` receipt scope. These expand the world set to
+interpretation/mapping/trace products, with explicit response-action namespaces.
+The provided-revision controller is implemented; live generation/model adapters
+and independent legal annotation remain future work.

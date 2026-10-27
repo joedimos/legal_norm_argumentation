@@ -12,7 +12,7 @@ from .audit_bundle import canonical_json, digest
 from .temporal import Formula, validate_formula, validate_trace
 
 FIELDS = {"schema", "context", "documents", "interpretations", "horizon", "observations", "grounding",
-          "reviews", "queries", "max_completions", "max_worlds", "max_states", "timeout_ms"}
+          "reviews", "queries", "max_completions", "max_worlds", "max_states", "timeout_ms", "behavior"}
 
 
 def _text(value, label, limit=512):
@@ -36,6 +36,13 @@ def grounding_fingerprint(request):
     return digest(canonical_json({"family": family_fingerprint(request),
                                  "observations": request.get("observations"), "grounding": request.get("grounding", []),
                                  "documents": [d for d in request["documents"] if d["kind"] != "normative"]}))
+
+
+def behavior_fingerprint(request):
+    if "behavior" not in request:
+        raise ValueError("request has no response behavior contract")
+    return digest(canonical_json({"family": family_fingerprint(request),
+                                 "grounding": grounding_fingerprint(request), "behavior": request["behavior"]}))
 
 
 def parse_family(request):
@@ -135,6 +142,47 @@ def parse_family(request):
         for formula in assumptions:
             names |= validate_formula(formula)
         parsed.append({"id": item["id"], "property": property, "assumptions": assumptions})
+    behaviors = [{"id": None, "assumptions": []}]
+    if "behavior" in request:
+        behavior = request["behavior"]
+        if not isinstance(behavior, dict) or set(behavior) != {"document_id", "action_atoms", "mappings"}:
+            raise ValueError("behavior requires a draft document and mappings")
+        _text(behavior["document_id"], "behavior document id")
+        draft = registry.get(behavior["document_id"])
+        if draft is None or draft["kind"] != "draft":
+            raise ValueError("behavior must bind a draft snapshot")
+        action_atoms = behavior["action_atoms"]
+        if (not isinstance(action_atoms, list) or not 1 <= len(action_atoms) <= 32
+                or any(not isinstance(a, str) or not a.startswith("response:") or not a[9:].strip() or len(a) > 512 for a in action_atoms)
+                or len(set(action_atoms)) != len(action_atoms)):
+            raise ValueError("action_atoms requires 1-32 unique response: names")
+        if any(a.startswith("response:") and a not in action_atoms for a in names):
+            findings.append({"code": "unbound_response_atom"})
+        mappings = behavior["mappings"]
+        if not isinstance(mappings, list) or not 1 <= len(mappings) <= 8:
+            raise ValueError("behavior requires 1-8 alternative mappings")
+        behaviors, mapping_ids = [], set()
+        for mapping in mappings:
+            if not isinstance(mapping, dict) or set(mapping) != {"id", "constraints", "source_refs", "rationale"}:
+                raise ValueError("invalid behavior mapping")
+            _text(mapping["id"], "mapping id")
+            _text(mapping["rationale"], "behavior mapping rationale", 4000)
+            if mapping["id"] in mapping_ids:
+                raise ValueError("duplicate behavior mapping id")
+            mapping_ids.add(mapping["id"])
+            references(mapping["source_refs"], "draft")
+            if any(ref["document_id"] != draft["id"] for ref in mapping["source_refs"]):
+                raise ValueError("behavior spans must refer to the bound candidate")
+            constraints = mapping["constraints"]
+            if not isinstance(constraints, list) or not 1 <= len(constraints) <= 32:
+                raise ValueError("behavior constraints require 1-32 formulas")
+            constraints = [Formula.from_dict(c) for c in constraints]
+            for formula in constraints:
+                atoms = validate_formula(formula)
+                if not atoms <= set(action_atoms):
+                    raise ValueError("behavior constraints may not assert external facts")
+                names |= atoms
+            behaviors.append({"id": mapping["id"], "assumptions": constraints})
     observed = request.get("observations")
     if observed is not None:
         if not isinstance(observed, list):
@@ -145,6 +193,8 @@ def parse_family(request):
         for state in observed:
             for name in state:
                 _text(name, "observation atom")
+                if "behavior" in request and name.startswith("response:"):
+                    raise ValueError("hypothetical response actions cannot be trusted observations")
                 names.add(name)
     fixed = {(t, name): value for t, state in enumerate(observed or ()) for name, value in state.items()
              if value is not None}
@@ -165,9 +215,14 @@ def parse_family(request):
     for t, name in sorted(fixed.keys() - grounded):
         findings.append({"code": "missing_grounding", "step": t, "atom": name})
     reviews = request.get("reviews", {})
-    if not isinstance(reviews, dict) or set(reviews) - {"family", "grounding"}:
+    if not isinstance(reviews, dict) or set(reviews) - {"family", "grounding", "behavior"}:
         raise ValueError("invalid review scopes")
-    for scope, expected in (("family", family_fingerprint(request)), ("grounding", grounding_fingerprint(request))):
+    fingerprints = [("family", family_fingerprint(request)), ("grounding", grounding_fingerprint(request))]
+    if "behavior" in request:
+        fingerprints.append(("behavior", behavior_fingerprint(request)))
+    elif "behavior" in reviews:
+        raise ValueError("behavior review has no response contract")
+    for scope, expected in fingerprints:
         if scope == "grounding" and not fixed and scope not in reviews:
             continue
         record = reviews.get(scope)
@@ -184,18 +239,19 @@ def parse_family(request):
             raise ValueError("invalid review decision")
         if record["fingerprint"] != expected or record["decision"] != "approved":
             findings.append({"code": "stale_or_unapproved_review", "scope": scope})
-    return {"interpretations": parsed, "names": names, "fixed": fixed, "findings": findings}
+    return {"interpretations": parsed, "behaviors": behaviors, "names": names, "fixed": fixed, "findings": findings}
 
 
 def record_family_review(request, *, scope, reviewer, notes, decision="approved"):
     """Explicit lab receipt; caller identity is self-reported, not authenticated."""
     parse_family(request)
-    if scope not in {"family", "grounding"} or decision not in {"approved", "rejected", "needs_revision"}:
+    if scope not in {"family", "grounding", "behavior"} or decision not in {"approved", "rejected", "needs_revision"}:
         raise ValueError("invalid review scope/decision")
     _text(reviewer, "reviewer")
     _text(notes, "review notes", 4000)
     result = deepcopy(request)
-    fingerprint = family_fingerprint(result) if scope == "family" else grounding_fingerprint(result)
+    fingerprint = {"family": family_fingerprint, "grounding": grounding_fingerprint,
+                   "behavior": behavior_fingerprint}[scope](result)
     result.setdefault("reviews", {})[scope] = {"decision": decision, "reviewer": reviewer, "notes": notes,
                                               "reviewed_at": datetime.now(UTC).isoformat(),
                                               "fingerprint": fingerprint}

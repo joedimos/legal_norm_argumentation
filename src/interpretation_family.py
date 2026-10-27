@@ -13,7 +13,13 @@ from .temporal import evaluate_formula
 
 def analyze_family(request: dict) -> dict:
     parsed = parse_family(request)
-    members = sorted(parsed["interpretations"], key=lambda item: item["id"])
+    members = []
+    for interpretation in sorted(parsed["interpretations"], key=lambda item: item["id"]):
+        for behavior in sorted(parsed["behaviors"], key=lambda item: item["id"] or ""):
+            iid, bid = interpretation["id"], behavior["id"]
+            key = iid if bid is None else f"{len(iid)}:{iid}{len(bid)}:{bid}"
+            members.append({**interpretation, "id": key, "interpretation_id": iid, "behavior_id": bid,
+                            "assumptions": interpretation["assumptions"] + behavior["assumptions"]})
     names = set(parsed["names"])
     horizon, fixed = request["horizon"], parsed["fixed"]
     limits = {"max_completions": (1024, 4096), "max_worlds": (8192, 65536),
@@ -37,6 +43,8 @@ def analyze_family(request: dict) -> dict:
                 raise ValueError("query step outside horizon")
             if not isinstance(name, str) or not name.strip() or len(name) > 512:
                 raise ValueError("query atom requires 1-512 characters")
+            if "behavior" in request and name.startswith("response:"):
+                raise ValueError("hypothetical response actions are not factual queries")
             if type(price) is not int or not 1 <= price <= 100000:
                 raise ValueError("query price requires a positive integer at most 100000")
             if (t, name) in fixed:
@@ -51,7 +59,8 @@ def analyze_family(request: dict) -> dict:
     unknowns = [(t, n) for t in range(horizon) for n in names if (t, n) not in fixed]
     indices = {cell: i for i, cell in enumerate(unknowns)}
     if raw_queries is None:
-        queries = [(t, n, 1) for t, n in unknowns]
+        queries = [(t, n, 1) for t, n in unknowns
+                   if "behavior" not in request or not n.startswith("response:")]
     queries.sort()
     started = monotonic()
     worlds = []
@@ -70,14 +79,18 @@ def analyze_family(request: dict) -> dict:
 
     def witness(world):
         index, values, truth = world
-        return {"interpretation_id": members[index]["id"], "trace": trace(values), "satisfies": truth}
+        return {"interpretation_id": members[index]["interpretation_id"],
+                "behavior_id": members[index]["behavior_id"], "trace": trace(values), "satisfies": truth}
 
     result = {"schema": "vle-family-result/v1", "request_sha256": digest(canonical_json(request)),
               "family_fingerprint": family_fingerprint(request), "grounding_fingerprint": grounding_fingerprint(request),
               "review_findings": parsed["findings"], "reviews_authenticated": False,
               "deployment_authorized": False, "legal_certification": False,
               "scope": {"horizon": horizon, "atoms": names, "unknown_cells": len(unknowns),
-                        "interpretation_ids": [i["id"] for i in members],
+                        "interpretation_ids": sorted({i["interpretation_id"] for i in members}),
+                        "behavior_ids": [b["id"] for b in parsed["behaviors"]],
+                        "model_ids": {i["id"]: {"interpretation_id": i["interpretation_id"],
+                                               "behavior_id": i["behavior_id"]} for i in members},
                         "observations": request.get("observations"), "context": request["context"],
                         "queries": [{"step": t, "atom": n, "cost": c} for t, n, c in queries], **options,
                         "semantics": "reviewed-family-finite-completions-v1"},
@@ -122,11 +135,15 @@ def analyze_family(request: dict) -> dict:
                 "satisfying_witness": witness(example_true) if example_true is not None else None,
                 "violating_witness": witness(example_false) if example_false is not None else None}
         if empty:
-            return finish({**base, "status": "inconsistent_family", "infeasible_interpretations": empty,
-                           "plan": None, "reason": "an_interpretation_has_no_admissible_completion"})
+            return finish({**base, "status": "inconsistent_family", "infeasible_interpretations": sorted({m["interpretation_id"] for m in members if m["id"] in empty}),
+                           "infeasible_models": empty, "plan": None, "reason": "an_interpretation_has_no_admissible_completion"})
         if disagreement:
             # The same complete facts cannot be separated by ANY factual query.
-            return finish({**base, "status": "interpretation_disagreement", "plan": None,
+            first, second = (members[w[0]] for w in disagreement)
+            disagreement_type = ("interpretation_disagreement" if first["behavior_id"] == second["behavior_id"]
+                                 else "grounding_disagreement" if first["interpretation_id"] == second["interpretation_id"]
+                                 else "model_disagreement")
+            return finish({**base, "status": disagreement_type, "plan": None,
                            "indistinguishable_witnesses": [witness(w) for w in disagreement],
                            "reason": "opposite_verdicts_under_identical_complete_facts"})
         masks = [sum(1 << i for i, (_, v, _) in enumerate(worlds) if v[indices[t, n]]) for t, n, _ in queries]
@@ -139,7 +156,14 @@ def analyze_family(request: dict) -> dict:
                 signature = tuple(world[1][indices[t, n]] for t, n, _ in queries)
                 previous = seen.get(signature)
                 if previous is not None and previous[2] != world[2]:
-                    return finish({**base, "status": "unresolvable_queries", "plan": None,
+                    factual_cells = [cell for cell in unknowns if not cell[1].startswith("response:")]
+                    same_facts = all(previous[1][indices[cell]] == world[1][indices[cell]] for cell in factual_cells)
+                    old, new = members[previous[0]], members[world[0]]
+                    state = "unresolvable_queries"
+                    if "behavior" in request and same_facts:
+                        state = ("grounding_disagreement" if old["interpretation_id"] == new["interpretation_id"]
+                                 and old["behavior_id"] != new["behavior_id"] else "behavior_uncertainty")
+                    return finish({**base, "status": state, "plan": None,
                                    "indistinguishable_witnesses": [witness(previous), witness(world)],
                                    "reason": "allowed_queries_cannot_resolve_factual_uncertainty"})
                 seen[signature] = world

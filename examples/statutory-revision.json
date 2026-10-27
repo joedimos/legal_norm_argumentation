@@ -1,0 +1,129 @@
+{
+  "schema": "vle-revision/v1",
+  "family": {
+    "schema": "vle-family/v1",
+    "context": {
+      "jurisdiction": "FR",
+      "as_of": "2026-10-27",
+      "actor": "synthetic assistant",
+      "capacity": "research"
+    },
+    "documents": [
+      {
+        "id": "synthetic-policy",
+        "version": "1",
+        "kind": "normative",
+        "language": "en",
+        "text": "Synthetic research policy: do not disclose confidential records. This is not a statute.",
+        "sha256": "8221cbbc581dcf52e702a5d60eed02984cc2eb9c3a84a46f3eae752024c1fd6f",
+        "jurisdiction": "FR",
+        "effective_from": null,
+        "effective_to": null
+      }
+    ],
+    "horizon": 1,
+    "interpretations": [
+      {
+        "id": "no-disclosure",
+        "property": {
+          "op": "not",
+          "args": [
+            {
+              "op": "atom",
+              "name": "response:disclose"
+            }
+          ]
+        },
+        "source_refs": [
+          {
+            "document_id": "synthetic-policy",
+            "start": 0,
+            "end": 87,
+            "quote": "Synthetic research policy: do not disclose confidential records. This is not a statute."
+          }
+        ],
+        "rationale": "Synthetic research mapping; expert review is pending."
+      }
+    ]
+  },
+  "max_cycles": 2,
+  "candidates": [
+    {
+      "document": {
+        "id": "draft-1",
+        "version": "1",
+        "kind": "draft",
+        "language": "en",
+        "text": "I will disclose the records.",
+        "sha256": "2399c79d4ed7c78c97a2d5f289a7b55cc67d4b3f14e0c8916c203d03aa79f1c9"
+      },
+      "behavior": {
+        "document_id": "draft-1",
+        "action_atoms": [
+          "response:disclose"
+        ],
+        "mappings": [
+          {
+            "id": "intended-action",
+            "constraints": [
+              {
+                "op": "atom",
+                "name": "response:disclose"
+              }
+            ],
+            "source_refs": [
+              {
+                "document_id": "draft-1",
+                "start": 0,
+                "end": 28,
+                "quote": "I will disclose the records."
+              }
+            ],
+            "rationale": "Synthetic intended-action hypothesis; independent review is pending."
+          }
+        ]
+      }
+    },
+    {
+      "document": {
+        "id": "draft-2",
+        "version": "1",
+        "kind": "draft",
+        "language": "en",
+        "text": "I will withhold the records.",
+        "sha256": "681012cbd665892e2576c1d8ab8865ed955d2d9056a7c2193b987f02bb769f78"
+      },
+      "behavior": {
+        "document_id": "draft-2",
+        "action_atoms": [
+          "response:disclose"
+        ],
+        "mappings": [
+          {
+            "id": "intended-action",
+            "constraints": [
+              {
+                "op": "not",
+                "args": [
+                  {
+                    "op": "atom",
+                    "name": "response:disclose"
+                  }
+                ]
+              }
+            ],
+            "source_refs": [
+              {
+                "document_id": "draft-2",
+                "start": 0,
+                "end": 28,
+                "quote": "I will withhold the records."
+              }
+            ],
+            "rationale": "Synthetic intended-action hypothesis; independent review is pending."
+          }
+        ]
+      }
+    }
+  ]
+}

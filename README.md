@@ -254,9 +254,18 @@ facts yield a review witness instead of an impossible factual clarification plan
 
 The 15 new fixtures are synthetic and explicitly unreviewed. Read the
 [semantic and governance contract](docs/INTERPRETATION_FAMILIES.md) and
-[independent annotation protocol](docs/FAMILY_ANNOTATION_PROTOCOL.md). This CLI
-research foundation does not yet generate/revise LLM answers, authenticate expert
-reviews, or authorize production decisions.
+[independent annotation protocol](docs/FAMILY_ANNOTATION_PROTOCOL.md). The [bounded response workflow](docs/RESPONSE_ALIGNMENT.md) additionally checks
+provided candidate revisions against separately reviewed hypothetical behavior
+mappings. `response:` actions cannot be promoted to observations or factual
+queries. It stops on stale mappings, interpretive/grounding disagreement,
+repeated text and revision limits. Run:
+
+```bash
+python -m src.cli statutory-revise --input examples/statutory-revision.json
+```
+
+The controller makes no live model calls. Authenticated expert review and
+production authorization remain outside this CLI research path.
 
 ## Important limitations
 
