@@ -270,3 +270,15 @@ production authorization remain outside this CLI research path.
 ## Important limitations
 
 This is substantially more complete than an extractor/argument graph, but it intentionally does not pretend to solve open problems. The temporal extension is an explicit finite-trace operational fragment with bounded verification, not full temporal deontic logic or unbounded certification; authority ranks and specificity must come from validated metadata; cross-reference resolution is only as authoritative as its supplied corpus; public Légifrance HTML is an external interface whose structure can change; and high-stakes conclusions require expert review and external governance.
+
+## Live generation and independent annotation
+
+`live-generate` calls an explicitly configured Ollama model and returns an
+unreviewed answer plus behavior-mapping proposals. It pauses for human review
+after every generated candidate; only a reviewed violation permits a revision.
+`annotation-prepare` freezes blinded study packets; `annotation-assess` validates
+two separate reviewer submissions, reports per-dimension agreement and preserves
+third-reviewer adjudication and unresolved interpretations.
+
+See [the setup and annotation guide](docs/LIVE_GENERATION_ANNOTATION.md). No actual
+independent expert annotations or live provider evaluation results are shipped.
