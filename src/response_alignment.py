@@ -48,7 +48,7 @@ def run_revision_sequence(request):
     steps, seen = [], set()
     response = {"schema": "vle-revision-result/v1", "request_sha256": digest(canonical_json(request)),
                 "mode": "provided_candidates_with_reviewed_behavior_contracts", "deployment_authorized": False,
-                "legal_certification": False, "steps": steps, "selected_candidate": None,
+                "legal_certification": False, "steps": steps, "selected_candidate": None, "selected_candidate_sha256": None,
                 "max_cycles": cycles, "generation_calls": 0}
     for index, candidate in enumerate(candidates[:cycles]):
         bound = bind_candidate(request["family"], candidate)
@@ -65,7 +65,8 @@ def run_revision_sequence(request):
         steps.append({"cycle": index, "candidate_id": candidate["document"]["id"],
                       "candidate_sha256": fingerprint, "feedback": feedback, "result": result})
         if status == "robust_satisfied":
-            return {**response, "status": "model_satisfied", "selected_candidate": candidate["document"]["id"]}
+            return {**response, "status": "model_satisfied", "selected_candidate": candidate["document"]["id"],
+                    "selected_candidate_sha256": fingerprint}
         if status != "robust_violated":
             return {**response, "status": status, "reason": "clarification_or_review_required_before_revision"}
     return {**response, "status": "revision_limit", "reason": "no_model_satisfied_candidate_within_supplied_budget"}

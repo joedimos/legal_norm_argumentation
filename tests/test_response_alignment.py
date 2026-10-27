@@ -57,6 +57,7 @@ def test_bounded_sequence_rechecks_and_revises_without_promoting_claims_to_facts
     assert [s["feedback"]["status"] for s in result["steps"]] == ["robust_violated", "robust_satisfied"]
     assert result["steps"][0]["feedback"]["counterexample"]["trace"][0]["response:disclose"]
     assert result["selected_candidate"] == "second"
+    assert result["selected_candidate_sha256"] == second["document"]["sha256"]
     assert result["generation_calls"] == 0
     assert not result["deployment_authorized"]
     assert "observations" not in bind_candidate(base, first)

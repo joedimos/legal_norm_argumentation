@@ -84,7 +84,7 @@ limits stop immediately for the corresponding review/clarification step.
 Revisiting the same candidate text stops as `stalled`; changing only its mapping
 cannot silently turn an unchanged answer into a successful revision. No candidate
 within the declared budget yields `revision_limit`. Results retain each attempted
-candidate hash, feedback, full family result and the selected candidate ID, if any.
+candidate hash, feedback, full family result and the selected candidate ID and SHA-256, if any.
 The archive retains the complete input sequence and runtime metadata. The family
 timeout is per cycle, not a shared timeout for the entire sequence (up to five
 cycles). Only attempted candidates are interpreted; unused revisions remain input
