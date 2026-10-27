@@ -53,7 +53,7 @@ def main() -> None:
     lifecycle.add_argument("--at-date")
     lifecycle.add_argument("--assume-reviewed", action="store_true", help="Demo/testing convenience only")
 
-    for name in ("verify", "research", "experiment"):
+    for name in ("verify", "research", "experiment", "plan-evidence"):
         command = subs.add_parser(name)
         command.add_argument("--input", required=True, help="Path to a versioned JSON research request")
         command.add_argument("--bundle", help="Write an audit ZIP containing request, result and runtime")
@@ -69,7 +69,7 @@ def main() -> None:
     bundle.add_argument("--expected-manifest-digest")
 
     args = parser.parse_args()
-    if args.command in {"verify", "research", "experiment", "benchmark", "experiment-benchmark", "verify-bundle"}:
+    if args.command in {"verify", "research", "experiment", "plan-evidence", "benchmark", "experiment-benchmark", "verify-bundle"}:
         raise SystemExit(_research_command(args))
     text = _read_text(args)
     norms = extract_norms(text, source_id=args.source_id)
@@ -102,6 +102,7 @@ def main() -> None:
 
 def _research_command(args) -> int:
     from .audit_bundle import MAX_BYTES, create_bundle, runtime_evidence, verify_bundle
+    from .evidence_planning import plan_evidence
     from .experiments import run_experiment, run_experiment_suite
     from .model_checking import verify_request
     from .research import run_research
@@ -133,9 +134,9 @@ def _research_command(args) -> int:
                     payload = run_experiment_suite(request, backend=args.backend)
                     print(json.dumps(payload, indent=2, ensure_ascii=False, allow_nan=False))
                     return 0 if payload["all_passed"] else 1
-                runner = {"verify": verify_request, "research": run_research, "experiment": run_experiment}[args.command]
+                runner = {"verify": verify_request, "research": run_research, "experiment": run_experiment, "plan-evidence": plan_evidence}[args.command]
                 payload = runner(request)
-                code = 0 if payload["status"] in {"verified_bounded", "compliant", "definitely_true", "equivalent_bounded"} else 1
+                code = 0 if payload["status"] in {"verified_bounded", "compliant", "definitely_true", "equivalent_bounded", "planned", "already_decided"} else 1
                 if args.bundle:
                     archive, root = create_bundle({"request.json": request, "result.json": payload,
                                                    "runtime.json": runtime_evidence(revision=args.revision)},

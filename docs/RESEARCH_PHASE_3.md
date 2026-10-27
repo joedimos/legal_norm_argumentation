@@ -156,3 +156,11 @@ plausible legal interpretation as ground truth merely because a solver accepts i
 
 This finite-completion experiment is a declared project semantics. It must not be
 conflated with unbounded three-valued monitoring of infinite-trace LTL.
+
+## Follow-on: exact bounded observation planning
+
+[Evidence acquisition](EVIDENCE_PLANNING.md) now implements an exact minimax
+planner for small finite completion spaces, making the evidence-acquisition
+study executable. Phase 3's `witness_differences` remain nonminimal suggestions;
+only a successful `plan-evidence` result claims optimality within its stated
+query model and budgets.
