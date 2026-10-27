@@ -103,5 +103,6 @@ It must not generate its own reviewer approval or promote its assertions to fact
 A controlled study can compare provided expert revisions, model revisions with
 expert mapping review, and automated mapping proposals against independently
 annotated data. Report failures at the routing, retrieval, mapping, verification
-and revision stages separately. Live model calls and that evaluation are not
-implemented by this milestone.
+and revision stages separately. Live model calls and the annotation collection workflow are now implemented in
+[LIVE_GENERATION_ANNOTATION.md](LIVE_GENERATION_ANNOTATION.md). Actual independent
+annotation and empirical evaluation still require an external study.

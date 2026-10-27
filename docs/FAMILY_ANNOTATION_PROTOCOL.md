@@ -50,3 +50,7 @@ factual planning as separate ablations under matched inference budgets.
 
 No percentage result from the synthetic fixtures should be advertised as legal
 accuracy, generalization, or an independent replication of arXiv:2608.28593.
+
+The executable packet, submission and adjudication workflow is described in
+[LIVE_GENERATION_ANNOTATION.md](LIVE_GENERATION_ANNOTATION.md). It does not substitute
+for recruiting independent legal experts or verifying their qualifications.
