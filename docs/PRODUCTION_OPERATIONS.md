@@ -44,7 +44,7 @@ Suggested alerts include readiness failure, elevated 5xx, p95 latency SLO breach
 
 ## High-stakes governance
 
-An operator ingests a source; a distinct reviewer approves/rejects each candidate and resolves ambiguous interpretations; only then may a high-stakes evaluation return an authorized result. A high-stakes run returns HTTP 409 when readiness gates fail. Full blocked-run internals remain restricted to reviewer/auditor roles.
+An operator ingests a source; a distinct reviewer approves/rejects each candidate and resolves ambiguous interpretations; production authorization additionally requires a pinned current release evidence graph and independently signed exact-case assessment. A high-stakes run returns HTTP 409 when readiness gates fail. Full blocked-run internals remain restricted to reviewer/auditor roles.
 
 ## Incident response
 
@@ -63,3 +63,6 @@ verify with `python -m src.cli verify-bundle --input audit.zip
 --expected-manifest-digest <sha256>` (on one shell line). The endpoint preserves
 the reviews and runtime at evaluation time; legacy runs report missing snapshots.
 See [RESEARCH_PHASE_2.md](RESEARCH_PHASE_2.md) for size limits and trust boundaries.
+
+Version 0.6 adds the worker, persistent research API, migration and stronger gates.
+Follow [PRODUCTION_RELEASE.md](PRODUCTION_RELEASE.md) for the current release procedure.

@@ -10,7 +10,7 @@ from fastapi.responses import JSONResponse, Response
 from prometheus_client import CONTENT_TYPE_LATEST, generate_latest
 from sqlalchemy.orm import Session
 
-from src.audit_bundle import create_bundle, digest, runtime_evidence
+from src.audit_bundle import canonical_json, create_bundle, digest, runtime_evidence
 from src.formalization import formalize_candidates
 from src.lifecycle import run_lifecycle
 from src.norm_extraction import extract_norms
@@ -20,10 +20,12 @@ from src.verification import audit_extraction
 
 from .config import Settings, get_settings
 from .database import Database
+from .db_models import WorkflowRecord
 from .logging import configure_logging
 from .metrics import LIFECYCLE_RUNS
 from .middleware import MaxBodySizeMiddleware, request_context_middleware
 from .rate_limit import DatabaseRateLimiter
+from .release_policy import case_review_gate, deployment_release_gate
 from .repository import (
     add_interpretation_selection,
     add_review,
@@ -47,6 +49,7 @@ from .repository import (
 from .schemas import EvaluateRequest, InterpretationSelectionRequest, ReviewCreateRequest, SourceCreateRequest
 from .security import APIKeyStore, Principal, require_roles, verify_metrics_token
 from .telemetry import configure_telemetry
+from .workflow_routes import router as workflow_router
 
 logger = logging.getLogger("vle.api")
 
@@ -101,6 +104,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         redoc_url=None,
         openapi_url="/openapi.json" if settings.allow_docs else None,
     )
+    app.include_router(workflow_router)
+    from .workflow_ui import register_ui
+    register_ui(app)
     database = Database(settings)
     if settings.auto_create_schema:
         database.create_schema_for_tests()
@@ -143,6 +149,11 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         if not healthy:
             return JSONResponse(status_code=503, content={"status": "not_ready"})
         return {"status": "ready"}
+
+    @app.get("/v1/release-status")
+    def release_status(principal: Principal = Depends(require_roles("reader", "operator", "reviewer", "auditor"))):
+        return {"release": deployment_release_gate(settings), "inference_enabled": settings.inference_enabled,
+                "build_revision": settings.build_revision, "case_review_required": True, "legal_certification": False}
 
     @app.get("/metrics", include_in_schema=False, dependencies=[Depends(verify_metrics_token)])
     def metrics() -> Response:
@@ -354,6 +365,28 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         )
         return JSONResponse(status_code=201, content=response_payload)
 
+    def target_snapshot(session, source, payload, result):
+        snapshot = {"schema": "vle-evaluation-target/v1", "build_revision": settings.build_revision,
+                    "source_id": source.id, "source_sha256": source.content_hash, "candidates": source.candidates,
+                    "formalizations": result["formalizations"], "reviews": review_evidence_snapshot(session, source),
+                    "context": payload.model_dump(mode="json", exclude={"legal_assessment_id", "high_stakes"})}
+        return snapshot, digest(canonical_json(snapshot))
+
+    @app.post("/v1/sources/{source_id}/release-target")
+    def prepare_release_target(source_id: str, payload: EvaluateRequest, session: Session = Depends(db_session),
+                               principal: Principal = Depends(require_roles("operator", "reviewer"))):
+        source = get_source(session, source_id)
+        if source is None:
+            raise HTTPException(404, "source not found")
+        context = FactContext(facts=payload.facts, actor=payload.actor, observed_actions=tuple(payload.observed_actions),
+                              at_date=payload.at_date, metadata=payload.metadata)
+        result = run_lifecycle(text=source.content, source_id=source.source_key, candidates=source.candidates,
+                               extraction_audit=source.extraction_audit, context=context, review_statuses=review_statuses(session, source),
+                               interpretation_selections=interpretation_selections(session, source))
+        snapshot, fingerprint = target_snapshot(session, source, payload, result)
+        return {"target_sha256": fingerprint, "target": snapshot, "research_readiness": result["readiness"],
+                "deployment_authorized": False, "legal_certification": False}
+
     @app.post("/v1/sources/{source_id}/evaluate")
     def evaluate_source(
         source_id: str,
@@ -371,7 +404,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             cached = get_idempotent(session, actor=principal.subject, endpoint=endpoint, key=key, request_hash=request_hash)
         except ValueError as exc:
             raise HTTPException(status_code=409, detail=str(exc)) from exc
-        if cached:
+        if cached and not payload.high_stakes:
             return JSONResponse(status_code=cached.status_code, content=cached.response_payload)
         source = get_source(session, source_id)
         if source is None:
@@ -397,7 +430,32 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         result["review_evidence"] = review_evidence_snapshot(session, source)
         result["runtime_evidence"] = runtime_evidence(revision=settings.build_revision)
         ready = result.get("readiness", {}).get("status") == "research_ready"
-        authorized = (not payload.high_stakes) or ready
+        snapshot, target_hash = target_snapshot(session, source, payload, result)
+        release = deployment_release_gate(settings) if payload.high_stakes else {"passed": False, "reason": "research_only_run"}
+        assessment = session.get(WorkflowRecord, payload.legal_assessment_id) if payload.legal_assessment_id else None
+        case = case_review_gate(settings, assessment, target_hash, source.content_hash,
+                                require_grounding=bool(payload.facts or payload.observed_actions or payload.actor), context=snapshot["context"]) if payload.high_stakes else {"passed": False}
+        if assessment is not None and assessment.request_payload.get("source_id") != source.id:
+            case = {"passed": False, "reason": "case_review_source_mismatch"}
+        release_ready = bool(ready and release["passed"] and case["passed"])
+        authorized = release_ready
+        result["production_release"] = {"authorized": release_ready, "evaluation_target_sha256": target_hash,
+                                       "deployment": release, "independent_case_review": case, "legal_certification": False}
+        result["authorization_scope"] = "organizational_release" if release_ready else "research_only" if not payload.high_stakes else "blocked"
+        if payload.high_stakes and not release_ready:
+            # The research verdict stays visible as research evidence. It never
+            # silently becomes the stronger production authorization predicate.
+            for gate, evidence in (("production_release_evidence", release), ("independent_case_review", case)):
+                result["readiness"]["gates"].append({"gate": gate, "passed": evidence["passed"], "explanation": evidence.get("reason", "Current release evidence verified")})
+                if not evidence["passed"]:
+                    result["readiness"]["failed_gates"].append(gate)
+            result["readiness"]["status"] = "not_ready"
+        if cached:
+            if authorized:
+                return JSONResponse(status_code=cached.status_code, content=cached.response_payload)
+            return JSONResponse(status_code=409, content={"run_id": cached.response_payload.get("run_id"),
+                "decision_authorized": False, "production_release": result["production_release"],
+                "detail": "historical idempotent response cannot reauthorize after evidence/review changes"})
         run = create_run(
             session,
             source_id=source.id,
@@ -418,15 +476,16 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             payload={"source_id": source.id, "decision_authorized": authorized, "readiness": result.get("readiness")},
         )
         LIFECYCLE_RUNS.labels(str(authorized).lower(), str(payload.high_stakes).lower()).inc()
-        status_code = 200 if authorized else 409
-        if authorized:
-            response_payload = {"run_id": run.id, "decision_authorized": True, **result}
+        status_code = 200 if authorized or not payload.high_stakes else 409
+        if authorized or not payload.high_stakes:
+            response_payload = {"run_id": run.id, "decision_authorized": authorized, **result}
         else:
             response_payload = {
                 "run_id": run.id,
                 "decision_authorized": False,
                 "readiness": result.get("readiness"),
-                "detail": "high-stakes decision blocked by evidence/readiness gates",
+                "production_release": result["production_release"],
+                "detail": "high-stakes decision blocked by research, release or independent legal-review gates",
             }
         store_idempotent(
             session,
@@ -457,6 +516,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             "run_id": run.id,
             "source_id": run.source_id,
             "high_stakes": run.high_stakes,
+            "authorization_is_historical": True,
             "decision_authorized": run.decision_authorized,
             "created_at": run.created_at.isoformat(),
             "result": result,
@@ -479,7 +539,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                             "extraction_audit": source.extraction_audit},
             "run.json": {"id": run.id, "source_id": run.source_id, "requested_by": run.requested_by,
                          "request_hash": run.request_hash, "context": run.context_payload,
-                         "high_stakes": run.high_stakes, "decision_authorized": run.decision_authorized,
+                         "high_stakes": run.high_stakes,
+            "authorization_is_historical": True, "decision_authorized": run.decision_authorized,
                          "created_at": run.created_at.isoformat(), "result": result},
             "reviews.json": result.get("review_evidence", {"available": False, "reason": "historical_run"}),
             "runtime.json": result.get("runtime_evidence", {"available": False, "reason": "historical_run"}),

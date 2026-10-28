@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "legal-norm-argumentation"
-version = "0.5.0"
+version = "0.6.0"
 description = "Production-hardened VLE-LEGATO toolkit for norm extraction, formalisation, reasoning, audit, compliance, and Légifrance ingestion"
 readme = "README.md"
 requires-python = ">=3.12,<3.14"
@@ -26,6 +26,7 @@ dependencies = [
   "urllib3==2.8.0",
   "msgpack==1.2.3",
   "setuptools==84.1.0",
+  "cryptography==50.0.2",
 ]
 
 [project.optional-dependencies]
@@ -43,6 +44,8 @@ transformers = ["transformers>=4.40,<6"]
 [project.scripts]
 vle-legato = "src.cli:main"
 vle-legato-api = "src.service.app_with_ui:main"
+vle-legato-operations = "src.service.operations:main"
+vle-legato-worker = "src.service.workflows:main"
 vle-legato-maintenance = "src.service.maintenance:main"
 
 [tool.setuptools.packages.find]

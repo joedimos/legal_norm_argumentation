@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from datetime import date
 from typing import Any, Literal
 
 from pydantic import BaseModel, Field, field_validator
@@ -33,8 +34,18 @@ class EvaluateRequest(BaseModel):
     actor: str | None = Field(default=None, max_length=256)
     observed_actions: list[str] = Field(default_factory=list, max_length=1000)
     at_date: str | None = None
+    jurisdiction: str | None = Field(default=None, min_length=1, max_length=128)
+    capacity: str | None = Field(default=None, min_length=1, max_length=256)
     metadata: dict[str, Any] = Field(default_factory=dict)
     high_stakes: bool = True
+    legal_assessment_id: str | None = Field(default=None, max_length=36)
+
+    @field_validator("at_date")
+    @classmethod
+    def canonical_date(cls, value):
+        if value is not None and date.fromisoformat(value).isoformat() != value:
+            raise ValueError("at_date must be a canonical YYYY-MM-DD date")
+        return value
 
     @field_validator("facts")
     @classmethod

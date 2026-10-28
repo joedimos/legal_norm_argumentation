@@ -24,6 +24,7 @@ HTML = r'''<!doctype html>
       <button data-jump="sources">Sources</button>
       <button data-jump="decision">Decision lab</button>
       <button data-jump="evidence">Evidence</button>
+      <a href="/workflows">Inference &amp; legal review</a>
     </nav>
     <div class="sidefoot"><div class="status"><span id="healthDot" class="dot"></span><span id="healthText">Checking service…</span></div></div>
   </aside>
@@ -89,7 +90,7 @@ HTML = r'''<!doctype html>
           </div>
           <div class="field"><label for="actions">Observed actions</label><textarea id="actions" placeholder="retain logs&#10;notify authority"></textarea></div>
           <div class="field"><label for="facts">Facts — one name=true/false per line</label><textarea id="facts" placeholder="risk is high=true&#10;exemption applies=false"></textarea></div>
-          <label class="check"><input id="highStakes" type="checkbox" checked> Treat as high-stakes decision (research-readiness gate required)</label>
+          <label class="check"><input id="highStakes" type="checkbox" checked> Treat as high-stakes decision (production release and independent case review required)</label>
           <button id="evaluate" class="btn primary">Evaluate selected source</button>
           <div class="hint">A blocked high-stakes run is still persisted for auditability. The UI does not override review, interpretation, or readiness gates.</div>
         </div>

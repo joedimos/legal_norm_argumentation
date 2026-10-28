@@ -34,9 +34,16 @@ jobs:
           cache: pip
       - run: python -m pip install --upgrade pip
       - run: python -m pip install -e '.[dev]'
-      - run: ruff check src/service src/legifrance.py src/legifrance_piste.py src/formalization.py src/lifecycle.py src/temporal.py src/temporal_deontic.py src/model_checking.py src/conflicts.py src/preferences.py src/audit_bundle.py src/research.py src/research_benchmark.py src/experiments.py src/evidence_planning.py src/family_contract.py src/interpretation_family.py src/observation_strategy.py src/response_alignment.py src/live_generation.py src/legal_annotation.py src/model_runtime.py src/signed_annotation.py src/priority.py src/defeasible.py src/compliance.py src/normative_model.py src/norm_extraction.py src/cli.py tests/test_service.py tests/test_legifrance.py tests/test_web_console_workflow.py tests/test_norm_extraction.py tests/test_research_logic.py tests/test_audit_bundle.py tests/test_research_benchmark.py tests/test_experiments.py tests/test_evidence_planning.py tests/test_interpretation_family.py tests/test_response_alignment.py tests/test_live_generation.py tests/test_legal_annotation.py tests/test_model_runtime.py tests/test_signed_annotation.py
+      - run: ruff check src/service src/legifrance.py src/legifrance_piste.py src/formalization.py src/lifecycle.py src/temporal.py src/temporal_deontic.py src/model_checking.py src/conflicts.py src/preferences.py src/audit_bundle.py src/research.py src/research_benchmark.py src/experiments.py src/evidence_planning.py src/family_contract.py src/interpretation_family.py src/observation_strategy.py src/response_alignment.py src/live_generation.py src/legal_annotation.py src/model_runtime.py src/signed_annotation.py src/priority.py src/defeasible.py src/compliance.py src/normative_model.py src/norm_extraction.py src/cli.py tests/test_service.py tests/test_production_workflows.py tests/test_legifrance.py tests/test_web_console_workflow.py tests/test_norm_extraction.py tests/test_research_logic.py tests/test_audit_bundle.py tests/test_research_benchmark.py tests/test_experiments.py tests/test_evidence_planning.py tests/test_interpretation_family.py tests/test_response_alignment.py tests/test_live_generation.py tests/test_legal_annotation.py tests/test_model_runtime.py tests/test_signed_annotation.py
       - run: bandit -q -r src/service src/legifrance.py src/legifrance_piste.py src/audit_bundle.py src/model_checking.py src/experiments.py src/evidence_planning.py src/family_contract.py src/interpretation_family.py src/observation_strategy.py src/response_alignment.py src/live_generation.py src/legal_annotation.py src/model_runtime.py src/signed_annotation.py src/research.py src/temporal.py src/temporal_deontic.py
       - run: pip-audit -r requirements-prod.txt
+      - name: Validate deployment Compose wiring
+        env:
+          POSTGRES_PASSWORD: ci-config-only-password
+          VLE_BUILD_REVISION: ${{ github.sha }}
+          VLE_API_KEYS_JSON: '[]'
+          VLE_METRICS_BEARER_TOKEN: ci-config-only-not-a-real-secret-123456
+        run: docker compose config --quiet
 
   research-verification:
     runs-on: ubuntu-latest
@@ -96,7 +103,29 @@ jobs:
       - run: python -m pip install --upgrade pip
       - run: python -m pip install -e '.[dev]'
       - run: alembic upgrade head
-      - run: python -m pytest -q tests/test_service.py -k postgres_migration
+      - run: python -m pytest -q tests/test_service.py tests/test_production_workflows.py -k 'postgres_migration or immutability_postgres or parallel_worker_claim_postgres'
+      - name: Freeze governed database baseline
+        run: >-
+          python -m src.service.operations --mode snapshot --deployment-id ci-restore
+          --build-revision "$GITHUB_SHA" > /tmp/restore-baseline.json
+      - name: Restore into an isolated database using server-matched PostgreSQL tools
+        env:
+          PG_CONTAINER: ${{ job.services.postgres.id }}
+        run: |
+          docker exec "$PG_CONTAINER" pg_dump -U vle -d vle_legato_test -Fc -f /tmp/drill.dump
+          docker exec "$PG_CONTAINER" createdb -U vle vle_legato_restore
+          docker exec "$PG_CONTAINER" pg_restore -U vle -d vle_legato_restore --exit-on-error /tmp/drill.dump
+      - name: Verify restored schema, governed rows, and audit chain
+        env:
+          VLE_RESTORE_DATABASE_URL: postgresql+psycopg://vle:test-postgres-password@127.0.0.1:5432/vle_legato_restore
+        run: |
+          BASELINE_SHA=$(python -c 'from pathlib import Path; from src.model_runtime import strict_json; from src.audit_bundle import digest, canonical_json; print(digest(canonical_json(strict_json(Path("/tmp/restore-baseline.json").read_bytes()))))')
+          python -m src.service.operations --mode restore --deployment-id ci-restore --build-revision "$GITHUB_SHA" --baseline /tmp/restore-baseline.json --baseline-sha256 "$BASELINE_SHA" --confirm-isolated > restore-evidence.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: isolated-restore-evidence
+          path: restore-evidence.json
+          if-no-files-found: error
 
   container-build:
     runs-on: ubuntu-latest

@@ -109,3 +109,27 @@ class RateLimitBucket(Base):
     key_hash: Mapped[str] = mapped_column(String(64), primary_key=True)
     window_start: Mapped[datetime] = mapped_column(DateTime(timezone=True), primary_key=True)
     count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+
+
+class WorkflowRecord(Base):
+    __tablename__ = "workflow_requests"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    kind: Mapped[str] = mapped_column(String(32), nullable=False)
+    created_by: Mapped[str] = mapped_column(String(128), nullable=False)
+    request_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    request_payload: Mapped[dict[str, Any]] = mapped_column(JSON, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, default=utcnow)
+    __table_args__ = (UniqueConstraint("kind", "created_by", "request_hash", name="uq_workflow_permanent_dedup"),)
+
+
+class WorkflowEventRecord(Base):
+    __tablename__ = "workflow_events"
+
+    sequence: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    workflow_id: Mapped[str] = mapped_column(ForeignKey("workflow_requests.id", ondelete="RESTRICT"), nullable=False, index=True)
+    slot: Mapped[str] = mapped_column(String(64), nullable=False)
+    actor: Mapped[str] = mapped_column(String(128), nullable=False)
+    payload: Mapped[dict[str, Any]] = mapped_column(JSON, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, default=utcnow)
+    __table_args__ = (UniqueConstraint("workflow_id", "slot", name="uq_workflow_event_slot"),)

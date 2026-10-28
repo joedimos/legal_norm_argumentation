@@ -101,9 +101,9 @@ def test_high_stakes_decision_is_blocked_until_review(tmp_path):
             json={"observed_actions": ["retain logs"], "high_stakes": True},
             headers={**auth(OPERATOR_TOKEN), "Idempotency-Key": "eval-approved-001"},
         )
-        assert approved.status_code == 200
-        assert approved.json()["decision_authorized"] is True
-        assert approved.json()["compliance"]["status"] == "compliant"
+        assert approved.status_code == 409
+        assert approved.json()["decision_authorized"] is False
+        assert "production_release_evidence" in approved.json()["readiness"]["failed_gates"]
 
 
 def test_ambiguous_formalization_requires_explicit_selection(tmp_path):
@@ -146,8 +146,9 @@ def test_ambiguous_formalization_requires_explicit_selection(tmp_path):
             json={"observed_actions": ["retain it"], "high_stakes": True},
             headers={**auth(OPERATOR_TOKEN), "Idempotency-Key": "eval-resolved-001"},
         )
-        assert resolved.status_code == 200
-        assert resolved.json()["decision_authorized"] is True
+        assert resolved.status_code == 409
+        assert resolved.json()["decision_authorized"] is False
+        assert "interpretation_resolution" not in resolved.json()["readiness"]["failed_gates"]
 
 
 def test_audit_chain_and_rbac(tmp_path):

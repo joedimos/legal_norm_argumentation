@@ -1,3 +1,30 @@
+x-vle-environment: &vle-environment
+  VLE_ENVIRONMENT: production
+  VLE_DATABASE_URL: postgresql+psycopg://vle:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}@db:5432/vle_legato
+  VLE_BUILD_REVISION: ${VLE_BUILD_REVISION:?set exact deployed Git SHA}
+  VLE_API_KEYS_JSON: ${VLE_API_KEYS_JSON:?set VLE_API_KEYS_JSON}
+  VLE_METRICS_BEARER_TOKEN: ${VLE_METRICS_BEARER_TOKEN:?set VLE_METRICS_BEARER_TOKEN}
+  VLE_CORS_ORIGINS_CSV: ${VLE_CORS_ORIGINS_CSV:-}
+  VLE_OTLP_ENDPOINT: ${VLE_OTLP_ENDPOINT:-}
+  VLE_OTLP_HEADERS: ${VLE_OTLP_HEADERS:-}
+  VLE_REQUIRE_SEPARATION_OF_DUTIES: "true"
+  VLE_ALLOW_DOCS: "false"
+  VLE_AUTO_CREATE_SCHEMA: "false"
+  VLE_LEGIFRANCE_ENABLED: ${VLE_LEGIFRANCE_ENABLED:-true}
+  VLE_LEGIFRANCE_SOURCE: ${VLE_LEGIFRANCE_SOURCE:-piste}
+  VLE_LEGIFRANCE_PISTE_CLIENT_ID: ${VLE_LEGIFRANCE_PISTE_CLIENT_ID:-}
+  VLE_LEGIFRANCE_PISTE_CLIENT_SECRET: ${VLE_LEGIFRANCE_PISTE_CLIENT_SECRET:-}
+  VLE_LEGIFRANCE_PISTE_ENVIRONMENT: ${VLE_LEGIFRANCE_PISTE_ENVIRONMENT:-production}
+  VLE_INFERENCE_ENABLED: ${VLE_INFERENCE_ENABLED:-false}
+  VLE_MODEL_PROVIDER: ${VLE_MODEL_PROVIDER:-ollama}
+  VLE_MODEL_NAME: ${VLE_MODEL_NAME:-}
+  VLE_MODEL_ENDPOINT: ${VLE_MODEL_ENDPOINT:-}
+  VLE_MODEL_API_KEY: ${VLE_MODEL_API_KEY:-}
+  VLE_REVIEWER_REGISTRY_PATH: ${VLE_REVIEWER_REGISTRY_PATH:-}
+  VLE_REVIEWER_REGISTRY_SHA256: ${VLE_REVIEWER_REGISTRY_SHA256:-}
+  VLE_RELEASE_EVIDENCE_PATH: ${VLE_RELEASE_EVIDENCE_PATH:-}
+  VLE_RELEASE_EVIDENCE_SHA256: ${VLE_RELEASE_EVIDENCE_SHA256:-}
+
 services:
   db:
     image: postgres:18.6-alpine
@@ -35,17 +62,9 @@ services:
 
   app:
     build: .
-    environment:
-      VLE_ENVIRONMENT: production
-      VLE_DATABASE_URL: postgresql+psycopg://vle:${POSTGRES_PASSWORD}@db:5432/vle_legato
-      VLE_API_KEYS_JSON: ${VLE_API_KEYS_JSON:?set VLE_API_KEYS_JSON}
-      VLE_METRICS_BEARER_TOKEN: ${VLE_METRICS_BEARER_TOKEN:?set VLE_METRICS_BEARER_TOKEN}
-      VLE_CORS_ORIGINS_CSV: ${VLE_CORS_ORIGINS_CSV:-}
-      VLE_OTLP_ENDPOINT: ${VLE_OTLP_ENDPOINT:-}
-      VLE_OTLP_HEADERS: ${VLE_OTLP_HEADERS:-}
-      VLE_REQUIRE_SEPARATION_OF_DUTIES: "true"
-      VLE_ALLOW_DOCS: "false"
-      VLE_AUTO_CREATE_SCHEMA: "false"
+    environment: *vle-environment
+    volumes:
+      - ${VLE_EVIDENCE_DIR:-./deployment-evidence}:/evidence:ro
     ports:
       - "127.0.0.1:8000:8000"
     depends_on:
@@ -59,6 +78,30 @@ services:
       - no-new-privileges:true
     cap_drop:
       - ALL
+
+  worker:
+    build: .
+    command: ["vle-legato-worker"]
+    environment: *vle-environment
+    volumes:
+      - ${VLE_EVIDENCE_DIR:-./deployment-evidence}:/evidence:ro
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    healthcheck:
+      test: ["CMD", "python", "-c", "from pathlib import Path; import time,tempfile; assert any(time.time()-p.stat().st_mtime < 300 for p in Path(tempfile.gettempdir()).glob('vle-worker-*/heartbeat'))"]
+      interval: 30s
+      timeout: 3s
+      start_period: 20s
+      retries: 3
 
 volumes:
   postgres_data:
