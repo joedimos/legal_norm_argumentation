@@ -7,16 +7,18 @@ import tempfile
 import time
 import uuid
 from copy import deepcopy
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
-from sqlalchemy import exists, select
+from sqlalchemy import case, exists, func, select
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import aliased
 
 from src.audit_bundle import canonical_json, digest
 from src.family_contract import record_family_review
 from src.interpretation_family import analyze_family
 from src.live_generation import generate_candidate
-from src.model_runtime import ollama_chat, vllm_chat
+from src.model_runtime import ollama_chat, resolve_config, vllm_chat
 
 from .db_models import WorkflowEventRecord, WorkflowRecord
 from .repository import append_audit
@@ -74,7 +76,23 @@ def state(session, record):
             "execution_request": finished.get("execution_request") if finished else None}
 
 
+class RuntimeBindingError(ValueError):
+    pass
+
+
+def runtime_binding(settings):
+    request = {"provider": settings.model_provider, "model": settings.model_name}
+    if settings.model_endpoint:
+        request["endpoint"] = settings.model_endpoint
+    config = resolve_config(request)
+    return {"schema": "vle-runtime-binding/v1", "build_revision": settings.build_revision,
+            "provider": config["provider"], "model": config["model"], "endpoint": config["endpoint"],
+            "model_revision": settings.model_revision}
+
+
 def generation_request(session, payload, settings):
+    if payload.get("runtime_binding") != runtime_binding(settings):
+        raise RuntimeBindingError("runtime_binding_changed_or_missing")
     family_record = session.get(WorkflowRecord, payload["family_workflow_id"])
     if family_record is None or family_record.kind != "family":
         raise ValueError("family workflow not found")
@@ -139,6 +157,10 @@ def process_one(database, settings, *, transport=None):
             kwargs["api_key"] = settings.model_api_key.get_secret_value() if settings.model_api_key else None
             return (ollama_chat if settings.model_provider == "ollama" else vllm_chat)(body, **kwargs)
         result = generate_candidate(execution, transport=transport or configured_transport)
+        result["runtime_binding"] = payload["runtime_binding"]
+    except RuntimeBindingError:
+        result = {"status": "worker_failed", "reason": "runtime_binding_changed_or_missing", "generation_calls": 0,
+                  "deployment_authorized": False, "legal_certification": False}
     except Exception:
         # Includes unexpected worker faults; preserve a terminal failure without
         # exposing source text/credentials in errors or retrying a provider call.
@@ -174,6 +196,64 @@ def main():
                 time.sleep(args.poll_seconds)
     finally:
         database.dispose()
+
+
+def workflow_summaries(session, *, subject=None, limit=100):
+    query = select(WorkflowRecord.id, WorkflowRecord.kind, WorkflowRecord.created_by, WorkflowRecord.created_at)
+    if subject is not None:
+        query = query.where(WorkflowRecord.created_by == subject)
+    records = list(session.execute(query.order_by(WorkflowRecord.created_at.desc()).limit(limit)).mappings())
+    ids = [r["id"] for r in records]
+    event_rows = session.execute(select(WorkflowEventRecord.workflow_id, WorkflowEventRecord.slot,
+        WorkflowEventRecord.created_at, WorkflowEventRecord.payload["result"]["status"].as_string().label("status"))
+        .where(WorkflowEventRecord.workflow_id.in_(ids), WorkflowEventRecord.slot.in_(["claim", "finish"]))).mappings()
+    latest = {}
+    for row in event_rows:
+        latest.setdefault(row["workflow_id"], {})[row["slot"]] = row
+    now = datetime.now(UTC)
+    output = []
+    for record in records:
+        item = dict(record)
+        evidence = latest.get(record["id"], {})
+        claimed, finished = evidence.get("claim"), evidence.get("finish")
+        status = "stored" if item["kind"] != "generation" else "queued"
+        if claimed:
+            status = "running_or_interrupted"
+        if finished:
+            status = finished["status"]
+        created = item["created_at"].replace(tzinfo=UTC) if item["created_at"].tzinfo is None else item["created_at"]
+        claim_time = claimed["created_at"] if claimed else None
+        if claim_time is not None and claim_time.tzinfo is None:
+            claim_time = claim_time.replace(tzinfo=UTC)
+        item.update(status=status, created_at=created.isoformat(), age_seconds=max(0, (now-created).total_seconds()),
+                    claim_age_seconds=max(0, (now-claim_time).total_seconds()) if claim_time and not finished else None)
+        output.append(item)
+    return output
+
+
+def queue_status(session, *, subject=None, stale_after_seconds=300):
+    claimed, finished = aliased(WorkflowEventRecord), aliased(WorkflowEventRecord)
+    status = case((finished.sequence.is_not(None), finished.payload["result"]["status"].as_string()),
+                  (claimed.sequence.is_not(None), "running_or_interrupted"),
+                  (WorkflowRecord.kind == "generation", "queued"), else_="stored")
+    query = (select(WorkflowRecord.id, WorkflowRecord.created_at, claimed.created_at.label("claimed_at"), status.label("status"))
+             .outerjoin(claimed, (claimed.workflow_id == WorkflowRecord.id) & (claimed.slot == "claim"))
+             .outerjoin(finished, (finished.workflow_id == WorkflowRecord.id) & (finished.slot == "finish")))
+    if subject is not None:
+        query = query.where(WorkflowRecord.created_by == subject)
+    rows = query.subquery()
+    counts = dict(session.execute(select(rows.c.status, func.count()).group_by(rows.c.status)).all())
+    now = datetime.now(UTC)
+    stale = (rows.c.status == "running_or_interrupted") & (rows.c.claimed_at < now-timedelta(seconds=stale_after_seconds))
+    stale_count = session.scalar(select(func.count()).select_from(rows).where(stale))
+    ids = list(session.scalars(select(rows.c.id).where(stale).order_by(rows.c.claimed_at).limit(100)))
+    oldest = session.scalar(select(func.min(rows.c.created_at)).where(rows.c.status == "queued"))
+    if oldest is not None and oldest.tzinfo is None:
+        oldest = oldest.replace(tzinfo=UTC)
+    return {"counts": counts, "total_workflows": sum(counts.values()), "stale_claim_count": stale_count,
+            "stale_claim_ids": ids, "stale_id_limit": 100, "scope": "all" if subject is None else "own",
+            "oldest_queued_age_seconds": max(0, (now-oldest).total_seconds()) if oldest else 0,
+            "observed_at": now.isoformat()}
 
 
 if __name__ == "__main__":

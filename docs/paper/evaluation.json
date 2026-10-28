@@ -1,0 +1,54 @@
+{
+  "schema": "vle-paper-evaluation/v1",
+  "software_version": "0.6.2",
+  "code_commit": "9dbb08289ca6a494f5f514332e5201c529a74bdf",
+  "code_tree": "9781f417eafdea7e0520d0671e91b733058ca763",
+  "python": "3.12.14",
+  "local_tests": {
+    "tests": 290,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 3,
+    "passed": 287
+  },
+  "benchmarks": [
+    {
+      "name": "benchmark-exhaustive",
+      "case_count": 62,
+      "all_passed": true,
+      "corpus_sha256": "fb3326ab811f354044742733a2484c4a67fd8d2f001f4e951a07287dab76d721",
+      "scope": "synthetic_semantic_regression_only"
+    },
+    {
+      "name": "benchmark-z3",
+      "case_count": 62,
+      "all_passed": true,
+      "corpus_sha256": "fb3326ab811f354044742733a2484c4a67fd8d2f001f4e951a07287dab76d721",
+      "scope": "synthetic_semantic_regression_only"
+    },
+    {
+      "name": "experiments-exhaustive",
+      "case_count": 19,
+      "all_passed": true,
+      "corpus_sha256": "10b0c42a9c83f3b33614a5be307315512f0b749e967fc9131027bbfc417afb12",
+      "scope": "synthetic_regression_not_held_out_legal_accuracy"
+    },
+    {
+      "name": "experiments-z3",
+      "case_count": 19,
+      "all_passed": true,
+      "corpus_sha256": "10b0c42a9c83f3b33614a5be307315512f0b749e967fc9131027bbfc417afb12",
+      "scope": "synthetic_regression_not_held_out_legal_accuracy"
+    },
+    {
+      "name": "families",
+      "case_count": 15,
+      "all_passed": true,
+      "corpus_sha256": "85b001b2c14ecee226e2ba8f77272cff795440ac43941712287bd41004e8e2e3",
+      "scope": "synthetic_semantic_regression_not_legal_accuracy_or_expert_validation"
+    }
+  ],
+  "external_model_evaluation": false,
+  "independent_legal_evaluation": false,
+  "legal_certification": false
+}

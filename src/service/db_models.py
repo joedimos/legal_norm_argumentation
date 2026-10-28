@@ -120,7 +120,9 @@ class WorkflowRecord(Base):
     request_hash: Mapped[str] = mapped_column(String(64), nullable=False)
     request_payload: Mapped[dict[str, Any]] = mapped_column(JSON, nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, default=utcnow)
-    __table_args__ = (UniqueConstraint("kind", "created_by", "request_hash", name="uq_workflow_permanent_dedup"),)
+    __table_args__ = (UniqueConstraint("kind", "created_by", "request_hash", name="uq_workflow_permanent_dedup"),
+                      Index("ix_workflow_owner_created", "created_by", "created_at"),
+                      Index("ix_workflow_kind_created", "kind", "created_at"))
 
 
 class WorkflowEventRecord(Base):

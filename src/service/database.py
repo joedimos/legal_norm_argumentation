@@ -70,7 +70,7 @@ class Database:
         if require_migrations:
             try:
                 with self.engine.connect() as connection:
-                    if connection.execute(text("SELECT version_num FROM alembic_version")).scalar() != "0002_governed_workflows":
+                    if connection.execute(text("SELECT version_num FROM alembic_version")).scalar() != "0003_workflow_indexes":
                         return False
             except Exception:
                 return False

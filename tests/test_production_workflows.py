@@ -478,3 +478,53 @@ def test_policy_changes_do_not_replay_historical_approval_as_new_authorization(t
         # review must still block, including a previously authorized cache entry.
         post(client, f"/v1/sources/{source['id']}/reviews", {'candidate_id': source['candidates'][0]['id'], 'decision': 'rejected'}, REVIEWER_TOKEN)
         assert post(client, url, body, key='policy-replay-fixture').status_code == 409
+
+
+def test_runtime_drift_stops_before_model_call_and_explicit_retry_repins(tmp_path):
+    cfg = settings(tmp_path, inference_enabled=True, model_name='test-model', model_revision='weights-v1')
+    app = create_app(cfg)
+    with TestClient(app) as client:
+        id = base_family(client)
+        body = {'family_workflow_id': id, 'prompt': 'Runtime binding fixture.'}
+        job = post(client, '/v1/workflows/generations', body).json()['id']
+        cfg.model_revision = 'weights-v2'
+        calls = []
+        assert process_one(app.state.db, cfg, transport=transport(proposal(), calls))['status'] == 'worker_failed'
+        failed = client.get(f'/v1/workflows/{job}', headers=auth(OPERATOR_TOKEN)).json()['result']
+        assert failed['reason'] == 'runtime_binding_changed_or_missing' and failed['generation_calls'] == 0
+        assert calls == []
+        retry = post(client, '/v1/workflows/generations', {**body, 'retry_of': job, 'retry_reason': 'New weights explicitly inspected.'})
+        assert retry.status_code == 202
+        assert process_one(app.state.db, cfg, transport=transport(proposal(), calls))['status'] == 'review_required'
+        result = client.get(f"/v1/workflows/{retry.json()['id']}", headers=auth(OPERATOR_TOKEN)).json()['result']
+        assert result['runtime_binding']['model_revision'] == 'weights-v2'
+        assert len(calls) == 1
+
+
+def test_queue_diagnostics_show_stale_claims_without_prompt_payloads(tmp_path):
+    from src.service.db_models import WorkflowEventRecord
+    from src.service.workflows import state
+    cfg = settings(tmp_path, inference_enabled=True, model_name='test-model')
+    app = create_app(cfg)
+    with TestClient(app) as client:
+        id = base_family(client)
+        queued = post(client, '/v1/workflows/generations', {'family_workflow_id': id, 'prompt': 'private-diagnostic-fixture'}).json()['id']
+        with app.state.db.session() as session:
+            session.add(WorkflowEventRecord(workflow_id=queued, slot='claim', actor='fixture', payload={'status': 'claimed'},
+                                            created_at=datetime.now(UTC)-timedelta(hours=1)))
+            create_workflow(session, 'family', 'other-operator', {'private': 'another-owner'}, 'diagnostic-fixture')
+            assert state(session, session.get(WorkflowRecord, queued))['status'] == 'running_or_interrupted'
+        status = client.get('/v1/workflow-status', headers=auth(OPERATOR_TOKEN)).json()
+        assert status['scope'] == 'own' and status['total_workflows'] == 2
+        assert status['stale_claim_ids'] == [queued] and status['stale_claim_count'] == 1
+        assert 'private-diagnostic-fixture' not in json.dumps(status)
+        listings = client.get('/v1/workflows', headers=auth(OPERATOR_TOKEN)).json()
+        assert all('request_payload' not in item and 'review_request' not in item for item in listings['workflows'])
+
+
+def test_duplicate_api_key_tokens_are_rejected(tmp_path):
+    from pydantic import ValidationError
+    entries = [{'token': OPERATOR_TOKEN, 'subject': 'a', 'roles': ['operator']},
+               {'token': OPERATOR_TOKEN, 'subject': 'b', 'roles': ['reviewer']}]
+    with pytest.raises(ValidationError, match='tokens must be unique'):
+        settings(tmp_path, api_keys_json=json.dumps(entries))
