@@ -87,8 +87,9 @@ def _reviewer(value):
     _text(value["qualification"], "reviewer qualification")
 
 
-def _judgment(value):
-    if (not isinstance(value, dict) or set(value) != {"labels", "rationale", "alternative_interpretations"}
+def _judgment(value, documents=None):
+    if (not isinstance(value, dict) or (not {"labels", "rationale", "alternative_interpretations"} <= set(value)
+                or set(value) - {"labels", "rationale", "alternative_interpretations", "evidence_refs"})
             or not isinstance(value["labels"], dict) or set(value["labels"]) != set(DIMENSIONS)):
         raise ValueError("judgment requires all separate dimensions, rationale, alternative_interpretations")
     if any(not isinstance(v, str) or v not in LABELS for v in value["labels"].values()):
@@ -99,6 +100,20 @@ def _judgment(value):
         raise ValueError("alternative interpretations must be a bounded array")
     for alternative in alternatives:
         _text(alternative, "alternative interpretation", 8000)
+
+    refs = value.get("evidence_refs", [])
+    if not isinstance(refs, list) or len(refs) > 32:
+        raise ValueError("judgment evidence_refs must be a bounded array")
+    registry = {d["id"]: d for d in documents or []}
+    for ref in refs:
+        if not isinstance(ref, dict) or set(ref) != {"document_id", "start", "end", "quote"}:
+            raise ValueError("invalid judgment evidence reference")
+        _text(ref["document_id"], "judgment document id", 512)
+        doc = registry.get(ref["document_id"])
+        if (doc is None or type(ref["start"]) is not int or type(ref["end"]) is not int
+                or not 0 <= ref["start"] < ref["end"] <= len(doc["text"])
+                or ref["quote"] != doc["text"][ref["start"]:ref["end"]]):
+            raise ValueError("judgment evidence does not match frozen source span")
 
 
 def assess_annotations(request):
@@ -132,7 +147,7 @@ def assess_annotations(request):
             id = annotation["unit_id"]
             if id not in units or id in by_id or annotation["unit_sha256"] != units[id]["unit_sha256"]:
                 raise ValueError("unknown, duplicate or stale annotation unit")
-            _judgment(annotation["judgment"])
+            _judgment(annotation["judgment"], units[id]["family"]["documents"])
             by_id[id] = annotation["judgment"]
         indexed.append(by_id)
     differences = {}
@@ -175,7 +190,7 @@ def assess_annotations(request):
             seen.add(id)
             if decision["resolution"] not in {"resolved", "unresolved"}:
                 raise ValueError("adjudication resolution must be resolved or unresolved")
-            _judgment(decision["judgment"])
+            _judgment(decision["judgment"], units[id]["family"]["documents"])
             if decision["resolution"] == "resolved":
                 resolved.add(id)
     return {"schema": "vle-annotation-result/v1", "request_sha256": _hash(request),
@@ -185,3 +200,16 @@ def assess_annotations(request):
             "unresolved_units": sorted(set(differences) - resolved), "metrics": metrics,
             "reviewers_authenticated": False, "qualifications_verified": False, "independence_verified": False,
             "deployment_authorized": False, "legal_certification": False}
+
+
+def annotation_template(packet, *, reviewer_id, qualification):
+    """A blank assignment; it cannot pass assessment until a reviewer completes it."""
+    _validate_packet(packet)
+    _text(reviewer_id, "reviewer id", 128)
+    _text(qualification, "reviewer qualification")
+    return {"reviewer": {"id": reviewer_id, "qualification": qualification, "independent": None,
+                         "conflicts_disclosed": None},
+            "packet_sha256": packet["packet_sha256"],
+            "annotations": [{"unit_id": unit["id"], "unit_sha256": unit["unit_sha256"],
+                             "judgment": {"labels": dict.fromkeys(DIMENSIONS), "rationale": "",
+                                          "alternative_interpretations": [], "evidence_refs": []}} for unit in packet["units"]]}

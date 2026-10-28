@@ -163,3 +163,6 @@ attested records, not independently verified expertise or a validated legal corp
 Actual independent annotations have not been supplied with this implementation.
 Follow [FAMILY_ANNOTATION_PROTOCOL.md](FAMILY_ANNOTATION_PROTOCOL.md) for recruitment,
 adjudication, source permissions, legal ambiguity and held-out evaluation.
+
+For vLLM, runtime diagnostics, blank assignments and signed independent judgments,
+see [INFERENCE_AND_SIGNED_REVIEW.md](INFERENCE_AND_SIGNED_REVIEW.md).

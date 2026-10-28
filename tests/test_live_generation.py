@@ -136,10 +136,11 @@ def test_request_does_not_mutate_family_and_rejects_invalid_budget():
 
 
 def test_transport_rejects_redirects_oversize_and_timeout_without_retry(monkeypatch):
-    from src import live_generation
+    from src import model_runtime
     events = []
     class Response:
         status = 302
+        headers = {}
 
         def read(self, limit, **kwargs):
             return b'x' * limit
@@ -155,11 +156,11 @@ def test_transport_rejects_redirects_oversize_and_timeout_without_retry(monkeypa
 
         def clear(self):
             events.append('clear')
-    monkeypatch.setattr(live_generation.urllib3, 'PoolManager', Pool)
-    with pytest.raises(ValueError, match='302'):
+    monkeypatch.setattr(model_runtime.urllib3, 'PoolManager', Pool)
+    with pytest.raises(ValueError, match='provider_http_error'):
         ollama_chat({}, endpoint='http://localhost:11434/api/chat', timeout=1)
     response.status = 200
-    with pytest.raises(ValueError, match='1 MiB'):
+    with pytest.raises(ValueError, match='1_MiB'):
         ollama_chat({}, endpoint='http://localhost:11434/api/chat', timeout=1)
     assert events.count('request') == 2
     assert events.count('close') == 2 and events.count('clear') == 2

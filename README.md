@@ -264,8 +264,9 @@ repeated text and revision limits. Run:
 python -m src.cli statutory-revise --input examples/statutory-revision.json
 ```
 
-The controller makes no live model calls. Authenticated expert review and
-production authorization remain outside this CLI research path.
+The controller makes no live model calls. Actual expert qualification checks and
+production authorization remain outside this CLI research path. Signed reviewer
+key verification is described below.
 
 ## Important limitations
 
@@ -273,7 +274,7 @@ This is substantially more complete than an extractor/argument graph, but it int
 
 ## Live generation and independent annotation
 
-`live-generate` calls an explicitly configured Ollama model and returns an
+`live-generate` calls an explicitly configured Ollama or vLLM model and returns an
 unreviewed answer plus behavior-mapping proposals. It pauses for human review
 after every generated candidate; only a reviewed violation permits a revision.
 `annotation-prepare` freezes blinded study packets; `annotation-assess` validates
@@ -282,3 +283,14 @@ third-reviewer adjudication and unresolved interpretations.
 
 See [the setup and annotation guide](docs/LIVE_GENERATION_ANNOTATION.md). No actual
 independent expert annotations or live provider evaluation results are shipped.
+
+`model-doctor` checks the configured runtime/model inventory without generating
+text. Environment configuration supports `VLE_MODEL_PROVIDER`, `VLE_MODEL_NAME`,
+`VLE_MODEL_ENDPOINT`, and secret `VLE_MODEL_API_KEY`.
+
+`annotation-template` creates unfilled reviewer assignments. The optional
+`annotation` extra adds `annotation-keygen`, `annotation-sign`, and
+`annotation-verify` for source-cited judgments under separately pinned reviewer
+keys and credential records, with jurisdiction, validity, revocation and registered
+independence-group checks. It does not manufacture legal experts or approvals.
+See [inference and signed review](docs/INFERENCE_AND_SIGNED_REVIEW.md).

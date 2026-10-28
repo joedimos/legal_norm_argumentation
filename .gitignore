@@ -13,3 +13,6 @@ build/
 .env
 benchmark-results.json
 audit-bundle.zip
+
+# Raw reviewer signing keys must never be versioned.
+*.reviewer.key

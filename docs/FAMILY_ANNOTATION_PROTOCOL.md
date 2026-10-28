@@ -54,3 +54,6 @@ accuracy, generalization, or an independent replication of arXiv:2608.28593.
 The executable packet, submission and adjudication workflow is described in
 [LIVE_GENERATION_ANNOTATION.md](LIVE_GENERATION_ANNOTATION.md). It does not substitute
 for recruiting independent legal experts or verifying their qualifications.
+
+For vLLM, runtime diagnostics, blank assignments and signed independent judgments,
+see [INFERENCE_AND_SIGNED_REVIEW.md](INFERENCE_AND_SIGNED_REVIEW.md).

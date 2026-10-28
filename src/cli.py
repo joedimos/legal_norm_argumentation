@@ -53,11 +53,27 @@ def main() -> None:
     lifecycle.add_argument("--at-date")
     lifecycle.add_argument("--assume-reviewed", action="store_true", help="Demo/testing convenience only")
 
-    for name in ("verify", "research", "experiment", "plan-evidence", "family", "statutory-revise", "live-generate", "annotation-prepare", "annotation-assess"):
+    for name in ("verify", "research", "experiment", "plan-evidence", "family", "statutory-revise", "live-generate", "annotation-prepare", "annotation-assess", "model-doctor", "annotation-verify"):
         command = subs.add_parser(name)
         command.add_argument("--input", required=True, help="Path to a versioned JSON research request")
         command.add_argument("--bundle", help="Write an audit ZIP containing request, result and runtime")
         command.add_argument("--revision", help="Full Git SHA of the executing build")
+    signed = subs.choices["annotation-verify"]
+    signed.add_argument("--registry", required=True, help="Public reviewer registry checked outside this assessment")
+    signed.add_argument("--expected-registry-sha256", required=True)
+    signed.add_argument("--expected-packet-sha256", required=True)
+    template = subs.add_parser("annotation-template")
+    template.add_argument("--input", required=True)
+    template.add_argument("--reviewer", required=True)
+    template.add_argument("--qualification", required=True)
+    signing = subs.add_parser("annotation-sign")
+    signing.add_argument("--input", required=True)
+    signing.add_argument("--private-key-file", required=True)
+    signing.add_argument("--packet-sha256", required=True)
+    signing.add_argument("--role", choices=("annotator", "adjudicator"), required=True)
+    keygen = subs.add_parser("annotation-keygen")
+    keygen.add_argument("--private-key-file", required=True)
+    keygen.add_argument("--public-key-file", required=True)
     benchmark = subs.add_parser("benchmark")
     benchmark.add_argument("--corpus", default="benchmarks/research-v1.json")
     benchmark.add_argument("--backend", choices=("exhaustive", "z3"), default="exhaustive")
@@ -77,7 +93,7 @@ def main() -> None:
     bundle.add_argument("--expected-manifest-digest")
 
     args = parser.parse_args()
-    if args.command in {"verify", "research", "experiment", "plan-evidence", "family", "statutory-revise", "family-review", "family-benchmark", "benchmark", "experiment-benchmark", "verify-bundle", "live-generate", "annotation-prepare", "annotation-assess"}:
+    if args.command in {"verify", "research", "experiment", "plan-evidence", "family", "statutory-revise", "family-review", "family-benchmark", "benchmark", "experiment-benchmark", "verify-bundle", "live-generate", "annotation-prepare", "annotation-assess", "model-doctor", "annotation-verify", "annotation-template", "annotation-sign", "annotation-keygen"}:
         raise SystemExit(_research_command(args))
     text = _read_text(args)
     norms = extract_norms(text, source_id=args.source_id)
@@ -114,14 +130,19 @@ def _research_command(args) -> int:
     from .experiments import run_experiment, run_experiment_suite
     from .family_contract import record_family_review
     from .interpretation_family import analyze_family, run_family_benchmark
-    from .legal_annotation import assess_annotations, prepare_annotation
+    from .legal_annotation import annotation_template, assess_annotations, prepare_annotation
     from .live_generation import generate_candidate
     from .model_checking import verify_request
+    from .model_runtime import model_doctor, strict_json
     from .research import run_research
     from .research_benchmark import run_benchmarks
     from .response_alignment import run_revision_sequence
+    from .signed_annotation import assess_signed_annotations, create_reviewer_key, sign_judgment
 
     try:
+        if args.command == "annotation-keygen":
+            print(json.dumps(create_reviewer_key(args.private_key_file, args.public_key_file)))
+            return 0
         if args.command == "benchmark":
             payload = run_benchmarks(args.corpus, backend=args.backend)
             code = 0 if payload["all_passed"] else 1
@@ -143,6 +164,22 @@ def _research_command(args) -> int:
                     return result
 
                 request = json.loads(raw, object_pairs_hook=unique_keys)
+                registry = None
+                if args.command == "annotation-template":
+                    payload = annotation_template(request, reviewer_id=args.reviewer, qualification=args.qualification)
+                    print(json.dumps(payload, indent=2, ensure_ascii=False, allow_nan=False))
+                    return 0
+                if args.command == "annotation-sign":
+                    payload = sign_judgment(request, packet_sha256=args.packet_sha256, role=args.role,
+                                            private_key_file=args.private_key_file)
+                    print(json.dumps(payload, indent=2, ensure_ascii=False, allow_nan=False))
+                    return 0
+                if args.command == "annotation-verify":
+                    with Path(args.registry).open("rb") as handle:
+                        registry_raw = handle.read(MAX_BYTES + 1)
+                    if len(registry_raw) > MAX_BYTES:
+                        raise ValueError("registry exceeds 16 MiB")
+                    registry = strict_json(registry_raw)
                 if args.command == "experiment-benchmark":
                     payload = run_experiment_suite(request, backend=args.backend)
                     print(json.dumps(payload, indent=2, ensure_ascii=False, allow_nan=False))
@@ -153,12 +190,18 @@ def _research_command(args) -> int:
                                                     notes=args.notes, decision=args.decision))
                     print(json.dumps(payload, indent=2, ensure_ascii=False, allow_nan=False))
                     return 0 if args.command == "family-review" or payload["all_passed"] else 1
-                runner = {"live-generate": generate_candidate, "annotation-prepare": prepare_annotation, "annotation-assess": assess_annotations, "statutory-revise": run_revision_sequence, "family": analyze_family, "verify": verify_request, "research": run_research, "experiment": run_experiment, "plan-evidence": plan_evidence}[args.command]
+                runner = {"model-doctor": model_doctor,
+                          "annotation-verify": lambda r: assess_signed_annotations(
+                              r, registry=registry, expected_registry_sha256=args.expected_registry_sha256,
+                              expected_packet_sha256=args.expected_packet_sha256), "live-generate": generate_candidate, "annotation-prepare": prepare_annotation, "annotation-assess": assess_annotations, "statutory-revise": run_revision_sequence, "family": analyze_family, "verify": verify_request, "research": run_research, "experiment": run_experiment, "plan-evidence": plan_evidence}[args.command]
                 payload = runner(request)
-                code = 0 if payload.get("status", payload.get("annotation_status")) in {"awaiting_independent_annotations", "annotations_collected", "verified_bounded", "compliant", "definitely_true", "equivalent_bounded", "planned", "already_decided", "robust_satisfied", "model_satisfied"} else 1
+                code = 0 if payload.get("status", payload.get("annotation_status")) in {"model_available", "awaiting_independent_annotations", "annotations_collected", "verified_bounded", "compliant", "definitely_true", "equivalent_bounded", "planned", "already_decided", "robust_satisfied", "model_satisfied"} else 1
                 if args.bundle:
-                    archive, root = create_bundle({"request.json": request, "result.json": payload,
-                                                   "runtime.json": runtime_evidence(revision=args.revision)},
+                    artifacts = {"request.json": request, "result.json": payload,
+                                 "runtime.json": runtime_evidence(revision=args.revision)}
+                    if registry is not None:
+                        artifacts["reviewer-registry.json"] = registry
+                    archive, root = create_bundle(artifacts,
                                                   metadata={"kind": args.command, "legal_certification": False})
                     # Refuse to silently replace an existing evidence bundle.
                     with Path(args.bundle).open("xb") as handle:
