@@ -221,3 +221,27 @@ differ. CI additionally performs a real server-version-matched PostgreSQL dump a
 restore into an isolated database, checks append-only triggers, and tests parallel
 worker claims. CI evidence validates the software exercise, not your deployment's
 backup custody, RPO/RTO, TLS, alerts, retention policy or incident response.
+
+## Runtime binding and operational diagnostics (0.6.2)
+
+New generation jobs record the server-selected provider, model, endpoint, optional
+`VLE_MODEL_REVISION` and build revision at submission. The worker compares that
+binding before dispatch. Configuration drift or a legacy unbound queued job fails
+as `worker_failed` with `reason: runtime_binding_changed_or_missing` and zero model
+calls. An explicit investigated retry creates a new job bound to the current
+runtime. Secret rotation does not expose keys in the binding. A model revision is
+a custodian-supplied identifier, not automatically verified weights provenance.
+
+`GET /v1/workflow-status` reports database-derived status counts, oldest queued
+age and stale claims (ID list capped at 100, total count uncapped). Operators see
+their own work; reviewer/auditor roles see aggregate authorized work. The default
+stale threshold is 300 seconds, configurable with `VLE_WORKFLOW_STALE_AFTER_SECONDS`.
+List queries project status fields instead of retrieving complete prompt/result
+JSON. Staleness is a diagnostic and never automatically triggers a model retry.
+Duplicate configured API tokens are rejected, including when assigned to different
+principals, so separation-of-duty configuration cannot appear to contain distinct
+credentials while authenticating only one key.
+
+Run Alembic through `0003_workflow_indexes` before this release. It adds owner/time
+and kind/time indexes for private listings and pending-job selection. Schema
+readiness requires the new revision; no governed records are rewritten.

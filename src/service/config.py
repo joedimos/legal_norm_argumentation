@@ -26,7 +26,7 @@ class Settings(BaseSettings):
 
     environment: Literal["development", "test", "production"] = "development"
     service_name: str = "legal-norm-argumentation"
-    service_version: str = "0.6.1"
+    service_version: str = "0.6.2"
     build_revision: str | None = Field(default=None, pattern=r"^[0-9a-f]{40}$")
     database_url: str = "sqlite+pysqlite:///./vle_legato.db"
     database_pool_size: int = Field(default=10, ge=1, le=100)
@@ -48,6 +48,8 @@ class Settings(BaseSettings):
     model_provider: Literal["ollama", "vllm"] = "ollama"
     model_name: str | None = Field(default=None, max_length=256)
     model_endpoint: str | None = None
+    model_revision: str | None = Field(default=None, min_length=1, max_length=256)
+    workflow_stale_after_seconds: int = Field(default=300, ge=30, le=86400)
     model_api_key: SecretStr | None = None
     reviewer_registry_path: str | None = None
     reviewer_registry_sha256: str | None = Field(default=None, pattern=r"^[0-9a-f]{64}$")
@@ -69,13 +71,17 @@ class Settings(BaseSettings):
     legifrance_max_articles_per_run: int = Field(default=50, ge=1, le=100)
     legifrance_max_full_sync_articles: int = Field(default=2500, ge=1, le=10_000)
 
-    @field_validator("reviewer_registry_path", "reviewer_registry_sha256", "release_evidence_path", "release_evidence_sha256", mode="before")
+    @field_validator("model_revision", "reviewer_registry_path", "reviewer_registry_sha256", "release_evidence_path", "release_evidence_sha256", mode="before")
     @classmethod
     def empty_optional_evidence(cls, value):
         return None if value == "" else value
 
     @model_validator(mode="after")
     def validate_workflow_settings(self) -> Settings:
+        entries = self.api_keys
+        tokens = [entry.token.get_secret_value() for entry in entries]
+        if len(set(tokens)) != len(tokens):
+            raise ValueError("API key tokens must be unique across configured principals")
         for path, sha in ((self.reviewer_registry_path, self.reviewer_registry_sha256),
                           (self.release_evidence_path, self.release_evidence_sha256)):
             if bool(path) != bool(sha):

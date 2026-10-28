@@ -309,3 +309,7 @@ Read [the release, migration and operations guide](docs/PRODUCTION_RELEASE.md)
 before upgrading. Real model inference, held-out expert evaluation and deployment
 smoke/load/restore/live-source reports must be supplied and approved externally;
 missing evidence blocks strict-policy production decisions. CI success alone is insufficient.
+
+Version 0.6.2 binds queued model work to its submission-time runtime, adds private
+queue/stale-claim diagnostics, and rejects duplicate principal tokens. The default
+reviewed authorization policy remains unchanged.

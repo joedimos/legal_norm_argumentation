@@ -16,7 +16,17 @@ from .db_models import WorkflowRecord
 from .release_policy import pinned_json, verify_assessment
 from .repository import get_idempotent, get_source, store_idempotent
 from .security import Principal, require_roles
-from .workflows import add_event, create_workflow, events, generation_request, review_workflow, state
+from .workflows import (
+    add_event,
+    create_workflow,
+    events,
+    generation_request,
+    queue_status,
+    review_workflow,
+    runtime_binding,
+    state,
+    workflow_summaries,
+)
 
 router = APIRouter()
 
@@ -110,7 +120,7 @@ def submit_generation(payload: GenerationSubmission, request: Request, session=D
             raise HTTPException(403, "only the family operator may submit its inference jobs")
         for id in payload.history_ids:
             visible(session.get(WorkflowRecord, id), principal)
-        body = payload.model_dump()
+        body = {**payload.model_dump(), "runtime_binding": runtime_binding(request.app.state.settings)}
         if bool(payload.retry_of) != bool(payload.retry_reason):
             raise ValueError("an explicit retry requires its prior job ID and investigation reason")
         if payload.retry_of:
@@ -176,11 +186,16 @@ def list_workflows(request: Request, session=Depends(db_session), principal: Pri
                    limit: int = 50):
     if not 1 <= limit <= 100:
         raise HTTPException(422, "limit must be 1-100")
-    query = select(WorkflowRecord).order_by(WorkflowRecord.created_at.desc()).limit(limit)
-    if not principal.has_any({"reviewer", "auditor"}):
-        query = query.where(WorkflowRecord.created_by == principal.subject)
-    return {"workflows": [{k: v for k, v in state(session, item).items() if k in {"id", "kind", "status", "created_by", "created_at"}}
-                          for item in session.scalars(query)]}
+    subject = None if principal.has_any({"reviewer", "auditor"}) else principal.subject
+    return {"workflows": workflow_summaries(session, subject=subject, limit=limit)}
+
+
+@router.get("/v1/workflow-status")
+def workflow_status(request: Request, session=Depends(db_session),
+                    principal: Principal = Depends(require_roles("operator", "reviewer", "auditor"))):
+    subject = None if principal.has_any({"reviewer", "auditor"}) else principal.subject
+    return queue_status(session, subject=subject,
+                        stale_after_seconds=request.app.state.settings.workflow_stale_after_seconds)
 
 
 @router.get("/v1/workflows/{workflow_id}")
