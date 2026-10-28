@@ -313,3 +313,10 @@ missing evidence blocks strict-policy production decisions. CI success alone is 
 Version 0.6.2 binds queued model work to its submission-time runtime, adds private
 queue/stale-claim diagnostics, and rejects duplicate principal tokens. The default
 reviewed authorization policy remains unchanged.
+
+## Academic manuscript
+
+The [research-software paper](docs/paper/manuscript.md) explains the complete
+framework, formal semantics, conditional correctness arguments, synthetic
+evaluation and limitations. [Build instructions and the evaluation record](docs/paper/README.md)
+allow regeneration of the PDF and inspection of the reported evidence.
