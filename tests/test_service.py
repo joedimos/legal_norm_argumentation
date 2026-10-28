@@ -21,6 +21,7 @@ METRICS_TOKEN = "metrics-token-abcdefghijklmnopqrstuvwxyz-1234567"
 def settings(tmp_path, **overrides) -> Settings:
     payload = dict(
         environment="test",
+        release_enforcement="strict",
         database_url=f"sqlite+pysqlite:///{tmp_path / 'service.db'}",
         api_keys_json=json.dumps(
             [

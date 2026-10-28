@@ -297,8 +297,9 @@ See [inference and signed review](docs/INFERENCE_AND_SIGNED_REVIEW.md).
 
 ## Governed production operations (0.6)
 
-Production authorization now requires research readiness **plus** a current pinned
-release evidence graph and favorable independently signed case review. A
+Default `reviewed` operation permits authorization after source review and
+determinate reasoning. External release evidence and signed case review remain
+visible advisory findings; set `VLE_RELEASE_ENFORCEMENT=strict` to require them. A
 research-only HTTP 200 never sets `decision_authorized` to true. The new
 `/workflows` console and authenticated API persist family reviews, model jobs,
 signed assessments and audit exports; a separate worker claims each inference
@@ -307,4 +308,4 @@ job at most once. Compose passes PISTE/model/trust configuration explicitly.
 Read [the release, migration and operations guide](docs/PRODUCTION_RELEASE.md)
 before upgrading. Real model inference, held-out expert evaluation and deployment
 smoke/load/restore/live-source reports must be supplied and approved externally;
-missing evidence blocks production decisions. CI success alone is insufficient.
+missing evidence blocks strict-policy production decisions. CI success alone is insufficient.

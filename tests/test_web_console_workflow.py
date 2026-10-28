@@ -16,6 +16,7 @@ METRICS_TOKEN = "web-metrics-token-abcdefghijklmnopqrstuvwxyz-123456789"
 def _settings(tmp_path) -> Settings:
     return Settings(
         environment="test",
+        release_enforcement="strict",
         database_url=f"sqlite+pysqlite:///{tmp_path / 'web-workflow.db'}",
         api_keys_json=json.dumps(
             [

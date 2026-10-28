@@ -26,7 +26,7 @@ class Settings(BaseSettings):
 
     environment: Literal["development", "test", "production"] = "development"
     service_name: str = "legal-norm-argumentation"
-    service_version: str = "0.6.0"
+    service_version: str = "0.6.1"
     build_revision: str | None = Field(default=None, pattern=r"^[0-9a-f]{40}$")
     database_url: str = "sqlite+pysqlite:///./vle_legato.db"
     database_pool_size: int = Field(default=10, ge=1, le=100)
@@ -51,6 +51,7 @@ class Settings(BaseSettings):
     model_api_key: SecretStr | None = None
     reviewer_registry_path: str | None = None
     reviewer_registry_sha256: str | None = Field(default=None, pattern=r"^[0-9a-f]{64}$")
+    release_enforcement: Literal["reviewed", "strict"] = "reviewed"
     release_evidence_path: str | None = None
     release_evidence_sha256: str | None = Field(default=None, pattern=r"^[0-9a-f]{64}$")
     release_max_p95_ms: float = Field(default=1000, gt=0)

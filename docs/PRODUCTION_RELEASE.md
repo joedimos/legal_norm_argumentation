@@ -5,10 +5,27 @@ an inference worker and executable staging probes. It does not supply a model
 server, real independent legal annotations, PISTE credentials, TLS infrastructure
 or organizational approval. Missing evidence keeps production decisions blocked.
 
-## Authorization changes
+## Authorization policies
+
+Version 0.6.1 removes the external-validation hard block by default.
+`VLE_RELEASE_ENFORCEMENT=reviewed` permits high-stakes report authorization after
+current source review, interpretation resolution and determinate reasoning.
+Missing release/independent-case evidence is advisory and stays visible in
+`production_release`; it is never converted into passing validation or legal
+certification. Authorized responses use `authorization_scope: reviewed_operation`
+when external validation has not passed, with `override_used: true`. The configured
+policy and override are retained in the run and audit event.
+
+Set `VLE_RELEASE_ENFORCEMENT=strict` to restore mandatory external validation.
+API callers cannot change this deployment policy. Both modes preserve authentication,
+source review, separation of duties, reasoning checks and evidence integrity.
+A policy, target or validation-status change requires a new Idempotency-Key for a
+new evaluation; old immutable receipts do not become new authorizations.
+
+The strict policy behaves as follows:
 
 `research_ready` is a necessary research result, not production authorization.
-A high-stakes evaluation now requires all three predicates:
+A high-stakes evaluation under `strict` requires all three predicates:
 
 1. Current source review, interpretation selection and determinate reasoning.
 2. A separately pinned, unexpired deployment release evidence graph for this build.

@@ -7,7 +7,7 @@ body{font:16px system-ui;background:#0a1420;color:#e4eef5;max-width:1100px;margi
 section{border:1px solid #34485a;padding:20px;border-radius:12px;margin:20px 0}input,select,textarea,button{font:inherit;margin:6px 0;padding:9px;border-radius:6px;background:#12283a;color:inherit;border:1px solid #486077}
 textarea{box-sizing:border-box;width:100%;min-height:150px}button{cursor:pointer}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#07101a;padding:14px}label{display:block}small{color:#a9bfce}
 </style><a href="/">← Source operations</a><h1>Inference and independent legal review</h1>
-<p>Submit a normative family, obtain a separate review, then queue inference. Generated drafts require another review. Production decisions remain blocked until release and signed case-review evidence passes.</p>
+<p>Submit a normative family, obtain a separate review, then queue inference. Generated drafts require another review. Reviewed operation is enabled by default. Strict release policy additionally requires external release and signed case-review evidence.</p>
 <label>API key <input id="key" type="password" autocomplete="off"></label><button id="connect">Connect</button><span id="identity"></span>
 <section><h2>1. Normative family</h2><p>Paste a family request without approval receipts or draft answers.</p><textarea id="family" aria-label="Family JSON"></textarea><button id="submitFamily">Store family</button></section>
 <section><h2>2. Reviewer decision</h2><label>Workflow ID <input id="reviewId"></label><label>Review scope <select id="scope"><option>family</option><option>grounding</option><option>behavior</option></select></label>

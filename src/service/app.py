@@ -153,7 +153,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     @app.get("/v1/release-status")
     def release_status(principal: Principal = Depends(require_roles("reader", "operator", "reviewer", "auditor"))):
         return {"release": deployment_release_gate(settings), "inference_enabled": settings.inference_enabled,
-                "build_revision": settings.build_revision, "case_review_required": True, "legal_certification": False}
+                "build_revision": settings.build_revision, "release_enforcement": settings.release_enforcement,
+                "case_review_required": settings.release_enforcement == "strict", "legal_certification": False}
 
     @app.get("/metrics", include_in_schema=False, dependencies=[Depends(verify_metrics_token)])
     def metrics() -> Response:
@@ -438,11 +439,18 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         if assessment is not None and assessment.request_payload.get("source_id") != source.id:
             case = {"passed": False, "reason": "case_review_source_mismatch"}
         release_ready = bool(ready and release["passed"] and case["passed"])
-        authorized = release_ready
-        result["production_release"] = {"authorized": release_ready, "evaluation_target_sha256": target_hash,
+        external_validation_satisfied = bool(release["passed"] and case["passed"])
+        reviewed_operation = bool(payload.high_stakes and ready and settings.release_enforcement == "reviewed")
+        authorized = release_ready or reviewed_operation
+        override_used = bool(authorized and not external_validation_satisfied)
+        result["production_release"] = {"authorized": authorized, "evaluation_target_sha256": target_hash,
+                                       "enforcement": settings.release_enforcement, "external_validation_satisfied": external_validation_satisfied,
+                                       "override_used": override_used,
+                                       "authorization_basis": "reviewed_source_operation" if override_used else "validated_release" if release_ready else "none",
                                        "deployment": release, "independent_case_review": case, "legal_certification": False}
-        result["authorization_scope"] = "organizational_release" if release_ready else "research_only" if not payload.high_stakes else "blocked"
-        if payload.high_stakes and not release_ready:
+        result["authorization_scope"] = ("organizational_release" if release_ready else "reviewed_operation" if reviewed_operation
+                                         else "research_only" if not payload.high_stakes else "blocked")
+        if payload.high_stakes and not release_ready and settings.release_enforcement == "strict":
             # The research verdict stays visible as research evidence. It never
             # silently becomes the stronger production authorization predicate.
             for gate, evidence in (("production_release_evidence", release), ("independent_case_review", case)):
@@ -451,11 +459,15 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                     result["readiness"]["failed_gates"].append(gate)
             result["readiness"]["status"] = "not_ready"
         if cached:
-            if authorized:
+            old_release = cached.response_payload.get("production_release", {})
+            same_basis = (old_release.get("enforcement") == settings.release_enforcement
+                          and old_release.get("external_validation_satisfied") == external_validation_satisfied
+                          and old_release.get("evaluation_target_sha256") == target_hash)
+            if authorized and cached.response_payload.get("decision_authorized") and same_basis:
                 return JSONResponse(status_code=cached.status_code, content=cached.response_payload)
             return JSONResponse(status_code=409, content={"run_id": cached.response_payload.get("run_id"),
                 "decision_authorized": False, "production_release": result["production_release"],
-                "detail": "historical idempotent response cannot reauthorize after evidence/review changes"})
+                "detail": "historical response has different authorization evidence/policy; submit a new Idempotency-Key"})
         run = create_run(
             session,
             source_id=source.id,
@@ -473,7 +485,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             resource_type="run",
             resource_id=run.id,
             request_id=request.state.request_id,
-            payload={"source_id": source.id, "decision_authorized": authorized, "readiness": result.get("readiness")},
+            payload={"source_id": source.id, "decision_authorized": authorized, "readiness": result.get("readiness"),
+                     "release_enforcement": settings.release_enforcement, "override_used": override_used,
+                     "external_validation_satisfied": external_validation_satisfied},
         )
         LIFECYCLE_RUNS.labels(str(authorized).lower(), str(payload.high_stakes).lower()).inc()
         status_code = 200 if authorized or not payload.high_stakes else 409
