@@ -26,7 +26,7 @@ class Settings(BaseSettings):
 
     environment: Literal["development", "test", "production"] = "development"
     service_name: str = "legal-norm-argumentation"
-    service_version: str = "0.5.0"
+    service_version: str = "0.6.0"
     build_revision: str | None = Field(default=None, pattern=r"^[0-9a-f]{40}$")
     database_url: str = "sqlite+pysqlite:///./vle_legato.db"
     database_pool_size: int = Field(default=10, ge=1, le=100)
@@ -44,6 +44,20 @@ class Settings(BaseSettings):
     log_level: str = "INFO"
     otlp_endpoint: str | None = None
     otlp_headers: str | None = None
+    inference_enabled: bool = False
+    model_provider: Literal["ollama", "vllm"] = "ollama"
+    model_name: str | None = Field(default=None, max_length=256)
+    model_endpoint: str | None = None
+    model_api_key: SecretStr | None = None
+    reviewer_registry_path: str | None = None
+    reviewer_registry_sha256: str | None = Field(default=None, pattern=r"^[0-9a-f]{64}$")
+    release_evidence_path: str | None = None
+    release_evidence_sha256: str | None = Field(default=None, pattern=r"^[0-9a-f]{64}$")
+    release_max_p95_ms: float = Field(default=1000, gt=0)
+    release_min_load_requests: int = Field(default=100, ge=1)
+    release_min_cases: int = Field(default=100, ge=1)
+    release_min_extraction_f1: float = Field(default=0.9, ge=0, le=1)
+    release_min_compliance_accuracy: float = Field(default=0.9, ge=0, le=1)
     legifrance_enabled: bool = True
     legifrance_source: Literal["auto", "piste", "html"] = "auto"
     legifrance_piste_environment: Literal["production", "sandbox"] = "production"
@@ -53,6 +67,25 @@ class Settings(BaseSettings):
     legifrance_request_delay_seconds: float = Field(default=0.2, ge=0.0, le=5.0)
     legifrance_max_articles_per_run: int = Field(default=50, ge=1, le=100)
     legifrance_max_full_sync_articles: int = Field(default=2500, ge=1, le=10_000)
+
+    @field_validator("reviewer_registry_path", "reviewer_registry_sha256", "release_evidence_path", "release_evidence_sha256", mode="before")
+    @classmethod
+    def empty_optional_evidence(cls, value):
+        return None if value == "" else value
+
+    @model_validator(mode="after")
+    def validate_workflow_settings(self) -> Settings:
+        for path, sha in ((self.reviewer_registry_path, self.reviewer_registry_sha256),
+                          (self.release_evidence_path, self.release_evidence_sha256)):
+            if bool(path) != bool(sha):
+                raise ValueError("evidence/registry paths require separately pinned SHA-256 digests")
+        if self.inference_enabled:
+            from src.model_runtime import resolve_config
+            request = {"provider": self.model_provider, "model": self.model_name}
+            if self.model_endpoint:
+                request["endpoint"] = self.model_endpoint
+            resolve_config(request)
+        return self
 
     @field_validator("database_url")
     @classmethod
@@ -77,7 +110,8 @@ class Settings(BaseSettings):
 
     @property
     def has_piste_credentials(self) -> bool:
-        return self.legifrance_piste_client_id is not None and self.legifrance_piste_client_secret is not None
+        return bool(self.legifrance_piste_client_id and self.legifrance_piste_client_id.get_secret_value().strip()
+                    and self.legifrance_piste_client_secret and self.legifrance_piste_client_secret.get_secret_value().strip())
 
     @model_validator(mode="after")
     def validate_production_settings(self) -> Settings:

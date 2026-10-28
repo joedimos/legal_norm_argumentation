@@ -60,11 +60,20 @@ class Database:
             "audit_events",
             "idempotency_records",
             "rate_limit_buckets",
+            "workflow_requests",
+            "workflow_events",
         }
         if not required.issubset(tables):
             return False
         if require_migrations and "alembic_version" not in tables:
             return False
+        if require_migrations:
+            try:
+                with self.engine.connect() as connection:
+                    if connection.execute(text("SELECT version_num FROM alembic_version")).scalar() != "0002_governed_workflows":
+                        return False
+            except Exception:
+                return False
         return True
 
     def create_schema_for_tests(self) -> None:

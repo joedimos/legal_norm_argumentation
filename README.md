@@ -294,3 +294,17 @@ text. Environment configuration supports `VLE_MODEL_PROVIDER`, `VLE_MODEL_NAME`,
 keys and credential records, with jurisdiction, validity, revocation and registered
 independence-group checks. It does not manufacture legal experts or approvals.
 See [inference and signed review](docs/INFERENCE_AND_SIGNED_REVIEW.md).
+
+## Governed production operations (0.6)
+
+Production authorization now requires research readiness **plus** a current pinned
+release evidence graph and favorable independently signed case review. A
+research-only HTTP 200 never sets `decision_authorized` to true. The new
+`/workflows` console and authenticated API persist family reviews, model jobs,
+signed assessments and audit exports; a separate worker claims each inference
+job at most once. Compose passes PISTE/model/trust configuration explicitly.
+
+Read [the release, migration and operations guide](docs/PRODUCTION_RELEASE.md)
+before upgrading. Real model inference, held-out expert evaluation and deployment
+smoke/load/restore/live-source reports must be supplied and approved externally;
+missing evidence blocks production decisions. CI success alone is insufficient.

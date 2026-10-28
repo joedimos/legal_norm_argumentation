@@ -16,3 +16,7 @@ audit-bundle.zip
 
 # Raw reviewer signing keys must never be versioned.
 *.reviewer.key
+
+# Trusted release material and deployment secrets are supplied separately.
+deployment-evidence/
+deployment.env

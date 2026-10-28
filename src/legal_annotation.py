@@ -129,7 +129,8 @@ def assess_annotations(request):
     units = {unit["id"]: unit for unit in packet["units"]}
     reviewer_ids, indexed = set(), []
     for submission in submissions:
-        if (not isinstance(submission, dict) or set(submission) != {"reviewer", "packet_sha256", "annotations"}
+        if (not isinstance(submission, dict) or (not {"reviewer", "packet_sha256", "annotations"} <= set(submission)
+                    or set(submission) - {"reviewer", "packet_sha256", "annotations", "target_sha256"})
                 or submission["packet_sha256"] != packet["packet_sha256"]):
             raise ValueError("submission must bind the frozen packet")
         _reviewer(submission["reviewer"])
@@ -171,7 +172,8 @@ def assess_annotations(request):
     adjudication = request.get("adjudication")
     resolved = set()
     if adjudication is not None:
-        if (not isinstance(adjudication, dict) or set(adjudication) != {"reviewer", "submission_sha256s", "decisions"}
+        if (not isinstance(adjudication, dict) or (not {"reviewer", "submission_sha256s", "decisions"} <= set(adjudication)
+                    or set(adjudication) - {"reviewer", "submission_sha256s", "decisions", "target_sha256"})
                 or adjudication["submission_sha256s"] != [_hash(s) for s in submissions]):
             raise ValueError("adjudication must bind ordered original submissions")
         _reviewer(adjudication["reviewer"])

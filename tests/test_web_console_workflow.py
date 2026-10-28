@@ -137,7 +137,7 @@ def test_console_run_history_summarizes_governed_evaluation_without_context_leak
             json={"observed_actions": ["retain it"], "facts": {"private-sensitive-fact": True}, "high_stakes": True},
             headers=_auth(OPERATOR_TOKEN, "run-evaluate-001"),
         )
-        assert evaluated.status_code == 200
+        assert evaluated.status_code == 409
         run_id = evaluated.json()["run_id"]
 
         history = client.get(
@@ -149,8 +149,8 @@ def test_console_run_history_summarizes_governed_evaluation_without_context_leak
         run = history.json()["runs"][0]
         assert run["id"] == run_id
         assert run["source_id"] == source_id
-        assert run["decision_authorized"] is True
-        assert run["readiness_status"] == "research_ready"
+        assert run["decision_authorized"] is False
+        assert run["readiness_status"] == "not_ready"
         assert "context_payload" not in run
         assert "result_payload" not in run
         assert "private-sensitive-fact" not in json.dumps(run)
