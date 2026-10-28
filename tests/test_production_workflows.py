@@ -424,3 +424,57 @@ def test_explicit_failed_job_retry_is_audited_and_deduplicated(tmp_path):
         calls = []
         assert process_one(app.state.db, cfg, transport=transport(proposal(), calls))['status'] == 'review_required'
         assert len(calls) == 1
+
+
+def test_default_reviewed_mode_removes_external_validation_block_but_keeps_source_review(tmp_path):
+    from src.service.config import Settings
+    payload = settings(tmp_path).model_dump()
+    payload.pop('release_enforcement')
+    cfg = Settings(**payload, _env_file=None)
+    with TestClient(create_app(cfg)) as client:
+        source = ingest(client, 'The operator must retain logs.')
+        body = {'high_stakes': True, 'observed_actions': ['retain logs']}
+        url = f"/v1/sources/{source['id']}/evaluate"
+        assert post(client, url, body).status_code == 409
+        source_review(client, source)
+        response = post(client, url, body)
+        assert response.status_code == 200, response.text
+        assert response.json()['decision_authorized'] is True
+        assert response.json()['authorization_scope'] == 'reviewed_operation'
+        release = response.json()['production_release']
+        assert release['enforcement'] == 'reviewed' and release['override_used']
+        assert not release['external_validation_satisfied']
+        assert not release['deployment']['passed'] and not release['independent_case_review']['passed']
+        assert not release['legal_certification']
+        status = client.get('/v1/release-status', headers=auth(OPERATOR_TOKEN)).json()
+        assert status['release_enforcement'] == 'reviewed' and not status['case_review_required']
+        archive = client.get(f"/v1/runs/{response.json()['run_id']}/audit-bundle", headers=auth(REVIEWER_TOKEN))
+        assert verify_bundle(archive.content)['valid']
+
+
+def test_reviewed_mode_never_promotes_research_only_evaluation(tmp_path):
+    with TestClient(create_app(settings(tmp_path, release_enforcement='reviewed'))) as client:
+        source = ingest(client, 'The operator must retain logs.')
+        source_review(client, source)
+        result = post(client, f"/v1/sources/{source['id']}/evaluate", {'high_stakes': False, 'observed_actions': ['retain logs']})
+        assert result.status_code == 200 and not result.json()['decision_authorized']
+        assert not result.json()['production_release']['override_used']
+
+
+def test_policy_changes_do_not_replay_historical_approval_as_new_authorization(tmp_path):
+    cfg = settings(tmp_path, release_enforcement='reviewed')
+    with TestClient(create_app(cfg)) as client:
+        source = ingest(client, 'The operator must retain logs.')
+        source_review(client, source)
+        body = {'high_stakes': True, 'observed_actions': ['retain logs']}
+        url = f"/v1/sources/{source['id']}/evaluate"
+        assert post(client, url, body, key='policy-replay-fixture').status_code == 200
+        cfg.release_enforcement = 'strict'
+        blocked = post(client, url, body, key='policy-replay-fixture')
+        assert blocked.status_code == 409 and not blocked.json()['decision_authorized']
+        cfg.release_enforcement = 'reviewed'
+        source_review(client, source)
+        # A changed review keeps the same reviewed-operation policy. A negative
+        # review must still block, including a previously authorized cache entry.
+        post(client, f"/v1/sources/{source['id']}/reviews", {'candidate_id': source['candidates'][0]['id'], 'decision': 'rejected'}, REVIEWER_TOKEN)
+        assert post(client, url, body, key='policy-replay-fixture').status_code == 409

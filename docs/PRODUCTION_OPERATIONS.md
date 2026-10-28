@@ -44,7 +44,7 @@ Suggested alerts include readiness failure, elevated 5xx, p95 latency SLO breach
 
 ## High-stakes governance
 
-An operator ingests a source; a distinct reviewer approves/rejects each candidate and resolves ambiguous interpretations; production authorization additionally requires a pinned current release evidence graph and independently signed exact-case assessment. A high-stakes run returns HTTP 409 when readiness gates fail. Full blocked-run internals remain restricted to reviewer/auditor roles.
+An operator ingests a source; a distinct reviewer approves/rejects each candidate and resolves ambiguous interpretations; under strict release policy, production authorization additionally requires a pinned current release evidence graph and independently signed exact-case assessment. The default reviewed policy treats that external evidence as advisory. A high-stakes run returns HTTP 409 when readiness gates fail. Full blocked-run internals remain restricted to reviewer/auditor roles.
 
 ## Incident response
 
