@@ -1,0 +1,81 @@
+{
+  "schema": "vle-software-evaluation/v1",
+  "version": "0.9.2",
+  "scope": "synthetic_unreviewed_software_regression",
+  "tests": {
+    "passed": 543,
+    "skipped": 4
+  },
+  "coverage": {
+    "src/normative_evaluation.py": 100.0,
+    "src/pyreason_connector.py": 95.1219512195122,
+    "src/pyreason_normative.py": 97.82608695652173,
+    "src/pyreason_program.py": 94.73684210526316,
+    "src/pyreason_worker.py": 88.46153846153847
+  },
+  "installed_package": {
+    "decision_authorized": false,
+    "legal_certification": false,
+    "network_calls": 0,
+    "normative_backend_subprocess_verified": true,
+    "passed": true,
+    "resource_files": 64,
+    "schema": "vle-distribution-check/v1",
+    "wheel_sha256": "f2c2fe489da77ec2664fade47b6aa479bc714a55d85de5495eb72add59bd559a",
+    "worker_provider": "synthetic_unreviewed_fixture",
+    "worker_subprocess_verified": true
+  },
+  "benchmarks": {
+    "benchmark-exhaustive": {
+      "case_count": 62,
+      "all_passed": true
+    },
+    "benchmark-z3": {
+      "case_count": 62,
+      "all_passed": true
+    },
+    "experiment-exhaustive": {
+      "case_count": 19,
+      "all_passed": true
+    },
+    "experiment-z3": {
+      "case_count": 19,
+      "all_passed": true
+    },
+    "family": {
+      "case_count": 15,
+      "all_passed": true
+    },
+    "faithfulness": {
+      "case_count": 12,
+      "status": "reported"
+    }
+  },
+  "real_engine_qualification": "docs/PYREASON_NORMATIVE_QUALIFICATION.json",
+  "commands": [
+    "python -m pytest -q",
+    "python -m pytest -q tests/test_pyreason_connector.py tests/test_pyreason_normative.py --cov=src.pyreason_connector --cov=src.pyreason_worker --cov=src.pyreason_program --cov=src.pyreason_normative --cov=src.normative_evaluation --cov-fail-under=80",
+    "python -m src.cli benchmark --backend exhaustive",
+    "python -m src.cli benchmark --backend z3",
+    "python -m src.cli experiment-benchmark --backend exhaustive",
+    "python -m src.cli experiment-benchmark --backend z3",
+    "python -m src.cli family-benchmark",
+    "python -m src.cli faithfulness",
+    "python -m src.api_contract",
+    "python tools/verify_distribution.py <built-wheel>"
+  ],
+  "source_sha256": {
+    "src/pyreason_program.py": "4d0a34c64a974b70f7a25663ebf42e3bffb0fc8c6bdb1df35021bb14bb21d269",
+    "src/pyreason_normative.py": "321a7a538f1bfe37a6c276b9eb6d23ef3f1cc52c5fcc010a43431f107c3ccc13",
+    "src/normative_evaluation.py": "2e4d21befb6cb75f4862a63e82827a23f0bb4e87453696f15d5c99da8ab9d748",
+    "src/pyreason_connector.py": "68cddade1ee08c87d847d5c026fe646bba4d53950cf0da6aba66607b65572956",
+    "src/pyreason_worker.py": "eef9a4ab5fea9a8e278564e9d06dcd5226664acc86b1a556f0e0129be08dbe21",
+    "src/compliance.py": "9fd431372995aac83dd0f0ca7f3b00a82d857976b91b7ce62f00a517a3f03275",
+    "src/defeasible.py": "6e0587006b123f71fb9daa6b523b75c73643d468ad2c690ab01ad77cc13542be",
+    "src/lifecycle.py": "9680edf87122cc42698aa8ace6a780fc5c52746f0b6042656e16132c34a5927f",
+    "src/service/app.py": "6d89d45797f57372e4af5a0054c098be3056bf9c80327e02c327789c73f8783e",
+    "src/service/schemas.py": "4287fd77dc9c3572428eaf9c25ceeb3e6a595caa7d535a698bd02a109dd630bd"
+  },
+  "decision_authorized": false,
+  "legal_certification": false
+}

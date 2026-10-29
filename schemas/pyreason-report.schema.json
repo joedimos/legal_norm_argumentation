@@ -161,7 +161,8 @@
         "pyreason_output_bound",
         "pyreason_unsupported_version",
         "pyreason_unavailable_or_incompatible",
-        "pyreason_invalid_or_incompatible"
+        "pyreason_invalid_or_incompatible",
+        "pyreason_worker_concurrency_bound"
       ]
     }
   },

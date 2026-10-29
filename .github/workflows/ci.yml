@@ -34,7 +34,9 @@ jobs:
           cache: pip
       - run: python -m pip install --upgrade pip
       - run: python -m pip install -e '.[dev]'
-      - run: python -m pytest -q tests/test_pyreason_connector.py --cov=src.pyreason_connector --cov=src.pyreason_worker --cov-fail-under=80
+      - run: python -m pytest -q tests/test_pyreason_connector.py tests/test_pyreason_normative.py --cov=src.pyreason_connector --cov=src.pyreason_worker --cov=src.pyreason_program --cov=src.pyreason_normative --cov=src.normative_evaluation --cov-fail-under=80
+      - run: ruff check src/pyreason_program.py src/pyreason_normative.py src/normative_evaluation.py tests/test_pyreason_normative.py
+      - run: bandit -q -r src/pyreason_program.py src/pyreason_normative.py src/normative_evaluation.py
       - run: python -m src.api_contract
       - run: ruff check src/argumentation.py src/originality.py src/originality_annotator.py src/pyreason_connector.py src/pyreason_worker.py tests/test_pyreason_connector.py src/api_contract.py tests/test_release_reliability.py src/resources.py src/service/ip_release.py src/service/release_readiness.py src/service/migrate.py tests/test_release_candidate.py tools/verify_distribution.py tools/fixtures/pyreason.py setup.py
       - run: bandit -q -r src/pyreason_connector.py src/pyreason_worker.py src/resources.py src/service/ip_release.py src/service/release_readiness.py src/service/migrate.py tools/verify_distribution.py setup.py

@@ -36,7 +36,11 @@ def run_lifecycle(
     authorities: Mapping[str, SourceAuthority] | None = None,
     review_statuses: Sequence[str] | None = None,
     interpretation_selections: Mapping[str, Mapping[str, str]] | None = None,
+    reasoning_backend: str = "core",
+    pyreason_timeout_seconds: int = 60,
 ) -> dict:
+    if reasoning_backend not in {"core", "pyreason"}:
+        raise ValueError("unsupported normative reasoning backend")
     formal_sets = formalize_candidates(candidates, authorities=authorities)
     selections = interpretation_selections or {}
     resolved_sets = []
@@ -51,12 +55,21 @@ def run_lifecycle(
     formal_sets = resolved_sets
 
     selected, unresolved = selected_norms(formal_sets)
-    compliance = evaluate(selected, context) if selected else {
-        "status": "indeterminate",
-        "findings": [],
-        "violations": [],
-        "reasoning": {"unresolved_conflicts": []},
-    }
+    if reasoning_backend == "pyreason":
+        from .pyreason_normative import unknown_report
+
+        if (not selected or unresolved or review_statuses is None or len(review_statuses) != len(candidates)
+                or any(status != "approved" for status in review_statuses)):
+            compliance = {"status": "indeterminate", "findings": [], "violations": [],
+                          "reasoning": {"unresolved_conflicts": [], "backend": unknown_report(
+                              "approved_unambiguous_formalizations_required", pyreason_timeout_seconds)}}
+        else:
+            compliance = evaluate(selected, context, backend="pyreason", pyreason_timeout_seconds=pyreason_timeout_seconds)
+    else:
+        compliance = evaluate(selected, context) if selected else {
+            "status": "indeterminate", "findings": [], "violations": [],
+            "reasoning": {"unresolved_conflicts": []},
+        }
 
     evidence = EvidenceGraph()
     source_node = f"source:{source_id}:{_document_hash(text)[:12]}"
@@ -80,6 +93,14 @@ def run_lifecycle(
     evidence.add(decision_id, "compliance_report", compliance)
     for norm in selected:
         evidence.link(f"formal:{norm.id}", decision_id, "contributes_to")
+    if reasoning_backend == "pyreason":
+        backend_report = compliance["reasoning"]["backend"]
+        backend_id = f"backend:pyreason:{evidence._hash(backend_report)[:16]}"
+        evidence.add(backend_id, "normative_backend_computation", backend_report,
+                     role="required_activation_backend", status=backend_report["status"])
+        for norm in selected:
+            evidence.link(f"formal:{norm.id}", backend_id, "compiled_for")
+        evidence.link(backend_id, decision_id, "computes_activation_for")
 
     readiness = readiness_report(
         extraction_audit=extraction_audit,
@@ -88,6 +109,13 @@ def run_lifecycle(
         unresolved_interpretations=len(unresolved),
         unresolved_conflicts=len(compliance.get("reasoning", {}).get("unresolved_conflicts", [])),
     )
+    if reasoning_backend == "pyreason":
+        completed = compliance["reasoning"]["backend"]["status"] == "computed"
+        readiness["gates"].append({"gate": "required_pyreason_computation", "passed": completed,
+                                   "explanation": "The selected normative backend must complete and match its independent check."})
+        if not completed:
+            readiness["failed_gates"].append("required_pyreason_computation")
+            readiness["status"] = "not_ready"
     if compliance["status"] == "indeterminate" or any(
         finding["status"] == "unknown" for finding in compliance.get("findings", [])
     ):
@@ -113,4 +141,5 @@ def run_lifecycle(
         "compliance": compliance,
         "readiness": readiness,
         "evidence": evidence.export(),
+        **({"reasoning_backend": "pyreason", "decision_authorized": False} if reasoning_backend == "pyreason" else {}),
     }

@@ -87,6 +87,16 @@ def main():
         )
         worker_result = json.loads(run([str(executable), "-I", "-c", worker_check], cwd=work, env=env))
         require(worker_result["backend_version"] == "3.8.0", "installed worker contract failed")
+        # The selected normative backend must control the installed CLI result.
+        normative_input = json.loads((root / "examples/pyreason-normative.json").read_text())
+        normative_input["context"]["facts"]["licensed"] = True
+        normative_path = work / "synthetic-normative-input.json"
+        normative_path.write_text(json.dumps(normative_input))
+        normative = json.loads(run([str(executable), "-I", "-c", bootstrap, "src.cli", "norm-evaluate",
+                                    "--input", str(normative_path)], cwd=work, env=env))
+        require(normative["status"] == "compliant" and
+                normative["compliance"]["reasoning"]["backend"]["status"] == "computed",
+                "installed normative backend failed")
         env["VLE_DATABASE_URL"] = "sqlite+pysqlite:///" + str(work / "installed.db")
         for options in ([], ["--check"]):
             result = json.loads(run([str(executable), "-I", "-c", bootstrap, "src.service.migrate", *options], cwd=work, env=env))
@@ -98,6 +108,7 @@ def main():
     print(json.dumps({"schema": "vle-distribution-check/v1", "passed": True, "resource_files": checked,
                       "wheel_sha256": hashlib.sha256(wheel.read_bytes()).hexdigest(), "network_calls": 0,
                       "worker_subprocess_verified": True, "worker_provider": "synthetic_unreviewed_fixture",
+                      "normative_backend_subprocess_verified": True,
                       "decision_authorized": False, "legal_certification": False}, sort_keys=True))
 
 

@@ -372,11 +372,25 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         )
         return JSONResponse(status_code=201, content=response_payload)
 
+    def evaluation_payload(payload, *, exclude=None):
+        data = payload.model_dump(mode="json", exclude=exclude)
+        if payload.reasoning_backend == "core":
+            # Preserve legacy idempotency and signed evaluation-target bytes.
+            data.pop("reasoning_backend", None)
+            data.pop("reasoning_timeout_seconds", None)
+        return data
+
+    def reasoning_options(payload):
+        if payload.reasoning_backend == "pyreason" and not settings.pyreason_enabled:
+            raise HTTPException(503, "PyReason normative backend is not enabled on this deployment")
+        return {"reasoning_backend": payload.reasoning_backend,
+                "pyreason_timeout_seconds": payload.reasoning_timeout_seconds}
+
     def target_snapshot(session, source, payload, result):
         snapshot = {"schema": "vle-evaluation-target/v1", "build_revision": settings.build_revision,
                     "source_id": source.id, "source_sha256": source.content_hash, "candidates": source.candidates,
                     "formalizations": result["formalizations"], "reviews": review_evidence_snapshot(session, source),
-                    "context": payload.model_dump(mode="json", exclude={"legal_assessment_id", "high_stakes"})}
+                    "context": evaluation_payload(payload, exclude={"legal_assessment_id", "high_stakes"})}
         if settings.release_profile != "legacy":
             snapshot["release_profile"] = settings.release_profile
             snapshot["model_revision"] = settings.model_revision
@@ -393,7 +407,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                               at_date=payload.at_date, metadata=payload.metadata)
         result = run_lifecycle(text=source.content, source_id=source.source_key, candidates=source.candidates,
                                extraction_audit=source.extraction_audit, context=context, review_statuses=review_statuses(session, source),
-                               interpretation_selections=interpretation_selections(session, source))
+                               interpretation_selections=interpretation_selections(session, source), **reasoning_options(payload))
         snapshot, fingerprint = target_snapshot(session, source, payload, result)
         return {"target_sha256": fingerprint, "target": snapshot, "research_readiness": result["readiness"],
                 "deployment_authorized": False, "legal_certification": False}
@@ -409,7 +423,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     ):
         key = _require_idempotency(idempotency_key)
         endpoint = f"POST:/v1/sources/{source_id}/evaluate"
-        request_payload = payload.model_dump(mode="json")
+        options = reasoning_options(payload)
+        request_payload = evaluation_payload(payload)
         request_hash = canonical_hash(request_payload)
         try:
             cached = get_idempotent(session, actor=principal.subject, endpoint=endpoint, key=key, request_hash=request_hash)
@@ -437,6 +452,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             context=context,
             review_statuses=statuses,
             interpretation_selections=selections,
+            **options,
         )
         result["review_evidence"] = review_evidence_snapshot(session, source)
         result["runtime_evidence"] = runtime_evidence(revision=settings.build_revision)
@@ -449,9 +465,12 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                                 require_grounding=bool(payload.facts or payload.observed_actions or payload.actor), context=snapshot["context"]) if payload.high_stakes else {"passed": False}
         if assessment is not None and assessment.request_payload.get("source_id") != source.id:
             case = {"passed": False, "reason": "case_review_source_mismatch"}
-        release_ready = bool(ready and release["passed"] and case["passed"] and source_scope["passed"])
+        # Existing release artifacts qualify only the core backend. A completed
+        # PyReason computation is operational evidence, not a new authorization.
+        backend_release_qualified = payload.reasoning_backend == "core"
+        release_ready = bool(backend_release_qualified and ready and release["passed"] and case["passed"] and source_scope["passed"])
         external_validation_satisfied = bool(release["passed"] and case["passed"])
-        reviewed_operation = bool(payload.high_stakes and ready and settings.release_enforcement == "reviewed" and settings.release_profile == "legacy")
+        reviewed_operation = bool(backend_release_qualified and payload.high_stakes and ready and settings.release_enforcement == "reviewed" and settings.release_profile == "legacy")
         authorized = release_ready or reviewed_operation
         override_used = bool(authorized and not external_validation_satisfied)
         result["production_release"] = {"authorized": authorized, "evaluation_target_sha256": target_hash,
@@ -461,6 +480,13 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                                        "deployment": release, "independent_case_review": case, "legal_certification": False}
         if settings.release_profile != "legacy":
             result["production_release"].update(profile=settings.release_profile, source_scope=source_scope)
+        if not backend_release_qualified:
+            result["production_release"]["reasoning_backend"] = {"name": "pyreason", "release_qualified": False}
+            if payload.high_stakes:
+                result["readiness"]["gates"].append({"gate": "reasoning_backend_release_qualification", "passed": False,
+                                                    "explanation": "Existing release artifacts do not qualify the PyReason backend."})
+                result["readiness"]["failed_gates"].append("reasoning_backend_release_qualification")
+                result["readiness"]["status"] = "not_ready"
         result["authorization_scope"] = ("organizational_release" if release_ready else "reviewed_operation" if reviewed_operation
                                          else "research_only" if not payload.high_stakes else "blocked")
         if payload.high_stakes and not release_ready and settings.release_enforcement == "strict":

@@ -1,0 +1,1826 @@
+{
+  "cases": [
+    {
+      "request": {
+        "backend": "pyreason",
+        "context": {
+          "facts": {
+            "licensed": false,
+            "protected": true
+          },
+          "observed_actions": [
+            "reproduce"
+          ]
+        },
+        "norms": [
+          {
+            "action": "reproduce",
+            "conditions": [
+              {
+                "name": "protected"
+              }
+            ],
+            "exceptions": [
+              {
+                "name": "licensed"
+              }
+            ],
+            "id": "synthetic-ip-prohibition",
+            "modality": "prohibition",
+            "source_norm_id": "synthetic-unreviewed",
+            "subject": "operator"
+          }
+        ],
+        "schema": "vle-normative-evaluation/v1",
+        "timeout_seconds": 60
+      },
+      "result": {
+        "backend": "pyreason",
+        "compliance": {
+          "findings": [
+            {
+              "action": "reproduce",
+              "explanation": "Prohibited action observed.",
+              "modality": "prohibition",
+              "norm_id": "synthetic-ip-prohibition",
+              "status": "violated",
+              "subject": "operator"
+            }
+          ],
+          "reasoning": {
+            "activations": {
+              "synthetic-ip-prohibition": {
+                "norm_id": "synthetic-ip-prohibition",
+                "reasons": [
+                  "conditions_satisfied"
+                ],
+                "status": "active"
+              }
+            },
+            "argumentation": {
+              "defeats": [],
+              "labels": {
+                "synthetic-ip-prohibition": "in"
+              },
+              "semantics": "grounded"
+            },
+            "backend": {
+              "activations": {
+                "synthetic-ip-prohibition": {
+                  "norm_id": "synthetic-ip-prohibition",
+                  "reasons": [
+                    "conditions_satisfied"
+                  ],
+                  "status": "active"
+                }
+              },
+              "annotations": {
+                "active": {
+                  "n0": [
+                    1.0,
+                    1.0
+                  ]
+                },
+                "exception_applies": {
+                  "n0": [
+                    0.0,
+                    1.0
+                  ]
+                },
+                "inactive_condition": {
+                  "n0": [
+                    0.0,
+                    1.0
+                  ]
+                },
+                "inactive_subject": {
+                  "n0": [
+                    0.0,
+                    1.0
+                  ]
+                },
+                "inactive_temporal": {
+                  "n0": [
+                    0.0,
+                    1.0
+                  ]
+                },
+                "unknown_condition": {
+                  "n0": [
+                    0.0,
+                    1.0
+                  ]
+                },
+                "unknown_date": {
+                  "n0": [
+                    0.0,
+                    1.0
+                  ]
+                },
+                "unknown_exception": {
+                  "n0": [
+                    0.0,
+                    1.0
+                  ]
+                }
+              },
+              "argument_map_sha256": "158f1898bfce396cc4c15c19906d671e258051450b44ffe91286ad87d696cff9",
+              "backend_version": "3.8.0",
+              "bounds": {
+                "max_clauses": 65536,
+                "max_facts": 16384,
+                "max_norms": 64,
+                "max_output_bytes": 2000000,
+                "max_parallel_workers": 1,
+                "max_predicates_per_list": 32,
+                "max_rules": 4096,
+                "timeout_seconds": 120,
+                "timesteps": 1
+              },
+              "context_sha256": "0105466bb8b03d4be9a2f73a11e814be7c456adeb0bf36799291151246eb9b0e",
+              "decision_authorized": false,
+              "independent_check": "matched",
+              "input_sha256": "23fcb5c74b956c172bedecbadef4b98e2f125efa2a29f1f19b5d6e822e04dfe7",
+              "legal_certification": false,
+              "node_map": {
+                "n0": "synthetic-ip-prohibition"
+              },
+              "norm_semantic_hashes": {
+                "synthetic-ip-prohibition": "0e77eaf864b548e9b651a721b8e5eb986dd3ecefbc5a88a9b28c5fbd482e63bf"
+              },
+              "program": {
+                "mode": "normative_activation_v1",
+                "nodes": {
+                  "n0": {
+                    "actor_f": false,
+                    "actor_t": true,
+                    "actor_u": false,
+                    "c0_f": false,
+                    "c0_t": true,
+                    "c0_u": false,
+                    "e0_f": true,
+                    "e0_t": false,
+                    "e0_u": false,
+                    "scope_f": false,
+                    "scope_t": true,
+                    "scope_u": false
+                  }
+                },
+                "rules": [
+                  {
+                    "body": [
+                      [
+                        "scope_f",
+                        true
+                      ]
+                    ],
+                    "head": "inactive_temporal",
+                    "node": "n0"
+                  },
+                  {
+                    "body": [
+                      [
+                        "scope_u",
+                        true
+                      ]
+                    ],
+                    "head": "unknown_date",
+                    "node": "n0"
+                  },
+                  {
+                    "body": [
+                      [
+                        "scope_t",
+                        true
+                      ],
+                      [
+                        "actor_f",
+                        true
+                      ]
+                    ],
+                    "head": "inactive_subject",
+                    "node": "n0"
+                  },
+                  {
+                    "body": [
+                      [
+                        "scope_t",
+                        true
+                      ],
+                      [
+                        "actor_t",
+                        true
+                      ],
+                      [
+                        "c0_f",
+                        true
+                      ]
+                    ],
+                    "head": "inactive_condition",
+                    "node": "n0"
+                  },
+                  {
+                    "body": [
+                      [
+                        "scope_t",
+                        true
+                      ],
+                      [
+                        "actor_t",
+                        true
+                      ],
+                      [
+                        "c0_f",
+                        false
+                      ],
+                      [
+                        "c0_u",
+                        true
+                      ]
+                    ],
+                    "head": "unknown_condition",
+                    "node": "n0"
+                  },
+                  {
+                    "body": [
+                      [
+                        "scope_t",
+                        true
+                      ],
+                      [
+                        "actor_t",
+                        true
+                      ],
+                      [
+                        "c0_t",
+                        true
+                      ],
+                      [
+                        "e0_t",
+                        true
+                      ]
+                    ],
+                    "head": "exception_applies",
+                    "node": "n0"
+                  },
+                  {
+                    "body": [
+                      [
+                        "scope_t",
+                        true
+                      ],
+                      [
+                        "actor_t",
+                        true
+                      ],
+                      [
+                        "c0_t",
+                        true
+                      ],
+                      [
+                        "e0_t",
+                        false
+                      ],
+                      [
+                        "e0_u",
+                        true
+                      ]
+                    ],
+                    "head": "unknown_exception",
+                    "node": "n0"
+                  },
+                  {
+                    "body": [
+                      [
+                        "scope_t",
+                        true
+                      ],
+                      [
+                        "actor_t",
+                        true
+                      ],
+                      [
+                        "c0_t",
+                        true
+                      ],
+                      [
+                        "e0_f",
+                        true
+                      ]
+                    ],
+                    "head": "active",
+                    "node": "n0"
+                  }
+                ],
+                "timesteps": 1
+              },
+              "role": "required_activation_backend",
+              "schema": "vle-pyreason-normative/v1",
+              "semantics": "normative_activation_v1",
+              "status": "computed"
+            },
+            "conclusions": [
+              {
+                "action": "reproduce",
+                "defeated_by": [],
+                "modality": "prohibition",
+                "norm_id": "synthetic-ip-prohibition",
+                "reason": "grounded_defeat_semantics",
+                "status": "applicable",
+                "subject": "operator"
+              }
+            ],
+            "priority_decisions": [],
+            "structured_conflicts": [],
+            "unresolved_conflicts": []
+          },
+          "status": "non_compliant",
+          "violations": [
+            {
+              "action": "reproduce",
+              "explanation": "Prohibited action observed.",
+              "modality": "prohibition",
+              "norm_id": "synthetic-ip-prohibition",
+              "status": "violated",
+              "subject": "operator"
+            }
+          ]
+        },
+        "decision_authorized": false,
+        "legal_certification": false,
+        "request_sha256": "285d7f3ab2e53d88e46f191e2e14510e5ef6d7c721aad82fe0a4d6398caee723",
+        "review_status": "unreviewed",
+        "schema": "vle-normative-evaluation-result/v1",
+        "status": "non_compliant"
+      }
+    },
+    {
+      "request": {
+        "backend": "pyreason",
+        "context": {
+          "facts": {
+            "licensed": true,
+            "protected": true
+          },
+          "observed_actions": [
+            "reproduce"
+          ]
+        },
+        "norms": [
+          {
+            "action": "reproduce",
+            "conditions": [
+              {
+                "name": "protected"
+              }
+            ],
+            "exceptions": [
+              {
+                "name": "licensed"
+              }
+            ],
+            "id": "synthetic-ip-prohibition",
+            "modality": "prohibition",
+            "source_norm_id": "synthetic-unreviewed",
+            "subject": "operator"
+          }
+        ],
+        "schema": "vle-normative-evaluation/v1",
+        "timeout_seconds": 60
+      },
+      "result": {
+        "backend": "pyreason",
+        "compliance": {
+          "findings": [],
+          "reasoning": {
+            "activations": {
+              "synthetic-ip-prohibition": {
+                "norm_id": "synthetic-ip-prohibition",
+                "reasons": [
+                  "exception_applies"
+                ],
+                "status": "defeated"
+              }
+            },
+            "argumentation": {
+              "defeats": [],
+              "labels": {},
+              "semantics": "grounded"
+            },
+            "backend": {
+              "activations": {
+                "synthetic-ip-prohibition": {
+                  "norm_id": "synthetic-ip-prohibition",
+                  "reasons": [
+                    "exception_applies"
+                  ],
+                  "status": "defeated"
+                }
+              },
+              "annotations": {
+                "active": {
+                  "n0": [
+                    0.0,
+                    1.0
+                  ]
+                },
+                "exception_applies": {
+                  "n0": [
+                    1.0,
+                    1.0
+                  ]
+                },
+                "inactive_condition": {
+                  "n0": [
+                    0.0,
+                    1.0
+                  ]
+                },
+                "inactive_subject": {
+                  "n0": [
+                    0.0,
+                    1.0
+                  ]
+                },
+                "inactive_temporal": {
+                  "n0": [
+                    0.0,
+                    1.0
+                  ]
+                },
+                "unknown_condition": {
+                  "n0": [
+                    0.0,
+                    1.0
+                  ]
+                },
+                "unknown_date": {
+                  "n0": [
+                    0.0,
+                    1.0
+                  ]
+                },
+                "unknown_exception": {
+                  "n0": [
+                    0.0,
+                    1.0
+                  ]
+                }
+              },
+              "argument_map_sha256": "158f1898bfce396cc4c15c19906d671e258051450b44ffe91286ad87d696cff9",
+              "backend_version": "3.8.0",
+              "bounds": {
+                "max_clauses": 65536,
+                "max_facts": 16384,
+                "max_norms": 64,
+                "max_output_bytes": 2000000,
+                "max_parallel_workers": 1,
+                "max_predicates_per_list": 32,
+                "max_rules": 4096,
+                "timeout_seconds": 120,
+                "timesteps": 1
+              },
+              "context_sha256": "ef6a5b43207881871c4ab69aa423551e1ddb275dafa505e6375a90dbc123a2ba",
+              "decision_authorized": false,
+              "independent_check": "matched",
+              "input_sha256": "85d814780dfcd2d90391422dc283a1db30ef33bfed0d695a88bb6a3f0a5b12c4",
+              "legal_certification": false,
+              "node_map": {
+                "n0": "synthetic-ip-prohibition"
+              },
+              "norm_semantic_hashes": {
+                "synthetic-ip-prohibition": "0e77eaf864b548e9b651a721b8e5eb986dd3ecefbc5a88a9b28c5fbd482e63bf"
+              },
+              "program": {
+                "mode": "normative_activation_v1",
+                "nodes": {
+                  "n0": {
+                    "actor_f": false,
+                    "actor_t": true,
+                    "actor_u": false,
+                    "c0_f": false,
+                    "c0_t": true,
+                    "c0_u": false,
+                    "e0_f": false,
+                    "e0_t": true,
+                    "e0_u": false,
+                    "scope_f": false,
+                    "scope_t": true,
+                    "scope_u": false
+                  }
+                },
+                "rules": [
+                  {
+                    "body": [
+                      [
+                        "scope_f",
+                        true
+                      ]
+                    ],
+                    "head": "inactive_temporal",
+                    "node": "n0"
+                  },
+                  {
+                    "body": [
+                      [
+                        "scope_u",
+                        true
+                      ]
+                    ],
+                    "head": "unknown_date",
+                    "node": "n0"
+                  },
+                  {
+                    "body": [
+                      [
+                        "scope_t",
+                        true
+                      ],
+                      [
+                        "actor_f",
+                        true
+                      ]
+                    ],
+                    "head": "inactive_subject",
+                    "node": "n0"
+                  },
+                  {
+                    "body": [
+                      [
+                        "scope_t",
+                        true
+                      ],
+                      [
+                        "actor_t",
+                        true
+                      ],
+                      [
+                        "c0_f",
+                        true
+                      ]
+                    ],
+                    "head": "inactive_condition",
+                    "node": "n0"
+                  },
+                  {
+                    "body": [
+                      [
+                        "scope_t",
+                        true
+                      ],
+                      [
+                        "actor_t",
+                        true
+                      ],
+                      [
+                        "c0_f",
+                        false
+                      ],
+                      [
+                        "c0_u",
+                        true
+                      ]
+                    ],
+                    "head": "unknown_condition",
+                    "node": "n0"
+                  },
+                  {
+                    "body": [
+                      [
+                        "scope_t",
+                        true
+                      ],
+                      [
+                        "actor_t",
+                        true
+                      ],
+                      [
+                        "c0_t",
+                        true
+                      ],
+                      [
+                        "e0_t",
+                        true
+                      ]
+                    ],
+                    "head": "exception_applies",
+                    "node": "n0"
+                  },
+                  {
+                    "body": [
+                      [
+                        "scope_t",
+                        true
+                      ],
+                      [
+                        "actor_t",
+                        true
+                      ],
+                      [
+                        "c0_t",
+                        true
+                      ],
+                      [
+                        "e0_t",
+                        false
+                      ],
+                      [
+                        "e0_u",
+                        true
+                      ]
+                    ],
+                    "head": "unknown_exception",
+                    "node": "n0"
+                  },
+                  {
+                    "body": [
+                      [
+                        "scope_t",
+                        true
+                      ],
+                      [
+                        "actor_t",
+                        true
+                      ],
+                      [
+                        "c0_t",
+                        true
+                      ],
+                      [
+                        "e0_f",
+                        true
+                      ]
+                    ],
+                    "head": "active",
+                    "node": "n0"
+                  }
+                ],
+                "timesteps": 1
+              },
+              "role": "required_activation_backend",
+              "schema": "vle-pyreason-normative/v1",
+              "semantics": "normative_activation_v1",
+              "status": "computed"
+            },
+            "conclusions": [],
+            "priority_decisions": [],
+            "structured_conflicts": [],
+            "unresolved_conflicts": []
+          },
+          "status": "compliant",
+          "violations": []
+        },
+        "decision_authorized": false,
+        "legal_certification": false,
+        "request_sha256": "3b41b6575788f1ff3a67edbd555f3a84272b8df4240034cd6ce194ae05934b52",
+        "review_status": "unreviewed",
+        "schema": "vle-normative-evaluation-result/v1",
+        "status": "compliant"
+      }
+    },
+    {
+      "request": {
+        "backend": "pyreason",
+        "context": {
+          "facts": {
+            "protected": true
+          },
+          "observed_actions": [
+            "reproduce"
+          ]
+        },
+        "norms": [
+          {
+            "action": "reproduce",
+            "conditions": [
+              {
+                "name": "protected"
+              }
+            ],
+            "exceptions": [
+              {
+                "name": "licensed"
+              }
+            ],
+            "id": "synthetic-ip-prohibition",
+            "modality": "prohibition",
+            "source_norm_id": "synthetic-unreviewed",
+            "subject": "operator"
+          }
+        ],
+        "schema": "vle-normative-evaluation/v1",
+        "timeout_seconds": 60
+      },
+      "result": {
+        "backend": "pyreason",
+        "compliance": {
+          "findings": [
+            {
+              "action": "reproduce",
+              "explanation": "Applicability cannot be established from available facts.",
+              "modality": "prohibition",
+              "norm_id": "synthetic-ip-prohibition",
+              "status": "unknown",
+              "subject": "operator"
+            }
+          ],
+          "reasoning": {
+            "activations": {
+              "synthetic-ip-prohibition": {
+                "norm_id": "synthetic-ip-prohibition",
+                "reasons": [
+                  "exception_unknown"
+                ],
+                "status": "undetermined"
+              }
+            },
+            "argumentation": {
+              "defeats": [],
+              "labels": {},
+              "semantics": "grounded"
+            },
+            "backend": {
+              "activations": {
+                "synthetic-ip-prohibition": {
+                  "norm_id": "synthetic-ip-prohibition",
+                  "reasons": [
+                    "exception_unknown"
+                  ],
+                  "status": "undetermined"
+                }
+              },
+              "annotations": {
+                "active": {
+                  "n0": [
+                    0.0,
+                    1.0
+                  ]
+                },
+                "exception_applies": {
+                  "n0": [
+                    0.0,
+                    1.0
+                  ]
+                },
+                "inactive_condition": {
+                  "n0": [
+                    0.0,
+                    1.0
+                  ]
+                },
+                "inactive_subject": {
+                  "n0": [
+                    0.0,
+                    1.0
+                  ]
+                },
+                "inactive_temporal": {
+                  "n0": [
+                    0.0,
+                    1.0
+                  ]
+                },
+                "unknown_condition": {
+                  "n0": [
+                    0.0,
+                    1.0
+                  ]
+                },
+                "unknown_date": {
+                  "n0": [
+                    0.0,
+                    1.0
+                  ]
+                },
+                "unknown_exception": {
+                  "n0": [
+                    1.0,
+                    1.0
+                  ]
+                }
+              },
+              "argument_map_sha256": "158f1898bfce396cc4c15c19906d671e258051450b44ffe91286ad87d696cff9",
+              "backend_version": "3.8.0",
+              "bounds": {
+                "max_clauses": 65536,
+                "max_facts": 16384,
+                "max_norms": 64,
+                "max_output_bytes": 2000000,
+                "max_parallel_workers": 1,
+                "max_predicates_per_list": 32,
+                "max_rules": 4096,
+                "timeout_seconds": 120,
+                "timesteps": 1
+              },
+              "context_sha256": "9618b12b456cb9af601451635b64710fed00a0fa0964be583dd66a25b583e77c",
+              "decision_authorized": false,
+              "independent_check": "matched",
+              "input_sha256": "7eb05acb9b7fccf6d2dbf3586c74fcbc7ce633a84b7c891ddcc0d561d36c0d10",
+              "legal_certification": false,
+              "node_map": {
+                "n0": "synthetic-ip-prohibition"
+              },
+              "norm_semantic_hashes": {
+                "synthetic-ip-prohibition": "0e77eaf864b548e9b651a721b8e5eb986dd3ecefbc5a88a9b28c5fbd482e63bf"
+              },
+              "program": {
+                "mode": "normative_activation_v1",
+                "nodes": {
+                  "n0": {
+                    "actor_f": false,
+                    "actor_t": true,
+                    "actor_u": false,
+                    "c0_f": false,
+                    "c0_t": true,
+                    "c0_u": false,
+                    "e0_f": false,
+                    "e0_t": false,
+                    "e0_u": true,
+                    "scope_f": false,
+                    "scope_t": true,
+                    "scope_u": false
+                  }
+                },
+                "rules": [
+                  {
+                    "body": [
+                      [
+                        "scope_f",
+                        true
+                      ]
+                    ],
+                    "head": "inactive_temporal",
+                    "node": "n0"
+                  },
+                  {
+                    "body": [
+                      [
+                        "scope_u",
+                        true
+                      ]
+                    ],
+                    "head": "unknown_date",
+                    "node": "n0"
+                  },
+                  {
+                    "body": [
+                      [
+                        "scope_t",
+                        true
+                      ],
+                      [
+                        "actor_f",
+                        true
+                      ]
+                    ],
+                    "head": "inactive_subject",
+                    "node": "n0"
+                  },
+                  {
+                    "body": [
+                      [
+                        "scope_t",
+                        true
+                      ],
+                      [
+                        "actor_t",
+                        true
+                      ],
+                      [
+                        "c0_f",
+                        true
+                      ]
+                    ],
+                    "head": "inactive_condition",
+                    "node": "n0"
+                  },
+                  {
+                    "body": [
+                      [
+                        "scope_t",
+                        true
+                      ],
+                      [
+                        "actor_t",
+                        true
+                      ],
+                      [
+                        "c0_f",
+                        false
+                      ],
+                      [
+                        "c0_u",
+                        true
+                      ]
+                    ],
+                    "head": "unknown_condition",
+                    "node": "n0"
+                  },
+                  {
+                    "body": [
+                      [
+                        "scope_t",
+                        true
+                      ],
+                      [
+                        "actor_t",
+                        true
+                      ],
+                      [
+                        "c0_t",
+                        true
+                      ],
+                      [
+                        "e0_t",
+                        true
+                      ]
+                    ],
+                    "head": "exception_applies",
+                    "node": "n0"
+                  },
+                  {
+                    "body": [
+                      [
+                        "scope_t",
+                        true
+                      ],
+                      [
+                        "actor_t",
+                        true
+                      ],
+                      [
+                        "c0_t",
+                        true
+                      ],
+                      [
+                        "e0_t",
+                        false
+                      ],
+                      [
+                        "e0_u",
+                        true
+                      ]
+                    ],
+                    "head": "unknown_exception",
+                    "node": "n0"
+                  },
+                  {
+                    "body": [
+                      [
+                        "scope_t",
+                        true
+                      ],
+                      [
+                        "actor_t",
+                        true
+                      ],
+                      [
+                        "c0_t",
+                        true
+                      ],
+                      [
+                        "e0_f",
+                        true
+                      ]
+                    ],
+                    "head": "active",
+                    "node": "n0"
+                  }
+                ],
+                "timesteps": 1
+              },
+              "role": "required_activation_backend",
+              "schema": "vle-pyreason-normative/v1",
+              "semantics": "normative_activation_v1",
+              "status": "computed"
+            },
+            "conclusions": [],
+            "priority_decisions": [],
+            "structured_conflicts": [],
+            "unresolved_conflicts": []
+          },
+          "status": "indeterminate",
+          "violations": []
+        },
+        "decision_authorized": false,
+        "legal_certification": false,
+        "request_sha256": "bb46392dc39f7206ca689e5b75d9a7b7b3aa000f47d46a982ad85529dca03223",
+        "review_status": "unreviewed",
+        "schema": "vle-normative-evaluation-result/v1",
+        "status": "indeterminate"
+      }
+    },
+    {
+      "request": {
+        "backend": "pyreason",
+        "context": {
+          "actor": "operator",
+          "at_date": "2026-10-29",
+          "facts": {
+            "licensed": true
+          },
+          "observed_actions": [
+            "reproduce"
+          ]
+        },
+        "norms": [
+          {
+            "action": "reproduce",
+            "id": "A",
+            "modality": "prohibition",
+            "source_norm_id": "synthetic-unreviewed",
+            "subject": "operator"
+          },
+          {
+            "action": "notify",
+            "conditions": [
+              {
+                "name": "unknown trigger"
+              }
+            ],
+            "id": "B",
+            "modality": "obligation",
+            "source_norm_id": "synthetic-unreviewed",
+            "subject": "operator"
+          },
+          {
+            "action": "reproduce",
+            "exceptions": [
+              {
+                "name": "licensed"
+              }
+            ],
+            "id": "C",
+            "modality": "permission",
+            "source_norm_id": "synthetic-unreviewed",
+            "subject": "operator"
+          },
+          {
+            "action": "notify",
+            "authority": {
+              "effective_to": "2025-12-31"
+            },
+            "id": "D",
+            "modality": "obligation",
+            "source_norm_id": "synthetic-unreviewed",
+            "subject": "operator"
+          },
+          {
+            "action": "notify",
+            "id": "E",
+            "modality": "obligation",
+            "source_norm_id": "synthetic-unreviewed",
+            "subject": "another actor"
+          }
+        ],
+        "schema": "vle-normative-evaluation/v1",
+        "timeout_seconds": 120
+      },
+      "result": {
+        "backend": "pyreason",
+        "compliance": {
+          "findings": [
+            {
+              "action": "reproduce",
+              "explanation": "Prohibited action observed.",
+              "modality": "prohibition",
+              "norm_id": "A",
+              "status": "violated",
+              "subject": "operator"
+            },
+            {
+              "action": "notify",
+              "explanation": "Applicability cannot be established from available facts.",
+              "modality": "obligation",
+              "norm_id": "B",
+              "status": "unknown",
+              "subject": "operator"
+            }
+          ],
+          "reasoning": {
+            "activations": {
+              "A": {
+                "norm_id": "A",
+                "reasons": [
+                  "conditions_satisfied"
+                ],
+                "status": "active"
+              },
+              "B": {
+                "norm_id": "B",
+                "reasons": [
+                  "condition_unknown"
+                ],
+                "status": "undetermined"
+              },
+              "C": {
+                "norm_id": "C",
+                "reasons": [
+                  "exception_applies"
+                ],
+                "status": "defeated"
+              },
+              "D": {
+                "norm_id": "D",
+                "reasons": [
+                  "outside_temporal_scope"
+                ],
+                "status": "inactive"
+              },
+              "E": {
+                "norm_id": "E",
+                "reasons": [
+                  "different_subject"
+                ],
+                "status": "inactive"
+              }
+            },
+            "argumentation": {
+              "defeats": [],
+              "labels": {
+                "A": "in"
+              },
+              "semantics": "grounded"
+            },
+            "backend": {
+              "activations": {
+                "A": {
+                  "norm_id": "A",
+                  "reasons": [
+                    "conditions_satisfied"
+                  ],
+                  "status": "active"
+                },
+                "B": {
+                  "norm_id": "B",
+                  "reasons": [
+                    "condition_unknown"
+                  ],
+                  "status": "undetermined"
+                },
+                "C": {
+                  "norm_id": "C",
+                  "reasons": [
+                    "exception_applies"
+                  ],
+                  "status": "defeated"
+                },
+                "D": {
+                  "norm_id": "D",
+                  "reasons": [
+                    "outside_temporal_scope"
+                  ],
+                  "status": "inactive"
+                },
+                "E": {
+                  "norm_id": "E",
+                  "reasons": [
+                    "different_subject"
+                  ],
+                  "status": "inactive"
+                }
+              },
+              "annotations": {
+                "active": {
+                  "n0": [
+                    1.0,
+                    1.0
+                  ],
+                  "n1": [
+                    0.0,
+                    1.0
+                  ],
+                  "n2": [
+                    0.0,
+                    1.0
+                  ],
+                  "n3": [
+                    0.0,
+                    1.0
+                  ],
+                  "n4": [
+                    0.0,
+                    1.0
+                  ]
+                },
+                "exception_applies": {
+                  "n0": [
+                    0.0,
+                    1.0
+                  ],
+                  "n1": [
+                    0.0,
+                    1.0
+                  ],
+                  "n2": [
+                    1.0,
+                    1.0
+                  ],
+                  "n3": [
+                    0.0,
+                    1.0
+                  ],
+                  "n4": [
+                    0.0,
+                    1.0
+                  ]
+                },
+                "inactive_condition": {
+                  "n0": [
+                    0.0,
+                    1.0
+                  ],
+                  "n1": [
+                    0.0,
+                    1.0
+                  ],
+                  "n2": [
+                    0.0,
+                    1.0
+                  ],
+                  "n3": [
+                    0.0,
+                    1.0
+                  ],
+                  "n4": [
+                    0.0,
+                    1.0
+                  ]
+                },
+                "inactive_subject": {
+                  "n0": [
+                    0.0,
+                    1.0
+                  ],
+                  "n1": [
+                    0.0,
+                    1.0
+                  ],
+                  "n2": [
+                    0.0,
+                    1.0
+                  ],
+                  "n3": [
+                    0.0,
+                    1.0
+                  ],
+                  "n4": [
+                    1.0,
+                    1.0
+                  ]
+                },
+                "inactive_temporal": {
+                  "n0": [
+                    0.0,
+                    1.0
+                  ],
+                  "n1": [
+                    0.0,
+                    1.0
+                  ],
+                  "n2": [
+                    0.0,
+                    1.0
+                  ],
+                  "n3": [
+                    1.0,
+                    1.0
+                  ],
+                  "n4": [
+                    0.0,
+                    1.0
+                  ]
+                },
+                "unknown_condition": {
+                  "n0": [
+                    0.0,
+                    1.0
+                  ],
+                  "n1": [
+                    1.0,
+                    1.0
+                  ],
+                  "n2": [
+                    0.0,
+                    1.0
+                  ],
+                  "n3": [
+                    0.0,
+                    1.0
+                  ],
+                  "n4": [
+                    0.0,
+                    1.0
+                  ]
+                },
+                "unknown_date": {
+                  "n0": [
+                    0.0,
+                    1.0
+                  ],
+                  "n1": [
+                    0.0,
+                    1.0
+                  ],
+                  "n2": [
+                    0.0,
+                    1.0
+                  ],
+                  "n3": [
+                    0.0,
+                    1.0
+                  ],
+                  "n4": [
+                    0.0,
+                    1.0
+                  ]
+                },
+                "unknown_exception": {
+                  "n0": [
+                    0.0,
+                    1.0
+                  ],
+                  "n1": [
+                    0.0,
+                    1.0
+                  ],
+                  "n2": [
+                    0.0,
+                    1.0
+                  ],
+                  "n3": [
+                    0.0,
+                    1.0
+                  ],
+                  "n4": [
+                    0.0,
+                    1.0
+                  ]
+                }
+              },
+              "argument_map_sha256": "725b6d281b39ebf56d5cda55fa18b80e7dcc27e98f12ff051fd46055412832d6",
+              "backend_version": "3.8.0",
+              "bounds": {
+                "max_clauses": 65536,
+                "max_facts": 16384,
+                "max_norms": 64,
+                "max_output_bytes": 2000000,
+                "max_parallel_workers": 1,
+                "max_predicates_per_list": 32,
+                "max_rules": 4096,
+                "timeout_seconds": 120,
+                "timesteps": 1
+              },
+              "context_sha256": "7bf849f8c4d324d3bb80ef0b0325300746dd9ce711b67f998eb5ffde512a4a34",
+              "decision_authorized": false,
+              "independent_check": "matched",
+              "input_sha256": "fddd03a0a682b71fdcf52ca8b5dc006d04a0ecedd0cfb14330e9c2d375753a71",
+              "legal_certification": false,
+              "node_map": {
+                "n0": "A",
+                "n1": "B",
+                "n2": "C",
+                "n3": "D",
+                "n4": "E"
+              },
+              "norm_semantic_hashes": {
+                "A": "bf83e5ad135ee3d7fc673fba8679f6620aee93d5824b0d67e33bb2268e0ee253",
+                "B": "449e73e48030017e42da6f14bf329ef8cd12c8b568e3819a84ef2f62458d166e",
+                "C": "cef4151de2fa2769d0dacdcc318c45116a4ec4cba8e113e4daee255051c937b8",
+                "D": "7f8f4f74aafae2bed63ab25e28af5840408479b89d5117bad735ea27210a8748",
+                "E": "7371a6d47bc8628f144ee10469d67190e2f51cbc9844a80b5b06648a9a9e85b0"
+              },
+              "program": {
+                "mode": "normative_activation_v1",
+                "nodes": {
+                  "n0": {
+                    "actor_f": false,
+                    "actor_t": true,
+                    "actor_u": false,
+                    "scope_f": false,
+                    "scope_t": true,
+                    "scope_u": false
+                  },
+                  "n1": {
+                    "actor_f": false,
+                    "actor_t": true,
+                    "actor_u": false,
+                    "c0_f": false,
+                    "c0_t": false,
+                    "c0_u": true,
+                    "scope_f": false,
+                    "scope_t": true,
+                    "scope_u": false
+                  },
+                  "n2": {
+                    "actor_f": false,
+                    "actor_t": true,
+                    "actor_u": false,
+                    "e0_f": false,
+                    "e0_t": true,
+                    "e0_u": false,
+                    "scope_f": false,
+                    "scope_t": true,
+                    "scope_u": false
+                  },
+                  "n3": {
+                    "actor_f": false,
+                    "actor_t": true,
+                    "actor_u": false,
+                    "scope_f": true,
+                    "scope_t": false,
+                    "scope_u": false
+                  },
+                  "n4": {
+                    "actor_f": true,
+                    "actor_t": false,
+                    "actor_u": false,
+                    "scope_f": false,
+                    "scope_t": true,
+                    "scope_u": false
+                  }
+                },
+                "rules": [
+                  {
+                    "body": [
+                      [
+                        "scope_f",
+                        true
+                      ]
+                    ],
+                    "head": "inactive_temporal",
+                    "node": "n0"
+                  },
+                  {
+                    "body": [
+                      [
+                        "scope_u",
+                        true
+                      ]
+                    ],
+                    "head": "unknown_date",
+                    "node": "n0"
+                  },
+                  {
+                    "body": [
+                      [
+                        "scope_t",
+                        true
+                      ],
+                      [
+                        "actor_f",
+                        true
+                      ]
+                    ],
+                    "head": "inactive_subject",
+                    "node": "n0"
+                  },
+                  {
+                    "body": [
+                      [
+                        "scope_t",
+                        true
+                      ],
+                      [
+                        "actor_t",
+                        true
+                      ]
+                    ],
+                    "head": "active",
+                    "node": "n0"
+                  },
+                  {
+                    "body": [
+                      [
+                        "scope_f",
+                        true
+                      ]
+                    ],
+                    "head": "inactive_temporal",
+                    "node": "n1"
+                  },
+                  {
+                    "body": [
+                      [
+                        "scope_u",
+                        true
+                      ]
+                    ],
+                    "head": "unknown_date",
+                    "node": "n1"
+                  },
+                  {
+                    "body": [
+                      [
+                        "scope_t",
+                        true
+                      ],
+                      [
+                        "actor_f",
+                        true
+                      ]
+                    ],
+                    "head": "inactive_subject",
+                    "node": "n1"
+                  },
+                  {
+                    "body": [
+                      [
+                        "scope_t",
+                        true
+                      ],
+                      [
+                        "actor_t",
+                        true
+                      ],
+                      [
+                        "c0_f",
+                        true
+                      ]
+                    ],
+                    "head": "inactive_condition",
+                    "node": "n1"
+                  },
+                  {
+                    "body": [
+                      [
+                        "scope_t",
+                        true
+                      ],
+                      [
+                        "actor_t",
+                        true
+                      ],
+                      [
+                        "c0_f",
+                        false
+                      ],
+                      [
+                        "c0_u",
+                        true
+                      ]
+                    ],
+                    "head": "unknown_condition",
+                    "node": "n1"
+                  },
+                  {
+                    "body": [
+                      [
+                        "scope_t",
+                        true
+                      ],
+                      [
+                        "actor_t",
+                        true
+                      ],
+                      [
+                        "c0_t",
+                        true
+                      ]
+                    ],
+                    "head": "active",
+                    "node": "n1"
+                  },
+                  {
+                    "body": [
+                      [
+                        "scope_f",
+                        true
+                      ]
+                    ],
+                    "head": "inactive_temporal",
+                    "node": "n2"
+                  },
+                  {
+                    "body": [
+                      [
+                        "scope_u",
+                        true
+                      ]
+                    ],
+                    "head": "unknown_date",
+                    "node": "n2"
+                  },
+                  {
+                    "body": [
+                      [
+                        "scope_t",
+                        true
+                      ],
+                      [
+                        "actor_f",
+                        true
+                      ]
+                    ],
+                    "head": "inactive_subject",
+                    "node": "n2"
+                  },
+                  {
+                    "body": [
+                      [
+                        "scope_t",
+                        true
+                      ],
+                      [
+                        "actor_t",
+                        true
+                      ],
+                      [
+                        "e0_t",
+                        true
+                      ]
+                    ],
+                    "head": "exception_applies",
+                    "node": "n2"
+                  },
+                  {
+                    "body": [
+                      [
+                        "scope_t",
+                        true
+                      ],
+                      [
+                        "actor_t",
+                        true
+                      ],
+                      [
+                        "e0_t",
+                        false
+                      ],
+                      [
+                        "e0_u",
+                        true
+                      ]
+                    ],
+                    "head": "unknown_exception",
+                    "node": "n2"
+                  },
+                  {
+                    "body": [
+                      [
+                        "scope_t",
+                        true
+                      ],
+                      [
+                        "actor_t",
+                        true
+                      ],
+                      [
+                        "e0_f",
+                        true
+                      ]
+                    ],
+                    "head": "active",
+                    "node": "n2"
+                  },
+                  {
+                    "body": [
+                      [
+                        "scope_f",
+                        true
+                      ]
+                    ],
+                    "head": "inactive_temporal",
+                    "node": "n3"
+                  },
+                  {
+                    "body": [
+                      [
+                        "scope_u",
+                        true
+                      ]
+                    ],
+                    "head": "unknown_date",
+                    "node": "n3"
+                  },
+                  {
+                    "body": [
+                      [
+                        "scope_t",
+                        true
+                      ],
+                      [
+                        "actor_f",
+                        true
+                      ]
+                    ],
+                    "head": "inactive_subject",
+                    "node": "n3"
+                  },
+                  {
+                    "body": [
+                      [
+                        "scope_t",
+                        true
+                      ],
+                      [
+                        "actor_t",
+                        true
+                      ]
+                    ],
+                    "head": "active",
+                    "node": "n3"
+                  },
+                  {
+                    "body": [
+                      [
+                        "scope_f",
+                        true
+                      ]
+                    ],
+                    "head": "inactive_temporal",
+                    "node": "n4"
+                  },
+                  {
+                    "body": [
+                      [
+                        "scope_u",
+                        true
+                      ]
+                    ],
+                    "head": "unknown_date",
+                    "node": "n4"
+                  },
+                  {
+                    "body": [
+                      [
+                        "scope_t",
+                        true
+                      ],
+                      [
+                        "actor_f",
+                        true
+                      ]
+                    ],
+                    "head": "inactive_subject",
+                    "node": "n4"
+                  },
+                  {
+                    "body": [
+                      [
+                        "scope_t",
+                        true
+                      ],
+                      [
+                        "actor_t",
+                        true
+                      ]
+                    ],
+                    "head": "active",
+                    "node": "n4"
+                  }
+                ],
+                "timesteps": 1
+              },
+              "role": "required_activation_backend",
+              "schema": "vle-pyreason-normative/v1",
+              "semantics": "normative_activation_v1",
+              "status": "computed"
+            },
+            "conclusions": [
+              {
+                "action": "reproduce",
+                "defeated_by": [],
+                "modality": "prohibition",
+                "norm_id": "A",
+                "reason": "grounded_defeat_semantics",
+                "status": "applicable",
+                "subject": "operator"
+              }
+            ],
+            "priority_decisions": [],
+            "structured_conflicts": [],
+            "unresolved_conflicts": []
+          },
+          "status": "non_compliant",
+          "violations": [
+            {
+              "action": "reproduce",
+              "explanation": "Prohibited action observed.",
+              "modality": "prohibition",
+              "norm_id": "A",
+              "status": "violated",
+              "subject": "operator"
+            }
+          ]
+        },
+        "decision_authorized": false,
+        "legal_certification": false,
+        "request_sha256": "c3c939fb310818208fbdd24bc71ad3d9cc8c3f2687d75335dc920f241dc01856",
+        "review_status": "unreviewed",
+        "schema": "vle-normative-evaluation-result/v1",
+        "status": "non_compliant"
+      }
+    }
+  ],
+  "decision_authorized": false,
+  "legal_certification": false,
+  "schema": "vle-pyreason-normative-qualification/v1",
+  "scope": "synthetic_unreviewed_implementation_smoke_only",
+  "execution_timeout_override_seconds": 120,
+  "limitations": [
+    "Synthetic and unreviewed implementation checks, not legal annotations.",
+    "Three single-norm cases and one mixed five-norm point context only.",
+    "No claim of full engine qualification, LTL support, legal accuracy, or certification."
+  ]
+}

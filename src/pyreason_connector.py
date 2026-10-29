@@ -8,10 +8,13 @@ import subprocess  # nosec B404
 import sys
 import tempfile
 from pathlib import Path
+from threading import BoundedSemaphore
 
 PREDICATES = ("accepted", "defeated", "reinstated", "strengthened")
 BACKEND_VERSION = "3.8.0"
 MAX_OUTPUT_BYTES = 2_000_000
+MAX_PARALLEL_WORKERS = 1
+_WORKER_SLOT = BoundedSemaphore(MAX_PARALLEL_WORKERS)
 RULES = (
     ("defeat", "defeated(Y):[1,1] <- attacks(X,Y):[1,1], accepted(X):[0.5,1]"),
     ("reinstate", "reinstated(Y):[1,1] <- attacks(X,Y):[1,1], defeated(X):[1,1]"),
@@ -29,6 +32,42 @@ def digest(value):
 
 class ResourceBound(ValueError):
     """No partial annotations may escape when a configured limit is reached."""
+
+
+class WorkerFailure(ValueError):
+    """Sanitized worker failure; never contains engine exception text."""
+
+
+def run_worker(payload, timeout_seconds):
+    """Bound native-engine concurrency per process; never queue without a bound."""
+    if type(timeout_seconds) is not int or not 1 <= timeout_seconds <= 300:
+        raise ValueError("timeout must be 1..300 seconds")
+    if not _WORKER_SLOT.acquire(blocking=False):
+        raise ResourceBound("worker_concurrency_bound")
+    try:
+        return _invoke_worker(payload, timeout_seconds)
+    finally:
+        _WORKER_SLOT.release()
+
+
+def _invoke_worker(payload, timeout_seconds):
+    """Shared pinned, isolated transport for both supported program fragments."""
+    encoded = canonical_json(payload)
+    with tempfile.TemporaryDirectory(prefix="vle-pyreason-") as directory:
+        source, target = Path(directory) / "input.json", Path(directory) / "output.json"
+        source.write_text(encoded, encoding="utf-8")
+        subprocess.run([sys.executable, "-m", "src.pyreason_worker", str(source), str(target)],
+                       stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                       timeout=timeout_seconds, check=True)  # nosec B603
+        if target.stat().st_size > MAX_OUTPUT_BYTES:
+            raise ResourceBound("output_bound")
+        output = json.loads(target.read_text(encoding="utf-8"))
+    if output.get("status") != "observed":
+        raise WorkerFailure("pyreason_unsupported_version" if output.get("error") == "unsupported_version"
+                            else "pyreason_unavailable_or_incompatible")
+    if output.get("backend_version") != BACKEND_VERSION or output.get("input_sha256") != digest(payload):
+        raise WorkerFailure("pyreason_invalid_or_incompatible")
+    return output
 
 
 def interval(value):
@@ -93,32 +132,16 @@ class PyReasonConnector:
                       "timesteps": timesteps if type(timesteps) is int and 1 <= timesteps <= 100 else None,
                       "timeout_seconds": timeout_seconds if type(timeout_seconds) is int and 1 <= timeout_seconds <= 300 else None,
                       "max_arguments": 256, "max_edges_per_relation": 4096,
-                      "max_timesteps": 100, "max_timeout_seconds": 300, "max_output_bytes": MAX_OUTPUT_BYTES})
+                      "max_timesteps": 100, "max_timeout_seconds": 300, "max_output_bytes": MAX_OUTPUT_BYTES,
+                      "max_parallel_workers": MAX_PARALLEL_WORKERS})
         try:
             if type(timeout_seconds) is not int or not 1 <= timeout_seconds <= 300:
                 raise ValueError("timeout must be 1..300 seconds")
             payload, names = prepare(arguments, attacks, supports, timesteps)
-            encoded = canonical_json(payload)
-            result["input_sha256"] = hashlib.sha256(encoded.encode()).hexdigest()
+            result["input_sha256"] = digest(payload)
             result["argument_map_sha256"] = digest(names)
             result["rule_set_sha256"] = payload["rule_set_sha256"]
-            with tempfile.TemporaryDirectory(prefix="vle-pyreason-") as directory:
-                source, target = Path(directory) / "input.json", Path(directory) / "output.json"
-                source.write_text(encoded, encoding="utf-8")
-                subprocess.run([sys.executable, "-m", "src.pyreason_worker", str(source), str(target)],
-                               stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
-                               timeout=timeout_seconds, check=True)  # nosec B603
-                if target.stat().st_size > MAX_OUTPUT_BYTES:
-                    raise ResourceBound("output_bound")
-                output = json.loads(target.read_text(encoding="utf-8"))
-            if output.get("status") != "observed":
-                result["error"] = ("pyreason_unsupported_version" if output.get("error") == "unsupported_version"
-                                   else "pyreason_unavailable_or_incompatible")
-                return result
-            if output.get("backend_version") != BACKEND_VERSION:
-                raise ValueError("unsupported backend version")
-            if output.get("input_sha256") != result["input_sha256"]:
-                raise ValueError("mismatched backend receipt")
+            output = run_worker(payload, timeout_seconds)
             annotations = self._extract_results(output["annotations"], set(names.values()))
             if annotations["accepted"] != payload["nodes"]:
                 raise ValueError("lost or changed input annotations")
@@ -130,6 +153,8 @@ class PyReasonConnector:
             result.update(error="pyreason_timeout", bound_hit=True)
         except ResourceBound as exc:
             result.update(error="pyreason_" + str(exc), bound_hit=True)
+        except WorkerFailure as exc:
+            result["error"] = str(exc)
         except (ValueError, TypeError, KeyError, AttributeError, OSError, OverflowError, RecursionError, subprocess.SubprocessError):
             # No partial annotations or provider exception text escape.
             for key in PREDICATES:

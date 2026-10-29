@@ -52,8 +52,13 @@ def main():
         else:
             import pyreason as pr
             payload = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+            if payload.get("mode") == "normative_activation_v1":
+                from .pyreason_program import execute_program
+                annotations = execute_program(payload, pr)
+            else:
+                annotations = execute(payload, pr)
             result = {"status": "observed", "backend_version": backend_version,
-                      "input_sha256": digest(payload), "annotations": execute(payload, pr)}
+                      "input_sha256": digest(payload), "annotations": annotations}
     except Exception:
         result = {"status": "unknown"}  # No dependency diagnostics/source text.
     target.write_text(json.dumps(result, sort_keys=True, allow_nan=False), encoding="utf-8")
