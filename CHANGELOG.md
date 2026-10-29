@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.9.2 - 2026-10-29
+
+- Selectable PyReason norm activation now feeds priority and compliance, with an
+  independent blocking check and no core fallback when the backend is selected.
+- CLI, reviewed lifecycle, authenticated API, console and audit bundles carry
+  the active backend and its bounded compiled program. Native worker concurrency
+  is bounded; unknowns, partial outcomes and mismatches block computation.
+- Existing release attestations cannot authorize the new backend. Default core
+  behavior, request fingerprints and old audit verification remain compatible.
+
 ## 0.9.1 - 2026-10-29
 
 - Conservative pinned `/v1/` API/role contract guard and bounded operational-state

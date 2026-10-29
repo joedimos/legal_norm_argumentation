@@ -37,14 +37,26 @@ def activation(norm: NormInterpretation, context: FactContext) -> Activation:
     return Activation(norm.id, "active", ("conditions_satisfied",))
 
 
-def reason(norms: Sequence[NormInterpretation], context: FactContext) -> dict:
+def reason(norms: Sequence[NormInterpretation], context: FactContext, *, backend="core", pyreason_timeout_seconds=60) -> dict:
     from .argumentation import OptimizedAAF
     from .conflicts import detect_conflicts
     from .priority import resolve_pair
 
     if len({norm.id for norm in norms}) != len(norms):
         raise ValueError("norm ids must be unique")
-    activations = {norm.id: activation(norm, context) for norm in norms}
+    backend_report = None
+    if backend == "core":
+        activations = {norm.id: activation(norm, context) for norm in norms}
+    elif backend == "pyreason":
+        from .pyreason_normative import run_activation_backend
+
+        backend_report = run_activation_backend(norms, context, timeout_seconds=pyreason_timeout_seconds)
+        activations = ({key: Activation(key, item["status"], tuple(item["reasons"]))
+                        for key, item in backend_report["activations"].items()}
+                       if backend_report["status"] == "computed" else
+                       {norm.id: Activation(norm.id, "undetermined", ("pyreason_computation_incomplete",)) for norm in norms})
+    else:
+        raise ValueError("unsupported normative reasoning backend")
     active = {norm.id: norm for norm in norms if activations[norm.id].status == "active"}
     conflicts = detect_conflicts(list(active.values()))
     attacks = set()
@@ -76,4 +88,5 @@ def reason(norms: Sequence[NormInterpretation], context: FactContext) -> dict:
         "structured_conflicts": [c.to_dict() for c in conflicts],
         "unresolved_conflicts": unresolved,
         "argumentation": {"semantics": "grounded", "labels": labels, "defeats": sorted(map(list, attacks))},
+        **({"backend": backend_report} if backend_report is not None else {}),
     }

@@ -1,0 +1,33 @@
+{
+  "schema": "vle-normative-evaluation/v1",
+  "backend": "pyreason",
+  "timeout_seconds": 60,
+  "norms": [
+    {
+      "id": "synthetic-ip-prohibition",
+      "source_norm_id": "synthetic-unreviewed",
+      "modality": "prohibition",
+      "subject": "operator",
+      "action": "reproduce",
+      "conditions": [
+        {
+          "name": "protected"
+        }
+      ],
+      "exceptions": [
+        {
+          "name": "licensed"
+        }
+      ]
+    }
+  ],
+  "context": {
+    "facts": {
+      "protected": true,
+      "licensed": false
+    },
+    "observed_actions": [
+      "reproduce"
+    ]
+  }
+}

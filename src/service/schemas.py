@@ -30,6 +30,8 @@ class InterpretationSelectionRequest(BaseModel):
 
 
 class EvaluateRequest(BaseModel):
+    reasoning_backend: Literal["core", "pyreason"] = "core"
+    reasoning_timeout_seconds: int = Field(default=60, ge=1, le=300, strict=True)
     facts: dict[str, bool] = Field(default_factory=dict)
     actor: str | None = Field(default=None, max_length=256)
     observed_actions: list[str] = Field(default_factory=list, max_length=1000)

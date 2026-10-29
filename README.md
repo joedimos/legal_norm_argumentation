@@ -388,7 +388,7 @@ data; H3 is not supported in its simulation. No legal accuracy or priority-of-
 publication claim is made. The pre-fix extractor report is retained separately
 from the token-boundary repair's result. Legacy fixture suites remain unchanged.
 
-## PyReason advisory integration
+## PyReason integration: graph diagnostics and required norm activation
 
 The optional `.[pyreason]` extra targets PyReason 3.8.0. Each adapter invocation
 runs in a fresh subprocess with a deadline, bounded graph/horizon and validated
@@ -401,3 +401,19 @@ supports `aaf.run_pyreason(2, timeout_seconds=300)` for controlled cold starts.
 `OptimizedAAF.run_pyreason()` retains its interface and legacy result keys, but
 these are graph annotations, not Dung acceptance or compliance verdicts. Matching
 snapshots no longer imply convergence. See [integration semantics and limits](docs/PYREASON_INTEGRATION.md).
+
+### Active normative backend (0.9.2)
+
+Select `backend="pyreason"` in `compliance.evaluate` to make PyReason compute norm
+activation for the downstream priority and compliance engines. A failed or
+inconsistent computation becomes indeterminate; it is never replaced silently
+by a core-only result. The authenticated API and console expose this backend
+when `VLE_PYREASON_ENABLED=true` and the optional package is installed.
+
+```sh
+python -m src.cli norm-evaluate --input examples/pyreason-normative.json
+```
+
+The example is synthetic and unreviewed. Source review remains required in the
+lifecycle; existing release artifacts do not authorize the new backend. See
+[active backend semantics, bounds and usage](docs/PYREASON_NORMATIVE_BACKEND.md).

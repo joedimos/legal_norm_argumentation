@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "schema",
+    "status",
+    "backend",
+    "request_sha256",
+    "compliance",
+    "review_status",
+    "decision_authorized",
+    "legal_certification"
+  ],
+  "properties": {
+    "schema": {
+      "const": "vle-normative-evaluation-result/v1"
+    },
+    "status": {
+      "enum": [
+        "compliant",
+        "non_compliant",
+        "indeterminate"
+      ]
+    },
+    "backend": {
+      "enum": [
+        "core",
+        "pyreason"
+      ]
+    },
+    "request_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "compliance": {
+      "type": "object"
+    },
+    "review_status": {
+      "const": "unreviewed"
+    },
+    "decision_authorized": {
+      "const": false
+    },
+    "legal_certification": {
+      "const": false
+    }
+  }
+}

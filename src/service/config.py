@@ -26,7 +26,8 @@ class Settings(BaseSettings):
 
     environment: Literal["development", "test", "production"] = "development"
     service_name: str = "legal-norm-argumentation"
-    service_version: str = "0.9.1"
+    service_version: str = "0.9.2"
+    pyreason_enabled: bool = False
     build_revision: str | None = Field(default=None, pattern=r"^[0-9a-f]{40}$")
     database_url: str = "sqlite+pysqlite:///./vle_legato.db"
     database_pool_size: int = Field(default=10, ge=1, le=100)

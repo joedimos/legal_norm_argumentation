@@ -46,6 +46,8 @@ def main() -> None:
     comply.add_argument("--facts", default="{}", help="JSON object or path")
     comply.add_argument("--actions", default="[]", help="JSON array or path")
     comply.add_argument("--at-date")
+    comply.add_argument("--reasoning-backend", choices=("core", "pyreason"), default="core")
+    comply.add_argument("--reasoning-timeout-seconds", type=int, default=60)
 
     lifecycle = subs.add_parser("lifecycle")
     _add_source_args(lifecycle)
@@ -53,6 +55,8 @@ def main() -> None:
     lifecycle.add_argument("--actions", default="[]")
     lifecycle.add_argument("--at-date")
     lifecycle.add_argument("--assume-reviewed", action="store_true", help="Demo/testing convenience only")
+    lifecycle.add_argument("--reasoning-backend", choices=("core", "pyreason"), default="core")
+    lifecycle.add_argument("--reasoning-timeout-seconds", type=int, default=60)
 
     for name in (
         "verify",
@@ -66,11 +70,14 @@ def main() -> None:
         "annotation-assess",
         "model-doctor",
         "annotation-verify",
+        "norm-evaluate",
     ):
         command = subs.add_parser(name)
         command.add_argument("--input", required=True, help="Path to a versioned JSON research request")
         command.add_argument("--bundle", help="Write an audit ZIP containing request, result and runtime")
         command.add_argument("--revision", help="Full Git SHA of the executing build")
+    subs.choices["norm-evaluate"].add_argument("--backend", choices=("core", "pyreason"))
+    subs.choices["norm-evaluate"].add_argument("--timeout-seconds", type=int)
     signed = subs.choices["annotation-verify"]
     signed.add_argument("--registry", required=True, help="Public reviewer registry checked outside this assessment")
     signed.add_argument("--expected-registry-sha256", required=True)
@@ -139,6 +146,7 @@ def main() -> None:
         "annotation-template",
         "annotation-sign",
         "annotation-keygen",
+        "norm-evaluate",
     }:
         raise SystemExit(_research_command(args))
     text = _read_text(args)
@@ -170,7 +178,11 @@ def main() -> None:
             selected = [item.selected() for item in sets if item.selected() is not None]
             payload = {
                 "unresolved_norm_ids": [item.source_norm_id for item in sets if item.unresolved],
-                "compliance": evaluate(selected, context) if selected else {"status": "indeterminate", "findings": []},
+                "compliance": evaluate(selected, context, backend=args.reasoning_backend,
+                                       pyreason_timeout_seconds=args.reasoning_timeout_seconds)
+                              if selected else {"status": "indeterminate", "findings": []},
+                **({"decision_authorized": False, "review_status": "unreviewed"}
+                   if args.reasoning_backend == "pyreason" else {}),
             }
         else:
             audit = audit_extraction(text, norms)
@@ -182,6 +194,8 @@ def main() -> None:
                 extraction_audit=audit,
                 context=context,
                 review_statuses=statuses,
+                reasoning_backend=args.reasoning_backend,
+                pyreason_timeout_seconds=args.reasoning_timeout_seconds,
             )
 
     print(json.dumps(payload, indent=2, ensure_ascii=False, default=str))
@@ -197,6 +211,7 @@ def _research_command(args) -> int:
     from .live_generation import generate_candidate
     from .model_checking import verify_request
     from .model_runtime import model_doctor, strict_json
+    from .normative_evaluation import evaluate_request
     from .research import run_research
     from .research_benchmark import run_benchmarks
     from .response_alignment import run_revision_sequence
@@ -267,6 +282,7 @@ def _research_command(args) -> int:
                     print(json.dumps(payload, indent=2, ensure_ascii=False, allow_nan=False))
                     return 0 if args.command == "family-review" or payload["all_passed"] else 1
                 runner = {
+                    "norm-evaluate": lambda r: evaluate_request(r, backend=args.backend, timeout_seconds=args.timeout_seconds),
                     "model-doctor": model_doctor,
                     "annotation-verify": lambda r: assess_signed_annotations(
                         r,

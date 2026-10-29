@@ -1,4 +1,8 @@
-# PyReason integration contract
+# PyReason graph-diagnostic integration contract
+
+For the required normative activation backend introduced in 0.9.2, see
+[PYREASON_NORMATIVE_BACKEND.md](PYREASON_NORMATIVE_BACKEND.md). The contract below
+describes the legacy graph-annotation path.
 
 Upstream inspected: https://github.com/lab-v2/pyreason source tree
 `633e4074c2cd99c6cf06b835b12aa0f4d8f5cc08` (2026-10-29).

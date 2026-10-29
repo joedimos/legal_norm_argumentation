@@ -22,8 +22,8 @@ def _action_seen(norm: NormInterpretation, context: FactContext) -> bool:
     return norm.action in context.observed_actions
 
 
-def evaluate(norms: Sequence[NormInterpretation], context: FactContext) -> dict:
-    reasoning = reason(norms, context)
+def evaluate(norms: Sequence[NormInterpretation], context: FactContext, *, backend="core", pyreason_timeout_seconds=60) -> dict:
+    reasoning = reason(norms, context, backend=backend, pyreason_timeout_seconds=pyreason_timeout_seconds)
     applicable = {item["norm_id"] for item in reasoning["conclusions"] if item["status"] == "applicable"}
     findings: list[ComplianceFinding] = []
 
@@ -58,7 +58,8 @@ def evaluate(norms: Sequence[NormInterpretation], context: FactContext) -> dict:
     violations = [asdict(item) for item in findings if item.status == "violated"]
     unknown = [asdict(item) for item in findings if item.status == "unknown"]
     return {
-        "status": "non_compliant" if violations else "indeterminate" if unknown or reasoning["unresolved_conflicts"] else "compliant",
+        "status": ("indeterminate" if reasoning.get("backend", {}).get("status", "computed") != "computed"
+                   else "non_compliant" if violations else "indeterminate" if unknown or reasoning["unresolved_conflicts"] else "compliant"),
         "findings": [asdict(item) for item in findings],
         "violations": violations,
         "reasoning": reasoning,

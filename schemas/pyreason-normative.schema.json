@@ -1,0 +1,167 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "schema",
+    "status",
+    "role",
+    "semantics",
+    "bounds",
+    "activations",
+    "decision_authorized",
+    "legal_certification"
+  ],
+  "properties": {
+    "schema": {
+      "const": "vle-pyreason-normative/v1"
+    },
+    "status": {
+      "enum": [
+        "computed",
+        "unknown"
+      ]
+    },
+    "role": {
+      "const": "required_activation_backend"
+    },
+    "semantics": {
+      "const": "normative_activation_v1"
+    },
+    "decision_authorized": {
+      "const": false
+    },
+    "legal_certification": {
+      "const": false
+    },
+    "bounds": {
+      "type": "object",
+      "required": [
+        "max_norms",
+        "max_rules",
+        "max_facts",
+        "max_clauses",
+        "timesteps",
+        "timeout_seconds",
+        "max_output_bytes"
+      ],
+      "properties": {
+        "timesteps": {
+          "const": 1
+        },
+        "timeout_seconds": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "maximum": 300
+        }
+      }
+    },
+    "activations": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "norm_id",
+          "status",
+          "reasons"
+        ],
+        "properties": {
+          "norm_id": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "active",
+              "inactive",
+              "defeated",
+              "undetermined"
+            ]
+          },
+          "reasons": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "independent_check": {
+      "const": "matched"
+    },
+    "backend_version": {
+      "const": "3.8.0"
+    },
+    "input_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "context_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "argument_map_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "program": {
+      "type": "object"
+    },
+    "annotations": {
+      "type": "object"
+    },
+    "reason": {
+      "type": "string"
+    },
+    "bound_hit": {
+      "type": "boolean"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "computed"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "independent_check",
+          "backend_version",
+          "input_sha256",
+          "argument_map_sha256",
+          "context_sha256",
+          "norm_semantic_hashes",
+          "program",
+          "node_map",
+          "annotations"
+        ],
+        "properties": {
+          "activations": {
+            "minProperties": 1
+          }
+        },
+        "not": {
+          "required": [
+            "reason"
+          ]
+        }
+      },
+      "else": {
+        "required": [
+          "reason"
+        ],
+        "properties": {
+          "activations": {
+            "maxProperties": 0
+          }
+        }
+      }
+    }
+  ]
+}

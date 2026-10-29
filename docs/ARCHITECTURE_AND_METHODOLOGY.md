@@ -54,6 +54,9 @@ evidence graph ──► benchmark metrics ──► certification-readiness gat
 - `pyreason_connector.py`, `pyreason_worker.py`: optional isolated interval-graph
   diagnostics. These advisory annotations never replace Dung or compliance
   semantics, set review state, or authorize decisions.
+- `pyreason_normative.py`, `pyreason_program.py`: optional required-when-selected
+  norm activation, independently checked before feeding priority/compliance.
+  Incomplete computations block instead of falling back to core.
 - `certification.py`: evidence gates that explicitly do **not** claim legal certification.
 
 ## Joint layer
