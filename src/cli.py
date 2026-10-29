@@ -92,7 +92,11 @@ def main() -> None:
     bundle.add_argument("--input", required=True)
     bundle.add_argument("--expected-manifest-digest")
 
+    from .phase4_cli import COMMANDS, configure, execute
+    configure(subs)
     args = parser.parse_args()
+    if args.command in COMMANDS:
+        raise SystemExit(execute(args))
     if args.command in {"verify", "research", "experiment", "plan-evidence", "family", "statutory-revise", "family-review", "family-benchmark", "benchmark", "experiment-benchmark", "verify-bundle", "live-generate", "annotation-prepare", "annotation-assess", "model-doctor", "annotation-verify", "annotation-template", "annotation-sign", "annotation-keygen"}:
         raise SystemExit(_research_command(args))
     text = _read_text(args)

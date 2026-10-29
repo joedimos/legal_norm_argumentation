@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "vle-aspic-result/v1"
+    },
+    "status": {
+      "enum": [
+        "analyzed",
+        "unknown"
+      ]
+    },
+    "reason": {
+      "type": "string"
+    },
+    "lifting": {
+      "enum": [
+        "last",
+        "weakest"
+      ]
+    },
+    "set_lifting": {
+      "const": "elitist"
+    },
+    "semantics": {
+      "enum": [
+        "grounded",
+        "preferred",
+        "stable"
+      ]
+    },
+    "bounds": {
+      "type": "object"
+    },
+    "arguments": {
+      "type": "array"
+    },
+    "attacks": {
+      "type": "array"
+    },
+    "defeats": {
+      "type": "array"
+    },
+    "extensions": {
+      "type": "array"
+    },
+    "grounded_labels": {
+      "type": "object"
+    },
+    "conclusions": {
+      "type": "array"
+    },
+    "has_extensions": {
+      "type": "boolean"
+    },
+    "rationality": {
+      "type": "object"
+    },
+    "request_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "review_status": {
+      "const": "unreviewed"
+    },
+    "decision_authorized": {
+      "const": false
+    },
+    "legal_certification": {
+      "const": false
+    }
+  },
+  "required": [
+    "schema",
+    "status",
+    "reason",
+    "lifting",
+    "set_lifting",
+    "semantics",
+    "bounds",
+    "arguments",
+    "attacks",
+    "defeats",
+    "extensions",
+    "grounded_labels",
+    "conclusions",
+    "has_extensions",
+    "rationality",
+    "request_sha256",
+    "review_status",
+    "decision_authorized",
+    "legal_certification"
+  ],
+  "additionalProperties": false
+}
