@@ -58,6 +58,7 @@ def require_roles(*roles: str) -> Callable[[Principal], Principal]:
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="insufficient role")
         return principal
 
+    dependency.vle_required_roles = tuple(sorted(required))
     return dependency
 
 

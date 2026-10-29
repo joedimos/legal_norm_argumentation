@@ -6,6 +6,7 @@ observations for release custodians, never independent legal certification.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import statistics
@@ -28,6 +29,67 @@ from .repository import verify_audit_chain
 
 GOVERNED_TABLES = ("source_documents", "candidate_reviews", "interpretation_selections", "lifecycle_runs",
                   "audit_events", "workflow_requests", "workflow_events")
+OPERATIONAL_TABLES = ("import_cursors", "idempotency_records", "rate_limit_buckets")
+
+
+class SnapshotBound(ValueError):
+    pass
+
+
+def extended_database_snapshot(database, *, max_rows=100000, max_bytes=67108864, max_seconds=30, monotonic=time.monotonic):
+    """Consistent bounded v2 snapshot, including all three operational tables."""
+    if (type(max_rows) is not int or not 1 <= max_rows <= 10000000
+            or type(max_bytes) is not int or not 1 <= max_bytes <= 1073741824
+            or type(max_seconds) is not int or not 1 <= max_seconds <= 300):
+        raise ValueError("invalid snapshot bounds")
+    start, rows, bytes_used = monotonic(), 0, 0
+
+    def budget(payload=None):
+        nonlocal bytes_used
+        if payload is not None:
+            bytes_used += len(canonical_json(payload))
+        if rows > max_rows or bytes_used > max_bytes or monotonic() - start >= max_seconds:
+            raise SnapshotBound("snapshot_bound")
+
+    if not database.ready(require_migrations=True):
+        raise ValueError("migrated database is not ready")
+    tables = {}
+    with database.session() as session:
+        if database.engine.dialect.name == "postgresql":
+            session.connection(execution_options={"isolation_level": "REPEATABLE READ"})
+            session.execute(sa.text("SELECT set_config('statement_timeout', :timeout, true)"), {"timeout": str(max_seconds * 1000)})
+        elif database.engine.dialect.name == "sqlite":
+            session.execute(sa.text("BEGIN"))
+        else:
+            raise ValueError("unsupported consistent snapshot backend")
+        chain = verify_audit_chain(session, max_events=max_rows, on_event=lambda event: budget())
+        if not chain["valid"]:
+            if chain.get("status") == "unknown":
+                raise SnapshotBound("snapshot_audit_bound")
+            raise ValueError("audit chain is invalid")
+        for name in GOVERNED_TABLES + OPERATIONAL_TABLES:
+            budget()
+            table = sa.Table(name, sa.MetaData(), autoload_with=session.connection())
+            hasher, count = hashlib.sha256(), 0
+            hasher.update(b"[")
+            query = sa.select(table).order_by(*table.primary_key.columns).execution_options(yield_per=100)
+            for row in session.execute(query).mappings():
+                rows += 1
+                data = {k: (v.replace(tzinfo=UTC) if v.tzinfo is None else v.astimezone(UTC)).isoformat()
+                        if isinstance(v, datetime) else v for k, v in row.items()}
+                raw = canonical_json(data)
+                budget(data)
+                if count:
+                    hasher.update(b",")
+                hasher.update(raw)
+                count += 1
+            hasher.update(b"]")
+            tables[name] = {"count": count, "sha256": hasher.hexdigest()}
+        budget()
+    return {"schema": "vle-database-snapshot/v2", "tables": {n: tables[n] for n in GOVERNED_TABLES},
+            "operational_tables": {n: tables[n] for n in OPERATIONAL_TABLES}, "audit_chain": chain,
+            "bounds": {"max_rows": max_rows, "max_bytes": max_bytes, "max_seconds": max_seconds},
+            "consistency": "single_read_transaction"}
 
 
 def database_snapshot(database):
@@ -137,12 +199,26 @@ def main():
     parser.add_argument("--baseline")
     parser.add_argument("--baseline-sha256")
     parser.add_argument("--confirm-isolated", action="store_true")
+    parser.add_argument("--include-operational", action="store_true", help="Use bounded v2 snapshots including import/idempotency/rate state")
+    parser.add_argument("--snapshot-max-rows", type=int, default=100000)
+    parser.add_argument("--snapshot-max-bytes", type=int, default=67108864)
+    parser.add_argument("--snapshot-max-seconds", type=int, default=30)
     args = parser.parse_args()
+    if args.include_operational and args.mode not in {"snapshot", "restore"}:
+        parser.error("--include-operational applies only to snapshot/restore")
     if len(args.build_revision) != 40 or any(x not in "0123456789abcdef" for x in args.build_revision):
         parser.error("build-revision must be a full lowercase Git SHA")
     report = {"schema": "vle-operational-evidence/v1", "kind": args.mode, "passed": False,
               "deployment_id": args.deployment_id, "build_revision": args.build_revision,
               "observed_at": datetime.now(UTC).isoformat()}
+    if args.mode == "ip-sources":
+        from .ip_release import SCOPE, source_probe_bounds
+        report.update(schema="vle-operational-evidence/v2", kind="ip_sources", scope=SCOPE, status="unknown",
+                      evidence_origin="live_provider_probe", bounds=source_probe_bounds(),
+                      decision_authorized=False, legal_certification=False)
+    if args.include_operational:
+        report["bounds"] = {"max_rows": args.snapshot_max_rows, "max_bytes": args.snapshot_max_bytes,
+                            "max_seconds": args.snapshot_max_seconds}
     database = None
     client = None
     try:
@@ -156,7 +232,13 @@ def main():
                 if not args.confirm_isolated or (original.host, original.port, original.database) == (restored.host, restored.port, restored.database):
                     raise ValueError("restore verification requires an explicitly isolated target database")
             database = Database(Settings(environment="test", database_url=url, _env_file=None))
-            snapshot = database_snapshot(database)
+            if args.include_operational:
+                report["bounds"] = {"max_rows": args.snapshot_max_rows, "max_bytes": args.snapshot_max_bytes,
+                                    "max_seconds": args.snapshot_max_seconds}
+                snapshot = extended_database_snapshot(database, max_rows=args.snapshot_max_rows,
+                                                      max_bytes=args.snapshot_max_bytes, max_seconds=args.snapshot_max_seconds)
+            else:
+                snapshot = database_snapshot(database)
             if args.mode == "snapshot":
                 print(json.dumps(snapshot, sort_keys=True))
                 return
@@ -164,9 +246,11 @@ def main():
             if baseline != snapshot or not any(t["count"] for t in snapshot["tables"].values()):
                 raise ValueError("restored governed data does not match nonempty frozen baseline")
             report.update(passed=True, snapshot_sha256=digest(canonical_json(snapshot)))
+            if args.include_operational:
+                report.update(snapshot_schema=snapshot["schema"], operational_tables_verified=list(OPERATIONAL_TABLES))
         elif args.mode == "ip-sources":
-            from .ip_release import probe_ip_sources
-            report.update(probe_ip_sources(Settings()), schema="vle-operational-evidence/v2", kind="ip_sources", passed=True)
+            from .ip_release import ip_source_evidence
+            report = ip_source_evidence(Settings(), deployment_id=args.deployment_id, build_revision=args.build_revision)
         elif args.mode == "legifrance":
             from .legifrance_provider import build_legifrance_client
             provider = build_legifrance_client(Settings())
@@ -185,6 +269,8 @@ def main():
                 report.update(load_probe(client, os.environ["VLE_PROBE_OPERATOR_TOKEN"], count=args.requests,
                                           concurrency=args.concurrency, max_p95_ms=args.max_p95_ms,
                                           evaluation_source=fixture["source_id"] if fixture else None))
+    except SnapshotBound:
+        report.update(passed=False, status="unknown", reason="snapshot_bound", bound_hit=True)
     except Exception:
         report.update(passed=False, reason="operational_probe_failed")
     finally:

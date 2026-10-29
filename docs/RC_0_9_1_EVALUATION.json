@@ -1,0 +1,173 @@
+{
+  "schema": "vle-software-evaluation/v1",
+  "scope": "synthetic_unreviewed_software_regression",
+  "version": "0.9.1",
+  "tests": {
+    "passed": 496,
+    "skipped": 4
+  },
+  "benchmarks": {
+    "benchmark-current": {
+      "case_count": 62,
+      "all_passed": true
+    },
+    "benchmark-z3-current": {
+      "case_count": 62,
+      "all_passed": true
+    },
+    "experiment-current": {
+      "case_count": 19,
+      "all_passed": true
+    },
+    "experiment-z3-current": {
+      "case_count": 19,
+      "all_passed": true
+    },
+    "family-current": {
+      "case_count": 15,
+      "all_passed": true
+    }
+  },
+  "pyreason_smoke": {
+    "accepted": {
+      "a": [
+        1.0,
+        1.0
+      ],
+      "b": [
+        0.0,
+        1.0
+      ]
+    },
+    "backend_version": "3.8.0",
+    "bounds": {
+      "max_arguments": 256,
+      "max_edges_per_relation": 4096,
+      "timeout_seconds": 60,
+      "timesteps": 2
+    },
+    "converged": false,
+    "decision_authorized": false,
+    "defeated": {
+      "a": [
+        0.0,
+        1.0
+      ],
+      "b": [
+        1.0,
+        1.0
+      ]
+    },
+    "input_sha256": "5d955490817b508c7a6e195506dea09ee4f844d87703e72d5d58c9fdf3a15b11",
+    "legal_certification": false,
+    "reinstated": {
+      "a": [
+        0.0,
+        1.0
+      ],
+      "b": [
+        0.0,
+        1.0
+      ]
+    },
+    "review_status": "unreviewed",
+    "schema": "vle-pyreason-report/v1",
+    "semantics": "advisory_graph_annotations",
+    "status": "observed_within_bound",
+    "strengthened": {
+      "a": [
+        0.0,
+        1.0
+      ],
+      "b": [
+        0.0,
+        1.0
+      ]
+    }
+  },
+  "installed_package": {
+    "decision_authorized": false,
+    "legal_certification": false,
+    "network_calls": 0,
+    "passed": true,
+    "resource_files": 61,
+    "schema": "vle-distribution-check/v1",
+    "wheel_sha256": "f39a61ce8021c42aaf1e9ab199cac3c90aa02d9c0431e514c92d9e37647ee0fb"
+  },
+  "decision_authorized": false,
+  "legal_certification": false,
+  "integration_review": {
+    "scope": "synthetic_unreviewed_software_regression_and_two_real_engine_smoke_cases",
+    "tests": {
+      "passed": 513,
+      "skipped": 4
+    },
+    "adapter_coverage": {
+      "src/pyreason_connector.py": 93.57798165137615,
+      "src/pyreason_worker.py": 91.66666666666667
+    },
+    "installed_package": {
+      "decision_authorized": false,
+      "legal_certification": false,
+      "network_calls": 0,
+      "passed": true,
+      "resource_files": 61,
+      "schema": "vle-distribution-check/v1",
+      "wheel_sha256": "8094c7c9f21f9d3afce4119a2a74a51a9f2457b40561f55f2ae386013ff34bc8",
+      "worker_provider": "synthetic_unreviewed_fixture",
+      "worker_subprocess_verified": true
+    },
+    "public_wrapper_smoke": "docs/PYREASON_QUALIFICATION.json",
+    "commands": [
+      "python -m pytest -q",
+      "python -m pytest -q tests/test_pyreason_connector.py --cov=src.pyreason_connector --cov=src.pyreason_worker --cov-fail-under=80",
+      "python -m src.cli benchmark --backend exhaustive",
+      "python -m src.cli benchmark --backend z3",
+      "python -m src.cli experiment-benchmark --backend exhaustive",
+      "python -m src.cli experiment-benchmark --backend z3",
+      "python -m src.cli family-benchmark",
+      "python -m src.cli faithfulness",
+      "python -m src.api_contract",
+      "python tools/verify_distribution.py <built-wheel>"
+    ],
+    "source_sha256": {
+      "src/pyreason_connector.py": "6178198ec7abe4fe45b851e37cb3f603febaff162995971ed09f49c16e20d250",
+      "src/pyreason_worker.py": "c05499b58ed953be9b6792dc439c7163e690764584d35a4857cbc5590ac563ec",
+      "src/argumentation.py": "ba5aafdf901285a2fe90e06f6337177fadeeb47a7bf9b0703d8d4b8c87d761a8",
+      "src/originality.py": "d867e3e21051a1f5c8575d1eaa4e8ade3719eca8bb522ba9fa4bbf369f9edb1f",
+      "src/originality_annotator.py": "948dc505d8365c42a0a191655418df6b96e9fd88580846933bd3cbdac631ab12",
+      "schemas/pyreason-report.schema.json": "0dd06b916d8279ed36281ef0f588a1d65cdbb7c2502f63a4c204d8d7ad15181e",
+      "requirements-pyreason.txt": "81dabe1f601b992ec2f0cca486551998e9ae4e4f19b05b4d73d79a2350ddc9ca",
+      "tools/verify_distribution.py": "4c40a211f447bb73570d13ecd599598ac2efdbe4df5aa1775cf2b854c496286c",
+      "tools/fixtures/pyreason.py": "c151102de514f002e4ddeae1ecb116f0d31f3f19444c3500fd2c013c63f75cd8"
+    },
+    "benchmarks": {
+      "benchmark-exhaustive": {
+        "case_count": 62,
+        "all_passed": true
+      },
+      "benchmark-z3": {
+        "case_count": 62,
+        "all_passed": true
+      },
+      "experiment-exhaustive": {
+        "case_count": 19,
+        "all_passed": true
+      },
+      "experiment-z3": {
+        "case_count": 19,
+        "all_passed": true
+      },
+      "family": {
+        "case_count": 15,
+        "all_passed": true
+      },
+      "faithfulness": {
+        "case_count": 12,
+        "status": "reported"
+      }
+    },
+    "decision_authorized": false,
+    "legal_certification": false
+  }
+}

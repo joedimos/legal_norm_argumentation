@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "decision_authorized": {
+      "const": false
+    },
+    "legal_certification": {
+      "const": false
+    },
+    "schema": {
+      "const": "vle-api-contract-report/v1"
+    },
+    "status": {
+      "enum": [
+        "compatible_with_baseline",
+        "review_required",
+        "unknown"
+      ]
+    }
+  },
+  "required": [
+    "schema",
+    "status",
+    "decision_authorized",
+    "legal_certification"
+  ],
+  "type": "object"
+}

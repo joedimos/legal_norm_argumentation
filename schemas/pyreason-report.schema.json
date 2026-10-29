@@ -1,0 +1,221 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "accepted",
+    "defeated",
+    "reinstated",
+    "strengthened",
+    "schema",
+    "status",
+    "converged",
+    "decision_authorized",
+    "legal_certification",
+    "review_status",
+    "semantics",
+    "bounds"
+  ],
+  "properties": {
+    "accepted": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "minItems": 2,
+        "maxItems": 2,
+        "items": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    },
+    "defeated": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "minItems": 2,
+        "maxItems": 2,
+        "items": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    },
+    "reinstated": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "minItems": 2,
+        "maxItems": 2,
+        "items": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    },
+    "strengthened": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "minItems": 2,
+        "maxItems": 2,
+        "items": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    },
+    "schema": {
+      "const": "vle-pyreason-report/v1"
+    },
+    "status": {
+      "enum": [
+        "unknown",
+        "observed_within_bound"
+      ]
+    },
+    "converged": {
+      "const": false
+    },
+    "decision_authorized": {
+      "const": false
+    },
+    "legal_certification": {
+      "const": false
+    },
+    "review_status": {
+      "const": "unreviewed"
+    },
+    "semantics": {
+      "const": "advisory_graph_annotations"
+    },
+    "bounds": {
+      "type": "object",
+      "required": [
+        "timesteps",
+        "timeout_seconds",
+        "max_arguments",
+        "max_edges_per_relation"
+      ],
+      "properties": {
+        "timesteps": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "maximum": 100
+        },
+        "timeout_seconds": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "maximum": 300
+        },
+        "max_arguments": {
+          "const": 256
+        },
+        "max_edges_per_relation": {
+          "const": 4096
+        },
+        "max_timesteps": {
+          "const": 100
+        },
+        "max_timeout_seconds": {
+          "const": 300
+        },
+        "max_output_bytes": {
+          "const": 2000000
+        }
+      }
+    },
+    "input_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "backend_version": {
+      "const": "3.8.0"
+    },
+    "argument_map_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "rule_set_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "bound_hit": {
+      "type": "boolean"
+    },
+    "error": {
+      "enum": [
+        "pyreason_timeout",
+        "pyreason_horizon_bound",
+        "pyreason_argument_bound",
+        "pyreason_edge_bound",
+        "pyreason_output_bound",
+        "pyreason_unsupported_version",
+        "pyreason_unavailable_or_incompatible",
+        "pyreason_invalid_or_incompatible"
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "unknown"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "accepted": {
+            "maxProperties": 0
+          },
+          "defeated": {
+            "maxProperties": 0
+          },
+          "reinstated": {
+            "maxProperties": 0
+          },
+          "strengthened": {
+            "maxProperties": 0
+          }
+        }
+      },
+      "else": {
+        "required": [
+          "backend_version",
+          "input_sha256"
+        ],
+        "not": {
+          "required": [
+            "error"
+          ]
+        },
+        "properties": {
+          "bound_hit": {
+            "const": false
+          },
+          "bounds": {
+            "properties": {
+              "timesteps": {
+                "type": "integer"
+              },
+              "timeout_seconds": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

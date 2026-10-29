@@ -308,10 +308,23 @@ def store_idempotent(
     return record
 
 
-def verify_audit_chain(session: Session) -> dict[str, Any]:
-    events = list(session.execute(select(AuditEventRecord).order_by(AuditEventRecord.sequence)).scalars())
+def verify_audit_chain(session: Session, *, max_events=None, on_event=None) -> dict[str, Any]:
+    statement = select(AuditEventRecord).order_by(AuditEventRecord.sequence)
+    if max_events is None:
+        events = list(session.execute(statement).scalars())
+    else:
+        if type(max_events) is not int or max_events < 1:
+            raise ValueError("invalid audit event bound")
+        events = session.execute(statement.limit(max_events + 1).execution_options(yield_per=100)).scalars()
     previous_hash: str | None = None
+    count = 0
     for event in events:
+        count += 1
+        if max_events is not None and count > max_events:
+            return {"valid": False, "status": "unknown", "reason": "audit_event_bound", "event_count": count - 1,
+                    "broken_sequence": None, "head_hash": previous_hash}
+        if on_event:
+            on_event(event)
         created_at = event.created_at
         if created_at.tzinfo is None:
             created_at = created_at.replace(tzinfo=UTC)
@@ -331,14 +344,14 @@ def verify_audit_chain(session: Session) -> dict[str, Any]:
         if event.previous_hash != previous_hash or event.event_hash != expected_hash:
             return {
                 "valid": False,
-                "event_count": len(events),
+                "event_count": len(events) if max_events is None else count,
                 "broken_sequence": event.sequence,
-                "head_hash": events[-1].event_hash if events else None,
+                "head_hash": (events[-1].event_hash if events else None) if max_events is None else event.event_hash,
             }
         previous_hash = event.event_hash
     return {
         "valid": True,
-        "event_count": len(events),
+        "event_count": count,
         "broken_sequence": None,
         "head_hash": previous_hash,
     }
