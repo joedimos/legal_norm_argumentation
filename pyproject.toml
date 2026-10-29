@@ -30,6 +30,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+geometry = [] # Dependency-free implementation; topology still requires explicit opt-in.
 annotation = ["cryptography==50.0.2"]
 verification = ["z3-solver==5.3.0.0"]
 dev = [

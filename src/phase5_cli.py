@@ -9,7 +9,7 @@ from .audit_bundle import MAX_BYTES, create_bundle
 from .model_runtime import strict_json
 from .phase4 import envelope
 
-COMMANDS = ("certify", "check-certificate", "obstruction", "metamorphic", "plan-review")
+COMMANDS = ("certify", "check-certificate", "obstruction", "metamorphic", "plan-review", "geometry")
 
 
 def configure(subs):
@@ -17,6 +17,13 @@ def configure(subs):
         p = subs.add_parser(name)
         p.add_argument("--input", required=True)
         p.add_argument("--bundle")
+        if name == "geometry":
+            p.add_argument("--horizon", type=int)
+            mode = p.add_mutually_exclusive_group()
+            mode.add_argument("--exact", action="store_true")
+            mode.add_argument("--sample", type=int)
+            p.add_argument("--seed", type=int)
+            p.add_argument("--topology", action="store_true", default=None)
         if name == "metamorphic":
             p.add_argument("--provider", choices=("extractor", "fake", "ollama", "vllm"), default="fake")
         if name == "obstruction":
@@ -36,6 +43,14 @@ def execute(args):
             from .certificates import certify
 
             result = certify(request)
+        elif args.command == "geometry":
+            from .geometry import geometry
+
+            if args.exact:
+                request = {k: v for k, v in request.items() if k != "samples"}
+            result = geometry(
+                request, horizon=args.horizon, samples=args.sample, seed=args.seed, topology=args.topology
+            )
         elif args.command == "plan-review":
             from .review_planning import plan_review
 
