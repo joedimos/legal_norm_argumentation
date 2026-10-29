@@ -1,0 +1,147 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "vle-faithfulness-report/v1"
+    },
+    "status": {
+      "enum": [
+        "reported",
+        "unknown"
+      ]
+    },
+    "reason": {
+      "type": "string"
+    },
+    "corpus_schema": {
+      "const": "vle-faithfulness-corpus/v1"
+    },
+    "corpus_version": {
+      "type": "string"
+    },
+    "corpus_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "corpus_schema_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "synthetic": {
+      "const": true
+    },
+    "case_count": {
+      "type": "integer"
+    },
+    "evaluated_count": {
+      "type": "integer"
+    },
+    "rows": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "direct": {
+            "enum": [
+              "compliant",
+              "conflict",
+              "empty",
+              "indeterminate",
+              "non_compliant",
+              "refuted",
+              "supported",
+              "undecided",
+              "unknown"
+            ]
+          },
+          "symbolic": {
+            "enum": [
+              "compliant",
+              "conflict",
+              "empty",
+              "indeterminate",
+              "non_compliant",
+              "refuted",
+              "supported",
+              "undecided",
+              "unknown"
+            ]
+          },
+          "gold": {
+            "enum": [
+              "compliant",
+              "conflict",
+              "empty",
+              "indeterminate",
+              "non_compliant",
+              "refuted",
+              "supported",
+              "undecided",
+              "unknown"
+            ]
+          }
+        }
+      }
+    },
+    "disagreement_rates": {
+      "type": "object"
+    },
+    "by_family": {
+      "type": "object"
+    },
+    "by_modality": {
+      "type": "object"
+    },
+    "by_has_exception": {
+      "type": "object"
+    },
+    "bounds": {
+      "type": "object"
+    },
+    "accuracy_is_not_faithfulness": {
+      "const": true
+    },
+    "scope": {
+      "const": "synthetic_unreviewed_recorded_regression_not_legal_accuracy"
+    },
+    "request_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "review_status": {
+      "const": "unreviewed"
+    },
+    "decision_authorized": {
+      "const": false
+    },
+    "legal_certification": {
+      "const": false
+    }
+  },
+  "required": [
+    "schema",
+    "status",
+    "reason",
+    "corpus_schema",
+    "corpus_version",
+    "corpus_sha256",
+    "corpus_schema_sha256",
+    "synthetic",
+    "case_count",
+    "evaluated_count",
+    "rows",
+    "disagreement_rates",
+    "by_family",
+    "by_modality",
+    "by_has_exception",
+    "bounds",
+    "accuracy_is_not_faithfulness",
+    "scope",
+    "request_sha256",
+    "review_status",
+    "decision_authorized",
+    "legal_certification"
+  ],
+  "additionalProperties": false
+}
