@@ -139,3 +139,31 @@ witnesses in additive v1 artifacts; old archive verification is unchanged.
 Full suite: 308 passed, 3 skipped, plus the added small-family symmetry test;
 new redundancy+codec coverage 91% (every module >=81%). All five legacy
 benchmark runs passed. New schema/CLI reports contain no approval path.
+
+## M3: assumptions and minimal corrections
+
+The request carries a reviewer-supplied expected formula, hard formulas, and
+0-16 named relaxable assumptions. Kinds distinguish background facts,
+grounding, interpretation choice, horizon/closure and Boolean completion;
+all kinds need explicit bounded formula encodings. Structural changes such as
+changing the integer horizon cannot be silently inferred from these labels.
+Source pointers retain quote/offsets but require external document validation.
+
+Exhaustive and optional Z3 oracles enumerate retained subsets, then compute
+subset-minimal corrections and relative minimal unsatisfiable subsets. Z3 uses
+guarded assumption literals and records its non-minimal unsat core separately;
+all SAT witnesses replay through the existing evaluator. MUS is relative to
+the hard constraints **including the expected formula**. If even the empty
+assumption set is unsatisfiable, report hard_conflict rather than inventing
+legal assumptions. That is a conflict of the supplied encoding, not proof of
+an irreconcilable statute. An empty correction means expected already feasible.
+
+Budgets cover subset enumeration, trace search/encoding and solver calls.
+Correction/MUS cap hits discard partial lists, return unknown/truncated and
+make no minimality claim. Rank by cardinality then assumption IDs; solver
+witnesses may differ, but the exact correction/MUS sets and ordering agree.
+Review prompts are additive queue payloads, never `ReviewLedger.record` calls.
+
+Verification: full suite 317 passed, 3 skipped, plus temporal-operator parity
+added in the focused suite (9 passed). Both modules exceed baseline coverage
+(95% / 93%). All five legacy benchmark runs passed. No network/model used.

@@ -74,3 +74,14 @@ class ReviewLedger:
 
     def get(self, norm_id: str) -> Optional[ReviewRecord]:
         return self._records.get(norm_id)
+
+
+def assumption_review_prompts(corrections):
+    """Review queue payloads only: no ledger record, reviewer or approval is created."""
+    return [{'kind': 'assumption_relaxation', 'review_status': 'unreviewed',
+             'assumption_ids': c['assumption_ids'], 'source_spans': [a['source_span'] for a in c['assumptions']],
+             'verdict_change': c['verdict_change'], 'witness': c['witness'],
+             'text': 'Review whether these assumptions may be relaxed: ' +
+             '; '.join(a['description'] for a in c['assumptions']) +
+             '. This only restores a feasible bounded completion, not universal compliance.'}
+            for c in corrections if c['assumption_ids']]
