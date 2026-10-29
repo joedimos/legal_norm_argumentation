@@ -1,0 +1,208 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "approved_by": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "minItems": 2,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "build_revision": {
+      "pattern": "^[0-9a-f]{40}$",
+      "type": "string"
+    },
+    "deployment_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "evidence": {
+      "additionalProperties": false,
+      "properties": {
+        "annotations": {
+          "additionalProperties": false,
+          "properties": {
+            "filename": {
+              "pattern": "^[a-zA-Z0-9_-]{1,80}\\.json$",
+              "type": "string"
+            },
+            "sha256": {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "filename",
+            "sha256"
+          ],
+          "type": "object"
+        },
+        "benchmark": {
+          "additionalProperties": false,
+          "properties": {
+            "filename": {
+              "pattern": "^[a-zA-Z0-9_-]{1,80}\\.json$",
+              "type": "string"
+            },
+            "sha256": {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "filename",
+            "sha256"
+          ],
+          "type": "object"
+        },
+        "ip_sources": {
+          "additionalProperties": false,
+          "properties": {
+            "filename": {
+              "pattern": "^[a-zA-Z0-9_-]{1,80}\\.json$",
+              "type": "string"
+            },
+            "sha256": {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "filename",
+            "sha256"
+          ],
+          "type": "object"
+        },
+        "load": {
+          "additionalProperties": false,
+          "properties": {
+            "filename": {
+              "pattern": "^[a-zA-Z0-9_-]{1,80}\\.json$",
+              "type": "string"
+            },
+            "sha256": {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "filename",
+            "sha256"
+          ],
+          "type": "object"
+        },
+        "model": {
+          "additionalProperties": false,
+          "properties": {
+            "filename": {
+              "pattern": "^[a-zA-Z0-9_-]{1,80}\\.json$",
+              "type": "string"
+            },
+            "sha256": {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "filename",
+            "sha256"
+          ],
+          "type": "object"
+        },
+        "restore": {
+          "additionalProperties": false,
+          "properties": {
+            "filename": {
+              "pattern": "^[a-zA-Z0-9_-]{1,80}\\.json$",
+              "type": "string"
+            },
+            "sha256": {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "filename",
+            "sha256"
+          ],
+          "type": "object"
+        },
+        "review_protocol": {
+          "additionalProperties": false,
+          "properties": {
+            "filename": {
+              "pattern": "^[a-zA-Z0-9_-]{1,80}\\.json$",
+              "type": "string"
+            },
+            "sha256": {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "filename",
+            "sha256"
+          ],
+          "type": "object"
+        },
+        "smoke": {
+          "additionalProperties": false,
+          "properties": {
+            "filename": {
+              "pattern": "^[a-zA-Z0-9_-]{1,80}\\.json$",
+              "type": "string"
+            },
+            "sha256": {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "filename",
+            "sha256"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "benchmark",
+        "annotations",
+        "model",
+        "smoke",
+        "load",
+        "restore",
+        "ip_sources",
+        "review_protocol"
+      ],
+      "type": "object"
+    },
+    "expires_at": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "model_revision": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "schema": {
+      "const": "vle-release-evidence/v2"
+    },
+    "scope": {
+      "const": "fr-us-ip-supervised/v1"
+    }
+  },
+  "required": [
+    "schema",
+    "scope",
+    "model_revision",
+    "build_revision",
+    "deployment_id",
+    "expires_at",
+    "approved_by",
+    "evidence"
+  ],
+  "type": "object"
+}

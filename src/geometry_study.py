@@ -93,6 +93,7 @@ def run_study(corpus):
 
 if __name__ == "__main__":
     import json
-    from pathlib import Path
 
-    print(json.dumps(run_study(json.loads(Path("benchmarks/geometry-study-v1.json").read_text())), indent=2))
+    from .resources import resource_path
+
+    print(json.dumps(run_study(json.loads(resource_path("benchmarks", "geometry-study-v1.json").read_text())), indent=2))

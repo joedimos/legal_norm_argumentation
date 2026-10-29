@@ -1,0 +1,241 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "bounds": {
+      "additionalProperties": false,
+      "properties": {
+        "max_pages_per_topic": {
+          "const": 1
+        },
+        "max_seconds_per_topic": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "max_texts": {
+          "const": 5
+        },
+        "max_total_seconds": {
+          "minimum": 1,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "max_pages_per_topic",
+        "max_texts",
+        "max_seconds_per_topic",
+        "max_total_seconds"
+      ],
+      "type": "object"
+    },
+    "build_revision": {
+      "pattern": "^[0-9a-f]{40}$",
+      "type": "string"
+    },
+    "coverage": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "deployment_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "evidence_origin": {
+      "const": "live_provider_probe"
+    },
+    "kind": {
+      "const": "ip_sources"
+    },
+    "observed_at": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "passed": {
+      "const": true
+    },
+    "providers": {
+      "additionalProperties": false,
+      "properties": {
+        "courtlistener_ip": {
+          "additionalProperties": false,
+          "properties": {
+            "copyright": {
+              "additionalProperties": false,
+              "properties": {
+                "content_sha256": {
+                  "pattern": "^[0-9a-f]{64}$",
+                  "type": "string"
+                },
+                "full_text": {
+                  "const": true
+                },
+                "raw_payload_sha256": {
+                  "pattern": "^[0-9a-f]{64}$",
+                  "type": "string"
+                },
+                "source_key": {
+                  "minLength": 1,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "source_key",
+                "content_sha256",
+                "raw_payload_sha256",
+                "full_text"
+              ],
+              "type": "object"
+            },
+            "patent": {
+              "additionalProperties": false,
+              "properties": {
+                "content_sha256": {
+                  "pattern": "^[0-9a-f]{64}$",
+                  "type": "string"
+                },
+                "full_text": {
+                  "const": true
+                },
+                "raw_payload_sha256": {
+                  "pattern": "^[0-9a-f]{64}$",
+                  "type": "string"
+                },
+                "source_key": {
+                  "minLength": 1,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "source_key",
+                "content_sha256",
+                "raw_payload_sha256",
+                "full_text"
+              ],
+              "type": "object"
+            },
+            "trade_secret": {
+              "additionalProperties": false,
+              "properties": {
+                "content_sha256": {
+                  "pattern": "^[0-9a-f]{64}$",
+                  "type": "string"
+                },
+                "full_text": {
+                  "const": true
+                },
+                "raw_payload_sha256": {
+                  "pattern": "^[0-9a-f]{64}$",
+                  "type": "string"
+                },
+                "source_key": {
+                  "minLength": 1,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "source_key",
+                "content_sha256",
+                "raw_payload_sha256",
+                "full_text"
+              ],
+              "type": "object"
+            },
+            "trademark": {
+              "additionalProperties": false,
+              "properties": {
+                "content_sha256": {
+                  "pattern": "^[0-9a-f]{64}$",
+                  "type": "string"
+                },
+                "full_text": {
+                  "const": true
+                },
+                "raw_payload_sha256": {
+                  "pattern": "^[0-9a-f]{64}$",
+                  "type": "string"
+                },
+                "source_key": {
+                  "minLength": 1,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "source_key",
+                "content_sha256",
+                "raw_payload_sha256",
+                "full_text"
+              ],
+              "type": "object"
+            }
+          },
+          "required": [
+            "copyright",
+            "patent",
+            "trademark",
+            "trade_secret"
+          ],
+          "type": "object"
+        },
+        "legifrance_ip": {
+          "additionalProperties": false,
+          "properties": {
+            "ip": {
+              "additionalProperties": false,
+              "properties": {
+                "content_sha256": {
+                  "pattern": "^[0-9a-f]{64}$",
+                  "type": "string"
+                },
+                "full_text": {
+                  "const": true
+                },
+                "raw_payload_sha256": {
+                  "pattern": "^[0-9a-f]{64}$",
+                  "type": "string"
+                },
+                "source_key": {
+                  "minLength": 1,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "source_key",
+                "content_sha256",
+                "raw_payload_sha256",
+                "full_text"
+              ],
+              "type": "object"
+            }
+          },
+          "required": [
+            "ip"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "legifrance_ip",
+        "courtlistener_ip"
+      ],
+      "type": "object"
+    },
+    "schema": {
+      "const": "vle-operational-evidence/v2"
+    },
+    "scope": {
+      "const": "fr-us-ip-supervised/v1"
+    }
+  },
+  "required": [
+    "schema",
+    "kind",
+    "scope",
+    "passed",
+    "evidence_origin",
+    "build_revision",
+    "deployment_id",
+    "observed_at",
+    "providers"
+  ],
+  "type": "object"
+}

@@ -126,7 +126,7 @@ def load_probe(client, token, *, count=100, concurrency=4, max_p95_ms=1000, eval
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--mode", choices=("smoke", "load", "snapshot", "restore", "legifrance"), required=True)
+    parser.add_argument("--mode", choices=("smoke", "load", "snapshot", "restore", "legifrance", "ip-sources"), required=True)
     parser.add_argument("--deployment-id", required=True)
     parser.add_argument("--build-revision", required=True)
     parser.add_argument("--base-url")
@@ -164,6 +164,9 @@ def main():
             if baseline != snapshot or not any(t["count"] for t in snapshot["tables"].values()):
                 raise ValueError("restored governed data does not match nonempty frozen baseline")
             report.update(passed=True, snapshot_sha256=digest(canonical_json(snapshot)))
+        elif args.mode == "ip-sources":
+            from .ip_release import probe_ip_sources
+            report.update(probe_ip_sources(Settings()), schema="vle-operational-evidence/v2", kind="ip_sources", passed=True)
         elif args.mode == "legifrance":
             from .legifrance_provider import build_legifrance_client
             provider = build_legifrance_client(Settings())

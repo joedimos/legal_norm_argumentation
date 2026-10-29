@@ -1,0 +1,15 @@
+# Apply after docker-compose.yml. The environment cannot downgrade this profile.
+services:
+  app:
+    environment: &rc-environment
+      VLE_RELEASE_PROFILE: ip-supervised-v1
+      VLE_RELEASE_ENFORCEMENT: strict
+      VLE_AUTO_IMPORT_ENABLED: "true"
+      VLE_LEGIFRANCE_ENABLED: "true"
+      VLE_COURTLISTENER_ENABLED: "true"
+      VLE_LEGIFRANCE_SOURCE: piste
+      VLE_LEGIFRANCE_PISTE_ENVIRONMENT: production
+  worker:
+    environment: *rc-environment
+  importer:
+    environment: *rc-environment

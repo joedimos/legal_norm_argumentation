@@ -6,6 +6,26 @@ The architecture is aligned with the 2026 VLE-LEGATO agenda: **LEGATO** covers a
 
 > This repository is a research toolkit. It does not provide legal advice and does not itself certify legal, ethical, regulatory, or standards compliance.
 
+## Release-candidate preparation (0.9.0)
+
+The strict `ip-supervised-v1` deployment profile adds French/U.S. IP-specific
+release evidence, stratified held-out quality/faithfulness accounting, judicial
+review requirements and a supported-source scope gate. Source acquisition stays
+automatic; source interpretation and independent legal judgment remain reviewed.
+The original deployment profile remains compatible.
+
+Wheels now include schemas, examples, benchmarks and forward migration scripts.
+`vle-legato-migrate` works outside a checkout. `vle-legato-release-check` and
+authenticated `GET /v1/release-readiness` report missing deployment prerequisites
+without making network calls or authorizing decisions. CI checks installed
+packages and reproducible wheel rebuilds from the source distribution.
+
+See [the RC preparation and qualification runbook](docs/RELEASE_CANDIDATE.md),
+`deployment.rc.env.example` and the explicit `docker-compose.rc.yml` overlay.
+Real provider/model access, independent IP-law annotation, deployment qualification,
+maintainer licensing and branch protection still need actual evidence/actions.
+Version 0.9.0 is preparation for an RC, not a claim that those tasks are complete.
+
 ## Coverage
 
 | Research requirement | Implementation |

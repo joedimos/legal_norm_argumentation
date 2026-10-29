@@ -70,6 +70,7 @@ def simulate(corpus):
 
 if __name__ == "__main__":
     import json
-    from pathlib import Path
 
-    print(json.dumps(simulate(json.loads(Path("benchmarks/review-planning-v1.json").read_text())), indent=2))
+    from .resources import resource_path
+
+    print(json.dumps(simulate(json.loads(resource_path("benchmarks", "review-planning-v1.json").read_text())), indent=2))

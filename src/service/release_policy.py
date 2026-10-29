@@ -14,6 +14,8 @@ from src.family_contract import parse_family
 from src.model_runtime import strict_json
 from src.signed_annotation import assess_signed_annotations
 
+from .ip_release import SCOPE, validate_ip_quality, validate_ip_sources
+
 HASH = re.compile(r"[0-9a-f]{64}\Z")
 
 
@@ -85,7 +87,7 @@ def case_review_gate(settings, record, target, source_hash, require_grounding=Fa
             if labels["harmful_assistance"] not in {"unsupported", "not_applicable"}:
                 raise ValueError("independent case review identifies unresolved harmful assistance")
         return {"passed": True, "assessment_id": record.id, "assessment_sha256": digest(canonical_json(signed))}
-    except (OSError, ValueError, TypeError, KeyError, RecursionError):
+    except (OSError, ValueError, TypeError, KeyError, AttributeError, OverflowError, RecursionError):
         return {"passed": False, "reason": "missing_stale_invalid_or_unfavorable_signed_case_review"}
 
 
@@ -93,10 +95,17 @@ def deployment_release_gate(settings):
     """Validate the pinned artifact graph, current signatures, scope and thresholds."""
     try:
         manifest = pinned_json(settings.release_evidence_path, settings.release_evidence_sha256)
-        if (not isinstance(manifest, dict) or set(manifest) != {"schema", "build_revision", "deployment_id", "expires_at", "approved_by", "evidence"}
-                or manifest["schema"] != "vle-release-evidence/v1" or not settings.build_revision
+        ip_profile = settings.release_profile == "ip-supervised-v1"
+        fields = {"schema", "build_revision", "deployment_id", "expires_at", "approved_by", "evidence"}
+        if ip_profile:
+            fields |= {"scope", "model_revision"}
+        if (not isinstance(manifest, dict) or set(manifest) != fields
+                or manifest["schema"] != ("vle-release-evidence/v2" if ip_profile else "vle-release-evidence/v1") or not settings.build_revision
                 or manifest["build_revision"] != settings.build_revision):
             raise ValueError("release does not bind this exact build")
+        if ip_profile and (manifest["scope"] != SCOPE or manifest["model_revision"] != settings.model_revision
+                           or not settings.model_revision or settings.release_enforcement != "strict"):
+            raise ValueError("IP release scope/model/policy binding is invalid")
         expiry = datetime.fromisoformat(manifest["expires_at"])
         if expiry.tzinfo is None or expiry <= datetime.now(UTC):
             raise ValueError("release evidence expired")
@@ -105,7 +114,9 @@ def deployment_release_gate(settings):
             raise ValueError("two independent organizational release approvers required")
         root = Path(settings.release_evidence_path).resolve().parent
         artifacts = {}
-        if set(manifest["evidence"]) != {"benchmark", "annotations", "model", "smoke", "load", "restore", "legifrance"}:
+        required = {"benchmark", "annotations", "model", "smoke", "load", "restore"}
+        required |= {"ip_sources", "review_protocol"} if ip_profile else {"legifrance"}
+        if set(manifest["evidence"]) != required:
             raise ValueError("release evidence incomplete")
         for kind, ref in manifest["evidence"].items():
             if not isinstance(ref, dict) or set(ref) != {"filename", "sha256"} or not isinstance(ref["filename"], str):
@@ -118,7 +129,7 @@ def deployment_release_gate(settings):
             artifacts[kind] = pinned_json(file, ref["sha256"])
         signed = verify_assessment(settings, artifacts["annotations"])
         benchmark = artifacts["benchmark"]
-        if (signed["status"] != "annotations_collected" or benchmark.get("schema") != "vle-production-benchmark/v1"
+        if (signed["status"] != "annotations_collected" or benchmark.get("schema") != ("vle-production-benchmark/v2" if ip_profile else "vle-production-benchmark/v1")
                 or benchmark.get("split") != "test" or benchmark.get("build_revision") != settings.build_revision
                 or benchmark.get("corpus_sha256") != artifacts["annotations"]["packet"]["packet_sha256"]
                 or benchmark.get("independent_assessment_sha256") != digest(canonical_json(artifacts["annotations"]))):
@@ -132,6 +143,9 @@ def deployment_release_gate(settings):
             score = benchmark[name]
             if type(score) not in {float, int} or not minimum <= score <= 1:
                 raise ValueError("held-out quality threshold not met")
+        if ip_profile:
+            validate_ip_quality(benchmark, artifacts["review_protocol"], settings)
+            validate_ip_sources(artifacts["ip_sources"], settings, manifest)
         model = artifacts["model"]
         expected_endpoint = settings.model_endpoint or ("http://localhost:11434/api/chat" if settings.model_provider == "ollama" else "http://localhost:8000/v1/chat/completions")
         if (model.get("schema") != "vle-live-result/v1" or model.get("generation_calls") != 1
@@ -146,7 +160,7 @@ def deployment_release_gate(settings):
                 or candidate["behavior"] != model["review_request"]["behavior"]
                 or not HASH.fullmatch(model.get("prompt_sha256", ""))):
             raise ValueError("inference evidence has an invalid candidate/mapping binding")
-        for kind in ("smoke", "load", "restore", "legifrance"):
+        for kind in ("smoke", "load", "restore") + (() if ip_profile else ("legifrance",)):
             report = artifacts[kind]
             if (report.get("schema") != "vle-operational-evidence/v1" or report.get("kind") != kind
                     or report.get("passed") is not True or report.get("deployment_id") != manifest["deployment_id"]
@@ -154,7 +168,7 @@ def deployment_release_gate(settings):
                 raise ValueError("operational release evidence missing")
         if (artifacts["smoke"].get("audit_verified") is not True
                 or not HASH.fullmatch(artifacts["restore"].get("snapshot_sha256", ""))
-                or any(artifacts["legifrance"].get("corpora", {}).get(kind, 0) < 1 for kind in ("ip", "competition"))):
+                or (not ip_profile and any(artifacts["legifrance"].get("corpora", {}).get(kind, 0) < 1 for kind in ("ip", "competition")))):
             raise ValueError("smoke/restore/live-source evidence is incomplete")
         load = artifacts["load"]
         if (load.get("coverage") != "authenticated_evaluation_with_audit_writes"
@@ -165,5 +179,5 @@ def deployment_release_gate(settings):
         return {"passed": True, "release_sha256": settings.release_evidence_sha256,
                 "deployment_id": manifest["deployment_id"], "expires_at": manifest["expires_at"],
                 "basis": "externally_pinned_organizational_release_attestation", "legal_certification": False}
-    except (OSError, ValueError, TypeError, KeyError, RecursionError):
+    except (OSError, ValueError, TypeError, KeyError, AttributeError, OverflowError, RecursionError):
         return {"passed": False, "reason": "missing_expired_invalid_or_insufficient_release_evidence", "legal_certification": False}

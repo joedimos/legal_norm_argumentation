@@ -26,7 +26,7 @@ class Settings(BaseSettings):
 
     environment: Literal["development", "test", "production"] = "development"
     service_name: str = "legal-norm-argumentation"
-    service_version: str = "0.8.1"
+    service_version: str = "0.9.0"
     build_revision: str | None = Field(default=None, pattern=r"^[0-9a-f]{40}$")
     database_url: str = "sqlite+pysqlite:///./vle_legato.db"
     database_pool_size: int = Field(default=10, ge=1, le=100)
@@ -54,6 +54,8 @@ class Settings(BaseSettings):
     reviewer_registry_path: str | None = None
     reviewer_registry_sha256: str | None = Field(default=None, pattern=r"^[0-9a-f]{64}$")
     release_enforcement: Literal["reviewed", "strict"] = "reviewed"
+    release_profile: Literal["legacy", "ip-supervised-v1"] = "legacy"
+    release_source_max_age_seconds: int = Field(default=172800, ge=3600, le=604800)
     release_evidence_path: str | None = None
     release_evidence_sha256: str | None = Field(default=None, pattern=r"^[0-9a-f]{64}$")
     release_max_p95_ms: float = Field(default=1000, gt=0)
@@ -61,6 +63,7 @@ class Settings(BaseSettings):
     release_min_cases: int = Field(default=100, ge=1)
     release_min_extraction_f1: float = Field(default=0.9, ge=0, le=1)
     release_min_compliance_accuracy: float = Field(default=0.9, ge=0, le=1)
+    release_max_false_compliance_rate: float = Field(default=0.0, ge=0, le=1)
     legifrance_enabled: bool = True
     legifrance_source: Literal["auto", "piste", "html"] = "auto"
     legifrance_piste_environment: Literal["production", "sandbox"] = "production"
@@ -104,6 +107,15 @@ class Settings(BaseSettings):
 
     @model_validator(mode="after")
     def validate_workflow_settings(self) -> Settings:
+        if self.release_profile == "ip-supervised-v1":
+            if self.release_enforcement != "strict":
+                raise ValueError("the IP release profile requires strict release enforcement")
+            if not self.build_revision or not self.model_name or not self.model_revision:
+                raise ValueError("the IP release profile requires exact build, model and model revision bindings")
+            if not self.legifrance_enabled or not self.courtlistener_enabled or not self.auto_import_enabled:
+                raise ValueError("the IP release profile requires automatic acquisition from both IP providers")
+            if self.legifrance_piste_environment != "production":
+                raise ValueError("the IP release profile requires production PISTE")
         entries = self.api_keys
         tokens = [entry.token.get_secret_value() for entry in entries]
         if len(set(tokens)) != len(tokens):

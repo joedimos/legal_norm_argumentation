@@ -20,3 +20,5 @@ audit-bundle.zip
 # Trusted release material and deployment secrets are supplied separately.
 deployment-evidence/
 deployment.env
+deployment.rc.env
+src/_data/

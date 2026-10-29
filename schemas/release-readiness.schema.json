@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "bounds": {
+      "additionalProperties": false,
+      "properties": {
+        "max_import_jobs": {
+          "const": 5
+        },
+        "provider_model_calls": {
+          "const": 0
+        },
+        "source_max_age_seconds": {
+          "minimum": 1,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "max_import_jobs",
+        "provider_model_calls",
+        "source_max_age_seconds"
+      ],
+      "type": "object"
+    },
+    "build_revision": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "checks": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "check": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "passed": {
+            "type": "boolean"
+          },
+          "required_action": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "check",
+          "passed",
+          "required_action"
+        ],
+        "type": "object"
+      },
+      "maxItems": 7,
+      "type": "array"
+    },
+    "decision_authorized": {
+      "const": false
+    },
+    "import_freshness": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "job": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "last_success_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "passed": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "job",
+          "passed",
+          "last_success_at"
+        ],
+        "type": "object"
+      },
+      "maxItems": 5,
+      "type": "array"
+    },
+    "legal_certification": {
+      "const": false
+    },
+    "missing": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "observed_at": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "profile": {
+      "enum": [
+        "legacy",
+        "ip-supervised-v1"
+      ]
+    },
+    "reason": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "schema": {
+      "const": "vle-release-readiness/v1"
+    },
+    "scope": {
+      "const": "deployment_prerequisites_only_case_review_still_required"
+    },
+    "status": {
+      "enum": [
+        "blocked",
+        "prerequisites_met"
+      ]
+    },
+    "version": {
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema",
+    "status",
+    "missing",
+    "decision_authorized",
+    "legal_certification"
+  ],
+  "type": "object"
+}

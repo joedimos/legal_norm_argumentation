@@ -13,9 +13,11 @@ RUN apt-get update \
     && groupadd --system --gid 10001 app \
     && useradd --system --uid 10001 --gid app --home-dir /nonexistent --shell /usr/sbin/nologin app
 
-COPY requirements-prod.txt pyproject.toml README.md ./
+COPY requirements-prod.txt pyproject.toml setup.py MANIFEST.in README.md ./
 COPY src ./src
 COPY schemas ./schemas
+COPY benchmarks ./benchmarks
+COPY examples ./examples
 COPY migrations ./migrations
 COPY alembic.ini ./alembic.ini
 

@@ -10,6 +10,7 @@ from .formalization import formalize_candidates
 from .lifecycle import run_lifecycle
 from .norm_extraction import extract_all_norms, extract_norms
 from .normative_model import FactContext
+from .resources import resource_path
 from .verification import audit_extraction
 
 
@@ -87,13 +88,13 @@ def main() -> None:
     keygen.add_argument("--private-key-file", required=True)
     keygen.add_argument("--public-key-file", required=True)
     benchmark = subs.add_parser("benchmark")
-    benchmark.add_argument("--corpus", default="benchmarks/research-v1.json")
+    benchmark.add_argument("--corpus", default=str(resource_path("benchmarks", "research-v1.json")))
     benchmark.add_argument("--backend", choices=("exhaustive", "z3"), default="exhaustive")
     experiments = subs.add_parser("experiment-benchmark")
-    experiments.add_argument("--input", default="benchmarks/experiments-v1.json")
+    experiments.add_argument("--input", default=str(resource_path("benchmarks", "experiments-v1.json")))
     experiments.add_argument("--backend", choices=("exhaustive", "z3"), default="exhaustive")
     families = subs.add_parser("family-benchmark")
-    families.add_argument("--input", default="benchmarks/families-v1.json")
+    families.add_argument("--input", default=str(resource_path("benchmarks", "families-v1.json")))
     review = subs.add_parser("family-review")
     review.add_argument("--input", required=True)
     review.add_argument("--scope", choices=("family", "grounding", "behavior"), required=True)

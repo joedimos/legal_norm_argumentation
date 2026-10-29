@@ -21,6 +21,7 @@ from src.verification import audit_extraction
 from .config import Settings, get_settings
 from .database import Database
 from .db_models import WorkflowRecord
+from .ip_release import source_scope_gate
 from .logging import configure_logging
 from .metrics import LIFECYCLE_RUNS
 from .middleware import MaxBodySizeMiddleware, request_context_middleware
@@ -159,6 +160,11 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     @app.get("/metrics", include_in_schema=False, dependencies=[Depends(verify_metrics_token)])
     def metrics() -> Response:
         return Response(content=generate_latest(), media_type=CONTENT_TYPE_LATEST)
+
+    @app.get("/v1/release-readiness")
+    def release_readiness_status(principal: Principal = Depends(require_roles("reader", "operator", "reviewer", "auditor"))):
+        from .release_readiness import release_readiness
+        return release_readiness(settings, database)
 
     @app.post("/v1/sources", status_code=201)
     def ingest_source(
@@ -371,6 +377,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                     "source_id": source.id, "source_sha256": source.content_hash, "candidates": source.candidates,
                     "formalizations": result["formalizations"], "reviews": review_evidence_snapshot(session, source),
                     "context": payload.model_dump(mode="json", exclude={"legal_assessment_id", "high_stakes"})}
+        if settings.release_profile != "legacy":
+            snapshot["release_profile"] = settings.release_profile
+            snapshot["model_revision"] = settings.model_revision
+            snapshot["source_provenance"] = source.extraction_audit.get("provenance", {})
         return snapshot, digest(canonical_json(snapshot))
 
     @app.post("/v1/sources/{source_id}/release-target")
@@ -433,14 +443,15 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         ready = result.get("readiness", {}).get("status") == "research_ready"
         snapshot, target_hash = target_snapshot(session, source, payload, result)
         release = deployment_release_gate(settings) if payload.high_stakes else {"passed": False, "reason": "research_only_run"}
+        source_scope = source_scope_gate(settings, source, snapshot["context"])
         assessment = session.get(WorkflowRecord, payload.legal_assessment_id) if payload.legal_assessment_id else None
         case = case_review_gate(settings, assessment, target_hash, source.content_hash,
                                 require_grounding=bool(payload.facts or payload.observed_actions or payload.actor), context=snapshot["context"]) if payload.high_stakes else {"passed": False}
         if assessment is not None and assessment.request_payload.get("source_id") != source.id:
             case = {"passed": False, "reason": "case_review_source_mismatch"}
-        release_ready = bool(ready and release["passed"] and case["passed"])
+        release_ready = bool(ready and release["passed"] and case["passed"] and source_scope["passed"])
         external_validation_satisfied = bool(release["passed"] and case["passed"])
-        reviewed_operation = bool(payload.high_stakes and ready and settings.release_enforcement == "reviewed")
+        reviewed_operation = bool(payload.high_stakes and ready and settings.release_enforcement == "reviewed" and settings.release_profile == "legacy")
         authorized = release_ready or reviewed_operation
         override_used = bool(authorized and not external_validation_satisfied)
         result["production_release"] = {"authorized": authorized, "evaluation_target_sha256": target_hash,
@@ -448,12 +459,17 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                                        "override_used": override_used,
                                        "authorization_basis": "reviewed_source_operation" if override_used else "validated_release" if release_ready else "none",
                                        "deployment": release, "independent_case_review": case, "legal_certification": False}
+        if settings.release_profile != "legacy":
+            result["production_release"].update(profile=settings.release_profile, source_scope=source_scope)
         result["authorization_scope"] = ("organizational_release" if release_ready else "reviewed_operation" if reviewed_operation
                                          else "research_only" if not payload.high_stakes else "blocked")
         if payload.high_stakes and not release_ready and settings.release_enforcement == "strict":
             # The research verdict stays visible as research evidence. It never
             # silently becomes the stronger production authorization predicate.
-            for gate, evidence in (("production_release_evidence", release), ("independent_case_review", case)):
+            checks = [("production_release_evidence", release), ("independent_case_review", case)]
+            if settings.release_profile != "legacy":
+                checks.append(("supported_source_scope", source_scope))
+            for gate, evidence in checks:
                 result["readiness"]["gates"].append({"gate": gate, "passed": evidence["passed"], "explanation": evidence.get("reason", "Current release evidence verified")})
                 if not evidence["passed"]:
                     result["readiness"]["failed_gates"].append(gate)
