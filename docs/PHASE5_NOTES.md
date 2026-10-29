@@ -100,3 +100,28 @@ only the tested formal-model boundary, not correct priorities or legal meaning.
 Baseline reports/routes remain unchanged; `certify` and `check-certificate` are
 additive finite-query interfaces. There is no Lean project and no mechanized
 Python claim. Full suite374 passed,3 skipped; all legacy benchmark runs pass.
+
+## M2 / N1
+
+Exact bounded constraints determine global sections; restriction maps are literal
+projections of complete local rows. GYO tests the predicate cover, and a verified
+running-intersection join tree performs full semijoin reduction. Optional shortcut
+results replay a global witness and are cross-checked with the global solver by
+default. Existing typed conflict/scope and reference-resolution APIs supply
+metadata edges where representable; plain relational fixtures explicitly report
+that the typed pairwise norm detector is not applicable rather than pretending
+it evaluated formulas outside its signature. A nerve graph cycle is not H1.
+The minimal obstruction search is bounded and returns one cardinality-minimal
+family, not a complete list of every obstruction. Typed calendar scopes outside
+the existing temporal constructor remain unsupported. No source text is silently
+compiled into this constraint fragment.
+
+All32 planted formal families have pair-SAT conflict count0 and the expected
+minimal cyclic obstruction. The acyclic pair-SAT counterexample is reproduced:
+F2 without relational-consistency preconditions is false. The semijoin shortcut
+agrees with exact checking on the tested acyclic systems. F3 was inventoried but
+not run: no local eligible ingested/reviewed data exists; empirical counts are
+null, not0. No real-corpus effect is inferred. Version sweeps track explicitly
+requested minimal families, retain unknown continuity and censor boundary bars;
+this is not complete obstruction discovery or persistent homology. Full suite
+379 passed,3 skipped; all legacy benchmarks green. No TDA linear layer available.

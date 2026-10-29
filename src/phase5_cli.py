@@ -9,7 +9,7 @@ from .audit_bundle import MAX_BYTES, create_bundle
 from .model_runtime import strict_json
 from .phase4 import envelope
 
-COMMANDS = ("certify", "check-certificate")
+COMMANDS = ("certify", "check-certificate", "obstruction")
 
 
 def configure(subs):
@@ -17,6 +17,8 @@ def configure(subs):
         p = subs.add_parser(name)
         p.add_argument("--input", required=True)
         p.add_argument("--bundle")
+        if name == "obstruction":
+            p.add_argument("--backend", choices=("exhaustive", "z3"))
         if name == "check-certificate":
             p.add_argument("--expected-query-sha256")
 
@@ -32,6 +34,10 @@ def execute(args):
             from .certificates import certify
 
             result = certify(request)
+        elif args.command == "obstruction":
+            from .obstruction import obstruction
+
+            result = obstruction(request, backend=args.backend)
         else:
             from .checker import check_certificate
 
