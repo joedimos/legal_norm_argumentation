@@ -1,0 +1,3214 @@
+{
+  "schema": "vle-metamorphic-study/v1",
+  "synthetic": true,
+  "review_status": "unreviewed",
+  "extractor_snapshot": "v0.7.0 pre-token-boundary-fix",
+  "extractor": {
+    "schema": "vle-metamorphic-report/v1",
+    "status": "reported",
+    "reason": "complete_in_declared_scope",
+    "provider": "extractor",
+    "rows": [
+      {
+        "case": "voice",
+        "language": "en",
+        "modality": "obligation",
+        "relation": "voice",
+        "depth": 1,
+        "text": "The report must be filed by the operator.",
+        "expected": "equivalent_bounded",
+        "actual": "incomparable",
+        "outcome": "violated",
+        "normative_output_relation": "incomparable",
+        "evidence": {
+          "schema": "vle-experiment-result/v1",
+          "kind": "amendment",
+          "status": "incomparable",
+          "checks": {
+            "before_implies_after": {
+              "status": "counterexample",
+              "backend": "exhaustive",
+              "horizon": 1,
+              "atoms": [
+                "action:[\"The operator\",\"file the report\",null]",
+                "action:[\"The report\",\"be filed by the operator\",null]"
+              ],
+              "reason": "property_false",
+              "checked_traces": 3,
+              "counterexample": [
+                {
+                  "action:[\"The operator\",\"file the report\",null]": true,
+                  "action:[\"The report\",\"be filed by the operator\",null]": false
+                }
+              ],
+              "backend_version": null,
+              "semantics": "LTLf-complete-valuations-v1",
+              "observation_constraints": [],
+              "unknown_cells": 2
+            },
+            "after_implies_before": {
+              "status": "counterexample",
+              "backend": "exhaustive",
+              "horizon": 1,
+              "atoms": [
+                "action:[\"The operator\",\"file the report\",null]",
+                "action:[\"The report\",\"be filed by the operator\",null]"
+              ],
+              "reason": "property_false",
+              "checked_traces": 2,
+              "counterexample": [
+                {
+                  "action:[\"The operator\",\"file the report\",null]": false,
+                  "action:[\"The report\",\"be filed by the operator\",null]": true
+                }
+              ],
+              "backend_version": null,
+              "semantics": "LTLf-complete-valuations-v1",
+              "observation_constraints": [],
+              "unknown_cells": 2
+            }
+          },
+          "removed_behavior": [
+            {
+              "action:[\"The operator\",\"file the report\",null]": true,
+              "action:[\"The report\",\"be filed by the operator\",null]": false
+            }
+          ],
+          "added_behavior": [
+            {
+              "action:[\"The operator\",\"file the report\",null]": false,
+              "action:[\"The report\",\"be filed by the operator\",null]": true
+            }
+          ],
+          "interpretation": "inclusion_of_satisfying_complete_traces_under_shared_evidence",
+          "request_sha256": "8fa1705343ca460145cf5e4a08361f8ece0e5681c86397933fec16bd7d7e0029",
+          "scope": {
+            "horizon": 1,
+            "backend": "exhaustive",
+            "timeout_ms_per_check": 5000,
+            "max_traces_per_check": 4096,
+            "observed_steps": 0,
+            "semantics": "LTLf-completions-at-exact-horizon-v1",
+            "assumptions": [],
+            "observations": null,
+            "unobserved_values": "all_consistent_boolean_completions"
+          },
+          "legal_certification": false
+        },
+        "provenance": {
+          "model_id": "deterministic-extractor/v1",
+          "prompt_sha256": "eac158f82dc194543658e715885321c0e4d506002420e079cce74e1f2e5376b6",
+          "seed": 0,
+          "params": {},
+          "timestamp": "2000-01-01T00:00:00+00:00"
+        },
+        "interpretation": {
+          "id": "formal-e6de024e33986800",
+          "source_norm_id": "norm-eda52c50ef80db58",
+          "modality": "obligation",
+          "subject": "The report",
+          "action": "be filed by the operator",
+          "conditions": [],
+          "exceptions": [],
+          "object": null,
+          "deadline": null,
+          "references": [],
+          "authority": {
+            "kind": "other",
+            "issuer": null,
+            "instrument": null,
+            "jurisdiction": null,
+            "authority_rank": null,
+            "enacted_on": null,
+            "effective_from": null,
+            "effective_to": null,
+            "version": null
+          },
+          "confidence": 0.72,
+          "assumptions": [],
+          "provenance": {
+            "source_id": "synthetic-mr",
+            "span": [
+              0,
+              41
+            ],
+            "quote": "The report must be filed by the operator.",
+            "document_hash": null,
+            "locator": null
+          },
+          "interpretation_label": "primary",
+          "canonical": "OBLIGATION[The report:be filed by the operator] IF true UNLESS false",
+          "semantic_hash": "0b1ff396a390b8c8cdddb889d6ce0dc9b8e03092b006e02589a661cf1898b126"
+        }
+      },
+      {
+        "case": "clause",
+        "language": "en",
+        "modality": "obligation",
+        "relation": "condition_order",
+        "depth": 1,
+        "text": "the operator must notify if risk.",
+        "expected": "equivalent_bounded",
+        "actual": "incomparable",
+        "outcome": "violated",
+        "normative_output_relation": "incomparable",
+        "evidence": {
+          "schema": "vle-experiment-result/v1",
+          "kind": "amendment",
+          "status": "incomparable",
+          "checks": {
+            "before_implies_after": {
+              "status": "counterexample",
+              "backend": "exhaustive",
+              "horizon": 1,
+              "atoms": [
+                "action:[\"the operator\",\"notify if risk\",null]",
+                "action:[\"the operator\",\"notify\",null]",
+                "fact:risk"
+              ],
+              "reason": "property_false",
+              "checked_traces": 5,
+              "counterexample": [
+                {
+                  "action:[\"the operator\",\"notify if risk\",null]": true,
+                  "action:[\"the operator\",\"notify\",null]": false,
+                  "fact:risk": false
+                }
+              ],
+              "backend_version": null,
+              "semantics": "LTLf-complete-valuations-v1",
+              "observation_constraints": [],
+              "unknown_cells": 3
+            },
+            "after_implies_before": {
+              "status": "counterexample",
+              "backend": "exhaustive",
+              "horizon": 1,
+              "atoms": [
+                "action:[\"the operator\",\"notify if risk\",null]",
+                "action:[\"the operator\",\"notify\",null]",
+                "fact:risk"
+              ],
+              "reason": "property_false",
+              "checked_traces": 4,
+              "counterexample": [
+                {
+                  "action:[\"the operator\",\"notify if risk\",null]": false,
+                  "action:[\"the operator\",\"notify\",null]": true,
+                  "fact:risk": true
+                }
+              ],
+              "backend_version": null,
+              "semantics": "LTLf-complete-valuations-v1",
+              "observation_constraints": [],
+              "unknown_cells": 3
+            }
+          },
+          "removed_behavior": [
+            {
+              "action:[\"the operator\",\"notify if risk\",null]": true,
+              "action:[\"the operator\",\"notify\",null]": false,
+              "fact:risk": false
+            }
+          ],
+          "added_behavior": [
+            {
+              "action:[\"the operator\",\"notify if risk\",null]": false,
+              "action:[\"the operator\",\"notify\",null]": true,
+              "fact:risk": true
+            }
+          ],
+          "interpretation": "inclusion_of_satisfying_complete_traces_under_shared_evidence",
+          "request_sha256": "49dab8e5101f6a61fa89b7668c327315dc0473e6ba5159377ec2ab72eccca67b",
+          "scope": {
+            "horizon": 1,
+            "backend": "exhaustive",
+            "timeout_ms_per_check": 5000,
+            "max_traces_per_check": 4096,
+            "observed_steps": 0,
+            "semantics": "LTLf-completions-at-exact-horizon-v1",
+            "assumptions": [],
+            "observations": null,
+            "unobserved_values": "all_consistent_boolean_completions"
+          },
+          "legal_certification": false
+        },
+        "provenance": {
+          "model_id": "deterministic-extractor/v1",
+          "prompt_sha256": "ed226bbc996c2114196a957cff51213a4075fdf77e738e8b9ac7213c0644442d",
+          "seed": 0,
+          "params": {},
+          "timestamp": "2000-01-01T00:00:00+00:00"
+        },
+        "interpretation": {
+          "id": "formal-cfcde6732e071fa8",
+          "source_norm_id": "norm-8db8651bf038b46b",
+          "modality": "prohibition",
+          "subject": "the operator",
+          "action": "notify if risk",
+          "conditions": [],
+          "exceptions": [],
+          "object": null,
+          "deadline": null,
+          "references": [],
+          "authority": {
+            "kind": "other",
+            "issuer": null,
+            "instrument": null,
+            "jurisdiction": null,
+            "authority_rank": null,
+            "enacted_on": null,
+            "effective_from": null,
+            "effective_to": null,
+            "version": null
+          },
+          "confidence": 0.72,
+          "assumptions": [],
+          "provenance": {
+            "source_id": "synthetic-mr",
+            "span": [
+              0,
+              33
+            ],
+            "quote": "the operator must notify if risk.",
+            "document_hash": null,
+            "locator": null
+          },
+          "interpretation_label": "primary",
+          "canonical": "PROHIBITION[the operator:notify if risk] IF true UNLESS false",
+          "semantic_hash": "7c186b4e9697c77e9aab23b99db547f57a29ee8a7be6c67794a4cb65bb918c12"
+        }
+      },
+      {
+        "case": "exception",
+        "language": "en",
+        "modality": "obligation",
+        "relation": "exception_synonym",
+        "depth": 1,
+        "text": "The operator must notify except if waived.",
+        "expected": "equivalent_bounded",
+        "actual": "equivalent_bounded",
+        "outcome": "passed",
+        "normative_output_relation": "equivalent",
+        "evidence": {
+          "schema": "vle-experiment-result/v1",
+          "kind": "amendment",
+          "status": "equivalent_bounded",
+          "checks": {
+            "before_implies_after": {
+              "status": "verified_bounded",
+              "backend": "exhaustive",
+              "horizon": 1,
+              "atoms": [
+                "action:[\"The operator\",\"notify\",null]",
+                "fact:waived"
+              ],
+              "reason": "exhaustive_within_declared_horizon",
+              "checked_traces": 4,
+              "counterexample": null,
+              "backend_version": null,
+              "semantics": "LTLf-complete-valuations-v1",
+              "observation_constraints": [],
+              "unknown_cells": 2
+            },
+            "after_implies_before": {
+              "status": "verified_bounded",
+              "backend": "exhaustive",
+              "horizon": 1,
+              "atoms": [
+                "action:[\"The operator\",\"notify\",null]",
+                "fact:waived"
+              ],
+              "reason": "exhaustive_within_declared_horizon",
+              "checked_traces": 4,
+              "counterexample": null,
+              "backend_version": null,
+              "semantics": "LTLf-complete-valuations-v1",
+              "observation_constraints": [],
+              "unknown_cells": 2
+            }
+          },
+          "removed_behavior": null,
+          "added_behavior": null,
+          "interpretation": "inclusion_of_satisfying_complete_traces_under_shared_evidence",
+          "request_sha256": "657db3ce47446ce4f8e2b5ba91af1b2f3492d7c1ac6eec366470c7896f5fab2b",
+          "scope": {
+            "horizon": 1,
+            "backend": "exhaustive",
+            "timeout_ms_per_check": 5000,
+            "max_traces_per_check": 4096,
+            "observed_steps": 0,
+            "semantics": "LTLf-completions-at-exact-horizon-v1",
+            "assumptions": [],
+            "observations": null,
+            "unobserved_values": "all_consistent_boolean_completions"
+          },
+          "legal_certification": false
+        },
+        "provenance": {
+          "model_id": "deterministic-extractor/v1",
+          "prompt_sha256": "78d51be95fcc5acbfe2cc2d860e74c35a0729a9650eebcc204fd4910518af5c4",
+          "seed": 0,
+          "params": {},
+          "timestamp": "2000-01-01T00:00:00+00:00"
+        },
+        "interpretation": {
+          "id": "formal-91e18b5576b4e385",
+          "source_norm_id": "norm-52210b440692e7e3",
+          "modality": "prohibition",
+          "subject": "The operator",
+          "action": "notify",
+          "conditions": [],
+          "exceptions": [
+            {
+              "name": "waived",
+              "negated": false
+            }
+          ],
+          "object": null,
+          "deadline": null,
+          "references": [],
+          "authority": {
+            "kind": "other",
+            "issuer": null,
+            "instrument": null,
+            "jurisdiction": null,
+            "authority_rank": null,
+            "enacted_on": null,
+            "effective_from": null,
+            "effective_to": null,
+            "version": null
+          },
+          "confidence": 0.72,
+          "assumptions": [],
+          "provenance": {
+            "source_id": "synthetic-mr",
+            "span": [
+              0,
+              42
+            ],
+            "quote": "The operator must notify except if waived.",
+            "document_hash": null,
+            "locator": null
+          },
+          "interpretation_label": "primary",
+          "canonical": "PROHIBITION[The operator:notify] IF true UNLESS waived",
+          "semantic_hash": "011a14262ef7c502d5c46f14bc1d6ef0494fcbb34fe9e53d8c0a6d6a736fbd92"
+        }
+      },
+      {
+        "case": "exception",
+        "language": "en",
+        "modality": "obligation",
+        "relation": "exception_synonym",
+        "depth": 1,
+        "text": "The operator must notify save where waived.",
+        "expected": "equivalent_bounded",
+        "actual": "equivalent_bounded",
+        "outcome": "passed",
+        "normative_output_relation": "equivalent",
+        "evidence": {
+          "schema": "vle-experiment-result/v1",
+          "kind": "amendment",
+          "status": "equivalent_bounded",
+          "checks": {
+            "before_implies_after": {
+              "status": "verified_bounded",
+              "backend": "exhaustive",
+              "horizon": 1,
+              "atoms": [
+                "action:[\"The operator\",\"notify\",null]",
+                "fact:waived"
+              ],
+              "reason": "exhaustive_within_declared_horizon",
+              "checked_traces": 4,
+              "counterexample": null,
+              "backend_version": null,
+              "semantics": "LTLf-complete-valuations-v1",
+              "observation_constraints": [],
+              "unknown_cells": 2
+            },
+            "after_implies_before": {
+              "status": "verified_bounded",
+              "backend": "exhaustive",
+              "horizon": 1,
+              "atoms": [
+                "action:[\"The operator\",\"notify\",null]",
+                "fact:waived"
+              ],
+              "reason": "exhaustive_within_declared_horizon",
+              "checked_traces": 4,
+              "counterexample": null,
+              "backend_version": null,
+              "semantics": "LTLf-complete-valuations-v1",
+              "observation_constraints": [],
+              "unknown_cells": 2
+            }
+          },
+          "removed_behavior": null,
+          "added_behavior": null,
+          "interpretation": "inclusion_of_satisfying_complete_traces_under_shared_evidence",
+          "request_sha256": "657db3ce47446ce4f8e2b5ba91af1b2f3492d7c1ac6eec366470c7896f5fab2b",
+          "scope": {
+            "horizon": 1,
+            "backend": "exhaustive",
+            "timeout_ms_per_check": 5000,
+            "max_traces_per_check": 4096,
+            "observed_steps": 0,
+            "semantics": "LTLf-completions-at-exact-horizon-v1",
+            "assumptions": [],
+            "observations": null,
+            "unobserved_values": "all_consistent_boolean_completions"
+          },
+          "legal_certification": false
+        },
+        "provenance": {
+          "model_id": "deterministic-extractor/v1",
+          "prompt_sha256": "dbacb7652e154c7c311e2775e0ded3e0e281cb2cb499570b81a2e95373b7ac65",
+          "seed": 0,
+          "params": {},
+          "timestamp": "2000-01-01T00:00:00+00:00"
+        },
+        "interpretation": {
+          "id": "formal-325a569f3b613edc",
+          "source_norm_id": "norm-99011c4bb6f9ac64",
+          "modality": "prohibition",
+          "subject": "The operator",
+          "action": "notify",
+          "conditions": [],
+          "exceptions": [
+            {
+              "name": "waived",
+              "negated": false
+            }
+          ],
+          "object": null,
+          "deadline": null,
+          "references": [],
+          "authority": {
+            "kind": "other",
+            "issuer": null,
+            "instrument": null,
+            "jurisdiction": null,
+            "authority_rank": null,
+            "enacted_on": null,
+            "effective_from": null,
+            "effective_to": null,
+            "version": null
+          },
+          "confidence": 0.72,
+          "assumptions": [],
+          "provenance": {
+            "source_id": "synthetic-mr",
+            "span": [
+              0,
+              43
+            ],
+            "quote": "The operator must notify save where waived.",
+            "document_hash": null,
+            "locator": null
+          },
+          "interpretation_label": "primary",
+          "canonical": "PROHIBITION[The operator:notify] IF true UNLESS waived",
+          "semantic_hash": "011a14262ef7c502d5c46f14bc1d6ef0494fcbb34fe9e53d8c0a6d6a736fbd92"
+        }
+      },
+      {
+        "case": "position",
+        "language": "en",
+        "modality": "obligation",
+        "relation": "exception_position",
+        "depth": 1,
+        "text": "Unless waived, The operator must notify.",
+        "expected": "equivalent_bounded",
+        "actual": "unknown",
+        "outcome": "unknown",
+        "normative_output_relation": "unknown",
+        "evidence": {},
+        "provenance": {
+          "model_id": "deterministic-extractor/v1",
+          "prompt_sha256": "732230bea206780d9fa49a7ec46b156cb134806ad401e0d6343b1a4241ac452a",
+          "seed": 0,
+          "params": {},
+          "timestamp": "2000-01-01T00:00:00+00:00"
+        },
+        "interpretation": {
+          "id": "formal-a578fc66993a7061",
+          "source_norm_id": "norm-eeddc12584b15b1a",
+          "modality": "prohibition",
+          "subject": "Unless waived, The operator",
+          "action": "notify",
+          "conditions": [],
+          "exceptions": [
+            {
+              "name": "waived, The operator must notify",
+              "negated": false
+            }
+          ],
+          "object": null,
+          "deadline": null,
+          "references": [],
+          "authority": {
+            "kind": "other",
+            "issuer": null,
+            "instrument": null,
+            "jurisdiction": null,
+            "authority_rank": null,
+            "enacted_on": null,
+            "effective_from": null,
+            "effective_to": null,
+            "version": null
+          },
+          "confidence": 0.72,
+          "assumptions": [],
+          "provenance": {
+            "source_id": "synthetic-mr",
+            "span": [
+              0,
+              40
+            ],
+            "quote": "Unless waived, The operator must notify.",
+            "document_hash": null,
+            "locator": null
+          },
+          "interpretation_label": "primary",
+          "canonical": "PROHIBITION[Unless waived, The operator:notify] IF true UNLESS waived, The operator must notify",
+          "semantic_hash": "5d6b373d863a5ec344aaf6f91831de7617fe64e3ce92399e725f35b0a99c72ed"
+        }
+      },
+      {
+        "case": "modality-en",
+        "language": "en",
+        "modality": "obligation",
+        "relation": "modality_synonym",
+        "depth": 1,
+        "text": "The operator shall notify.",
+        "expected": "equivalent_bounded",
+        "actual": "equivalent_bounded",
+        "outcome": "passed",
+        "normative_output_relation": "equivalent",
+        "evidence": {
+          "schema": "vle-experiment-result/v1",
+          "kind": "amendment",
+          "status": "equivalent_bounded",
+          "checks": {
+            "before_implies_after": {
+              "status": "verified_bounded",
+              "backend": "exhaustive",
+              "horizon": 1,
+              "atoms": [
+                "action:[\"The operator\",\"notify\",null]"
+              ],
+              "reason": "exhaustive_within_declared_horizon",
+              "checked_traces": 2,
+              "counterexample": null,
+              "backend_version": null,
+              "semantics": "LTLf-complete-valuations-v1",
+              "observation_constraints": [],
+              "unknown_cells": 1
+            },
+            "after_implies_before": {
+              "status": "verified_bounded",
+              "backend": "exhaustive",
+              "horizon": 1,
+              "atoms": [
+                "action:[\"The operator\",\"notify\",null]"
+              ],
+              "reason": "exhaustive_within_declared_horizon",
+              "checked_traces": 2,
+              "counterexample": null,
+              "backend_version": null,
+              "semantics": "LTLf-complete-valuations-v1",
+              "observation_constraints": [],
+              "unknown_cells": 1
+            }
+          },
+          "removed_behavior": null,
+          "added_behavior": null,
+          "interpretation": "inclusion_of_satisfying_complete_traces_under_shared_evidence",
+          "request_sha256": "9e7ef294bb200df67c55fca386dd6ec6e9f2877f33b04f98f4e874f36487e0a1",
+          "scope": {
+            "horizon": 1,
+            "backend": "exhaustive",
+            "timeout_ms_per_check": 5000,
+            "max_traces_per_check": 4096,
+            "observed_steps": 0,
+            "semantics": "LTLf-completions-at-exact-horizon-v1",
+            "assumptions": [],
+            "observations": null,
+            "unobserved_values": "all_consistent_boolean_completions"
+          },
+          "legal_certification": false
+        },
+        "provenance": {
+          "model_id": "deterministic-extractor/v1",
+          "prompt_sha256": "662d739eb1415aadf2173d06ae9080ce5afc9c40e92690810437307398ffe0a7",
+          "seed": 0,
+          "params": {},
+          "timestamp": "2000-01-01T00:00:00+00:00"
+        },
+        "interpretation": {
+          "id": "formal-4403a22530a841cc",
+          "source_norm_id": "norm-008cd117e5807571",
+          "modality": "prohibition",
+          "subject": "The operator",
+          "action": "notify",
+          "conditions": [],
+          "exceptions": [],
+          "object": null,
+          "deadline": null,
+          "references": [],
+          "authority": {
+            "kind": "other",
+            "issuer": null,
+            "instrument": null,
+            "jurisdiction": null,
+            "authority_rank": null,
+            "enacted_on": null,
+            "effective_from": null,
+            "effective_to": null,
+            "version": null
+          },
+          "confidence": 0.72,
+          "assumptions": [],
+          "provenance": {
+            "source_id": "synthetic-mr",
+            "span": [
+              0,
+              26
+            ],
+            "quote": "The operator shall notify.",
+            "document_hash": null,
+            "locator": null
+          },
+          "interpretation_label": "primary",
+          "canonical": "PROHIBITION[The operator:notify] IF true UNLESS false",
+          "semantic_hash": "f506d26a60d88017b77f36c3f2cba8334ea7bb586c5c082e4031e4beeb158e6c"
+        }
+      },
+      {
+        "case": "modality-fr",
+        "language": "fr",
+        "modality": "obligation",
+        "relation": "modality_synonym",
+        "depth": 1,
+        "text": "L\u2019op\u00e9rateur est tenu de notifier.",
+        "expected": "equivalent_bounded",
+        "actual": "equivalent_bounded",
+        "outcome": "passed",
+        "normative_output_relation": "equivalent",
+        "evidence": {
+          "schema": "vle-experiment-result/v1",
+          "kind": "amendment",
+          "status": "equivalent_bounded",
+          "checks": {
+            "before_implies_after": {
+              "status": "verified_bounded",
+              "backend": "exhaustive",
+              "horizon": 1,
+              "atoms": [
+                "action:[\"L\u2019op\u00e9rateur\",\"notifier\",null]"
+              ],
+              "reason": "exhaustive_within_declared_horizon",
+              "checked_traces": 2,
+              "counterexample": null,
+              "backend_version": null,
+              "semantics": "LTLf-complete-valuations-v1",
+              "observation_constraints": [],
+              "unknown_cells": 1
+            },
+            "after_implies_before": {
+              "status": "verified_bounded",
+              "backend": "exhaustive",
+              "horizon": 1,
+              "atoms": [
+                "action:[\"L\u2019op\u00e9rateur\",\"notifier\",null]"
+              ],
+              "reason": "exhaustive_within_declared_horizon",
+              "checked_traces": 2,
+              "counterexample": null,
+              "backend_version": null,
+              "semantics": "LTLf-complete-valuations-v1",
+              "observation_constraints": [],
+              "unknown_cells": 1
+            }
+          },
+          "removed_behavior": null,
+          "added_behavior": null,
+          "interpretation": "inclusion_of_satisfying_complete_traces_under_shared_evidence",
+          "request_sha256": "556f045aa23c99cf7cb2c12ccbd307136e78607b7971c2aa6b96aa800f80b487",
+          "scope": {
+            "horizon": 1,
+            "backend": "exhaustive",
+            "timeout_ms_per_check": 5000,
+            "max_traces_per_check": 4096,
+            "observed_steps": 0,
+            "semantics": "LTLf-completions-at-exact-horizon-v1",
+            "assumptions": [],
+            "observations": null,
+            "unobserved_values": "all_consistent_boolean_completions"
+          },
+          "legal_certification": false
+        },
+        "provenance": {
+          "model_id": "deterministic-extractor/v1",
+          "prompt_sha256": "7aa87147619451417ccecc84796eeafe2750858187ab4706470f43952de32e5e",
+          "seed": 0,
+          "params": {},
+          "timestamp": "2000-01-01T00:00:00+00:00"
+        },
+        "interpretation": {
+          "id": "formal-f815a024f9f9ee3f",
+          "source_norm_id": "norm-786df625d54553a7",
+          "modality": "obligation",
+          "subject": "L\u2019op\u00e9rateur",
+          "action": "notifier",
+          "conditions": [],
+          "exceptions": [],
+          "object": null,
+          "deadline": null,
+          "references": [],
+          "authority": {
+            "kind": "other",
+            "issuer": null,
+            "instrument": null,
+            "jurisdiction": null,
+            "authority_rank": null,
+            "enacted_on": null,
+            "effective_from": null,
+            "effective_to": null,
+            "version": null
+          },
+          "confidence": 0.72,
+          "assumptions": [],
+          "provenance": {
+            "source_id": "synthetic-mr",
+            "span": [
+              0,
+              33
+            ],
+            "quote": "L\u2019op\u00e9rateur est tenu de notifier.",
+            "document_hash": null,
+            "locator": null
+          },
+          "interpretation_label": "primary",
+          "canonical": "OBLIGATION[L\u2019op\u00e9rateur:notifier] IF true UNLESS false",
+          "semantic_hash": "96285fc5b2bfa0e9cfaf4ef0e2635fc1cf3d2bc3dd19e6e332964e4d73132eac"
+        }
+      },
+      {
+        "case": "double",
+        "language": "en",
+        "modality": "obligation",
+        "relation": "double_negation",
+        "depth": 1,
+        "text": "The operator must not not notify.",
+        "expected": "equivalent_bounded",
+        "actual": "incomparable",
+        "outcome": "violated",
+        "normative_output_relation": "incomparable",
+        "evidence": {
+          "schema": "vle-experiment-result/v1",
+          "kind": "amendment",
+          "status": "incomparable",
+          "checks": {
+            "before_implies_after": {
+              "status": "counterexample",
+              "backend": "exhaustive",
+              "horizon": 1,
+              "atoms": [
+                "action:[\"The operator\",\"not notify\",null]",
+                "action:[\"The operator\",\"notify\",null]"
+              ],
+              "reason": "property_false",
+              "checked_traces": 3,
+              "counterexample": [
+                {
+                  "action:[\"The operator\",\"not notify\",null]": true,
+                  "action:[\"The operator\",\"notify\",null]": false
+                }
+              ],
+              "backend_version": null,
+              "semantics": "LTLf-complete-valuations-v1",
+              "observation_constraints": [],
+              "unknown_cells": 2
+            },
+            "after_implies_before": {
+              "status": "counterexample",
+              "backend": "exhaustive",
+              "horizon": 1,
+              "atoms": [
+                "action:[\"The operator\",\"not notify\",null]",
+                "action:[\"The operator\",\"notify\",null]"
+              ],
+              "reason": "property_false",
+              "checked_traces": 2,
+              "counterexample": [
+                {
+                  "action:[\"The operator\",\"not notify\",null]": false,
+                  "action:[\"The operator\",\"notify\",null]": true
+                }
+              ],
+              "backend_version": null,
+              "semantics": "LTLf-complete-valuations-v1",
+              "observation_constraints": [],
+              "unknown_cells": 2
+            }
+          },
+          "removed_behavior": [
+            {
+              "action:[\"The operator\",\"not notify\",null]": true,
+              "action:[\"The operator\",\"notify\",null]": false
+            }
+          ],
+          "added_behavior": [
+            {
+              "action:[\"The operator\",\"not notify\",null]": false,
+              "action:[\"The operator\",\"notify\",null]": true
+            }
+          ],
+          "interpretation": "inclusion_of_satisfying_complete_traces_under_shared_evidence",
+          "request_sha256": "669562eb75e83ee2ef17962b15e24e7ca60eff5746e57316a9728dbddf52f30f",
+          "scope": {
+            "horizon": 1,
+            "backend": "exhaustive",
+            "timeout_ms_per_check": 5000,
+            "max_traces_per_check": 4096,
+            "observed_steps": 0,
+            "semantics": "LTLf-completions-at-exact-horizon-v1",
+            "assumptions": [],
+            "observations": null,
+            "unobserved_values": "all_consistent_boolean_completions"
+          },
+          "legal_certification": false
+        },
+        "provenance": {
+          "model_id": "deterministic-extractor/v1",
+          "prompt_sha256": "6dddaadc29915161e471da68751f2644b961d163e3c6a003c32a8a57de909984",
+          "seed": 0,
+          "params": {},
+          "timestamp": "2000-01-01T00:00:00+00:00"
+        },
+        "interpretation": {
+          "id": "formal-6d47257872504f87",
+          "source_norm_id": "norm-098ae71464f2b125",
+          "modality": "prohibition",
+          "subject": "The operator",
+          "action": "not notify",
+          "conditions": [],
+          "exceptions": [],
+          "object": null,
+          "deadline": null,
+          "references": [],
+          "authority": {
+            "kind": "other",
+            "issuer": null,
+            "instrument": null,
+            "jurisdiction": null,
+            "authority_rank": null,
+            "enacted_on": null,
+            "effective_from": null,
+            "effective_to": null,
+            "version": null
+          },
+          "confidence": 0.72,
+          "assumptions": [],
+          "provenance": {
+            "source_id": "synthetic-mr",
+            "span": [
+              0,
+              33
+            ],
+            "quote": "The operator must not not notify.",
+            "document_hash": null,
+            "locator": null
+          },
+          "interpretation_label": "primary",
+          "canonical": "PROHIBITION[The operator:not notify] IF true UNLESS false",
+          "semantic_hash": "037dd48798691684270082eb826dcf1356e841b72af8ea039b94ff72badd5aec"
+        }
+      },
+      {
+        "case": "list",
+        "language": "en",
+        "modality": "obligation",
+        "relation": "list_order",
+        "depth": 1,
+        "text": "If consent and risk, the operator must notify.",
+        "expected": "equivalent_bounded",
+        "actual": "unknown",
+        "outcome": "unknown",
+        "normative_output_relation": "unknown",
+        "evidence": {},
+        "provenance": {
+          "model_id": "deterministic-extractor/v1",
+          "prompt_sha256": "a91bd7f3f285e11bc0e0600762c6f9b8bc78622b46bf6308feecc885c62e7db1",
+          "seed": 0,
+          "params": {},
+          "timestamp": "2000-01-01T00:00:00+00:00"
+        },
+        "interpretation": {
+          "id": "formal-695db6848108b311",
+          "source_norm_id": "norm-9f98d5c0ef5a328f",
+          "modality": "prohibition",
+          "subject": "the operator",
+          "action": "notify",
+          "conditions": [
+            {
+              "name": "consent and risk",
+              "negated": false
+            }
+          ],
+          "exceptions": [],
+          "object": null,
+          "deadline": null,
+          "references": [],
+          "authority": {
+            "kind": "other",
+            "issuer": null,
+            "instrument": null,
+            "jurisdiction": null,
+            "authority_rank": null,
+            "enacted_on": null,
+            "effective_from": null,
+            "effective_to": null,
+            "version": null
+          },
+          "confidence": 0.72,
+          "assumptions": [],
+          "provenance": {
+            "source_id": "synthetic-mr",
+            "span": [
+              0,
+              46
+            ],
+            "quote": "If consent and risk, the operator must notify.",
+            "document_hash": null,
+            "locator": null
+          },
+          "interpretation_label": "primary",
+          "canonical": "PROHIBITION[the operator:notify] IF consent and risk UNLESS false",
+          "semantic_hash": "0c0748510f5b58df8c886dde921089814057d96fd40e2e63870812ea5aff373e"
+        }
+      },
+      {
+        "case": "list",
+        "language": "en",
+        "modality": "obligation",
+        "relation": "list_order",
+        "depth": 2,
+        "text": "If risk and consent, the operator must notify.",
+        "expected": "equivalent_bounded",
+        "actual": "equivalent_bounded",
+        "outcome": "passed",
+        "normative_output_relation": "equivalent",
+        "evidence": {
+          "schema": "vle-experiment-result/v1",
+          "kind": "amendment",
+          "status": "equivalent_bounded",
+          "checks": {
+            "before_implies_after": {
+              "status": "verified_bounded",
+              "backend": "exhaustive",
+              "horizon": 1,
+              "atoms": [
+                "action:[\"the operator\",\"notify\",null]",
+                "fact:risk and consent"
+              ],
+              "reason": "exhaustive_within_declared_horizon",
+              "checked_traces": 4,
+              "counterexample": null,
+              "backend_version": null,
+              "semantics": "LTLf-complete-valuations-v1",
+              "observation_constraints": [],
+              "unknown_cells": 2
+            },
+            "after_implies_before": {
+              "status": "verified_bounded",
+              "backend": "exhaustive",
+              "horizon": 1,
+              "atoms": [
+                "action:[\"the operator\",\"notify\",null]",
+                "fact:risk and consent"
+              ],
+              "reason": "exhaustive_within_declared_horizon",
+              "checked_traces": 4,
+              "counterexample": null,
+              "backend_version": null,
+              "semantics": "LTLf-complete-valuations-v1",
+              "observation_constraints": [],
+              "unknown_cells": 2
+            }
+          },
+          "removed_behavior": null,
+          "added_behavior": null,
+          "interpretation": "inclusion_of_satisfying_complete_traces_under_shared_evidence",
+          "request_sha256": "96ca0a8fda6f39700be8add5158277078d485524c6a587b5a2ad8de816d21c46",
+          "scope": {
+            "horizon": 1,
+            "backend": "exhaustive",
+            "timeout_ms_per_check": 5000,
+            "max_traces_per_check": 4096,
+            "observed_steps": 0,
+            "semantics": "LTLf-completions-at-exact-horizon-v1",
+            "assumptions": [],
+            "observations": null,
+            "unobserved_values": "all_consistent_boolean_completions"
+          },
+          "legal_certification": false
+        },
+        "provenance": {
+          "model_id": "deterministic-extractor/v1",
+          "prompt_sha256": "4d4ba72241c1ac8f0565b092d292387d0b74a3ceea2cfcbadc5caf2d047ec794",
+          "seed": 0,
+          "params": {},
+          "timestamp": "2000-01-01T00:00:00+00:00"
+        },
+        "interpretation": {
+          "id": "formal-ed960a7e7df4e69f",
+          "source_norm_id": "norm-d8ecc0d8a5b0f60d",
+          "modality": "prohibition",
+          "subject": "the operator",
+          "action": "notify",
+          "conditions": [
+            {
+              "name": "risk and consent",
+              "negated": false
+            }
+          ],
+          "exceptions": [],
+          "object": null,
+          "deadline": null,
+          "references": [],
+          "authority": {
+            "kind": "other",
+            "issuer": null,
+            "instrument": null,
+            "jurisdiction": null,
+            "authority_rank": null,
+            "enacted_on": null,
+            "effective_from": null,
+            "effective_to": null,
+            "version": null
+          },
+          "confidence": 0.72,
+          "assumptions": [],
+          "provenance": {
+            "source_id": "synthetic-mr",
+            "span": [
+              0,
+              46
+            ],
+            "quote": "If risk and consent, the operator must notify.",
+            "document_hash": null,
+            "locator": null
+          },
+          "interpretation_label": "primary",
+          "canonical": "PROHIBITION[the operator:notify] IF risk and consent UNLESS false",
+          "semantic_hash": "66e3bedb0437efaee7d359e193065db4a3cb88b22ce3c12ebd15f9f72264e1e0"
+        }
+      },
+      {
+        "case": "parallel",
+        "language": "en",
+        "modality": "obligation",
+        "relation": "parallel",
+        "depth": 1,
+        "text": "L\u2019op\u00e9rateur doit notifier.",
+        "expected": "equivalent_bounded",
+        "actual": "incomparable",
+        "outcome": "violated",
+        "normative_output_relation": "incomparable",
+        "evidence": {
+          "schema": "vle-experiment-result/v1",
+          "kind": "amendment",
+          "status": "incomparable",
+          "checks": {
+            "before_implies_after": {
+              "status": "counterexample",
+              "backend": "exhaustive",
+              "horizon": 1,
+              "atoms": [
+                "action:[\"operator\",\"notify\",null]"
+              ],
+              "reason": "property_false",
+              "checked_traces": 1,
+              "counterexample": [
+                {
+                  "action:[\"operator\",\"notify\",null]": false
+                }
+              ],
+              "backend_version": null,
+              "semantics": "LTLf-complete-valuations-v1",
+              "observation_constraints": [],
+              "unknown_cells": 1
+            },
+            "after_implies_before": {
+              "status": "counterexample",
+              "backend": "exhaustive",
+              "horizon": 1,
+              "atoms": [
+                "action:[\"operator\",\"notify\",null]"
+              ],
+              "reason": "property_false",
+              "checked_traces": 2,
+              "counterexample": [
+                {
+                  "action:[\"operator\",\"notify\",null]": true
+                }
+              ],
+              "backend_version": null,
+              "semantics": "LTLf-complete-valuations-v1",
+              "observation_constraints": [],
+              "unknown_cells": 1
+            }
+          },
+          "removed_behavior": [
+            {
+              "action:[\"operator\",\"notify\",null]": false
+            }
+          ],
+          "added_behavior": [
+            {
+              "action:[\"operator\",\"notify\",null]": true
+            }
+          ],
+          "interpretation": "inclusion_of_satisfying_complete_traces_under_shared_evidence",
+          "request_sha256": "6929ecad92099da5b6e8bc407694550f77d80e5d742dcf02c6c3b84bcd3a89be",
+          "scope": {
+            "horizon": 1,
+            "backend": "exhaustive",
+            "timeout_ms_per_check": 5000,
+            "max_traces_per_check": 4096,
+            "observed_steps": 0,
+            "semantics": "LTLf-completions-at-exact-horizon-v1",
+            "assumptions": [],
+            "observations": null,
+            "unobserved_values": "all_consistent_boolean_completions"
+          },
+          "legal_certification": false
+        },
+        "provenance": {
+          "model_id": "deterministic-extractor/v1",
+          "prompt_sha256": "944e62c895e31042f7919eb0dc2cbb7cb15a20225564d088859c992d0dc4fc60",
+          "seed": 0,
+          "params": {},
+          "timestamp": "2000-01-01T00:00:00+00:00"
+        },
+        "interpretation": {
+          "id": "formal-ec6c359b02275297",
+          "source_norm_id": "norm-bd0815d4c3f361f6",
+          "modality": "obligation",
+          "subject": "L\u2019op\u00e9rateur",
+          "action": "notifier",
+          "conditions": [],
+          "exceptions": [],
+          "object": null,
+          "deadline": null,
+          "references": [],
+          "authority": {
+            "kind": "other",
+            "issuer": null,
+            "instrument": null,
+            "jurisdiction": null,
+            "authority_rank": null,
+            "enacted_on": null,
+            "effective_from": null,
+            "effective_to": null,
+            "version": null
+          },
+          "confidence": 0.72,
+          "assumptions": [],
+          "provenance": {
+            "source_id": "synthetic-mr",
+            "span": [
+              0,
+              26
+            ],
+            "quote": "L\u2019op\u00e9rateur doit notifier.",
+            "document_hash": null,
+            "locator": null
+          },
+          "interpretation_label": "primary",
+          "canonical": "OBLIGATION[L\u2019op\u00e9rateur:notifier] IF true UNLESS false",
+          "semantic_hash": "96285fc5b2bfa0e9cfaf4ef0e2635fc1cf3d2bc3dd19e6e332964e4d73132eac"
+        }
+      },
+      {
+        "case": "weaken",
+        "language": "en",
+        "modality": "obligation",
+        "relation": "weaken_modality",
+        "depth": 1,
+        "text": "The operator may notify.",
+        "expected": "strict_weakening",
+        "actual": "equivalent_bounded",
+        "outcome": "violated",
+        "normative_output_relation": "equivalent",
+        "evidence": {
+          "schema": "vle-experiment-result/v1",
+          "kind": "amendment",
+          "status": "equivalent_bounded",
+          "checks": {
+            "before_implies_after": {
+              "status": "verified_bounded",
+              "backend": "exhaustive",
+              "horizon": 1,
+              "atoms": [
+                "action:[\"The operator\",\"notify\",null]"
+              ],
+              "reason": "exhaustive_within_declared_horizon",
+              "checked_traces": 2,
+              "counterexample": null,
+              "backend_version": null,
+              "semantics": "LTLf-complete-valuations-v1",
+              "observation_constraints": [],
+              "unknown_cells": 1
+            },
+            "after_implies_before": {
+              "status": "verified_bounded",
+              "backend": "exhaustive",
+              "horizon": 1,
+              "atoms": [
+                "action:[\"The operator\",\"notify\",null]"
+              ],
+              "reason": "exhaustive_within_declared_horizon",
+              "checked_traces": 2,
+              "counterexample": null,
+              "backend_version": null,
+              "semantics": "LTLf-complete-valuations-v1",
+              "observation_constraints": [],
+              "unknown_cells": 1
+            }
+          },
+          "removed_behavior": null,
+          "added_behavior": null,
+          "interpretation": "inclusion_of_satisfying_complete_traces_under_shared_evidence",
+          "request_sha256": "9e7ef294bb200df67c55fca386dd6ec6e9f2877f33b04f98f4e874f36487e0a1",
+          "scope": {
+            "horizon": 1,
+            "backend": "exhaustive",
+            "timeout_ms_per_check": 5000,
+            "max_traces_per_check": 4096,
+            "observed_steps": 0,
+            "semantics": "LTLf-completions-at-exact-horizon-v1",
+            "assumptions": [],
+            "observations": null,
+            "unobserved_values": "all_consistent_boolean_completions"
+          },
+          "legal_certification": false
+        },
+        "provenance": {
+          "model_id": "deterministic-extractor/v1",
+          "prompt_sha256": "5b0d0ae211cfb307051ef9655ea6f83c805b23dd2ad5f6aba41622a8adbf14e6",
+          "seed": 0,
+          "params": {},
+          "timestamp": "2000-01-01T00:00:00+00:00"
+        },
+        "interpretation": {
+          "id": "formal-5f49886f7a4055f2",
+          "source_norm_id": "norm-8e48ada439729795",
+          "modality": "prohibition",
+          "subject": "The operator",
+          "action": "notify",
+          "conditions": [],
+          "exceptions": [],
+          "object": null,
+          "deadline": null,
+          "references": [],
+          "authority": {
+            "kind": "other",
+            "issuer": null,
+            "instrument": null,
+            "jurisdiction": null,
+            "authority_rank": null,
+            "enacted_on": null,
+            "effective_from": null,
+            "effective_to": null,
+            "version": null
+          },
+          "confidence": 0.72,
+          "assumptions": [],
+          "provenance": {
+            "source_id": "synthetic-mr",
+            "span": [
+              0,
+              24
+            ],
+            "quote": "The operator may notify.",
+            "document_hash": null,
+            "locator": null
+          },
+          "interpretation_label": "primary",
+          "canonical": "PROHIBITION[The operator:notify] IF true UNLESS false",
+          "semantic_hash": "f506d26a60d88017b77f36c3f2cba8334ea7bb586c5c082e4031e4beeb158e6c"
+        }
+      },
+      {
+        "case": "except-o",
+        "language": "en",
+        "modality": "obligation",
+        "relation": "add_exception",
+        "depth": 1,
+        "text": "The operator must notify unless waived.",
+        "expected": "strict_weakening",
+        "actual": "strict_weakening",
+        "outcome": "passed",
+        "normative_output_relation": "strictly_stronger",
+        "evidence": {
+          "schema": "vle-experiment-result/v1",
+          "kind": "amendment",
+          "status": "strict_weakening",
+          "checks": {
+            "before_implies_after": {
+              "status": "verified_bounded",
+              "backend": "exhaustive",
+              "horizon": 1,
+              "atoms": [
+                "action:[\"The operator\",\"notify\",null]",
+                "fact:waived"
+              ],
+              "reason": "exhaustive_within_declared_horizon",
+              "checked_traces": 4,
+              "counterexample": null,
+              "backend_version": null,
+              "semantics": "LTLf-complete-valuations-v1",
+              "observation_constraints": [],
+              "unknown_cells": 2
+            },
+            "after_implies_before": {
+              "status": "counterexample",
+              "backend": "exhaustive",
+              "horizon": 1,
+              "atoms": [
+                "action:[\"The operator\",\"notify\",null]",
+                "fact:waived"
+              ],
+              "reason": "property_false",
+              "checked_traces": 4,
+              "counterexample": [
+                {
+                  "action:[\"The operator\",\"notify\",null]": true,
+                  "fact:waived": true
+                }
+              ],
+              "backend_version": null,
+              "semantics": "LTLf-complete-valuations-v1",
+              "observation_constraints": [],
+              "unknown_cells": 2
+            }
+          },
+          "removed_behavior": null,
+          "added_behavior": [
+            {
+              "action:[\"The operator\",\"notify\",null]": true,
+              "fact:waived": true
+            }
+          ],
+          "interpretation": "inclusion_of_satisfying_complete_traces_under_shared_evidence",
+          "request_sha256": "73c1fc17849a61622fecc041ed8f1e34c29a16f1bc1e946e4d84a142b22edbcb",
+          "scope": {
+            "horizon": 1,
+            "backend": "exhaustive",
+            "timeout_ms_per_check": 5000,
+            "max_traces_per_check": 4096,
+            "observed_steps": 0,
+            "semantics": "LTLf-completions-at-exact-horizon-v1",
+            "assumptions": [],
+            "observations": null,
+            "unobserved_values": "all_consistent_boolean_completions"
+          },
+          "legal_certification": false
+        },
+        "provenance": {
+          "model_id": "deterministic-extractor/v1",
+          "prompt_sha256": "2e19638cb5e51f149a3320f6ba3212a3b8e4b95c0eab4afe156b00fb14fedf25",
+          "seed": 0,
+          "params": {},
+          "timestamp": "2000-01-01T00:00:00+00:00"
+        },
+        "interpretation": {
+          "id": "formal-835ead35c1aecbe6",
+          "source_norm_id": "norm-68fba33d99076293",
+          "modality": "prohibition",
+          "subject": "The operator",
+          "action": "notify",
+          "conditions": [],
+          "exceptions": [
+            {
+              "name": "waived",
+              "negated": false
+            }
+          ],
+          "object": null,
+          "deadline": null,
+          "references": [],
+          "authority": {
+            "kind": "other",
+            "issuer": null,
+            "instrument": null,
+            "jurisdiction": null,
+            "authority_rank": null,
+            "enacted_on": null,
+            "effective_from": null,
+            "effective_to": null,
+            "version": null
+          },
+          "confidence": 0.72,
+          "assumptions": [],
+          "provenance": {
+            "source_id": "synthetic-mr",
+            "span": [
+              0,
+              39
+            ],
+            "quote": "The operator must notify unless waived.",
+            "document_hash": null,
+            "locator": null
+          },
+          "interpretation_label": "primary",
+          "canonical": "PROHIBITION[The operator:notify] IF true UNLESS waived",
+          "semantic_hash": "011a14262ef7c502d5c46f14bc1d6ef0494fcbb34fe9e53d8c0a6d6a736fbd92"
+        }
+      },
+      {
+        "case": "except-f",
+        "language": "en",
+        "modality": "prohibition",
+        "relation": "add_exception",
+        "depth": 1,
+        "text": "The operator must not disclose unless waived.",
+        "expected": "strict_weakening",
+        "actual": "strict_weakening",
+        "outcome": "passed",
+        "normative_output_relation": "strictly_stronger",
+        "evidence": {
+          "schema": "vle-experiment-result/v1",
+          "kind": "amendment",
+          "status": "strict_weakening",
+          "checks": {
+            "before_implies_after": {
+              "status": "verified_bounded",
+              "backend": "exhaustive",
+              "horizon": 1,
+              "atoms": [
+                "action:[\"The operator\",\"disclose\",null]",
+                "fact:waived"
+              ],
+              "reason": "exhaustive_within_declared_horizon",
+              "checked_traces": 4,
+              "counterexample": null,
+              "backend_version": null,
+              "semantics": "LTLf-complete-valuations-v1",
+              "observation_constraints": [],
+              "unknown_cells": 2
+            },
+            "after_implies_before": {
+              "status": "counterexample",
+              "backend": "exhaustive",
+              "horizon": 1,
+              "atoms": [
+                "action:[\"The operator\",\"disclose\",null]",
+                "fact:waived"
+              ],
+              "reason": "property_false",
+              "checked_traces": 4,
+              "counterexample": [
+                {
+                  "action:[\"The operator\",\"disclose\",null]": true,
+                  "fact:waived": true
+                }
+              ],
+              "backend_version": null,
+              "semantics": "LTLf-complete-valuations-v1",
+              "observation_constraints": [],
+              "unknown_cells": 2
+            }
+          },
+          "removed_behavior": null,
+          "added_behavior": [
+            {
+              "action:[\"The operator\",\"disclose\",null]": true,
+              "fact:waived": true
+            }
+          ],
+          "interpretation": "inclusion_of_satisfying_complete_traces_under_shared_evidence",
+          "request_sha256": "468e2403b241489ec6325d04326734294cd13b5d55131ba414202fc703111e01",
+          "scope": {
+            "horizon": 1,
+            "backend": "exhaustive",
+            "timeout_ms_per_check": 5000,
+            "max_traces_per_check": 4096,
+            "observed_steps": 0,
+            "semantics": "LTLf-completions-at-exact-horizon-v1",
+            "assumptions": [],
+            "observations": null,
+            "unobserved_values": "all_consistent_boolean_completions"
+          },
+          "legal_certification": false
+        },
+        "provenance": {
+          "model_id": "deterministic-extractor/v1",
+          "prompt_sha256": "2542b6d7cbc267c4902ab990b7e989645afa6958050dcb20a49fa2f1aaf2a3d1",
+          "seed": 0,
+          "params": {},
+          "timestamp": "2000-01-01T00:00:00+00:00"
+        },
+        "interpretation": {
+          "id": "formal-ed6930c5b5e5e280",
+          "source_norm_id": "norm-3bdfa7aee95f8a58",
+          "modality": "prohibition",
+          "subject": "The operator",
+          "action": "disclose",
+          "conditions": [],
+          "exceptions": [
+            {
+              "name": "waived",
+              "negated": false
+            }
+          ],
+          "object": null,
+          "deadline": null,
+          "references": [],
+          "authority": {
+            "kind": "other",
+            "issuer": null,
+            "instrument": null,
+            "jurisdiction": null,
+            "authority_rank": null,
+            "enacted_on": null,
+            "effective_from": null,
+            "effective_to": null,
+            "version": null
+          },
+          "confidence": 0.72,
+          "assumptions": [],
+          "provenance": {
+            "source_id": "synthetic-mr",
+            "span": [
+              0,
+              45
+            ],
+            "quote": "The operator must not disclose unless waived.",
+            "document_hash": null,
+            "locator": null
+          },
+          "interpretation_label": "primary",
+          "canonical": "PROHIBITION[The operator:disclose] IF true UNLESS waived",
+          "semantic_hash": "58e060dfbaf62405e94de7ddc80bdbfcb44d3dd0c49911209065bb0eb0c13a54"
+        }
+      },
+      {
+        "case": "remove",
+        "language": "en",
+        "modality": "obligation",
+        "relation": "remove_condition",
+        "depth": 1,
+        "text": "the operator must notify.",
+        "expected": "strict_strengthening",
+        "actual": "strict_strengthening",
+        "outcome": "passed",
+        "normative_output_relation": "strictly_weaker",
+        "evidence": {
+          "schema": "vle-experiment-result/v1",
+          "kind": "amendment",
+          "status": "strict_strengthening",
+          "checks": {
+            "before_implies_after": {
+              "status": "counterexample",
+              "backend": "exhaustive",
+              "horizon": 1,
+              "atoms": [
+                "action:[\"the operator\",\"notify\",null]",
+                "fact:risk"
+              ],
+              "reason": "property_false",
+              "checked_traces": 3,
+              "counterexample": [
+                {
+                  "action:[\"the operator\",\"notify\",null]": true,
+                  "fact:risk": false
+                }
+              ],
+              "backend_version": null,
+              "semantics": "LTLf-complete-valuations-v1",
+              "observation_constraints": [],
+              "unknown_cells": 2
+            },
+            "after_implies_before": {
+              "status": "verified_bounded",
+              "backend": "exhaustive",
+              "horizon": 1,
+              "atoms": [
+                "action:[\"the operator\",\"notify\",null]",
+                "fact:risk"
+              ],
+              "reason": "exhaustive_within_declared_horizon",
+              "checked_traces": 4,
+              "counterexample": null,
+              "backend_version": null,
+              "semantics": "LTLf-complete-valuations-v1",
+              "observation_constraints": [],
+              "unknown_cells": 2
+            }
+          },
+          "removed_behavior": [
+            {
+              "action:[\"the operator\",\"notify\",null]": true,
+              "fact:risk": false
+            }
+          ],
+          "added_behavior": null,
+          "interpretation": "inclusion_of_satisfying_complete_traces_under_shared_evidence",
+          "request_sha256": "11b6764afd7f93710e5e07c16d0a267b0fb8dfd9210a42c4d56d4563bb3640c4",
+          "scope": {
+            "horizon": 1,
+            "backend": "exhaustive",
+            "timeout_ms_per_check": 5000,
+            "max_traces_per_check": 4096,
+            "observed_steps": 0,
+            "semantics": "LTLf-completions-at-exact-horizon-v1",
+            "assumptions": [],
+            "observations": null,
+            "unobserved_values": "all_consistent_boolean_completions"
+          },
+          "legal_certification": false
+        },
+        "provenance": {
+          "model_id": "deterministic-extractor/v1",
+          "prompt_sha256": "bf7de5f3df44de3db356633041ae0e66bd3e39bce0d19843acb2e3c8954f0793",
+          "seed": 0,
+          "params": {},
+          "timestamp": "2000-01-01T00:00:00+00:00"
+        },
+        "interpretation": {
+          "id": "formal-b0b6be12ffbbe2cb",
+          "source_norm_id": "norm-a81e63dbc66dfb5a",
+          "modality": "prohibition",
+          "subject": "the operator",
+          "action": "notify",
+          "conditions": [],
+          "exceptions": [],
+          "object": null,
+          "deadline": null,
+          "references": [],
+          "authority": {
+            "kind": "other",
+            "issuer": null,
+            "instrument": null,
+            "jurisdiction": null,
+            "authority_rank": null,
+            "enacted_on": null,
+            "effective_from": null,
+            "effective_to": null,
+            "version": null
+          },
+          "confidence": 0.72,
+          "assumptions": [],
+          "provenance": {
+            "source_id": "synthetic-mr",
+            "span": [
+              0,
+              25
+            ],
+            "quote": "the operator must notify.",
+            "document_hash": null,
+            "locator": null
+          },
+          "interpretation_label": "primary",
+          "canonical": "PROHIBITION[the operator:notify] IF true UNLESS false",
+          "semantic_hash": "57778d3deab326d2d6c54ea6db9ff5d3b89f7d39504f1a7d2a25f69ec7e85751"
+        }
+      },
+      {
+        "case": "inverse",
+        "language": "en",
+        "modality": "obligation",
+        "relation": "invert_modality",
+        "depth": 1,
+        "text": "The operator must not notify.",
+        "expected": "incomparable",
+        "actual": "equivalent_bounded",
+        "outcome": "violated",
+        "normative_output_relation": "equivalent",
+        "evidence": {
+          "schema": "vle-experiment-result/v1",
+          "kind": "amendment",
+          "status": "equivalent_bounded",
+          "checks": {
+            "before_implies_after": {
+              "status": "verified_bounded",
+              "backend": "exhaustive",
+              "horizon": 1,
+              "atoms": [
+                "action:[\"The operator\",\"notify\",null]"
+              ],
+              "reason": "exhaustive_within_declared_horizon",
+              "checked_traces": 2,
+              "counterexample": null,
+              "backend_version": null,
+              "semantics": "LTLf-complete-valuations-v1",
+              "observation_constraints": [],
+              "unknown_cells": 1
+            },
+            "after_implies_before": {
+              "status": "verified_bounded",
+              "backend": "exhaustive",
+              "horizon": 1,
+              "atoms": [
+                "action:[\"The operator\",\"notify\",null]"
+              ],
+              "reason": "exhaustive_within_declared_horizon",
+              "checked_traces": 2,
+              "counterexample": null,
+              "backend_version": null,
+              "semantics": "LTLf-complete-valuations-v1",
+              "observation_constraints": [],
+              "unknown_cells": 1
+            }
+          },
+          "removed_behavior": null,
+          "added_behavior": null,
+          "interpretation": "inclusion_of_satisfying_complete_traces_under_shared_evidence",
+          "request_sha256": "9e7ef294bb200df67c55fca386dd6ec6e9f2877f33b04f98f4e874f36487e0a1",
+          "scope": {
+            "horizon": 1,
+            "backend": "exhaustive",
+            "timeout_ms_per_check": 5000,
+            "max_traces_per_check": 4096,
+            "observed_steps": 0,
+            "semantics": "LTLf-completions-at-exact-horizon-v1",
+            "assumptions": [],
+            "observations": null,
+            "unobserved_values": "all_consistent_boolean_completions"
+          },
+          "legal_certification": false
+        },
+        "provenance": {
+          "model_id": "deterministic-extractor/v1",
+          "prompt_sha256": "32fcc17116388a534113df823e16d758579d48597e94826f15969a520b294060",
+          "seed": 0,
+          "params": {},
+          "timestamp": "2000-01-01T00:00:00+00:00"
+        },
+        "interpretation": {
+          "id": "formal-3952ff39ceab366a",
+          "source_norm_id": "norm-a57820fe5d3fa653",
+          "modality": "prohibition",
+          "subject": "The operator",
+          "action": "notify",
+          "conditions": [],
+          "exceptions": [],
+          "object": null,
+          "deadline": null,
+          "references": [],
+          "authority": {
+            "kind": "other",
+            "issuer": null,
+            "instrument": null,
+            "jurisdiction": null,
+            "authority_rank": null,
+            "enacted_on": null,
+            "effective_from": null,
+            "effective_to": null,
+            "version": null
+          },
+          "confidence": 0.72,
+          "assumptions": [],
+          "provenance": {
+            "source_id": "synthetic-mr",
+            "span": [
+              0,
+              29
+            ],
+            "quote": "The operator must not notify.",
+            "document_hash": null,
+            "locator": null
+          },
+          "interpretation_label": "primary",
+          "canonical": "PROHIBITION[The operator:notify] IF true UNLESS false",
+          "semantic_hash": "f506d26a60d88017b77f36c3f2cba8334ea7bb586c5c082e4031e4beeb158e6c"
+        }
+      }
+    ],
+    "robustness_radius": [
+      {
+        "case": "voice",
+        "minimum_observed_failure_depth": 1,
+        "tested_depth": 3,
+        "right_censored": false,
+        "infinite_robustness_claimed": false
+      },
+      {
+        "case": "clause",
+        "minimum_observed_failure_depth": 1,
+        "tested_depth": 3,
+        "right_censored": false,
+        "infinite_robustness_claimed": false
+      },
+      {
+        "case": "exception",
+        "minimum_observed_failure_depth": null,
+        "tested_depth": 3,
+        "right_censored": true,
+        "infinite_robustness_claimed": false
+      },
+      {
+        "case": "position",
+        "minimum_observed_failure_depth": null,
+        "tested_depth": 3,
+        "right_censored": true,
+        "infinite_robustness_claimed": false
+      },
+      {
+        "case": "modality-en",
+        "minimum_observed_failure_depth": null,
+        "tested_depth": 3,
+        "right_censored": true,
+        "infinite_robustness_claimed": false
+      },
+      {
+        "case": "modality-fr",
+        "minimum_observed_failure_depth": null,
+        "tested_depth": 3,
+        "right_censored": true,
+        "infinite_robustness_claimed": false
+      },
+      {
+        "case": "double",
+        "minimum_observed_failure_depth": 1,
+        "tested_depth": 3,
+        "right_censored": false,
+        "infinite_robustness_claimed": false
+      },
+      {
+        "case": "list",
+        "minimum_observed_failure_depth": null,
+        "tested_depth": 3,
+        "right_censored": true,
+        "infinite_robustness_claimed": false
+      },
+      {
+        "case": "parallel",
+        "minimum_observed_failure_depth": 1,
+        "tested_depth": 3,
+        "right_censored": false,
+        "infinite_robustness_claimed": false
+      },
+      {
+        "case": "weaken",
+        "minimum_observed_failure_depth": null,
+        "tested_depth": 3,
+        "right_censored": true,
+        "infinite_robustness_claimed": false
+      },
+      {
+        "case": "except-o",
+        "minimum_observed_failure_depth": null,
+        "tested_depth": 3,
+        "right_censored": true,
+        "infinite_robustness_claimed": false
+      },
+      {
+        "case": "except-f",
+        "minimum_observed_failure_depth": null,
+        "tested_depth": 3,
+        "right_censored": true,
+        "infinite_robustness_claimed": false
+      },
+      {
+        "case": "remove",
+        "minimum_observed_failure_depth": null,
+        "tested_depth": 3,
+        "right_censored": true,
+        "infinite_robustness_claimed": false
+      },
+      {
+        "case": "inverse",
+        "minimum_observed_failure_depth": null,
+        "tested_depth": 3,
+        "right_censored": true,
+        "infinite_robustness_claimed": false
+      }
+    ],
+    "base_formalizations": [
+      {
+        "case": "voice",
+        "interpretation": {
+          "id": "formal-aac13b3afae8d22c",
+          "source_norm_id": "norm-5bc884a2b250dc49",
+          "modality": "obligation",
+          "subject": "The operator",
+          "action": "file the report",
+          "conditions": [],
+          "exceptions": [],
+          "object": null,
+          "deadline": null,
+          "references": [],
+          "authority": {
+            "kind": "other",
+            "issuer": null,
+            "instrument": null,
+            "jurisdiction": null,
+            "authority_rank": null,
+            "enacted_on": null,
+            "effective_from": null,
+            "effective_to": null,
+            "version": null
+          },
+          "confidence": 0.72,
+          "assumptions": [],
+          "provenance": {
+            "source_id": "synthetic-mr",
+            "span": [
+              0,
+              34
+            ],
+            "quote": "The operator must file the report.",
+            "document_hash": null,
+            "locator": null
+          },
+          "interpretation_label": "primary",
+          "canonical": "OBLIGATION[The operator:file the report] IF true UNLESS false",
+          "semantic_hash": "4c2f299a07ddf17cf9d036f0fc46284ff096b2998d77fb9ec1f9a55ce1d7a139"
+        },
+        "provenance": {
+          "model_id": "deterministic-extractor/v1",
+          "prompt_sha256": "1f267c006d46be7fbf2123c6b209f3d69cef4bdf6b61d61884b579e046c6da30",
+          "seed": 0,
+          "params": {},
+          "timestamp": "2000-01-01T00:00:00+00:00"
+        },
+        "review_status": "unreviewed"
+      },
+      {
+        "case": "clause",
+        "interpretation": {
+          "id": "formal-c45f4342e565fe93",
+          "source_norm_id": "norm-30963c514ce0bc04",
+          "modality": "prohibition",
+          "subject": "the operator",
+          "action": "notify",
+          "conditions": [
+            {
+              "name": "risk",
+              "negated": false
+            }
+          ],
+          "exceptions": [],
+          "object": null,
+          "deadline": null,
+          "references": [],
+          "authority": {
+            "kind": "other",
+            "issuer": null,
+            "instrument": null,
+            "jurisdiction": null,
+            "authority_rank": null,
+            "enacted_on": null,
+            "effective_from": null,
+            "effective_to": null,
+            "version": null
+          },
+          "confidence": 0.72,
+          "assumptions": [],
+          "provenance": {
+            "source_id": "synthetic-mr",
+            "span": [
+              0,
+              34
+            ],
+            "quote": "If risk, the operator must notify.",
+            "document_hash": null,
+            "locator": null
+          },
+          "interpretation_label": "primary",
+          "canonical": "PROHIBITION[the operator:notify] IF risk UNLESS false",
+          "semantic_hash": "24817abfa4cfef9d544fef20420186ba74f807a24bcd712c678aca3dc86b796b"
+        },
+        "provenance": {
+          "model_id": "deterministic-extractor/v1",
+          "prompt_sha256": "a31471c58da382de6f6874ee6ad9493476aadff0dc263dae74f03eddcd43290e",
+          "seed": 0,
+          "params": {},
+          "timestamp": "2000-01-01T00:00:00+00:00"
+        },
+        "review_status": "unreviewed"
+      },
+      {
+        "case": "exception",
+        "interpretation": {
+          "id": "formal-835ead35c1aecbe6",
+          "source_norm_id": "norm-68fba33d99076293",
+          "modality": "prohibition",
+          "subject": "The operator",
+          "action": "notify",
+          "conditions": [],
+          "exceptions": [
+            {
+              "name": "waived",
+              "negated": false
+            }
+          ],
+          "object": null,
+          "deadline": null,
+          "references": [],
+          "authority": {
+            "kind": "other",
+            "issuer": null,
+            "instrument": null,
+            "jurisdiction": null,
+            "authority_rank": null,
+            "enacted_on": null,
+            "effective_from": null,
+            "effective_to": null,
+            "version": null
+          },
+          "confidence": 0.72,
+          "assumptions": [],
+          "provenance": {
+            "source_id": "synthetic-mr",
+            "span": [
+              0,
+              39
+            ],
+            "quote": "The operator must notify unless waived.",
+            "document_hash": null,
+            "locator": null
+          },
+          "interpretation_label": "primary",
+          "canonical": "PROHIBITION[The operator:notify] IF true UNLESS waived",
+          "semantic_hash": "011a14262ef7c502d5c46f14bc1d6ef0494fcbb34fe9e53d8c0a6d6a736fbd92"
+        },
+        "provenance": {
+          "model_id": "deterministic-extractor/v1",
+          "prompt_sha256": "2e19638cb5e51f149a3320f6ba3212a3b8e4b95c0eab4afe156b00fb14fedf25",
+          "seed": 0,
+          "params": {},
+          "timestamp": "2000-01-01T00:00:00+00:00"
+        },
+        "review_status": "unreviewed"
+      },
+      {
+        "case": "position",
+        "interpretation": {
+          "id": "formal-835ead35c1aecbe6",
+          "source_norm_id": "norm-68fba33d99076293",
+          "modality": "prohibition",
+          "subject": "The operator",
+          "action": "notify",
+          "conditions": [],
+          "exceptions": [
+            {
+              "name": "waived",
+              "negated": false
+            }
+          ],
+          "object": null,
+          "deadline": null,
+          "references": [],
+          "authority": {
+            "kind": "other",
+            "issuer": null,
+            "instrument": null,
+            "jurisdiction": null,
+            "authority_rank": null,
+            "enacted_on": null,
+            "effective_from": null,
+            "effective_to": null,
+            "version": null
+          },
+          "confidence": 0.72,
+          "assumptions": [],
+          "provenance": {
+            "source_id": "synthetic-mr",
+            "span": [
+              0,
+              39
+            ],
+            "quote": "The operator must notify unless waived.",
+            "document_hash": null,
+            "locator": null
+          },
+          "interpretation_label": "primary",
+          "canonical": "PROHIBITION[The operator:notify] IF true UNLESS waived",
+          "semantic_hash": "011a14262ef7c502d5c46f14bc1d6ef0494fcbb34fe9e53d8c0a6d6a736fbd92"
+        },
+        "provenance": {
+          "model_id": "deterministic-extractor/v1",
+          "prompt_sha256": "2e19638cb5e51f149a3320f6ba3212a3b8e4b95c0eab4afe156b00fb14fedf25",
+          "seed": 0,
+          "params": {},
+          "timestamp": "2000-01-01T00:00:00+00:00"
+        },
+        "review_status": "unreviewed"
+      },
+      {
+        "case": "modality-en",
+        "interpretation": {
+          "id": "formal-73c0b402ad3f4d62",
+          "source_norm_id": "norm-fb02cd4a984aa598",
+          "modality": "prohibition",
+          "subject": "The operator",
+          "action": "notify",
+          "conditions": [],
+          "exceptions": [],
+          "object": null,
+          "deadline": null,
+          "references": [],
+          "authority": {
+            "kind": "other",
+            "issuer": null,
+            "instrument": null,
+            "jurisdiction": null,
+            "authority_rank": null,
+            "enacted_on": null,
+            "effective_from": null,
+            "effective_to": null,
+            "version": null
+          },
+          "confidence": 0.72,
+          "assumptions": [],
+          "provenance": {
+            "source_id": "synthetic-mr",
+            "span": [
+              0,
+              25
+            ],
+            "quote": "The operator must notify.",
+            "document_hash": null,
+            "locator": null
+          },
+          "interpretation_label": "primary",
+          "canonical": "PROHIBITION[The operator:notify] IF true UNLESS false",
+          "semantic_hash": "f506d26a60d88017b77f36c3f2cba8334ea7bb586c5c082e4031e4beeb158e6c"
+        },
+        "provenance": {
+          "model_id": "deterministic-extractor/v1",
+          "prompt_sha256": "04f5baa5ef108bea0d57e85ae8c964a418d7004cb9167ed73f0e1134c20986bd",
+          "seed": 0,
+          "params": {},
+          "timestamp": "2000-01-01T00:00:00+00:00"
+        },
+        "review_status": "unreviewed"
+      },
+      {
+        "case": "modality-fr",
+        "interpretation": {
+          "id": "formal-ec6c359b02275297",
+          "source_norm_id": "norm-bd0815d4c3f361f6",
+          "modality": "obligation",
+          "subject": "L\u2019op\u00e9rateur",
+          "action": "notifier",
+          "conditions": [],
+          "exceptions": [],
+          "object": null,
+          "deadline": null,
+          "references": [],
+          "authority": {
+            "kind": "other",
+            "issuer": null,
+            "instrument": null,
+            "jurisdiction": null,
+            "authority_rank": null,
+            "enacted_on": null,
+            "effective_from": null,
+            "effective_to": null,
+            "version": null
+          },
+          "confidence": 0.72,
+          "assumptions": [],
+          "provenance": {
+            "source_id": "synthetic-mr",
+            "span": [
+              0,
+              26
+            ],
+            "quote": "L\u2019op\u00e9rateur doit notifier.",
+            "document_hash": null,
+            "locator": null
+          },
+          "interpretation_label": "primary",
+          "canonical": "OBLIGATION[L\u2019op\u00e9rateur:notifier] IF true UNLESS false",
+          "semantic_hash": "96285fc5b2bfa0e9cfaf4ef0e2635fc1cf3d2bc3dd19e6e332964e4d73132eac"
+        },
+        "provenance": {
+          "model_id": "deterministic-extractor/v1",
+          "prompt_sha256": "944e62c895e31042f7919eb0dc2cbb7cb15a20225564d088859c992d0dc4fc60",
+          "seed": 0,
+          "params": {},
+          "timestamp": "2000-01-01T00:00:00+00:00"
+        },
+        "review_status": "unreviewed"
+      },
+      {
+        "case": "double",
+        "interpretation": {
+          "id": "formal-73c0b402ad3f4d62",
+          "source_norm_id": "norm-fb02cd4a984aa598",
+          "modality": "prohibition",
+          "subject": "The operator",
+          "action": "notify",
+          "conditions": [],
+          "exceptions": [],
+          "object": null,
+          "deadline": null,
+          "references": [],
+          "authority": {
+            "kind": "other",
+            "issuer": null,
+            "instrument": null,
+            "jurisdiction": null,
+            "authority_rank": null,
+            "enacted_on": null,
+            "effective_from": null,
+            "effective_to": null,
+            "version": null
+          },
+          "confidence": 0.72,
+          "assumptions": [],
+          "provenance": {
+            "source_id": "synthetic-mr",
+            "span": [
+              0,
+              25
+            ],
+            "quote": "The operator must notify.",
+            "document_hash": null,
+            "locator": null
+          },
+          "interpretation_label": "primary",
+          "canonical": "PROHIBITION[The operator:notify] IF true UNLESS false",
+          "semantic_hash": "f506d26a60d88017b77f36c3f2cba8334ea7bb586c5c082e4031e4beeb158e6c"
+        },
+        "provenance": {
+          "model_id": "deterministic-extractor/v1",
+          "prompt_sha256": "04f5baa5ef108bea0d57e85ae8c964a418d7004cb9167ed73f0e1134c20986bd",
+          "seed": 0,
+          "params": {},
+          "timestamp": "2000-01-01T00:00:00+00:00"
+        },
+        "review_status": "unreviewed"
+      },
+      {
+        "case": "list",
+        "interpretation": {
+          "id": "formal-ed960a7e7df4e69f",
+          "source_norm_id": "norm-d8ecc0d8a5b0f60d",
+          "modality": "prohibition",
+          "subject": "the operator",
+          "action": "notify",
+          "conditions": [
+            {
+              "name": "risk and consent",
+              "negated": false
+            }
+          ],
+          "exceptions": [],
+          "object": null,
+          "deadline": null,
+          "references": [],
+          "authority": {
+            "kind": "other",
+            "issuer": null,
+            "instrument": null,
+            "jurisdiction": null,
+            "authority_rank": null,
+            "enacted_on": null,
+            "effective_from": null,
+            "effective_to": null,
+            "version": null
+          },
+          "confidence": 0.72,
+          "assumptions": [],
+          "provenance": {
+            "source_id": "synthetic-mr",
+            "span": [
+              0,
+              46
+            ],
+            "quote": "If risk and consent, the operator must notify.",
+            "document_hash": null,
+            "locator": null
+          },
+          "interpretation_label": "primary",
+          "canonical": "PROHIBITION[the operator:notify] IF risk and consent UNLESS false",
+          "semantic_hash": "66e3bedb0437efaee7d359e193065db4a3cb88b22ce3c12ebd15f9f72264e1e0"
+        },
+        "provenance": {
+          "model_id": "deterministic-extractor/v1",
+          "prompt_sha256": "4d4ba72241c1ac8f0565b092d292387d0b74a3ceea2cfcbadc5caf2d047ec794",
+          "seed": 0,
+          "params": {},
+          "timestamp": "2000-01-01T00:00:00+00:00"
+        },
+        "review_status": "unreviewed"
+      },
+      {
+        "case": "parallel",
+        "interpretation": {
+          "id": "formal-73c0b402ad3f4d62",
+          "source_norm_id": "norm-fb02cd4a984aa598",
+          "modality": "prohibition",
+          "subject": "The operator",
+          "action": "notify",
+          "conditions": [],
+          "exceptions": [],
+          "object": null,
+          "deadline": null,
+          "references": [],
+          "authority": {
+            "kind": "other",
+            "issuer": null,
+            "instrument": null,
+            "jurisdiction": null,
+            "authority_rank": null,
+            "enacted_on": null,
+            "effective_from": null,
+            "effective_to": null,
+            "version": null
+          },
+          "confidence": 0.72,
+          "assumptions": [],
+          "provenance": {
+            "source_id": "synthetic-mr",
+            "span": [
+              0,
+              25
+            ],
+            "quote": "The operator must notify.",
+            "document_hash": null,
+            "locator": null
+          },
+          "interpretation_label": "primary",
+          "canonical": "PROHIBITION[The operator:notify] IF true UNLESS false",
+          "semantic_hash": "f506d26a60d88017b77f36c3f2cba8334ea7bb586c5c082e4031e4beeb158e6c"
+        },
+        "provenance": {
+          "model_id": "deterministic-extractor/v1",
+          "prompt_sha256": "04f5baa5ef108bea0d57e85ae8c964a418d7004cb9167ed73f0e1134c20986bd",
+          "seed": 0,
+          "params": {},
+          "timestamp": "2000-01-01T00:00:00+00:00"
+        },
+        "review_status": "unreviewed"
+      },
+      {
+        "case": "weaken",
+        "interpretation": {
+          "id": "formal-73c0b402ad3f4d62",
+          "source_norm_id": "norm-fb02cd4a984aa598",
+          "modality": "prohibition",
+          "subject": "The operator",
+          "action": "notify",
+          "conditions": [],
+          "exceptions": [],
+          "object": null,
+          "deadline": null,
+          "references": [],
+          "authority": {
+            "kind": "other",
+            "issuer": null,
+            "instrument": null,
+            "jurisdiction": null,
+            "authority_rank": null,
+            "enacted_on": null,
+            "effective_from": null,
+            "effective_to": null,
+            "version": null
+          },
+          "confidence": 0.72,
+          "assumptions": [],
+          "provenance": {
+            "source_id": "synthetic-mr",
+            "span": [
+              0,
+              25
+            ],
+            "quote": "The operator must notify.",
+            "document_hash": null,
+            "locator": null
+          },
+          "interpretation_label": "primary",
+          "canonical": "PROHIBITION[The operator:notify] IF true UNLESS false",
+          "semantic_hash": "f506d26a60d88017b77f36c3f2cba8334ea7bb586c5c082e4031e4beeb158e6c"
+        },
+        "provenance": {
+          "model_id": "deterministic-extractor/v1",
+          "prompt_sha256": "04f5baa5ef108bea0d57e85ae8c964a418d7004cb9167ed73f0e1134c20986bd",
+          "seed": 0,
+          "params": {},
+          "timestamp": "2000-01-01T00:00:00+00:00"
+        },
+        "review_status": "unreviewed"
+      },
+      {
+        "case": "except-o",
+        "interpretation": {
+          "id": "formal-73c0b402ad3f4d62",
+          "source_norm_id": "norm-fb02cd4a984aa598",
+          "modality": "prohibition",
+          "subject": "The operator",
+          "action": "notify",
+          "conditions": [],
+          "exceptions": [],
+          "object": null,
+          "deadline": null,
+          "references": [],
+          "authority": {
+            "kind": "other",
+            "issuer": null,
+            "instrument": null,
+            "jurisdiction": null,
+            "authority_rank": null,
+            "enacted_on": null,
+            "effective_from": null,
+            "effective_to": null,
+            "version": null
+          },
+          "confidence": 0.72,
+          "assumptions": [],
+          "provenance": {
+            "source_id": "synthetic-mr",
+            "span": [
+              0,
+              25
+            ],
+            "quote": "The operator must notify.",
+            "document_hash": null,
+            "locator": null
+          },
+          "interpretation_label": "primary",
+          "canonical": "PROHIBITION[The operator:notify] IF true UNLESS false",
+          "semantic_hash": "f506d26a60d88017b77f36c3f2cba8334ea7bb586c5c082e4031e4beeb158e6c"
+        },
+        "provenance": {
+          "model_id": "deterministic-extractor/v1",
+          "prompt_sha256": "04f5baa5ef108bea0d57e85ae8c964a418d7004cb9167ed73f0e1134c20986bd",
+          "seed": 0,
+          "params": {},
+          "timestamp": "2000-01-01T00:00:00+00:00"
+        },
+        "review_status": "unreviewed"
+      },
+      {
+        "case": "except-f",
+        "interpretation": {
+          "id": "formal-0305d02b060dd34b",
+          "source_norm_id": "norm-6f160c745b0b2a03",
+          "modality": "prohibition",
+          "subject": "The operator",
+          "action": "disclose",
+          "conditions": [],
+          "exceptions": [],
+          "object": null,
+          "deadline": null,
+          "references": [],
+          "authority": {
+            "kind": "other",
+            "issuer": null,
+            "instrument": null,
+            "jurisdiction": null,
+            "authority_rank": null,
+            "enacted_on": null,
+            "effective_from": null,
+            "effective_to": null,
+            "version": null
+          },
+          "confidence": 0.72,
+          "assumptions": [],
+          "provenance": {
+            "source_id": "synthetic-mr",
+            "span": [
+              0,
+              31
+            ],
+            "quote": "The operator must not disclose.",
+            "document_hash": null,
+            "locator": null
+          },
+          "interpretation_label": "primary",
+          "canonical": "PROHIBITION[The operator:disclose] IF true UNLESS false",
+          "semantic_hash": "55e2098f1785bed67771f39b0d5fac3946ab4ff1c23d6c374196bb976423e2a9"
+        },
+        "provenance": {
+          "model_id": "deterministic-extractor/v1",
+          "prompt_sha256": "4d9bbcc44930ad68aace9bc0b4ecd4f1ebaa1f044be43c0a3980b9dc93d8022a",
+          "seed": 0,
+          "params": {},
+          "timestamp": "2000-01-01T00:00:00+00:00"
+        },
+        "review_status": "unreviewed"
+      },
+      {
+        "case": "remove",
+        "interpretation": {
+          "id": "formal-c45f4342e565fe93",
+          "source_norm_id": "norm-30963c514ce0bc04",
+          "modality": "prohibition",
+          "subject": "the operator",
+          "action": "notify",
+          "conditions": [
+            {
+              "name": "risk",
+              "negated": false
+            }
+          ],
+          "exceptions": [],
+          "object": null,
+          "deadline": null,
+          "references": [],
+          "authority": {
+            "kind": "other",
+            "issuer": null,
+            "instrument": null,
+            "jurisdiction": null,
+            "authority_rank": null,
+            "enacted_on": null,
+            "effective_from": null,
+            "effective_to": null,
+            "version": null
+          },
+          "confidence": 0.72,
+          "assumptions": [],
+          "provenance": {
+            "source_id": "synthetic-mr",
+            "span": [
+              0,
+              34
+            ],
+            "quote": "If risk, the operator must notify.",
+            "document_hash": null,
+            "locator": null
+          },
+          "interpretation_label": "primary",
+          "canonical": "PROHIBITION[the operator:notify] IF risk UNLESS false",
+          "semantic_hash": "24817abfa4cfef9d544fef20420186ba74f807a24bcd712c678aca3dc86b796b"
+        },
+        "provenance": {
+          "model_id": "deterministic-extractor/v1",
+          "prompt_sha256": "a31471c58da382de6f6874ee6ad9493476aadff0dc263dae74f03eddcd43290e",
+          "seed": 0,
+          "params": {},
+          "timestamp": "2000-01-01T00:00:00+00:00"
+        },
+        "review_status": "unreviewed"
+      },
+      {
+        "case": "inverse",
+        "interpretation": {
+          "id": "formal-73c0b402ad3f4d62",
+          "source_norm_id": "norm-fb02cd4a984aa598",
+          "modality": "prohibition",
+          "subject": "The operator",
+          "action": "notify",
+          "conditions": [],
+          "exceptions": [],
+          "object": null,
+          "deadline": null,
+          "references": [],
+          "authority": {
+            "kind": "other",
+            "issuer": null,
+            "instrument": null,
+            "jurisdiction": null,
+            "authority_rank": null,
+            "enacted_on": null,
+            "effective_from": null,
+            "effective_to": null,
+            "version": null
+          },
+          "confidence": 0.72,
+          "assumptions": [],
+          "provenance": {
+            "source_id": "synthetic-mr",
+            "span": [
+              0,
+              25
+            ],
+            "quote": "The operator must notify.",
+            "document_hash": null,
+            "locator": null
+          },
+          "interpretation_label": "primary",
+          "canonical": "PROHIBITION[The operator:notify] IF true UNLESS false",
+          "semantic_hash": "f506d26a60d88017b77f36c3f2cba8334ea7bb586c5c082e4031e4beeb158e6c"
+        },
+        "provenance": {
+          "model_id": "deterministic-extractor/v1",
+          "prompt_sha256": "04f5baa5ef108bea0d57e85ae8c964a418d7004cb9167ed73f0e1134c20986bd",
+          "seed": 0,
+          "params": {},
+          "timestamp": "2000-01-01T00:00:00+00:00"
+        },
+        "review_status": "unreviewed"
+      }
+    ],
+    "metrics": {
+      "passed": 8,
+      "violated": 6,
+      "unknown": 2,
+      "inapplicable": 0,
+      "complete_comparisons": 14,
+      "MVR": 0.42857142857142855
+    },
+    "by_relation": {
+      "add_exception": {
+        "passed": 2,
+        "violated": 0,
+        "unknown": 0,
+        "inapplicable": 0,
+        "complete_comparisons": 2,
+        "MVR": 0.0
+      },
+      "condition_order": {
+        "passed": 0,
+        "violated": 1,
+        "unknown": 0,
+        "inapplicable": 0,
+        "complete_comparisons": 1,
+        "MVR": 1.0
+      },
+      "double_negation": {
+        "passed": 0,
+        "violated": 1,
+        "unknown": 0,
+        "inapplicable": 0,
+        "complete_comparisons": 1,
+        "MVR": 1.0
+      },
+      "exception_position": {
+        "passed": 0,
+        "violated": 0,
+        "unknown": 1,
+        "inapplicable": 0,
+        "complete_comparisons": 0,
+        "MVR": null
+      },
+      "exception_synonym": {
+        "passed": 2,
+        "violated": 0,
+        "unknown": 0,
+        "inapplicable": 0,
+        "complete_comparisons": 2,
+        "MVR": 0.0
+      },
+      "invert_modality": {
+        "passed": 0,
+        "violated": 1,
+        "unknown": 0,
+        "inapplicable": 0,
+        "complete_comparisons": 1,
+        "MVR": 1.0
+      },
+      "list_order": {
+        "passed": 1,
+        "violated": 0,
+        "unknown": 1,
+        "inapplicable": 0,
+        "complete_comparisons": 1,
+        "MVR": 0.0
+      },
+      "modality_synonym": {
+        "passed": 2,
+        "violated": 0,
+        "unknown": 0,
+        "inapplicable": 0,
+        "complete_comparisons": 2,
+        "MVR": 0.0
+      },
+      "parallel": {
+        "passed": 0,
+        "violated": 1,
+        "unknown": 0,
+        "inapplicable": 0,
+        "complete_comparisons": 1,
+        "MVR": 1.0
+      },
+      "remove_condition": {
+        "passed": 1,
+        "violated": 0,
+        "unknown": 0,
+        "inapplicable": 0,
+        "complete_comparisons": 1,
+        "MVR": 0.0
+      },
+      "voice": {
+        "passed": 0,
+        "violated": 1,
+        "unknown": 0,
+        "inapplicable": 0,
+        "complete_comparisons": 1,
+        "MVR": 1.0
+      },
+      "weaken_modality": {
+        "passed": 0,
+        "violated": 1,
+        "unknown": 0,
+        "inapplicable": 0,
+        "complete_comparisons": 1,
+        "MVR": 1.0
+      }
+    },
+    "by_language": {
+      "en": {
+        "passed": 7,
+        "violated": 6,
+        "unknown": 2,
+        "inapplicable": 0,
+        "complete_comparisons": 13,
+        "MVR": 0.46153846153846156
+      },
+      "fr": {
+        "passed": 1,
+        "violated": 0,
+        "unknown": 0,
+        "inapplicable": 0,
+        "complete_comparisons": 1,
+        "MVR": 0.0
+      }
+    },
+    "by_modality": {
+      "obligation": {
+        "passed": 7,
+        "violated": 6,
+        "unknown": 2,
+        "inapplicable": 0,
+        "complete_comparisons": 13,
+        "MVR": 0.46153846153846156
+      },
+      "prohibition": {
+        "passed": 1,
+        "violated": 0,
+        "unknown": 0,
+        "inapplicable": 0,
+        "complete_comparisons": 1,
+        "MVR": 0.0
+      }
+    },
+    "bounds": {
+      "max_states": 65536,
+      "timeout_ms": 5000,
+      "checked_states": 100,
+      "max_depth": 3,
+      "max_cases": 64
+    },
+    "model_calls": 0,
+    "H2": "descriptive_only_ordering_unestablished_when_comparisons_inconclusive",
+    "request_sha256": "c0fd0d6ebfd2883d7763985e82d3ed27f99231ba54dd6f075b6cc611b7f8d19e",
+    "review_status": "unreviewed",
+    "decision_authorized": false,
+    "legal_certification": false
+  },
+  "fault_study": {
+    "schema": "vle-metamorphic-report/v1",
+    "status": "reported",
+    "reason": "complete_in_declared_scope",
+    "provider": "fake",
+    "rows": [
+      {
+        "case": "weaken",
+        "language": "en",
+        "modality": "obligation",
+        "relation": "weaken_modality",
+        "depth": 1,
+        "text": "The operator may notify.",
+        "expected": "strict_weakening",
+        "actual": "equivalent_bounded",
+        "outcome": "violated",
+        "normative_output_relation": "equivalent",
+        "evidence": {
+          "schema": "vle-experiment-result/v1",
+          "kind": "amendment",
+          "status": "equivalent_bounded",
+          "checks": {
+            "before_implies_after": {
+              "status": "verified_bounded",
+              "backend": "exhaustive",
+              "horizon": 1,
+              "atoms": [
+                "action:[\"The operator\",\"notify\",null]"
+              ],
+              "reason": "exhaustive_within_declared_horizon",
+              "checked_traces": 2,
+              "counterexample": null,
+              "backend_version": null,
+              "semantics": "LTLf-complete-valuations-v1",
+              "observation_constraints": [],
+              "unknown_cells": 1
+            },
+            "after_implies_before": {
+              "status": "verified_bounded",
+              "backend": "exhaustive",
+              "horizon": 1,
+              "atoms": [
+                "action:[\"The operator\",\"notify\",null]"
+              ],
+              "reason": "exhaustive_within_declared_horizon",
+              "checked_traces": 2,
+              "counterexample": null,
+              "backend_version": null,
+              "semantics": "LTLf-complete-valuations-v1",
+              "observation_constraints": [],
+              "unknown_cells": 1
+            }
+          },
+          "removed_behavior": null,
+          "added_behavior": null,
+          "interpretation": "inclusion_of_satisfying_complete_traces_under_shared_evidence",
+          "request_sha256": "9e7ef294bb200df67c55fca386dd6ec6e9f2877f33b04f98f4e874f36487e0a1",
+          "scope": {
+            "horizon": 1,
+            "backend": "exhaustive",
+            "timeout_ms_per_check": 5000,
+            "max_traces_per_check": 4096,
+            "observed_steps": 0,
+            "semantics": "LTLf-completions-at-exact-horizon-v1",
+            "assumptions": [],
+            "observations": null,
+            "unobserved_values": "all_consistent_boolean_completions"
+          },
+          "legal_certification": false
+        },
+        "provenance": {
+          "model_id": "deterministic-fake/v1",
+          "prompt_sha256": "3e82c6e01d0a3db8e0fed5009e70f1657a38edc8c2ead2e0d76ed0351ac3db34",
+          "seed": 0,
+          "params": {
+            "temperature": 0
+          },
+          "timestamp": "2000-01-01T00:00:00+00:00"
+        },
+        "interpretation": {
+          "id": "formal-73c0b402ad3f4d62",
+          "source_norm_id": "norm-fb02cd4a984aa598",
+          "modality": "prohibition",
+          "subject": "The operator",
+          "action": "notify",
+          "conditions": [],
+          "exceptions": [],
+          "object": null,
+          "deadline": null,
+          "references": [],
+          "authority": {
+            "kind": "other",
+            "issuer": null,
+            "instrument": null,
+            "jurisdiction": null,
+            "authority_rank": null,
+            "enacted_on": null,
+            "effective_from": null,
+            "effective_to": null,
+            "version": null
+          },
+          "confidence": 0.72,
+          "assumptions": [],
+          "provenance": {
+            "source_id": "synthetic-mr",
+            "span": [
+              0,
+              25
+            ],
+            "quote": "The operator must notify.",
+            "document_hash": null,
+            "locator": null
+          },
+          "interpretation_label": "primary",
+          "canonical": "PROHIBITION[The operator:notify] IF true UNLESS false",
+          "semantic_hash": "f506d26a60d88017b77f36c3f2cba8334ea7bb586c5c082e4031e4beeb158e6c"
+        }
+      },
+      {
+        "case": "except-o",
+        "language": "en",
+        "modality": "obligation",
+        "relation": "add_exception",
+        "depth": 1,
+        "text": "The operator must notify unless waived.",
+        "expected": "strict_weakening",
+        "actual": "equivalent_bounded",
+        "outcome": "violated",
+        "normative_output_relation": "equivalent",
+        "evidence": {
+          "schema": "vle-experiment-result/v1",
+          "kind": "amendment",
+          "status": "equivalent_bounded",
+          "checks": {
+            "before_implies_after": {
+              "status": "verified_bounded",
+              "backend": "exhaustive",
+              "horizon": 1,
+              "atoms": [
+                "action:[\"The operator\",\"notify\",null]"
+              ],
+              "reason": "exhaustive_within_declared_horizon",
+              "checked_traces": 2,
+              "counterexample": null,
+              "backend_version": null,
+              "semantics": "LTLf-complete-valuations-v1",
+              "observation_constraints": [],
+              "unknown_cells": 1
+            },
+            "after_implies_before": {
+              "status": "verified_bounded",
+              "backend": "exhaustive",
+              "horizon": 1,
+              "atoms": [
+                "action:[\"The operator\",\"notify\",null]"
+              ],
+              "reason": "exhaustive_within_declared_horizon",
+              "checked_traces": 2,
+              "counterexample": null,
+              "backend_version": null,
+              "semantics": "LTLf-complete-valuations-v1",
+              "observation_constraints": [],
+              "unknown_cells": 1
+            }
+          },
+          "removed_behavior": null,
+          "added_behavior": null,
+          "interpretation": "inclusion_of_satisfying_complete_traces_under_shared_evidence",
+          "request_sha256": "9e7ef294bb200df67c55fca386dd6ec6e9f2877f33b04f98f4e874f36487e0a1",
+          "scope": {
+            "horizon": 1,
+            "backend": "exhaustive",
+            "timeout_ms_per_check": 5000,
+            "max_traces_per_check": 4096,
+            "observed_steps": 0,
+            "semantics": "LTLf-completions-at-exact-horizon-v1",
+            "assumptions": [],
+            "observations": null,
+            "unobserved_values": "all_consistent_boolean_completions"
+          },
+          "legal_certification": false
+        },
+        "provenance": {
+          "model_id": "deterministic-fake/v1",
+          "prompt_sha256": "66d1eca23991c6ad8e5176ff534f74bc0e2fb2b0d689862412f1b02dcd596cc4",
+          "seed": 0,
+          "params": {
+            "temperature": 0
+          },
+          "timestamp": "2000-01-01T00:00:00+00:00"
+        },
+        "interpretation": {
+          "id": "formal-73c0b402ad3f4d62",
+          "source_norm_id": "norm-fb02cd4a984aa598",
+          "modality": "prohibition",
+          "subject": "The operator",
+          "action": "notify",
+          "conditions": [],
+          "exceptions": [],
+          "object": null,
+          "deadline": null,
+          "references": [],
+          "authority": {
+            "kind": "other",
+            "issuer": null,
+            "instrument": null,
+            "jurisdiction": null,
+            "authority_rank": null,
+            "enacted_on": null,
+            "effective_from": null,
+            "effective_to": null,
+            "version": null
+          },
+          "confidence": 0.72,
+          "assumptions": [],
+          "provenance": {
+            "source_id": "synthetic-mr",
+            "span": [
+              0,
+              25
+            ],
+            "quote": "The operator must notify.",
+            "document_hash": null,
+            "locator": null
+          },
+          "interpretation_label": "primary",
+          "canonical": "PROHIBITION[The operator:notify] IF true UNLESS false",
+          "semantic_hash": "f506d26a60d88017b77f36c3f2cba8334ea7bb586c5c082e4031e4beeb158e6c"
+        }
+      }
+    ],
+    "robustness_radius": [
+      {
+        "case": "weaken",
+        "minimum_observed_failure_depth": null,
+        "tested_depth": 3,
+        "right_censored": true,
+        "infinite_robustness_claimed": false
+      },
+      {
+        "case": "except-o",
+        "minimum_observed_failure_depth": null,
+        "tested_depth": 3,
+        "right_censored": true,
+        "infinite_robustness_claimed": false
+      }
+    ],
+    "base_formalizations": [
+      {
+        "case": "weaken",
+        "interpretation": {
+          "id": "formal-73c0b402ad3f4d62",
+          "source_norm_id": "norm-fb02cd4a984aa598",
+          "modality": "prohibition",
+          "subject": "The operator",
+          "action": "notify",
+          "conditions": [],
+          "exceptions": [],
+          "object": null,
+          "deadline": null,
+          "references": [],
+          "authority": {
+            "kind": "other",
+            "issuer": null,
+            "instrument": null,
+            "jurisdiction": null,
+            "authority_rank": null,
+            "enacted_on": null,
+            "effective_from": null,
+            "effective_to": null,
+            "version": null
+          },
+          "confidence": 0.72,
+          "assumptions": [],
+          "provenance": {
+            "source_id": "synthetic-mr",
+            "span": [
+              0,
+              25
+            ],
+            "quote": "The operator must notify.",
+            "document_hash": null,
+            "locator": null
+          },
+          "interpretation_label": "primary",
+          "canonical": "PROHIBITION[The operator:notify] IF true UNLESS false",
+          "semantic_hash": "f506d26a60d88017b77f36c3f2cba8334ea7bb586c5c082e4031e4beeb158e6c"
+        },
+        "provenance": {
+          "model_id": "deterministic-fake/v1",
+          "prompt_sha256": "0b172216b587c1de36a264af42f9e179bb1dca18e5c8ea51e1223a2262e4cef0",
+          "seed": 0,
+          "params": {
+            "temperature": 0
+          },
+          "timestamp": "2000-01-01T00:00:00+00:00"
+        },
+        "review_status": "unreviewed"
+      },
+      {
+        "case": "except-o",
+        "interpretation": {
+          "id": "formal-73c0b402ad3f4d62",
+          "source_norm_id": "norm-fb02cd4a984aa598",
+          "modality": "prohibition",
+          "subject": "The operator",
+          "action": "notify",
+          "conditions": [],
+          "exceptions": [],
+          "object": null,
+          "deadline": null,
+          "references": [],
+          "authority": {
+            "kind": "other",
+            "issuer": null,
+            "instrument": null,
+            "jurisdiction": null,
+            "authority_rank": null,
+            "enacted_on": null,
+            "effective_from": null,
+            "effective_to": null,
+            "version": null
+          },
+          "confidence": 0.72,
+          "assumptions": [],
+          "provenance": {
+            "source_id": "synthetic-mr",
+            "span": [
+              0,
+              25
+            ],
+            "quote": "The operator must notify.",
+            "document_hash": null,
+            "locator": null
+          },
+          "interpretation_label": "primary",
+          "canonical": "PROHIBITION[The operator:notify] IF true UNLESS false",
+          "semantic_hash": "f506d26a60d88017b77f36c3f2cba8334ea7bb586c5c082e4031e4beeb158e6c"
+        },
+        "provenance": {
+          "model_id": "deterministic-fake/v1",
+          "prompt_sha256": "0b172216b587c1de36a264af42f9e179bb1dca18e5c8ea51e1223a2262e4cef0",
+          "seed": 0,
+          "params": {
+            "temperature": 0
+          },
+          "timestamp": "2000-01-01T00:00:00+00:00"
+        },
+        "review_status": "unreviewed"
+      }
+    ],
+    "metrics": {
+      "passed": 0,
+      "violated": 2,
+      "unknown": 0,
+      "inapplicable": 0,
+      "complete_comparisons": 2,
+      "MVR": 1.0
+    },
+    "by_relation": {
+      "add_exception": {
+        "passed": 0,
+        "violated": 1,
+        "unknown": 0,
+        "inapplicable": 0,
+        "complete_comparisons": 1,
+        "MVR": 1.0
+      },
+      "weaken_modality": {
+        "passed": 0,
+        "violated": 1,
+        "unknown": 0,
+        "inapplicable": 0,
+        "complete_comparisons": 1,
+        "MVR": 1.0
+      }
+    },
+    "by_language": {
+      "en": {
+        "passed": 0,
+        "violated": 2,
+        "unknown": 0,
+        "inapplicable": 0,
+        "complete_comparisons": 2,
+        "MVR": 1.0
+      }
+    },
+    "by_modality": {
+      "obligation": {
+        "passed": 0,
+        "violated": 2,
+        "unknown": 0,
+        "inapplicable": 0,
+        "complete_comparisons": 2,
+        "MVR": 1.0
+      }
+    },
+    "bounds": {
+      "max_states": 65536,
+      "timeout_ms": 5000,
+      "checked_states": 12,
+      "max_depth": 3,
+      "max_cases": 64
+    },
+    "model_calls": 4,
+    "H2": "descriptive_only_ordering_unestablished_when_comparisons_inconclusive",
+    "request_sha256": "5aeef4bb7de77b7c44c4cf136cec11205e4dc5e14c3aa79c06ddb2c73031e6de",
+    "review_status": "unreviewed",
+    "decision_authorized": false,
+    "legal_certification": false
+  }
+}

@@ -125,3 +125,25 @@ null, not0. No real-corpus effect is inferred. Version sweeps track explicitly
 requested minimal families, retain unknown continuity and censor boundary bars;
 this is not complete obstruction discovery or persistent homology. Full suite
 379 passed,3 skipped; all legacy benchmarks green. No TDA linear layer available.
+
+## M3 / N2
+
+The frozen14-case EN/FR corpus covers all12 declared relations. Source rewrites
+are mechanical and applicability-tested; genuine parallel phrase mappings are
+explicit fixture aliases, not automatically inferred translations. Equivalence
+compositions are explored to depth3; directional relations are single-step,
+so inverse transformations cannot be silently treated as preserving strength.
+Every source/model formalization retains provenance and remains unreviewed.
+Robustness radii are censored finite searches, not infinite guarantees.
+
+The v0.7.0 extractor records6 violations/14 complete comparisons and2 unknown
+comparisons. The2 planted ignored-transform faults are detected (2/2). H2 is not
+established in full: exception-position comparisons are inconclusive. A concrete
+pre-existing substring bug interprets must notify/may notify as must not/may not.
+The baseline artifact is explicitly preserved as pre-token-boundary-fix. The
+integration milestone will apply a separately identified implementation repair
+and retain before/after outputs on the same fixtures; no source fixture, protocol
+threshold or expected relation is changed. Main behavior inclusion and Phase4
+normative modality distinction are separately reported. Full suite382 passed,
+3 skipped; all legacy benchmarks green. Live paths remain configured-only and
+are not actual model-performance experiments.
