@@ -167,3 +167,32 @@ Review prompts are additive queue payloads, never `ReviewLedger.record` calls.
 Verification: full suite 317 passed, 3 skipped, plus temporal-operator parity
 added in the focused suite (9 passed). Both modules exceed baseline coverage
 (95% / 93%). All five legacy benchmark runs passed. No network/model used.
+
+## M4: DDL interchange and two-stage proposals
+
+`DDL/1` is a local textual grammar, not SPINdle syntax. It preserves rule kind,
+O/P/F with distinct outer modal negation, ordered compensation sequences,
+conditions, exceptions and acyclic superiority. Modalities reuse `Modality`;
+DDL-only features use small wrappers. Unknown syntax is rejected, not ignored.
+Rule/predicate/compensation counts and text sizes have fixed bounds. There is
+no external reasoner, semantic import acceptance or inferred priority.
+
+Typed norms export to defeasible rules. Unsupported calendar/source/deadline/
+reference/assumption fields are listed as lossy and retained in a sidecar.
+Sidecar restoration verifies it re-exports to the exact DDL text, preserving
+original metadata and any historical selection as **data**, not review approval.
+DDL without a sidecar is not automatically projected into less expressive
+NormInterpretation objects. Local syntactic round-trip is not semantic fidelity.
+
+Segmentation is lexical with complete half-open source spans, not a legal scope
+parser. Refinement compares syntax, predicate inventory (unknown when omitted),
+exception-presence heuristics and supplied-corpus references. It emits a hashed
+diff; nonworsening only grants eligibility for human review, never acceptance.
+Metric vectors separately report syntax, modality, inner/outer negation,
+exception coverage, normative units (including rule kind, compensation order,
+and superiority), and existing source-span/omission diagnostics. Implicit duties
+must be explicit expected units; none are invented. No aggregate score is used.
+
+Verification: 24 labelled synthetic/unreviewed DDL fixtures, golden export,
+round-trip and schema tests; full suite 353 passed, 3 skipped. Every DDL module
+has >=92% statement coverage (96% combined). All five legacy benchmarks passed.
