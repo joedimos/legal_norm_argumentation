@@ -34,7 +34,9 @@ jobs:
           cache: pip
       - run: python -m pip install --upgrade pip
       - run: python -m pip install -e '.[dev]'
+      - run: ruff check src/phase4.py src/phase4_cli.py src/aspic.py src/assumptions.py src/assumptions_z3.py src/norm_codec.py src/redundancy src/ddl src/faithfulness.py src/certification.py tests/test_phase4_*.py tests/conftest.py
       - run: ruff check src/service src/legifrance.py src/legifrance_piste.py src/formalization.py src/lifecycle.py src/temporal.py src/temporal_deontic.py src/model_checking.py src/conflicts.py src/preferences.py src/audit_bundle.py src/research.py src/research_benchmark.py src/experiments.py src/evidence_planning.py src/family_contract.py src/interpretation_family.py src/observation_strategy.py src/response_alignment.py src/live_generation.py src/legal_annotation.py src/model_runtime.py src/signed_annotation.py src/priority.py src/defeasible.py src/compliance.py src/normative_model.py src/norm_extraction.py src/cli.py tests/test_service.py tests/test_production_workflows.py tests/test_legifrance.py tests/test_web_console_workflow.py tests/test_norm_extraction.py tests/test_research_logic.py tests/test_audit_bundle.py tests/test_research_benchmark.py tests/test_experiments.py tests/test_evidence_planning.py tests/test_interpretation_family.py tests/test_response_alignment.py tests/test_live_generation.py tests/test_legal_annotation.py tests/test_model_runtime.py tests/test_signed_annotation.py
+      - run: bandit -q -r src/phase4.py src/phase4_cli.py src/aspic.py src/assumptions.py src/assumptions_z3.py src/norm_codec.py src/redundancy src/ddl src/faithfulness.py
       - run: bandit -q -r src/service src/legifrance.py src/legifrance_piste.py src/audit_bundle.py src/model_checking.py src/experiments.py src/evidence_planning.py src/family_contract.py src/interpretation_family.py src/observation_strategy.py src/response_alignment.py src/live_generation.py src/legal_annotation.py src/model_runtime.py src/signed_annotation.py src/research.py src/temporal.py src/temporal_deontic.py
       - run: pip-audit -r requirements-prod.txt
       - name: Validate deployment Compose wiring
@@ -181,5 +183,46 @@ jobs:
         with:
           name: sbom-cyclonedx
           path: sbom.cdx.json
+          if-no-files-found: error
+          retention-days: 30
+
+  phase4-z3:
+    # Optional runtime extra, verified separately from the core install. No live model/GPU.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+      - run: python -m pip install -e '.[dev,verification]'
+      - name: Offline Phase 4 schema, differential, property and fail-closed checks
+        run: >-
+          python -m pytest -q tests/test_phase4_*.py
+          --cov=src.phase4 --cov=src.phase4_cli --cov=src.aspic
+          --cov=src.assumptions --cov=src.assumptions_z3 --cov=src.norm_codec
+          --cov=src.redundancy --cov=src.ddl --cov=src.faithfulness
+          --cov-report=json:phase4-coverage.json --cov-report=term --cov-fail-under=80
+      - name: Require every new module to meet the baseline coverage
+        run: |
+          python - <<'PY'
+          import json
+          report = json.load(open('phase4-coverage.json'))
+          low = {p: v['summary']['percent_covered'] for p, v in report['files'].items()
+                 if v['summary']['percent_covered'] < 80}
+          if low:
+              raise SystemExit(str(low))
+          PY
+      - run: python -m src.cli benchmark --backend exhaustive > phase4-legacy-exhaustive.json
+      - run: python -m src.cli benchmark --backend z3 > phase4-legacy-z3.json
+      - run: python -m src.cli experiment-benchmark --backend exhaustive > phase4-experiments-exhaustive.json
+      - run: python -m src.cli experiment-benchmark --backend z3 > phase4-experiments-z3.json
+      - run: python -m src.cli family-benchmark > phase4-families.json
+      - run: python -m src.cli faithfulness > phase4-faithfulness.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: phase4-reproducibility
+          path: phase4-*.json
           if-no-files-found: error
           retention-days: 30

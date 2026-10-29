@@ -69,6 +69,12 @@
     },
     "legal_certification": {
       "const": false
+    },
+    "activations": {
+      "type": "object"
+    },
+    "norm_labels": {
+      "type": "object"
     }
   },
   "required": [
@@ -92,5 +98,32 @@
     "decision_authorized",
     "legal_certification"
   ],
-  "additionalProperties": false
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "unknown"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "extensions": {
+            "maxItems": 0
+          },
+          "has_extensions": {
+            "const": false
+          },
+          "conclusions": {
+            "maxItems": 0
+          },
+          "grounded_labels": {
+            "maxProperties": 0
+          }
+        }
+      }
+    }
+  ]
 }

@@ -228,3 +228,51 @@ Verification: 358 passed, 3 PostgreSQL-only skipped; all five existing benchmark
 runs green and new `faithfulness` reproducibly reported. Faithfulness module
 coverage 89%, certification 100%. Live paths tested only with deterministic
 fake providers. No actual model or independent legal expert experiment claimed.
+
+## M6: integration, hardening and 0.7.0
+
+All new commands now have schema-tested success, review-required, bounded-unknown
+and invalid-input envelopes. Schemas reject forged authorization and partial
+positive/minimality results after bounds. The CLI refuses incomplete sample
+counts and existing bundle paths. Model request payloads are capped at 1 MiB;
+live evaluation preflight validates the full corpus before any provider call.
+Live model-generated ASPIC theories/priorities are rejected; the structured
+argumentation layer never delegates conflict resolution to a model.
+
+Integration review added permission-vs-permission scope/target checks, because
+both permissions compiling to True is insufficient for normative equivalence.
+This increases the conservative maximum from 84 to 140 solver calls for 8
+candidates (per-call bounds remain explicit). Signature diagnostics now use
+unprefixed factual atoms. Asymmetric contrary attacks bypass preferences;
+strict axiom closure and indirect consistency are explicitly checked. Reserved
+`premise:` IDs cannot impersonate premise attack sites. The compatibility
+bridge discards acceptance evidence whenever any activation is unknown.
+
+New-module coverage is enforced individually at 80% in the dedicated Z3-extra
+job. Network guards prohibit HTTP/socket calls in Phase 4 tests. As in baseline
+CI, dependency installation and supply-chain audit feeds require network;
+analyses themselves use no network/model/GPU. Truly air-gapped CI would require
+preprovisioned package/security artifacts, not disabling those security checks.
+No Lean job or TDA diagnostics were added because their prerequisite projects
+are absent. Optional HTTP remains deferred; existing routes are unchanged.
+
+README, semantics/bounds documentation and the manuscript limitations are
+updated. The paper retains its original 0.6.2 empirical snapshot; no synthetic
+Phase 4 results are relabelled as a legal/model field experiment. Pyproject and
+service defaults are 0.7.0. All 62/19/15 legacy corpus files are byte-unchanged.
+
+Verification commands (project venv): `python -m pytest -q` (369 passed, 3
+PostgreSQL-only skipped, 1 existing deprecation warning); each of `benchmark
+--backend exhaustive`, `benchmark --backend z3`, `experiment-benchmark --backend
+exhaustive`, `experiment-benchmark --backend z3`, `family-benchmark`, and
+`faithfulness` through `python -m src.cli`. New-module focused pytest uses
+`--cov=src.phase4 --cov=src.phase4_cli --cov=src.aspic --cov=src.assumptions
+--cov=src.assumptions_z3 --cov=src.norm_codec --cov=src.redundancy --cov=src.ddl
+--cov=src.faithfulness --cov-report=json --cov-report=term`; CI checks each
+module against 80%. Ruff and Bandit pass. CI YAML parses. Exact corpus hashes
+and scoped coverage are retained in PHASE4_EVALUATION.json. Required remote CI
+results are attached to each milestone PR; main remains protected/unchanged.
+
+The execution environment briefly disconnected after M5; no M6 code was
+written during that outage. It recovered, and all final M6 code was locally
+executed and tested before publication. No failed suite was bypassed.

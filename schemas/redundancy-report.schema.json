@@ -97,5 +97,49 @@
     "decision_authorized",
     "legal_certification"
   ],
-  "additionalProperties": false
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "enum": [
+              "unknown",
+              "review_required"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "consensus_supported": {
+            "const": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "consensus_supported": {
+            "const": true
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "alignment": {
+            "properties": {
+              "unresolved": {
+                "maxItems": 0
+              }
+            }
+          },
+          "status": {
+            "const": "consensus_supported"
+          }
+        }
+      }
+    }
+  ]
 }
