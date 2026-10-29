@@ -1,0 +1,4 @@
+DDL/1
+r3: ["p","~q"] -> O("notify") UNLESS ["waiver"] COMPENSATE [["O","repair",false]]
+support: [] => P("notify") UNLESS [] COMPENSATE []
+superiority r3 > support

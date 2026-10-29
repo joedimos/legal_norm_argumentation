@@ -1,0 +1,991 @@
+{
+  "schema": "vle-ddl-fixtures/v1",
+  "synthetic": true,
+  "review_status": "unreviewed",
+  "cases": [
+    {
+      "id": "ddl-00",
+      "synthetic": true,
+      "review_status": "unreviewed",
+      "document": {
+        "rules": [
+          {
+            "id": "r0",
+            "kind": "strict",
+            "body": [],
+            "consequent": [
+              "O",
+              "~notify",
+              true
+            ],
+            "exceptions": [],
+            "compensation": [
+              [
+                "O",
+                "repair",
+                false
+              ]
+            ]
+          },
+          {
+            "id": "support",
+            "kind": "defeasible",
+            "body": [],
+            "consequent": [
+              "P",
+              "notify",
+              false
+            ],
+            "exceptions": [],
+            "compensation": []
+          }
+        ],
+        "superiority": []
+      }
+    },
+    {
+      "id": "ddl-01",
+      "synthetic": true,
+      "review_status": "unreviewed",
+      "document": {
+        "rules": [
+          {
+            "id": "r1",
+            "kind": "defeasible",
+            "body": [
+              "p",
+              "~q"
+            ],
+            "consequent": [
+              "P",
+              "notify",
+              false
+            ],
+            "exceptions": [
+              "waiver"
+            ],
+            "compensation": []
+          },
+          {
+            "id": "support",
+            "kind": "defeasible",
+            "body": [],
+            "consequent": [
+              "P",
+              "notify",
+              false
+            ],
+            "exceptions": [],
+            "compensation": []
+          }
+        ],
+        "superiority": [
+          [
+            "r1",
+            "support"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "ddl-02",
+      "synthetic": true,
+      "review_status": "unreviewed",
+      "document": {
+        "rules": [
+          {
+            "id": "r2",
+            "kind": "defeater",
+            "body": [],
+            "consequent": [
+              "F",
+              "notify",
+              false
+            ],
+            "exceptions": [],
+            "compensation": []
+          },
+          {
+            "id": "support",
+            "kind": "defeasible",
+            "body": [],
+            "consequent": [
+              "P",
+              "notify",
+              false
+            ],
+            "exceptions": [],
+            "compensation": []
+          }
+        ],
+        "superiority": []
+      }
+    },
+    {
+      "id": "ddl-03",
+      "synthetic": true,
+      "review_status": "unreviewed",
+      "document": {
+        "rules": [
+          {
+            "id": "r3",
+            "kind": "strict",
+            "body": [
+              "p",
+              "~q"
+            ],
+            "consequent": [
+              "O",
+              "notify",
+              false
+            ],
+            "exceptions": [
+              "waiver"
+            ],
+            "compensation": [
+              [
+                "O",
+                "repair",
+                false
+              ]
+            ]
+          },
+          {
+            "id": "support",
+            "kind": "defeasible",
+            "body": [],
+            "consequent": [
+              "P",
+              "notify",
+              false
+            ],
+            "exceptions": [],
+            "compensation": []
+          }
+        ],
+        "superiority": [
+          [
+            "r3",
+            "support"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "ddl-04",
+      "synthetic": true,
+      "review_status": "unreviewed",
+      "document": {
+        "rules": [
+          {
+            "id": "r4",
+            "kind": "defeasible",
+            "body": [],
+            "consequent": [
+              "P",
+              "~notify",
+              false
+            ],
+            "exceptions": [],
+            "compensation": []
+          },
+          {
+            "id": "support",
+            "kind": "defeasible",
+            "body": [],
+            "consequent": [
+              "P",
+              "notify",
+              false
+            ],
+            "exceptions": [],
+            "compensation": []
+          }
+        ],
+        "superiority": []
+      }
+    },
+    {
+      "id": "ddl-05",
+      "synthetic": true,
+      "review_status": "unreviewed",
+      "document": {
+        "rules": [
+          {
+            "id": "r5",
+            "kind": "defeater",
+            "body": [
+              "p",
+              "~q"
+            ],
+            "consequent": [
+              "F",
+              "notify",
+              true
+            ],
+            "exceptions": [
+              "waiver"
+            ],
+            "compensation": []
+          },
+          {
+            "id": "support",
+            "kind": "defeasible",
+            "body": [],
+            "consequent": [
+              "P",
+              "notify",
+              false
+            ],
+            "exceptions": [],
+            "compensation": []
+          }
+        ],
+        "superiority": [
+          [
+            "r5",
+            "support"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "ddl-06",
+      "synthetic": true,
+      "review_status": "unreviewed",
+      "document": {
+        "rules": [
+          {
+            "id": "r6",
+            "kind": "strict",
+            "body": [],
+            "consequent": [
+              "O",
+              "notify",
+              false
+            ],
+            "exceptions": [],
+            "compensation": [
+              [
+                "O",
+                "repair",
+                false
+              ]
+            ]
+          },
+          {
+            "id": "support",
+            "kind": "defeasible",
+            "body": [],
+            "consequent": [
+              "P",
+              "notify",
+              false
+            ],
+            "exceptions": [],
+            "compensation": []
+          }
+        ],
+        "superiority": []
+      }
+    },
+    {
+      "id": "ddl-07",
+      "synthetic": true,
+      "review_status": "unreviewed",
+      "document": {
+        "rules": [
+          {
+            "id": "r7",
+            "kind": "defeasible",
+            "body": [
+              "p",
+              "~q"
+            ],
+            "consequent": [
+              "P",
+              "notify",
+              false
+            ],
+            "exceptions": [
+              "waiver"
+            ],
+            "compensation": []
+          },
+          {
+            "id": "support",
+            "kind": "defeasible",
+            "body": [],
+            "consequent": [
+              "P",
+              "notify",
+              false
+            ],
+            "exceptions": [],
+            "compensation": []
+          }
+        ],
+        "superiority": [
+          [
+            "r7",
+            "support"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "ddl-08",
+      "synthetic": true,
+      "review_status": "unreviewed",
+      "document": {
+        "rules": [
+          {
+            "id": "r8",
+            "kind": "defeater",
+            "body": [],
+            "consequent": [
+              "F",
+              "~notify",
+              false
+            ],
+            "exceptions": [],
+            "compensation": []
+          },
+          {
+            "id": "support",
+            "kind": "defeasible",
+            "body": [],
+            "consequent": [
+              "P",
+              "notify",
+              false
+            ],
+            "exceptions": [],
+            "compensation": []
+          }
+        ],
+        "superiority": []
+      }
+    },
+    {
+      "id": "ddl-09",
+      "synthetic": true,
+      "review_status": "unreviewed",
+      "document": {
+        "rules": [
+          {
+            "id": "r9",
+            "kind": "strict",
+            "body": [
+              "p",
+              "~q"
+            ],
+            "consequent": [
+              "O",
+              "notify",
+              false
+            ],
+            "exceptions": [
+              "waiver"
+            ],
+            "compensation": [
+              [
+                "O",
+                "repair",
+                false
+              ]
+            ]
+          },
+          {
+            "id": "support",
+            "kind": "defeasible",
+            "body": [],
+            "consequent": [
+              "P",
+              "notify",
+              false
+            ],
+            "exceptions": [],
+            "compensation": []
+          }
+        ],
+        "superiority": [
+          [
+            "r9",
+            "support"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "ddl-10",
+      "synthetic": true,
+      "review_status": "unreviewed",
+      "document": {
+        "rules": [
+          {
+            "id": "r10",
+            "kind": "defeasible",
+            "body": [],
+            "consequent": [
+              "P",
+              "notify",
+              true
+            ],
+            "exceptions": [],
+            "compensation": []
+          },
+          {
+            "id": "support",
+            "kind": "defeasible",
+            "body": [],
+            "consequent": [
+              "P",
+              "notify",
+              false
+            ],
+            "exceptions": [],
+            "compensation": []
+          }
+        ],
+        "superiority": []
+      }
+    },
+    {
+      "id": "ddl-11",
+      "synthetic": true,
+      "review_status": "unreviewed",
+      "document": {
+        "rules": [
+          {
+            "id": "r11",
+            "kind": "defeater",
+            "body": [
+              "p",
+              "~q"
+            ],
+            "consequent": [
+              "F",
+              "notify",
+              false
+            ],
+            "exceptions": [
+              "waiver"
+            ],
+            "compensation": []
+          },
+          {
+            "id": "support",
+            "kind": "defeasible",
+            "body": [],
+            "consequent": [
+              "P",
+              "notify",
+              false
+            ],
+            "exceptions": [],
+            "compensation": []
+          }
+        ],
+        "superiority": [
+          [
+            "r11",
+            "support"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "ddl-12",
+      "synthetic": true,
+      "review_status": "unreviewed",
+      "document": {
+        "rules": [
+          {
+            "id": "r12",
+            "kind": "strict",
+            "body": [],
+            "consequent": [
+              "O",
+              "~notify",
+              false
+            ],
+            "exceptions": [],
+            "compensation": [
+              [
+                "O",
+                "repair",
+                false
+              ]
+            ]
+          },
+          {
+            "id": "support",
+            "kind": "defeasible",
+            "body": [],
+            "consequent": [
+              "P",
+              "notify",
+              false
+            ],
+            "exceptions": [],
+            "compensation": []
+          }
+        ],
+        "superiority": []
+      }
+    },
+    {
+      "id": "ddl-13",
+      "synthetic": true,
+      "review_status": "unreviewed",
+      "document": {
+        "rules": [
+          {
+            "id": "r13",
+            "kind": "defeasible",
+            "body": [
+              "p",
+              "~q"
+            ],
+            "consequent": [
+              "P",
+              "notify",
+              false
+            ],
+            "exceptions": [
+              "waiver"
+            ],
+            "compensation": []
+          },
+          {
+            "id": "support",
+            "kind": "defeasible",
+            "body": [],
+            "consequent": [
+              "P",
+              "notify",
+              false
+            ],
+            "exceptions": [],
+            "compensation": []
+          }
+        ],
+        "superiority": [
+          [
+            "r13",
+            "support"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "ddl-14",
+      "synthetic": true,
+      "review_status": "unreviewed",
+      "document": {
+        "rules": [
+          {
+            "id": "r14",
+            "kind": "defeater",
+            "body": [],
+            "consequent": [
+              "F",
+              "notify",
+              false
+            ],
+            "exceptions": [],
+            "compensation": []
+          },
+          {
+            "id": "support",
+            "kind": "defeasible",
+            "body": [],
+            "consequent": [
+              "P",
+              "notify",
+              false
+            ],
+            "exceptions": [],
+            "compensation": []
+          }
+        ],
+        "superiority": []
+      }
+    },
+    {
+      "id": "ddl-15",
+      "synthetic": true,
+      "review_status": "unreviewed",
+      "document": {
+        "rules": [
+          {
+            "id": "r15",
+            "kind": "strict",
+            "body": [
+              "p",
+              "~q"
+            ],
+            "consequent": [
+              "O",
+              "notify",
+              true
+            ],
+            "exceptions": [
+              "waiver"
+            ],
+            "compensation": [
+              [
+                "O",
+                "repair",
+                false
+              ]
+            ]
+          },
+          {
+            "id": "support",
+            "kind": "defeasible",
+            "body": [],
+            "consequent": [
+              "P",
+              "notify",
+              false
+            ],
+            "exceptions": [],
+            "compensation": []
+          }
+        ],
+        "superiority": [
+          [
+            "r15",
+            "support"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "ddl-16",
+      "synthetic": true,
+      "review_status": "unreviewed",
+      "document": {
+        "rules": [
+          {
+            "id": "r16",
+            "kind": "defeasible",
+            "body": [],
+            "consequent": [
+              "P",
+              "~notify",
+              false
+            ],
+            "exceptions": [],
+            "compensation": []
+          },
+          {
+            "id": "support",
+            "kind": "defeasible",
+            "body": [],
+            "consequent": [
+              "P",
+              "notify",
+              false
+            ],
+            "exceptions": [],
+            "compensation": []
+          }
+        ],
+        "superiority": []
+      }
+    },
+    {
+      "id": "ddl-17",
+      "synthetic": true,
+      "review_status": "unreviewed",
+      "document": {
+        "rules": [
+          {
+            "id": "r17",
+            "kind": "defeater",
+            "body": [
+              "p",
+              "~q"
+            ],
+            "consequent": [
+              "F",
+              "notify",
+              false
+            ],
+            "exceptions": [
+              "waiver"
+            ],
+            "compensation": []
+          },
+          {
+            "id": "support",
+            "kind": "defeasible",
+            "body": [],
+            "consequent": [
+              "P",
+              "notify",
+              false
+            ],
+            "exceptions": [],
+            "compensation": []
+          }
+        ],
+        "superiority": [
+          [
+            "r17",
+            "support"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "ddl-18",
+      "synthetic": true,
+      "review_status": "unreviewed",
+      "document": {
+        "rules": [
+          {
+            "id": "r18",
+            "kind": "strict",
+            "body": [],
+            "consequent": [
+              "O",
+              "notify",
+              false
+            ],
+            "exceptions": [],
+            "compensation": [
+              [
+                "O",
+                "repair",
+                false
+              ]
+            ]
+          },
+          {
+            "id": "support",
+            "kind": "defeasible",
+            "body": [],
+            "consequent": [
+              "P",
+              "notify",
+              false
+            ],
+            "exceptions": [],
+            "compensation": []
+          }
+        ],
+        "superiority": []
+      }
+    },
+    {
+      "id": "ddl-19",
+      "synthetic": true,
+      "review_status": "unreviewed",
+      "document": {
+        "rules": [
+          {
+            "id": "r19",
+            "kind": "defeasible",
+            "body": [
+              "p",
+              "~q"
+            ],
+            "consequent": [
+              "P",
+              "notify",
+              false
+            ],
+            "exceptions": [
+              "waiver"
+            ],
+            "compensation": []
+          },
+          {
+            "id": "support",
+            "kind": "defeasible",
+            "body": [],
+            "consequent": [
+              "P",
+              "notify",
+              false
+            ],
+            "exceptions": [],
+            "compensation": []
+          }
+        ],
+        "superiority": [
+          [
+            "r19",
+            "support"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "ddl-20",
+      "synthetic": true,
+      "review_status": "unreviewed",
+      "document": {
+        "rules": [
+          {
+            "id": "r20",
+            "kind": "defeater",
+            "body": [],
+            "consequent": [
+              "F",
+              "~notify",
+              true
+            ],
+            "exceptions": [],
+            "compensation": []
+          },
+          {
+            "id": "support",
+            "kind": "defeasible",
+            "body": [],
+            "consequent": [
+              "P",
+              "notify",
+              false
+            ],
+            "exceptions": [],
+            "compensation": []
+          }
+        ],
+        "superiority": []
+      }
+    },
+    {
+      "id": "ddl-21",
+      "synthetic": true,
+      "review_status": "unreviewed",
+      "document": {
+        "rules": [
+          {
+            "id": "r21",
+            "kind": "strict",
+            "body": [
+              "p",
+              "~q"
+            ],
+            "consequent": [
+              "O",
+              "notify",
+              false
+            ],
+            "exceptions": [
+              "waiver"
+            ],
+            "compensation": [
+              [
+                "O",
+                "repair",
+                false
+              ]
+            ]
+          },
+          {
+            "id": "support",
+            "kind": "defeasible",
+            "body": [],
+            "consequent": [
+              "P",
+              "notify",
+              false
+            ],
+            "exceptions": [],
+            "compensation": []
+          }
+        ],
+        "superiority": [
+          [
+            "r21",
+            "support"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "ddl-22",
+      "synthetic": true,
+      "review_status": "unreviewed",
+      "document": {
+        "rules": [
+          {
+            "id": "r22",
+            "kind": "defeasible",
+            "body": [],
+            "consequent": [
+              "P",
+              "notify",
+              false
+            ],
+            "exceptions": [],
+            "compensation": []
+          },
+          {
+            "id": "support",
+            "kind": "defeasible",
+            "body": [],
+            "consequent": [
+              "P",
+              "notify",
+              false
+            ],
+            "exceptions": [],
+            "compensation": []
+          }
+        ],
+        "superiority": []
+      }
+    },
+    {
+      "id": "ddl-23",
+      "synthetic": true,
+      "review_status": "unreviewed",
+      "document": {
+        "rules": [
+          {
+            "id": "r23",
+            "kind": "defeater",
+            "body": [
+              "p",
+              "~q"
+            ],
+            "consequent": [
+              "F",
+              "notify",
+              false
+            ],
+            "exceptions": [
+              "waiver"
+            ],
+            "compensation": []
+          },
+          {
+            "id": "support",
+            "kind": "defeasible",
+            "body": [],
+            "consequent": [
+              "P",
+              "notify",
+              false
+            ],
+            "exceptions": [],
+            "compensation": []
+          }
+        ],
+        "superiority": [
+          [
+            "r23",
+            "support"
+          ]
+        ]
+      }
+    }
+  ]
+}

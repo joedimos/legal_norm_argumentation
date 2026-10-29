@@ -7,7 +7,7 @@ from pathlib import Path
 from .audit_bundle import MAX_BYTES, create_bundle
 from .model_runtime import strict_json
 
-COMMANDS = ('aspic', 'redundant-formalize', 'redundancy-report', 'assumptions')
+COMMANDS = ('aspic', 'redundant-formalize', 'redundancy-report', 'assumptions', 'ddl')
 
 
 def configure(subs):
@@ -51,6 +51,9 @@ def execute(args):
             request = strict_json(raw)
             if args.command == 'aspic':
                 result = analyze_aspic(request, lifting=args.lifting)
+            elif args.command == 'ddl':
+                from .ddl import interchange
+                result = interchange(request)
             elif args.command == 'assumptions':
                 from .assumptions import assumption_report
                 result = assumption_report(request, backend=args.backend, max_mcs=args.max_mcs)
