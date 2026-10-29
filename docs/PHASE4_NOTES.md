@@ -196,3 +196,35 @@ must be explicit expected units; none are invented. No aggregate score is used.
 Verification: 24 labelled synthetic/unreviewed DDL fixtures, golden export,
 round-trip and schema tests; full suite 353 passed, 3 skipped. Every DDL module
 has >=92% statement coverage (96% combined). All five legacy benchmarks passed.
+
+## M5: faithfulness evaluation and advisory evidence
+
+The new 12-case versioned corpus has six synthetic/unreviewed families. All
+responses are explicitly deterministic fake recordings, not measured LLM or
+expert judgments. The harness recomputes symbolic verdicts from each recorded
+formalization; it does not trust cached symbolic labels. Negated permission
+uses explicit ASPIC propositions, preserving `~P(a)` versus `P(~a)`; temporal
+windows use existing research semantics. Empty activation, conflict, unknown
+and undecided outcomes remain distinct. Expected labels are synthetic fixtures.
+
+Report direct-vs-symbolic, direct-vs-expected and symbolic-vs-expected rates,
+with numerators, denominators, unknown counts and determinate denominators,
+per family/modality/exception group. Shared abstention is not counted as a
+positive faithfulness result. Hash the corpus and its versioned field contract
+and include that contract in CLI audit bundles. Accuracy is not the headline.
+The offline harness is bounded to 128 cases with <=8 research norms per case,
+plus existing finite-fragment bounds and an overall deadline that discards
+partial rates. Live recording requires explicit configured providers and <=8
+cases; gold labels and recorded answers are not sent to providers. Every new
+record remains unreviewed and cannot authorize a decision.
+
+`readiness_report` gains an optional, separate `advisory_gates` field. Neither
+existing gate pass/fail nor status changes. Assumption-review evidence must
+bind the complete report through an existing ReviewLedger fingerprint; no new
+review acceptance path is introduced. All three gates are evidence diagnostics,
+never legal certification or automatic release authorization.
+
+Verification: 358 passed, 3 PostgreSQL-only skipped; all five existing benchmark
+runs green and new `faithfulness` reproducibly reported. Faithfulness module
+coverage 89%, certification 100%. Live paths tested only with deterministic
+fake providers. No actual model or independent legal expert experiment claimed.

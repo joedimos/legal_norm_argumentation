@@ -1,0 +1,14 @@
+{
+  "exception_handling-0": "empty",
+  "exception_handling-1": "non_compliant",
+  "implicit_obligations-0": "non_compliant",
+  "implicit_obligations-1": "compliant",
+  "negated_permission-0": "refuted",
+  "negated_permission-1": "empty",
+  "temporal_windows-0": "compliant",
+  "temporal_windows-1": "compliant",
+  "cross_reference_dependence-0": "indeterminate",
+  "cross_reference_dependence-1": "non_compliant",
+  "predicate_naming_drift-0": "compliant",
+  "predicate_naming_drift-1": "indeterminate"
+}

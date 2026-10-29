@@ -1,0 +1,717 @@
+{
+  "schema": "vle-faithfulness-corpus/v1",
+  "version": "phase4-v1",
+  "synthetic": true,
+  "review_status": "unreviewed",
+  "cases": [
+    {
+      "id": "exception_handling-0",
+      "family": "exception_handling",
+      "modality": "obligation",
+      "has_exception": true,
+      "source_text": "Synthetic scenario: an operator must notify within steps 0 to 1; notification occurs at step 1. Waiver applies; a duty exception is expressed.",
+      "direct_solver": {
+        "verdict": "empty",
+        "provenance": {
+          "model_id": "deterministic-fake/v1",
+          "prompt_sha256": "f1b161efd524595907f47800693a349da91da10667233bb187cb03cc62739e30",
+          "seed": 0,
+          "params": {
+            "temperature": 0
+          },
+          "timestamp": "2000-01-01T00:00:00+00:00"
+        }
+      },
+      "formalization": {
+        "kind": "research",
+        "request": {
+          "schema": "vle-research/v1",
+          "norms": [
+            {
+              "norm": {
+                "id": "n",
+                "modality": "obligation",
+                "subject": "operator",
+                "action": "notify",
+                "exceptions": [
+                  {
+                    "name": "waiver"
+                  }
+                ]
+              },
+              "start": 0,
+              "end": 1
+            }
+          ],
+          "trace": [
+            {
+              "action:[\"operator\",\"notify\",null]": false,
+              "fact:waiver": true
+            },
+            {
+              "action:[\"operator\",\"notify\",null]": true
+            }
+          ]
+        }
+      },
+      "formalization_provenance": {
+        "model_id": "deterministic-fake/v1",
+        "prompt_sha256": "c48aefaefab2c7ec8a48cea44b55c0540b81f32c3ee4c4007ff09f640dfd3472",
+        "seed": 0,
+        "params": {
+          "temperature": 0
+        },
+        "timestamp": "2000-01-01T00:00:00+00:00"
+      },
+      "gold_verdict": "empty",
+      "synthetic": true,
+      "review_status": "unreviewed"
+    },
+    {
+      "id": "exception_handling-1",
+      "family": "exception_handling",
+      "modality": "obligation",
+      "has_exception": true,
+      "source_text": "Synthetic scenario: an operator must notify within steps 0 to 1; no notification occurs. Waiver applies; a duty exception is expressed.",
+      "direct_solver": {
+        "verdict": "compliant",
+        "provenance": {
+          "model_id": "deterministic-fake/v1",
+          "prompt_sha256": "b0ff529c8b01e9ab38dc0def16ae9e70297d4c4ec19aadc8a73a506f13390e9c",
+          "seed": 0,
+          "params": {
+            "temperature": 0
+          },
+          "timestamp": "2000-01-01T00:00:00+00:00"
+        }
+      },
+      "formalization": {
+        "kind": "research",
+        "request": {
+          "schema": "vle-research/v1",
+          "norms": [
+            {
+              "norm": {
+                "id": "n",
+                "modality": "obligation",
+                "subject": "operator",
+                "action": "notify"
+              },
+              "start": 0,
+              "end": 1
+            }
+          ],
+          "trace": [
+            {
+              "action:[\"operator\",\"notify\",null]": false,
+              "fact:waiver": true
+            },
+            {
+              "action:[\"operator\",\"notify\",null]": false
+            }
+          ]
+        }
+      },
+      "formalization_provenance": {
+        "model_id": "deterministic-fake/v1",
+        "prompt_sha256": "14f0a4af15b8d391937cf6f0171e7a55b95988538a186bc3b34bf2f86965ecc4",
+        "seed": 0,
+        "params": {
+          "temperature": 0
+        },
+        "timestamp": "2000-01-01T00:00:00+00:00"
+      },
+      "gold_verdict": "empty",
+      "synthetic": true,
+      "review_status": "unreviewed"
+    },
+    {
+      "id": "implicit_obligations-0",
+      "family": "implicit_obligations",
+      "modality": "obligation",
+      "has_exception": false,
+      "source_text": "Synthetic scenario: an operator must notify within steps 0 to 1; notification occurs at step 1. Recording is also required as an implicit duty in this synthetic expected encoding.",
+      "direct_solver": {
+        "verdict": "non_compliant",
+        "provenance": {
+          "model_id": "deterministic-fake/v1",
+          "prompt_sha256": "f7a692aec6d05acef87121c874808ee02ec38101c3ee9a8c0a59c980fef74066",
+          "seed": 0,
+          "params": {
+            "temperature": 0
+          },
+          "timestamp": "2000-01-01T00:00:00+00:00"
+        }
+      },
+      "formalization": {
+        "kind": "research",
+        "request": {
+          "schema": "vle-research/v1",
+          "norms": [
+            {
+              "norm": {
+                "id": "n",
+                "modality": "obligation",
+                "subject": "operator",
+                "action": "notify"
+              },
+              "start": 0,
+              "end": 1
+            },
+            {
+              "norm": {
+                "id": "log",
+                "modality": "obligation",
+                "subject": "operator",
+                "action": "record"
+              },
+              "start": 0,
+              "end": 1
+            }
+          ],
+          "trace": [
+            {
+              "action:[\"operator\",\"notify\",null]": false,
+              "action:[\"operator\",\"record\",null]": false
+            },
+            {
+              "action:[\"operator\",\"notify\",null]": true,
+              "action:[\"operator\",\"record\",null]": false
+            }
+          ]
+        }
+      },
+      "formalization_provenance": {
+        "model_id": "deterministic-fake/v1",
+        "prompt_sha256": "0b961de85b5d71b1fd6749d81cd5916f4ac4acdb8ea73e32b564abab0e042b98",
+        "seed": 0,
+        "params": {
+          "temperature": 0
+        },
+        "timestamp": "2000-01-01T00:00:00+00:00"
+      },
+      "gold_verdict": "non_compliant",
+      "synthetic": true,
+      "review_status": "unreviewed"
+    },
+    {
+      "id": "implicit_obligations-1",
+      "family": "implicit_obligations",
+      "modality": "obligation",
+      "has_exception": false,
+      "source_text": "Synthetic scenario: an operator must notify within steps 0 to 1; no notification occurs. Recording is also required as an implicit duty in this synthetic expected encoding.",
+      "direct_solver": {
+        "verdict": "compliant",
+        "provenance": {
+          "model_id": "deterministic-fake/v1",
+          "prompt_sha256": "fd72c589102a3d39c0060541dcd09f6cf33fb778232cfe0eeae0a6418e0407d3",
+          "seed": 0,
+          "params": {
+            "temperature": 0
+          },
+          "timestamp": "2000-01-01T00:00:00+00:00"
+        }
+      },
+      "formalization": {
+        "kind": "research",
+        "request": {
+          "schema": "vle-research/v1",
+          "norms": [
+            {
+              "norm": {
+                "id": "n",
+                "modality": "obligation",
+                "subject": "operator",
+                "action": "notify"
+              },
+              "start": 0,
+              "end": 1
+            }
+          ],
+          "trace": [
+            {
+              "action:[\"operator\",\"notify\",null]": false
+            },
+            {
+              "action:[\"operator\",\"notify\",null]": true
+            }
+          ]
+        }
+      },
+      "formalization_provenance": {
+        "model_id": "deterministic-fake/v1",
+        "prompt_sha256": "fa825ee5575402021c5a3757e7a7a6fe6f6bdfbcacdb1b681f088aeea674b846",
+        "seed": 0,
+        "params": {
+          "temperature": 0
+        },
+        "timestamp": "2000-01-01T00:00:00+00:00"
+      },
+      "gold_verdict": "non_compliant",
+      "synthetic": true,
+      "review_status": "unreviewed"
+    },
+    {
+      "id": "negated_permission-0",
+      "family": "negated_permission",
+      "modality": "negated_permission",
+      "has_exception": false,
+      "source_text": "Synthetic norm: permission to notify is explicitly denied. Query: is permission to notify supported?",
+      "direct_solver": {
+        "verdict": "refuted",
+        "provenance": {
+          "model_id": "deterministic-fake/v1",
+          "prompt_sha256": "234f42e890fd73774ace25338a8670b666672dbd833640b26d6715c19b2537b3",
+          "seed": 0,
+          "params": {
+            "temperature": 0
+          },
+          "timestamp": "2000-01-01T00:00:00+00:00"
+        }
+      },
+      "formalization": {
+        "kind": "aspic",
+        "query": "P:notify",
+        "request": {
+          "schema": "vle-aspic/v1",
+          "premises": [],
+          "rules": [
+            {
+              "id": "r",
+              "kind": "defeasible",
+              "antecedents": [],
+              "conclusion": "~P:notify"
+            }
+          ]
+        }
+      },
+      "formalization_provenance": {
+        "model_id": "deterministic-fake/v1",
+        "prompt_sha256": "77e51b648ca4d45ac079feb9d67dccfb4f8ad1d0bc0d332eb3eeb19ad2b62592",
+        "seed": 0,
+        "params": {
+          "temperature": 0
+        },
+        "timestamp": "2000-01-01T00:00:00+00:00"
+      },
+      "gold_verdict": "refuted",
+      "synthetic": true,
+      "review_status": "unreviewed"
+    },
+    {
+      "id": "negated_permission-1",
+      "family": "negated_permission",
+      "modality": "negated_permission",
+      "has_exception": false,
+      "source_text": "Synthetic norm: permission to notify is explicitly denied. Query: is permission to notify supported?",
+      "direct_solver": {
+        "verdict": "compliant",
+        "provenance": {
+          "model_id": "deterministic-fake/v1",
+          "prompt_sha256": "bb10efee05da0a14c784f827decc8f7d9d63647b01b65d14ba53ce011bc16f56",
+          "seed": 0,
+          "params": {
+            "temperature": 0
+          },
+          "timestamp": "2000-01-01T00:00:00+00:00"
+        }
+      },
+      "formalization": {
+        "kind": "aspic",
+        "query": "P:notify",
+        "request": {
+          "schema": "vle-aspic/v1",
+          "premises": [],
+          "rules": [
+            {
+              "id": "r",
+              "kind": "defeasible",
+              "antecedents": [],
+              "conclusion": "P:~notify"
+            }
+          ]
+        }
+      },
+      "formalization_provenance": {
+        "model_id": "deterministic-fake/v1",
+        "prompt_sha256": "a6fd285fdd87db57aec5bdbb329addabf821884221e4831c9ff046ca3e88b629",
+        "seed": 0,
+        "params": {
+          "temperature": 0
+        },
+        "timestamp": "2000-01-01T00:00:00+00:00"
+      },
+      "gold_verdict": "refuted",
+      "synthetic": true,
+      "review_status": "unreviewed"
+    },
+    {
+      "id": "temporal_windows-0",
+      "family": "temporal_windows",
+      "modality": "obligation",
+      "has_exception": false,
+      "source_text": "Synthetic scenario: an operator must notify within steps 0 to 1; notification occurs at step 1.",
+      "direct_solver": {
+        "verdict": "compliant",
+        "provenance": {
+          "model_id": "deterministic-fake/v1",
+          "prompt_sha256": "f520a030dfcc6638283b0a0ade537ffac883655e80ef24b1d453c5af8ea330f3",
+          "seed": 0,
+          "params": {
+            "temperature": 0
+          },
+          "timestamp": "2000-01-01T00:00:00+00:00"
+        }
+      },
+      "formalization": {
+        "kind": "research",
+        "request": {
+          "schema": "vle-research/v1",
+          "norms": [
+            {
+              "norm": {
+                "id": "n",
+                "modality": "obligation",
+                "subject": "operator",
+                "action": "notify"
+              },
+              "start": 0,
+              "end": 1
+            }
+          ],
+          "trace": [
+            {
+              "action:[\"operator\",\"notify\",null]": false
+            },
+            {
+              "action:[\"operator\",\"notify\",null]": true
+            }
+          ]
+        }
+      },
+      "formalization_provenance": {
+        "model_id": "deterministic-fake/v1",
+        "prompt_sha256": "24e489c7f3dee5b6896499e696b8db15cc7081f23b4cc8a5e359817bfee1839f",
+        "seed": 0,
+        "params": {
+          "temperature": 0
+        },
+        "timestamp": "2000-01-01T00:00:00+00:00"
+      },
+      "gold_verdict": "compliant",
+      "synthetic": true,
+      "review_status": "unreviewed"
+    },
+    {
+      "id": "temporal_windows-1",
+      "family": "temporal_windows",
+      "modality": "obligation",
+      "has_exception": false,
+      "source_text": "Synthetic scenario: an operator must notify within steps 0 to 1; no notification occurs.",
+      "direct_solver": {
+        "verdict": "compliant",
+        "provenance": {
+          "model_id": "deterministic-fake/v1",
+          "prompt_sha256": "7638ea777790eb434fb0c78f983f0466d04729cd59283a393b404a306bd6d434",
+          "seed": 0,
+          "params": {
+            "temperature": 0
+          },
+          "timestamp": "2000-01-01T00:00:00+00:00"
+        }
+      },
+      "formalization": {
+        "kind": "research",
+        "request": {
+          "schema": "vle-research/v1",
+          "norms": [
+            {
+              "norm": {
+                "id": "n",
+                "modality": "obligation",
+                "subject": "operator",
+                "action": "notify"
+              },
+              "start": 0,
+              "end": 2
+            }
+          ],
+          "trace": [
+            {
+              "action:[\"operator\",\"notify\",null]": false
+            },
+            {
+              "action:[\"operator\",\"notify\",null]": false
+            },
+            {
+              "action:[\"operator\",\"notify\",null]": true
+            }
+          ]
+        }
+      },
+      "formalization_provenance": {
+        "model_id": "deterministic-fake/v1",
+        "prompt_sha256": "91434f6e7545e23957757807f53a46dff751fde6f4224303ffec58d63ad0d3e3",
+        "seed": 0,
+        "params": {
+          "temperature": 0
+        },
+        "timestamp": "2000-01-01T00:00:00+00:00"
+      },
+      "gold_verdict": "non_compliant",
+      "synthetic": true,
+      "review_status": "unreviewed"
+    },
+    {
+      "id": "cross_reference_dependence-0",
+      "family": "cross_reference_dependence",
+      "modality": "obligation",
+      "has_exception": false,
+      "source_text": "Synthetic scenario: an operator must notify within steps 0 to 1; notification occurs at step 1. This depends on an unresolved synthetic cross-reference; no legal source is asserted.",
+      "direct_solver": {
+        "verdict": "compliant",
+        "provenance": {
+          "model_id": "deterministic-fake/v1",
+          "prompt_sha256": "2db7226fcee26d81ed224ad8cbb827c8bcd718e760c1df97ae90dbb73c16f3b4",
+          "seed": 0,
+          "params": {
+            "temperature": 0
+          },
+          "timestamp": "2000-01-01T00:00:00+00:00"
+        }
+      },
+      "formalization": {
+        "kind": "research",
+        "request": {
+          "schema": "vle-research/v1",
+          "norms": [
+            {
+              "norm": {
+                "id": "n",
+                "modality": "obligation",
+                "subject": "operator",
+                "action": "notify",
+                "conditions": [
+                  {
+                    "name": "cross_reference_resolved"
+                  }
+                ]
+              },
+              "start": 0,
+              "end": 1
+            }
+          ],
+          "trace": [
+            {
+              "action:[\"operator\",\"notify\",null]": false
+            },
+            {
+              "action:[\"operator\",\"notify\",null]": true
+            }
+          ]
+        }
+      },
+      "formalization_provenance": {
+        "model_id": "deterministic-fake/v1",
+        "prompt_sha256": "b76958ebb2928cf74736ac2db70c982049dfce50985b1b9e27483d1928c2bc4a",
+        "seed": 0,
+        "params": {
+          "temperature": 0
+        },
+        "timestamp": "2000-01-01T00:00:00+00:00"
+      },
+      "gold_verdict": "compliant",
+      "synthetic": true,
+      "review_status": "unreviewed"
+    },
+    {
+      "id": "cross_reference_dependence-1",
+      "family": "cross_reference_dependence",
+      "modality": "obligation",
+      "has_exception": false,
+      "source_text": "Synthetic scenario: an operator must notify within steps 0 to 1; no notification occurs. This depends on an unresolved synthetic cross-reference; no legal source is asserted.",
+      "direct_solver": {
+        "verdict": "non_compliant",
+        "provenance": {
+          "model_id": "deterministic-fake/v1",
+          "prompt_sha256": "6f169824f9ce9218034e17140d95609e2165ea8a047124a26facc8abc271ba16",
+          "seed": 0,
+          "params": {
+            "temperature": 0
+          },
+          "timestamp": "2000-01-01T00:00:00+00:00"
+        }
+      },
+      "formalization": {
+        "kind": "research",
+        "request": {
+          "schema": "vle-research/v1",
+          "norms": [
+            {
+              "norm": {
+                "id": "n",
+                "modality": "obligation",
+                "subject": "operator",
+                "action": "notify",
+                "conditions": [
+                  {
+                    "name": "cross_reference_resolved"
+                  }
+                ]
+              },
+              "start": 0,
+              "end": 1
+            }
+          ],
+          "trace": [
+            {
+              "action:[\"operator\",\"notify\",null]": false,
+              "fact:cross_reference_resolved": true
+            },
+            {
+              "action:[\"operator\",\"notify\",null]": false
+            }
+          ]
+        }
+      },
+      "formalization_provenance": {
+        "model_id": "deterministic-fake/v1",
+        "prompt_sha256": "682bd0678b9b72dcff7f22b2aa91bb77c7dfa42b859959ae94866fd85538be1d",
+        "seed": 0,
+        "params": {
+          "temperature": 0
+        },
+        "timestamp": "2000-01-01T00:00:00+00:00"
+      },
+      "gold_verdict": "compliant",
+      "synthetic": true,
+      "review_status": "unreviewed"
+    },
+    {
+      "id": "predicate_naming_drift-0",
+      "family": "predicate_naming_drift",
+      "modality": "obligation",
+      "has_exception": false,
+      "source_text": "Synthetic scenario: an operator must notify within steps 0 to 1; notification occurs at step 1. risk_level is observed true; the alternate predicate hazard is ungrounded.",
+      "direct_solver": {
+        "verdict": "compliant",
+        "provenance": {
+          "model_id": "deterministic-fake/v1",
+          "prompt_sha256": "d49a6b6e2dff11c2a251805d9e33819fd52a14a58551e198b203a6d5efcc9cd7",
+          "seed": 0,
+          "params": {
+            "temperature": 0
+          },
+          "timestamp": "2000-01-01T00:00:00+00:00"
+        }
+      },
+      "formalization": {
+        "kind": "research",
+        "request": {
+          "schema": "vle-research/v1",
+          "norms": [
+            {
+              "norm": {
+                "id": "n",
+                "modality": "obligation",
+                "subject": "operator",
+                "action": "notify",
+                "conditions": [
+                  {
+                    "name": "risk_level"
+                  }
+                ]
+              },
+              "start": 0,
+              "end": 1
+            }
+          ],
+          "trace": [
+            {
+              "action:[\"operator\",\"notify\",null]": false,
+              "fact:risk_level": true
+            },
+            {
+              "action:[\"operator\",\"notify\",null]": true
+            }
+          ]
+        }
+      },
+      "formalization_provenance": {
+        "model_id": "deterministic-fake/v1",
+        "prompt_sha256": "b3c6607bfdc675dd6a94345e423669ff193ef11e6afa20f0f41c9424445ae04c",
+        "seed": 0,
+        "params": {
+          "temperature": 0
+        },
+        "timestamp": "2000-01-01T00:00:00+00:00"
+      },
+      "gold_verdict": "compliant",
+      "synthetic": true,
+      "review_status": "unreviewed"
+    },
+    {
+      "id": "predicate_naming_drift-1",
+      "family": "predicate_naming_drift",
+      "modality": "obligation",
+      "has_exception": false,
+      "source_text": "Synthetic scenario: an operator must notify within steps 0 to 1; no notification occurs. risk_level is observed true; the alternate predicate hazard is ungrounded.",
+      "direct_solver": {
+        "verdict": "compliant",
+        "provenance": {
+          "model_id": "deterministic-fake/v1",
+          "prompt_sha256": "264c2f670a7583c5c0a7cd68989c0d7b3d812c140ad187772c88d3a3e9620e94",
+          "seed": 0,
+          "params": {
+            "temperature": 0
+          },
+          "timestamp": "2000-01-01T00:00:00+00:00"
+        }
+      },
+      "formalization": {
+        "kind": "research",
+        "request": {
+          "schema": "vle-research/v1",
+          "norms": [
+            {
+              "norm": {
+                "id": "n",
+                "modality": "obligation",
+                "subject": "operator",
+                "action": "notify",
+                "conditions": [
+                  {
+                    "name": "hazard"
+                  }
+                ]
+              },
+              "start": 0,
+              "end": 1
+            }
+          ],
+          "trace": [
+            {
+              "action:[\"operator\",\"notify\",null]": false,
+              "fact:risk_level": true
+            },
+            {
+              "action:[\"operator\",\"notify\",null]": false
+            }
+          ]
+        }
+      },
+      "formalization_provenance": {
+        "model_id": "deterministic-fake/v1",
+        "prompt_sha256": "9eb89a73608aa8707afcc9a889016aa7964ba36d78c9fcbafee88e32e1a346b0",
+        "seed": 0,
+        "params": {
+          "temperature": 0
+        },
+        "timestamp": "2000-01-01T00:00:00+00:00"
+      },
+      "gold_verdict": "non_compliant",
+      "synthetic": true,
+      "review_status": "unreviewed"
+    }
+  ]
+}
