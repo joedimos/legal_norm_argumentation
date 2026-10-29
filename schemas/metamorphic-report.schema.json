@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "review_status": {
+      "const": "unreviewed"
+    },
+    "decision_authorized": {
+      "const": false
+    },
+    "legal_certification": {
+      "const": false
+    },
+    "request_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "schema": {
+      "const": "vle-metamorphic-report/v1"
+    },
+    "status": {
+      "enum": [
+        "reported",
+        "unknown"
+      ]
+    },
+    "bounds": {
+      "type": "object"
+    },
+    "reason": {
+      "type": "string"
+    },
+    "rows": {
+      "type": "array"
+    },
+    "robustness_radius": {
+      "type": "array"
+    },
+    "base_formalizations": {
+      "type": "array"
+    },
+    "metrics": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "review_status",
+    "decision_authorized",
+    "legal_certification",
+    "request_sha256",
+    "schema",
+    "status",
+    "bounds",
+    "reason",
+    "rows",
+    "robustness_radius",
+    "base_formalizations",
+    "metrics"
+  ],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "unknown"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "rows": {
+            "maxItems": 0
+          },
+          "robustness_radius": {
+            "maxItems": 0
+          },
+          "base_formalizations": {
+            "maxItems": 0
+          }
+        }
+      }
+    }
+  ]
+}

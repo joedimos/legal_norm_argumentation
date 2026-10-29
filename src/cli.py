@@ -53,7 +53,19 @@ def main() -> None:
     lifecycle.add_argument("--at-date")
     lifecycle.add_argument("--assume-reviewed", action="store_true", help="Demo/testing convenience only")
 
-    for name in ("verify", "research", "experiment", "plan-evidence", "family", "statutory-revise", "live-generate", "annotation-prepare", "annotation-assess", "model-doctor", "annotation-verify"):
+    for name in (
+        "verify",
+        "research",
+        "experiment",
+        "plan-evidence",
+        "family",
+        "statutory-revise",
+        "live-generate",
+        "annotation-prepare",
+        "annotation-assess",
+        "model-doctor",
+        "annotation-verify",
+    ):
         command = subs.add_parser(name)
         command.add_argument("--input", required=True, help="Path to a versioned JSON research request")
         command.add_argument("--bundle", help="Write an audit ZIP containing request, result and runtime")
@@ -91,19 +103,42 @@ def main() -> None:
     bundle = subs.add_parser("verify-bundle")
     bundle.add_argument("--input", required=True)
     bundle.add_argument("--expected-manifest-digest")
+    bundle.add_argument("--expected-certificate-query-sha256", action="append")
 
     from .phase4_cli import COMMANDS, configure, execute
+
     configure(subs)
     from .phase5_cli import COMMANDS as PHASE5_COMMANDS
     from .phase5_cli import configure as configure_phase5
     from .phase5_cli import execute as execute_phase5
+
     configure_phase5(subs)
     args = parser.parse_args()
     if args.command in PHASE5_COMMANDS:
         raise SystemExit(execute_phase5(args))
     if args.command in COMMANDS:
         raise SystemExit(execute(args))
-    if args.command in {"verify", "research", "experiment", "plan-evidence", "family", "statutory-revise", "family-review", "family-benchmark", "benchmark", "experiment-benchmark", "verify-bundle", "live-generate", "annotation-prepare", "annotation-assess", "model-doctor", "annotation-verify", "annotation-template", "annotation-sign", "annotation-keygen"}:
+    if args.command in {
+        "verify",
+        "research",
+        "experiment",
+        "plan-evidence",
+        "family",
+        "statutory-revise",
+        "family-review",
+        "family-benchmark",
+        "benchmark",
+        "experiment-benchmark",
+        "verify-bundle",
+        "live-generate",
+        "annotation-prepare",
+        "annotation-assess",
+        "model-doctor",
+        "annotation-verify",
+        "annotation-template",
+        "annotation-sign",
+        "annotation-keygen",
+    }:
         raise SystemExit(_research_command(args))
     text = _read_text(args)
     norms = extract_norms(text, source_id=args.source_id)
@@ -114,7 +149,17 @@ def main() -> None:
         payload = {"norms": norms, "audit": audit_extraction(text, norms)}
     elif args.command == "formalize":
         sets = formalize_candidates(norms)
-        payload = {"formalizations": [{"source_norm_id": item.source_norm_id, "selected_id": item.selected_id, "unresolved": item.unresolved, "interpretations": [x.to_dict() for x in item.interpretations]} for item in sets]}
+        payload = {
+            "formalizations": [
+                {
+                    "source_norm_id": item.source_norm_id,
+                    "selected_id": item.selected_id,
+                    "unresolved": item.unresolved,
+                    "interpretations": [x.to_dict() for x in item.interpretations],
+                }
+                for item in sets
+            ]
+        }
     else:
         facts = _load_json(args.facts)
         actions = tuple(_load_json(args.actions))
@@ -129,7 +174,14 @@ def main() -> None:
         else:
             audit = audit_extraction(text, norms)
             statuses = ["approved"] * len(norms) if args.assume_reviewed else ["unreviewed"] * len(norms)
-            payload = run_lifecycle(text=text, source_id=args.source_id, candidates=norms, extraction_audit=audit, context=context, review_statuses=statuses)
+            payload = run_lifecycle(
+                text=text,
+                source_id=args.source_id,
+                candidates=norms,
+                extraction_audit=audit,
+                context=context,
+                review_statuses=statuses,
+            )
 
     print(json.dumps(payload, indent=2, ensure_ascii=False, default=str))
 
@@ -162,9 +214,14 @@ def _research_command(args) -> int:
             if len(raw) > MAX_BYTES:
                 raise ValueError("input exceeds 16 MiB limit")
             if args.command == "verify-bundle":
-                payload = verify_bundle(raw, expected_manifest_digest=args.expected_manifest_digest)
+                payload = verify_bundle(
+                    raw,
+                    expected_manifest_digest=args.expected_manifest_digest,
+                    expected_certificate_query_sha256s=args.expected_certificate_query_sha256,
+                )
                 code = 0 if payload["valid"] else 1
             else:
+
                 def unique_keys(pairs):
                     result = {}
                     for key, value in pairs:
@@ -180,8 +237,12 @@ def _research_command(args) -> int:
                     print(json.dumps(payload, indent=2, ensure_ascii=False, allow_nan=False))
                     return 0
                 if args.command == "annotation-sign":
-                    payload = sign_judgment(request, packet_sha256=args.packet_sha256, role=args.role,
-                                            private_key_file=args.private_key_file)
+                    payload = sign_judgment(
+                        request,
+                        packet_sha256=args.packet_sha256,
+                        role=args.role,
+                        private_key_file=args.private_key_file,
+                    )
                     print(json.dumps(payload, indent=2, ensure_ascii=False, allow_nan=False))
                     return 0
                 if args.command == "annotation-verify":
@@ -195,24 +256,63 @@ def _research_command(args) -> int:
                     print(json.dumps(payload, indent=2, ensure_ascii=False, allow_nan=False))
                     return 0 if payload["all_passed"] else 1
                 if args.command in {"family-review", "family-benchmark"}:
-                    payload = (run_family_benchmark(request) if args.command == "family-benchmark" else
-                               record_family_review(request, scope=args.scope, reviewer=args.reviewer,
-                                                    notes=args.notes, decision=args.decision))
+                    payload = (
+                        run_family_benchmark(request)
+                        if args.command == "family-benchmark"
+                        else record_family_review(
+                            request, scope=args.scope, reviewer=args.reviewer, notes=args.notes, decision=args.decision
+                        )
+                    )
                     print(json.dumps(payload, indent=2, ensure_ascii=False, allow_nan=False))
                     return 0 if args.command == "family-review" or payload["all_passed"] else 1
-                runner = {"model-doctor": model_doctor,
-                          "annotation-verify": lambda r: assess_signed_annotations(
-                              r, registry=registry, expected_registry_sha256=args.expected_registry_sha256,
-                              expected_packet_sha256=args.expected_packet_sha256), "live-generate": generate_candidate, "annotation-prepare": prepare_annotation, "annotation-assess": assess_annotations, "statutory-revise": run_revision_sequence, "family": analyze_family, "verify": verify_request, "research": run_research, "experiment": run_experiment, "plan-evidence": plan_evidence}[args.command]
+                runner = {
+                    "model-doctor": model_doctor,
+                    "annotation-verify": lambda r: assess_signed_annotations(
+                        r,
+                        registry=registry,
+                        expected_registry_sha256=args.expected_registry_sha256,
+                        expected_packet_sha256=args.expected_packet_sha256,
+                    ),
+                    "live-generate": generate_candidate,
+                    "annotation-prepare": prepare_annotation,
+                    "annotation-assess": assess_annotations,
+                    "statutory-revise": run_revision_sequence,
+                    "family": analyze_family,
+                    "verify": verify_request,
+                    "research": run_research,
+                    "experiment": run_experiment,
+                    "plan-evidence": plan_evidence,
+                }[args.command]
                 payload = runner(request)
-                code = 0 if payload.get("status", payload.get("annotation_status")) in {"model_available", "awaiting_independent_annotations", "annotations_collected", "verified_bounded", "compliant", "definitely_true", "equivalent_bounded", "planned", "already_decided", "robust_satisfied", "model_satisfied"} else 1
+                code = (
+                    0
+                    if payload.get("status", payload.get("annotation_status"))
+                    in {
+                        "model_available",
+                        "awaiting_independent_annotations",
+                        "annotations_collected",
+                        "verified_bounded",
+                        "compliant",
+                        "definitely_true",
+                        "equivalent_bounded",
+                        "planned",
+                        "already_decided",
+                        "robust_satisfied",
+                        "model_satisfied",
+                    }
+                    else 1
+                )
                 if args.bundle:
-                    artifacts = {"request.json": request, "result.json": payload,
-                                 "runtime.json": runtime_evidence(revision=args.revision)}
+                    artifacts = {
+                        "request.json": request,
+                        "result.json": payload,
+                        "runtime.json": runtime_evidence(revision=args.revision),
+                    }
                     if registry is not None:
                         artifacts["reviewer-registry.json"] = registry
-                    archive, root = create_bundle(artifacts,
-                                                  metadata={"kind": args.command, "legal_certification": False})
+                    archive, root = create_bundle(
+                        artifacts, metadata={"kind": args.command, "legal_certification": False}
+                    )
                     # Refuse to silently replace an existing evidence bundle.
                     with Path(args.bundle).open("xb") as handle:
                         handle.write(archive)

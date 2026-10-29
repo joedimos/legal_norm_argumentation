@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from .audit_bundle import MAX_BYTES, create_bundle
+from .audit_bundle import MAX_BYTES, create_bundle, verify_bundle
 from .model_runtime import strict_json
 from .phase4 import envelope
 
@@ -28,7 +28,7 @@ def configure(subs):
             p.add_argument("--provider", choices=("extractor", "fake", "ollama", "vllm"), default="fake")
         if name == "obstruction":
             p.add_argument("--backend", choices=("exhaustive", "z3"))
-        if name == "check-certificate":
+        if name in {"certify", "check-certificate"}:
             p.add_argument("--expected-query-sha256")
 
 
@@ -39,10 +39,12 @@ def execute(args):
         if len(raw) > MAX_BYTES:
             raise ValueError("input exceeds16MiB")
         request = strict_json(raw)
+        if not isinstance(request, dict):
+            raise ValueError("input must be a JSON object")
         if args.command == "certify":
             from .certificates import certify
 
-            result = certify(request)
+            result = certify(request, expected_query_sha256=args.expected_query_sha256)
         elif args.command == "geometry":
             from .geometry import geometry
 
@@ -76,12 +78,14 @@ def execute(args):
             if "certificate" in result:
                 artifacts["certificate.json"] = result["certificate"]
             archive, root = create_bundle(artifacts)
+            if not verify_bundle(archive, expected_manifest_digest=root)["valid"]:
+                raise ValueError("generated bundle failed bounded certificate verification")
             with Path(args.bundle).open("xb") as f:
                 f.write(archive)
             import sys
 
             print(json.dumps({"bundle_manifest_digest": root}), file=sys.stderr)
-        print(json.dumps(result, indent=2, ensure_ascii=False, allow_nan=False))
+        print(json.dumps(result, indent=2, sort_keys=True, ensure_ascii=False, allow_nan=False))
         return 1 if result.get("valid") is False or result.get("status") == "unknown" else 0
     except (ValueError, TypeError, KeyError, OSError, RecursionError) as exc:
         print(json.dumps(envelope("vle-phase5-error/v1", {"command": args.command}, status="unknown", reason=str(exc))))

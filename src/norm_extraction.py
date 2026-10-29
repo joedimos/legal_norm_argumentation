@@ -63,7 +63,7 @@ def _sentences(text: str) -> Iterable[tuple[str, int, int]]:
 def classify_norm_type(text: str) -> str:
     lowered = text.lower()
     if any(
-        token in lowered
+        re.search(r"(?<!\w)" + re.escape(token) + r"(?!\w)", lowered)
         for token in (
             "shall not",
             "must not",
@@ -92,7 +92,7 @@ def classify_norm_type(text: str) -> str:
     ):
         return "prohibition"
     if any(
-        token in lowered
+        re.search(r"(?<!\w)" + re.escape(token) + r"(?!\w)", lowered)
         for token in (
             "shall",
             "must",
@@ -111,7 +111,7 @@ def classify_norm_type(text: str) -> str:
     ):
         return "obligation"
     if any(
-        token in lowered
+        re.search(r"(?<!\w)" + re.escape(token) + r"(?!\w)", lowered)
         for token in (
             "may",
             "permitted",
@@ -134,7 +134,9 @@ def classify_norm_type(text: str) -> str:
         )
     ):
         return "permission"
-    if any(token in lowered for token in ("should", "devrait", "devraient")):
+    if any(
+        re.search(r"(?<!\w)" + re.escape(token) + r"(?!\w)", lowered) for token in ("should", "devrait", "devraient")
+    ):
         return "recommendation"
     return "unknown"
 

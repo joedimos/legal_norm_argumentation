@@ -1,0 +1,36 @@
+{
+  "schema": "vle-runtime-certificate-mutation/v1",
+  "synthetic": true,
+  "review_status": "unreviewed",
+  "attempts": 4,
+  "diagnostic_unknown_certificates": 2,
+  "affirmative_certificates": 1,
+  "no_certificate": 1,
+  "rows": [
+    {
+      "mutant": "forced_unknown_to_positive",
+      "certificate_type": "unknown",
+      "affirmative_escape": false
+    },
+    {
+      "mutant": "shortened_reasoning_horizon",
+      "certificate_type": "unknown",
+      "affirmative_escape": false
+    },
+    {
+      "mutant": "priority_translation_binding",
+      "certificate_type": "compliant_within_bound",
+      "unpinned_escape": true,
+      "pinned_escape": false
+    },
+    {
+      "mutant": "no_certificate",
+      "certificate_type": null,
+      "reason": "mutant_emitted_no_verdict_certificate"
+    }
+  ],
+  "affirmative_unpinned_escape_rate": 1.0,
+  "affirmative_pinned_escape_rate": 0.0,
+  "decision_authorized": false,
+  "legal_certification": false
+}

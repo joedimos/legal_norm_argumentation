@@ -93,3 +93,50 @@ def test_observations_complete_witnesses_and_query_validation():
         certify({"property": {"op": "atom", "name": "p"}, "horizon": True})
     with pytest.raises(ValueError):
         evaluate({"op": "bad"}, [{}])
+
+
+def test_actual_reasoner_mutations_keep_no_certificate_cases_and_query_boundary():
+    from src.certificate_study import runtime_mutations
+
+    r = runtime_mutations()
+    assert r["attempts"] == 4 and r["no_certificate"] == 1
+    assert r["diagnostic_unknown_certificates"] == 2
+    assert all(not row.get("affirmative_escape", False) for row in r["rows"])
+    assert r["affirmative_unpinned_escape_rate"] == 1 and r["affirmative_pinned_escape_rate"] == 0
+    assert not certify({"property": {"op": "true"}, "horizon": 1})["checker"]["trusted_query_matched"]
+
+
+def test_nested_bundle_certificates_and_explicit_query_pin():
+    c = certify({"property": {"op": "true"}, "horizon": 1})["certificate"]
+    archive, _ = create_bundle({"nested.json": {"analysis": {"certificates": [c]}}})
+    checked = verify_bundle(archive, expected_certificate_query_sha256s=[c["query_sha256"]])
+    assert checked["valid"] and checked["certificate_checks"][0]["trusted_query_matched"]
+    assert not verify_bundle(archive, expected_certificate_query_sha256s=["0" * 64])["valid"]
+    bad = deepcopy(c)
+    bad["evidence"]["merkle_root"] = "0" * 64
+    assert not verify_bundle(create_bundle({"nested.json": {"inside": [bad]}})[0])["valid"]
+
+
+def test_published_certificate_tampering_study_remains_reproducible():
+    from src.certificate_study import run_study
+
+    expected = json.loads(Path("benchmarks/phase5-certificate-results.json").read_text())
+    assert run_study() == expected
+
+
+def test_materialization_work_is_bounded_even_with_many_fixed_observations():
+    observations = [{f"p{i}": True for i in range(32)} for _ in range(32)]
+    # Only sixteen free cells, but a full trace is large: cap total certificate work.
+    for i in range(16):
+        observations[0]["p" + str(i)] = None
+    r = certify({"property": {"op": "true"}, "horizon": 32, "observations": observations})
+    assert r["status"] == "unknown"
+    assert r["certificate"]["evidence"]["bound"] == "work_limit"
+
+
+def test_malformed_witness_shapes_are_rejected_without_crashing():
+    c = certify({"property": {"op": "atom", "name": "p"}, "horizon": 1})["certificate"]
+    for malformed in [["p"], [None], [["p"]], [3]]:
+        bad = deepcopy(c)
+        bad["evidence"]["trace"] = malformed
+        assert not check_certificate(bad)["valid"]

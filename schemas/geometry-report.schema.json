@@ -1,0 +1,139 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "review_status": {
+      "const": "unreviewed"
+    },
+    "decision_authorized": {
+      "const": false
+    },
+    "legal_certification": {
+      "const": false
+    },
+    "request_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "schema": {
+      "const": "vle-geometry-report/v1"
+    },
+    "status": {
+      "enum": [
+        "reported",
+        "unknown"
+      ]
+    },
+    "bounds": {
+      "type": "object"
+    },
+    "horizon": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 32
+    },
+    "reason": {
+      "type": "string"
+    },
+    "mode": {
+      "enum": [
+        "exact",
+        "sampled"
+      ]
+    },
+    "selected_id": {
+      "const": null
+    },
+    "distances": {
+      "type": [
+        "array",
+        "null"
+      ]
+    },
+    "intervals": {
+      "type": [
+        "array",
+        "null"
+      ]
+    },
+    "persistence": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "denominator": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "triangle_violations": {
+      "type": "array",
+      "maxItems": 0
+    }
+  },
+  "required": [
+    "review_status",
+    "decision_authorized",
+    "legal_certification",
+    "request_sha256",
+    "schema",
+    "status",
+    "bounds",
+    "horizon",
+    "reason",
+    "mode",
+    "selected_id",
+    "distances",
+    "intervals",
+    "persistence"
+  ],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "unknown"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "distances": {
+            "type": "null"
+          },
+          "intervals": {
+            "type": "null"
+          },
+          "persistence": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "reported"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "ids",
+          "denominator",
+          "triangle_violations",
+          "equivalence_classes"
+        ],
+        "properties": {
+          "distances": {
+            "type": "array"
+          },
+          "intervals": {
+            "type": "array"
+          }
+        }
+      }
+    }
+  ]
+}

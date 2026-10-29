@@ -335,3 +335,20 @@ and [inspected APIs, deltas and milestone evidence](docs/PHASE4_NOTES.md).
 Run `python -m src.cli faithfulness` for the offline synthetic corpus.
 The 62/19/15 existing fixture suites are unchanged. Live provider evaluation
 and independent legal-expert assessment remain separate empirical work.
+
+
+## Research phase 5
+
+Version 0.8.0 adds bounded local/global obstruction diagnostics, metamorphic
+autoformalization tests, behavioral geometry with opt-in Rips persistence, an
+independent finite-model certificate checker, and interpretive review planning.
+All outputs remain unreviewed/unauthorized; existing release evidence stays advisory.
+
+[Semantics, results and limitations](docs/PHASE5_NOVEL_RESEARCH.md),
+[the frozen protocol](docs/PHASE5_PROTOCOL.md), and
+[API/mathematical deltas](docs/PHASE5_NOTES.md), and
+[verification evidence and hashes](docs/PHASE5_EVALUATION.json) retain negative and unavailable
+results alongside positive synthetic checks. F3 has no eligible local reviewed
+data; H3 is not supported in its simulation. No legal accuracy or priority-of-
+publication claim is made. The pre-fix extractor report is retained separately
+from the token-boundary repair's result. Legacy fixture suites remain unchanged.

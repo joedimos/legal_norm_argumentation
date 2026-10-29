@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "review_status": {
+      "const": "unreviewed"
+    },
+    "decision_authorized": {
+      "const": false
+    },
+    "legal_certification": {
+      "const": false
+    },
+    "request_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "schema": {
+      "const": "vle-check-result/v1"
+    },
+    "valid": {
+      "type": "boolean"
+    },
+    "trusted_query_matched": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "review_status",
+    "decision_authorized",
+    "legal_certification",
+    "request_sha256",
+    "schema",
+    "valid",
+    "trusted_query_matched"
+  ]
+}

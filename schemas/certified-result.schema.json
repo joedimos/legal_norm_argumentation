@@ -1,0 +1,150 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "review_status": {
+      "const": "unreviewed"
+    },
+    "decision_authorized": {
+      "const": false
+    },
+    "legal_certification": {
+      "const": false
+    },
+    "request_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "schema": {
+      "const": "vle-certified-result/v1"
+    },
+    "status": {
+      "enum": [
+        "violation",
+        "compliant_within_bound",
+        "unknown"
+      ]
+    },
+    "bounds": {
+      "type": "object"
+    },
+    "certificate": {
+      "type": "object"
+    },
+    "checker": {
+      "type": "object"
+    },
+    "proof_scope": {
+      "const": "explicit_formula_not_legal_or_priority_faithfulness"
+    }
+  },
+  "required": [
+    "review_status",
+    "decision_authorized",
+    "legal_certification",
+    "request_sha256",
+    "schema",
+    "status",
+    "bounds",
+    "certificate",
+    "checker",
+    "proof_scope"
+  ],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "unknown"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "certificate": {
+            "properties": {
+              "type": {
+                "const": "unknown"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "violation"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "certificate": {
+            "properties": {
+              "type": {
+                "const": "violation"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "compliant_within_bound"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "certificate": {
+            "properties": {
+              "type": {
+                "const": "compliant_within_bound"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "enum": [
+              "violation",
+              "compliant_within_bound"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "checker": {
+            "properties": {
+              "valid": {
+                "const": true
+              }
+            },
+            "required": [
+              "valid"
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

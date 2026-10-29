@@ -3,6 +3,7 @@
 Hashes detect corruption. Authenticity requires a separately trusted manifest
 digest (or external signature); a self-contained hash is not a signature.
 """
+
 from __future__ import annotations
 
 import hashlib
@@ -13,6 +14,7 @@ import zipfile
 from collections.abc import Mapping
 from importlib.metadata import distributions
 from platform import python_version
+from time import monotonic
 
 MAX_BYTES = 16 * 1024 * 1024
 MAX_FILES = 32
@@ -35,6 +37,7 @@ def canonical_json(value) -> bytes:
                 validate(child, depth + 1)
         elif item is not None and type(item) not in {str, int, float, bool}:
             raise ValueError("artifact must contain only JSON values")
+
     validate(value)
     return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False, allow_nan=False).encode()
 
@@ -46,10 +49,13 @@ def digest(data: bytes) -> str:
 def runtime_evidence(*, revision: str | None = None) -> dict:
     if revision is not None and not re.fullmatch(r"[0-9a-f]{40}", revision):
         raise ValueError("revision must be a full lowercase Git SHA")
-    return {"python": python_version(), "code_revision": revision,
-            "revision_recorded": revision is not None,
-            "packages": dict(sorted((d.metadata["Name"], d.version) for d in distributions() if d.metadata["Name"])),
-            "semantics": {"legacy": "grounded-scoped-norms-v1", "temporal": "LTLf-complete-valuations-v1"}}
+    return {
+        "python": python_version(),
+        "code_revision": revision,
+        "revision_recorded": revision is not None,
+        "packages": dict(sorted((d.metadata["Name"], d.version) for d in distributions() if d.metadata["Name"])),
+        "semantics": {"legacy": "grounded-scoped-norms-v1", "temporal": "LTLf-complete-valuations-v1"},
+    }
 
 
 def create_bundle(artifacts: Mapping[str, object], *, metadata: dict | None = None) -> tuple[bytes, str]:
@@ -60,8 +66,12 @@ def create_bundle(artifacts: Mapping[str, object], *, metadata: dict | None = No
         if not isinstance(name, str) or not SAFE_NAME.fullmatch(name) or name == "manifest.json":
             raise ValueError("artifact filenames must be safe flat JSON names")
         files[name] = canonical_json(payload)
-    manifest = {"schema": SCHEMA, "hash_algorithm": "sha256", "metadata": metadata or {},
-                "entries": {name: {"sha256": digest(data), "size": len(data)} for name, data in sorted(files.items())}}
+    manifest = {
+        "schema": SCHEMA,
+        "hash_algorithm": "sha256",
+        "metadata": metadata or {},
+        "entries": {name: {"sha256": digest(data), "size": len(data)} for name, data in sorted(files.items())},
+    }
     raw_manifest = canonical_json(manifest)
     files["manifest.json"] = raw_manifest
     if sum(map(len, files.values())) > MAX_BYTES:
@@ -95,10 +105,19 @@ def _json(data):
     return value
 
 
-def verify_bundle(data: bytes, *, expected_manifest_digest: str | None = None) -> dict:
+def verify_bundle(
+    data: bytes, *, expected_manifest_digest: str | None = None, expected_certificate_query_sha256s=None
+) -> dict:
     """Never extracts files; rejects unlisted members, paths, symlinks and bombs."""
     if expected_manifest_digest is not None and not re.fullmatch(r"[0-9a-f]{64}", expected_manifest_digest):
         raise ValueError("trusted manifest digest must be a lowercase SHA-256 digest")
+    if expected_certificate_query_sha256s is not None and (
+        not isinstance(expected_certificate_query_sha256s, (list, tuple))
+        or any(
+            not isinstance(d, str) or not re.fullmatch(r"[0-9a-f]{64}", d) for d in expected_certificate_query_sha256s
+        )
+    ):
+        raise ValueError("certificate query digests must be lowercase SHA256 strings")
     try:
         if not isinstance(data, bytes) or len(data) > MAX_BYTES:
             raise ValueError("archive exceeds size limit")
@@ -110,9 +129,12 @@ def verify_bundle(data: bytes, *, expected_manifest_digest: str | None = None) -
             if sum(e.file_size for e in entries) > MAX_BYTES:
                 raise ValueError("uncompressed size limit exceeded")
             for entry in entries:
-                if (not SAFE_NAME.fullmatch(entry.filename) or entry.flag_bits & 1
-                        or entry.compress_type != zipfile.ZIP_STORED
-                        or (entry.external_attr >> 16) & 0o170000 != 0o100000):
+                if (
+                    not SAFE_NAME.fullmatch(entry.filename)
+                    or entry.flag_bits & 1
+                    or entry.compress_type != zipfile.ZIP_STORED
+                    or (entry.external_attr >> 16) & 0o170000 != 0o100000
+                ):
                     raise ValueError("unsafe ZIP member")
             if "manifest.json" not in names:
                 raise ValueError("missing manifest")
@@ -127,38 +149,96 @@ def verify_bundle(data: bytes, *, expected_manifest_digest: str | None = None) -
             if set(names) != {"manifest.json", *manifest["entries"]}:
                 raise ValueError("manifest membership mismatch")
             certificate_checks = []
+            certificate_cache = {}
+            seen_queries = set()
+            certificate_started = monotonic()
+
+            def inspect_certificates(value, location):
+                if isinstance(value, dict) and value.get("schema") == "vle-certificate/v1":
+                    from .checker import check_certificate
+
+                    fingerprint = digest(canonical_json(value))
+                    query_digest = value.get("query_sha256")
+                    if (
+                        expected_certificate_query_sha256s is not None
+                        and query_digest not in expected_certificate_query_sha256s
+                    ):
+                        raise ValueError("unexpected certificate query digest")
+                    seen_queries.add(query_digest)
+                    if fingerprint not in certificate_cache:
+                        if len(certificate_cache) >= 128:
+                            raise ValueError("certificate checking count limit128")
+                        remaining = 5000 - int((monotonic() - certificate_started) * 1000)
+                        if remaining <= 0:
+                            raise ValueError("certificate checking time limit5000ms")
+                        checked = check_certificate(
+                            value,
+                            expected_query_sha256=query_digest
+                            if expected_certificate_query_sha256s is not None
+                            else None,
+                            timeout_ms=remaining,
+                        )
+                        if not checked["valid"]:
+                            raise ValueError("invalid proof certificate: " + checked["reason"])
+                        certificate_cache[fingerprint] = checked
+                    certificate_checks.append({"artifact": location, **certificate_cache[fingerprint]})
+                elif isinstance(value, dict):
+                    for key, child in sorted(value.items()):
+                        inspect_certificates(child, location + "/" + key.replace("~", "~0").replace("/", "~1"))
+                elif isinstance(value, list):
+                    for index, child in enumerate(value):
+                        inspect_certificates(child, location + "/" + str(index))
+
             for name, expected in manifest["entries"].items():
-                if (not isinstance(expected, dict) or set(expected) != {"sha256", "size"}
-                        or type(expected["size"]) is not int or expected["size"] < 0
-                        or not isinstance(expected["sha256"], str)
-                        or not re.fullmatch(r"[0-9a-f]{64}", expected["sha256"])):
+                if (
+                    not isinstance(expected, dict)
+                    or set(expected) != {"sha256", "size"}
+                    or type(expected["size"]) is not int
+                    or expected["size"] < 0
+                    or not isinstance(expected["sha256"], str)
+                    or not re.fullmatch(r"[0-9a-f]{64}", expected["sha256"])
+                ):
                     raise ValueError("invalid manifest entry")
                 payload = archive.read(name)
                 if expected != {"sha256": digest(payload), "size": len(payload)}:
                     raise ValueError("artifact digest or length mismatch")
                 artifact = _json(payload)
-                if isinstance(artifact, dict) and artifact.get("schema") == "vle-certificate/v1":
-                    from .checker import check_certificate
-                    checked = check_certificate(artifact)
-                    if not checked["valid"]:
-                        raise ValueError("invalid proof certificate: " + checked["reason"])
-                    certificate_checks.append({"artifact": name, **checked})
+                inspect_certificates(artifact, name + "#")
+            if (
+                expected_certificate_query_sha256s is not None
+                and set(expected_certificate_query_sha256s) != seen_queries
+            ):
+                raise ValueError("missing expected certificate query")
             actual = digest(raw)
             if expected_manifest_digest is not None and actual != expected_manifest_digest:
                 raise ValueError("trusted manifest digest mismatch")
-            return {"valid": True, "manifest_digest": actual, "artifact_count": len(names) - 1,
-                    "trusted_digest_matched": expected_manifest_digest is not None,
-                    "signature_verified": False, "legal_certification": False,
-                    **({"certificate_checks": certificate_checks} if certificate_checks else {})}
+            return {
+                "valid": True,
+                "manifest_digest": actual,
+                "artifact_count": len(names) - 1,
+                "trusted_digest_matched": expected_manifest_digest is not None,
+                "signature_verified": False,
+                "legal_certification": False,
+                **({"certificate_checks": certificate_checks} if certificate_checks else {}),
+            }
     except (ValueError, TypeError, KeyError, OSError, UnicodeError, zipfile.BadZipFile, RecursionError) as exc:
-        return {"valid": False, "reason": str(exc), "trusted_digest_matched": False,
-                "signature_verified": False, "legal_certification": False}
+        return {
+            "valid": False,
+            "reason": str(exc),
+            "trusted_digest_matched": False,
+            "signature_verified": False,
+            "legal_certification": False,
+        }
 
 
 def redundancy_artifacts(request, report):
     """Additive v1 artifacts, including exact candidate/alignment/pair evidence."""
     if report.get("schema") != "vle-redundancy-report/v1":
         raise ValueError("requires redundancy report")
-    return {"request.json": request, "result.json": report,
-            "candidates.json": report["candidates"], "alignment.json": report["alignment"],
-            "pairs.json": report["pairs"]}
+    return {
+        "request.json": request,
+        "result.json": report,
+        "candidates.json": report["candidates"],
+        "alignment.json": report["alignment"],
+        "pairs.json": report["pairs"],
+    }

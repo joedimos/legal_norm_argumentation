@@ -56,3 +56,39 @@ def test_predeclared_synthetic_annotation_pipeline_executes_without_expert_claim
     assert len(r["rows"]) == 8 and r["real_reviewers"] == 0 and r["simulated_only"]
     assert r["real_predictive_validity"] == "unmeasured" and not r["decision_authorized"]
     assert r == run_study(corpus)
+
+
+def test_typed_norm_alignment_and_unsupported_family_constraints_stay_explicit():
+    from src.normative_model import Modality, NormInterpretation, Predicate
+
+    a = NormInterpretation("a", "s", Modality.OBLIGATION, "operator", "notify", conditions=(Predicate("risk"),))
+    b = NormInterpretation("b", "s", Modality.OBLIGATION, "operator", "notify", conditions=(Predicate("hazard"),))
+    req = {"schema": "vle-geometry/v1", "horizon": 1, "interpretations": [{"norm": a.to_dict()}, {"norm": b.to_dict()}]}
+    assert geometry(req)["status"] == "unknown"
+    req["alignment"] = {
+        "maps": {"b": {"hazard": "risk"}},
+        "reviewer": "synthetic-example",
+        "rationale": "synthetic unreviewed alias",
+    }
+    result = geometry(req)
+    assert result["status"] == "reported" and result["distances"][0][1] == 0 and result["selected_id"] is None
+    assert geometry({**request(), "assumptions": [{"op": "false"}]})["status"] == "unknown"
+    corpus = json.loads(Path("benchmarks/geometry-study-v1.json").read_text())
+    family = corpus["study"]["units"][0]["family"]
+    family["observations"] = [{"p": True}]
+    assert geometry({"schema": "vle-geometry/v1", "family": family, "horizon": 1})["status"] == "unknown"
+
+
+def test_small_report_matches_frozen_structural_golden():
+    golden = json.loads(Path("tests/fixtures/phase5/geometry-golden.json").read_text())
+    req = {
+        "schema": "vle-geometry/v1",
+        "horizon": 1,
+        "topology": True,
+        "interpretations": [
+            {"id": "p", "property": {"op": "atom", "name": "p"}},
+            {"id": "q", "property": {"op": "atom", "name": "q"}},
+        ],
+    }
+    result = geometry(req)
+    assert {k: result[k] for k in golden["expected"]} == golden["expected"]
