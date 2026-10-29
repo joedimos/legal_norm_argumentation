@@ -1,0 +1,801 @@
+{
+  "schema": "vle-obstruction-study/v1",
+  "synthetic": true,
+  "review_status": "unreviewed",
+  "backend": "exhaustive",
+  "F1": {
+    "cases": 32,
+    "passed": 32,
+    "rows": [
+      {
+        "kind": "triangle",
+        "seed": 0,
+        "pair_conflicts": 0,
+        "status": "cyclic_obstruction",
+        "minimal_family": [
+          "n0",
+          "n1",
+          "n2"
+        ],
+        "expected_family": [
+          "n0",
+          "n1",
+          "n2"
+        ],
+        "existing_pairwise_applicable": false
+      },
+      {
+        "kind": "triangle",
+        "seed": 1,
+        "pair_conflicts": 0,
+        "status": "cyclic_obstruction",
+        "minimal_family": [
+          "n0",
+          "n1",
+          "n2"
+        ],
+        "expected_family": [
+          "n0",
+          "n1",
+          "n2"
+        ],
+        "existing_pairwise_applicable": false
+      },
+      {
+        "kind": "triangle",
+        "seed": 2,
+        "pair_conflicts": 0,
+        "status": "cyclic_obstruction",
+        "minimal_family": [
+          "n0",
+          "n1",
+          "n2"
+        ],
+        "expected_family": [
+          "n0",
+          "n1",
+          "n2"
+        ],
+        "existing_pairwise_applicable": false
+      },
+      {
+        "kind": "triangle",
+        "seed": 3,
+        "pair_conflicts": 0,
+        "status": "cyclic_obstruction",
+        "minimal_family": [
+          "n0",
+          "n1",
+          "n2"
+        ],
+        "expected_family": [
+          "n0",
+          "n1",
+          "n2"
+        ],
+        "existing_pairwise_applicable": false
+      },
+      {
+        "kind": "triangle",
+        "seed": 4,
+        "pair_conflicts": 0,
+        "status": "cyclic_obstruction",
+        "minimal_family": [
+          "n0",
+          "n1",
+          "n2"
+        ],
+        "expected_family": [
+          "n0",
+          "n1",
+          "n2"
+        ],
+        "existing_pairwise_applicable": false
+      },
+      {
+        "kind": "triangle",
+        "seed": 5,
+        "pair_conflicts": 0,
+        "status": "cyclic_obstruction",
+        "minimal_family": [
+          "n0",
+          "n1",
+          "n2"
+        ],
+        "expected_family": [
+          "n0",
+          "n1",
+          "n2"
+        ],
+        "existing_pairwise_applicable": false
+      },
+      {
+        "kind": "triangle",
+        "seed": 6,
+        "pair_conflicts": 0,
+        "status": "cyclic_obstruction",
+        "minimal_family": [
+          "n0",
+          "n1",
+          "n2"
+        ],
+        "expected_family": [
+          "n0",
+          "n1",
+          "n2"
+        ],
+        "existing_pairwise_applicable": false
+      },
+      {
+        "kind": "triangle",
+        "seed": 7,
+        "pair_conflicts": 0,
+        "status": "cyclic_obstruction",
+        "minimal_family": [
+          "n0",
+          "n1",
+          "n2"
+        ],
+        "expected_family": [
+          "n0",
+          "n1",
+          "n2"
+        ],
+        "existing_pairwise_applicable": false
+      },
+      {
+        "kind": "four_cycle",
+        "seed": 0,
+        "pair_conflicts": 0,
+        "status": "cyclic_obstruction",
+        "minimal_family": [
+          "n0",
+          "n1",
+          "n2",
+          "n3"
+        ],
+        "expected_family": [
+          "n0",
+          "n1",
+          "n2",
+          "n3"
+        ],
+        "existing_pairwise_applicable": false
+      },
+      {
+        "kind": "four_cycle",
+        "seed": 1,
+        "pair_conflicts": 0,
+        "status": "cyclic_obstruction",
+        "minimal_family": [
+          "n0",
+          "n1",
+          "n2",
+          "n3"
+        ],
+        "expected_family": [
+          "n0",
+          "n1",
+          "n2",
+          "n3"
+        ],
+        "existing_pairwise_applicable": false
+      },
+      {
+        "kind": "four_cycle",
+        "seed": 2,
+        "pair_conflicts": 0,
+        "status": "cyclic_obstruction",
+        "minimal_family": [
+          "n0",
+          "n1",
+          "n2",
+          "n3"
+        ],
+        "expected_family": [
+          "n0",
+          "n1",
+          "n2",
+          "n3"
+        ],
+        "existing_pairwise_applicable": false
+      },
+      {
+        "kind": "four_cycle",
+        "seed": 3,
+        "pair_conflicts": 0,
+        "status": "cyclic_obstruction",
+        "minimal_family": [
+          "n0",
+          "n1",
+          "n2",
+          "n3"
+        ],
+        "expected_family": [
+          "n0",
+          "n1",
+          "n2",
+          "n3"
+        ],
+        "existing_pairwise_applicable": false
+      },
+      {
+        "kind": "four_cycle",
+        "seed": 4,
+        "pair_conflicts": 0,
+        "status": "cyclic_obstruction",
+        "minimal_family": [
+          "n0",
+          "n1",
+          "n2",
+          "n3"
+        ],
+        "expected_family": [
+          "n0",
+          "n1",
+          "n2",
+          "n3"
+        ],
+        "existing_pairwise_applicable": false
+      },
+      {
+        "kind": "four_cycle",
+        "seed": 5,
+        "pair_conflicts": 0,
+        "status": "cyclic_obstruction",
+        "minimal_family": [
+          "n0",
+          "n1",
+          "n2",
+          "n3"
+        ],
+        "expected_family": [
+          "n0",
+          "n1",
+          "n2",
+          "n3"
+        ],
+        "existing_pairwise_applicable": false
+      },
+      {
+        "kind": "four_cycle",
+        "seed": 6,
+        "pair_conflicts": 0,
+        "status": "cyclic_obstruction",
+        "minimal_family": [
+          "n0",
+          "n1",
+          "n2",
+          "n3"
+        ],
+        "expected_family": [
+          "n0",
+          "n1",
+          "n2",
+          "n3"
+        ],
+        "existing_pairwise_applicable": false
+      },
+      {
+        "kind": "four_cycle",
+        "seed": 7,
+        "pair_conflicts": 0,
+        "status": "cyclic_obstruction",
+        "minimal_family": [
+          "n0",
+          "n1",
+          "n2",
+          "n3"
+        ],
+        "expected_family": [
+          "n0",
+          "n1",
+          "n2",
+          "n3"
+        ],
+        "existing_pairwise_applicable": false
+      },
+      {
+        "kind": "exception_scope_loop",
+        "seed": 0,
+        "pair_conflicts": 0,
+        "status": "cyclic_obstruction",
+        "minimal_family": [
+          "n0",
+          "n1",
+          "n2"
+        ],
+        "expected_family": [
+          "n0",
+          "n1",
+          "n2"
+        ],
+        "existing_pairwise_applicable": false
+      },
+      {
+        "kind": "exception_scope_loop",
+        "seed": 1,
+        "pair_conflicts": 0,
+        "status": "cyclic_obstruction",
+        "minimal_family": [
+          "n0",
+          "n1",
+          "n2"
+        ],
+        "expected_family": [
+          "n0",
+          "n1",
+          "n2"
+        ],
+        "existing_pairwise_applicable": false
+      },
+      {
+        "kind": "exception_scope_loop",
+        "seed": 2,
+        "pair_conflicts": 0,
+        "status": "cyclic_obstruction",
+        "minimal_family": [
+          "n0",
+          "n1",
+          "n2"
+        ],
+        "expected_family": [
+          "n0",
+          "n1",
+          "n2"
+        ],
+        "existing_pairwise_applicable": false
+      },
+      {
+        "kind": "exception_scope_loop",
+        "seed": 3,
+        "pair_conflicts": 0,
+        "status": "cyclic_obstruction",
+        "minimal_family": [
+          "n0",
+          "n1",
+          "n2"
+        ],
+        "expected_family": [
+          "n0",
+          "n1",
+          "n2"
+        ],
+        "existing_pairwise_applicable": false
+      },
+      {
+        "kind": "exception_scope_loop",
+        "seed": 4,
+        "pair_conflicts": 0,
+        "status": "cyclic_obstruction",
+        "minimal_family": [
+          "n0",
+          "n1",
+          "n2"
+        ],
+        "expected_family": [
+          "n0",
+          "n1",
+          "n2"
+        ],
+        "existing_pairwise_applicable": false
+      },
+      {
+        "kind": "exception_scope_loop",
+        "seed": 5,
+        "pair_conflicts": 0,
+        "status": "cyclic_obstruction",
+        "minimal_family": [
+          "n0",
+          "n1",
+          "n2"
+        ],
+        "expected_family": [
+          "n0",
+          "n1",
+          "n2"
+        ],
+        "existing_pairwise_applicable": false
+      },
+      {
+        "kind": "exception_scope_loop",
+        "seed": 6,
+        "pair_conflicts": 0,
+        "status": "cyclic_obstruction",
+        "minimal_family": [
+          "n0",
+          "n1",
+          "n2"
+        ],
+        "expected_family": [
+          "n0",
+          "n1",
+          "n2"
+        ],
+        "existing_pairwise_applicable": false
+      },
+      {
+        "kind": "exception_scope_loop",
+        "seed": 7,
+        "pair_conflicts": 0,
+        "status": "cyclic_obstruction",
+        "minimal_family": [
+          "n0",
+          "n1",
+          "n2"
+        ],
+        "expected_family": [
+          "n0",
+          "n1",
+          "n2"
+        ],
+        "existing_pairwise_applicable": false
+      },
+      {
+        "kind": "reference_loop",
+        "seed": 0,
+        "pair_conflicts": 0,
+        "status": "cyclic_obstruction",
+        "minimal_family": [
+          "n0",
+          "n1",
+          "n2"
+        ],
+        "expected_family": [
+          "n0",
+          "n1",
+          "n2"
+        ],
+        "existing_pairwise_applicable": false
+      },
+      {
+        "kind": "reference_loop",
+        "seed": 1,
+        "pair_conflicts": 0,
+        "status": "cyclic_obstruction",
+        "minimal_family": [
+          "n0",
+          "n1",
+          "n2"
+        ],
+        "expected_family": [
+          "n0",
+          "n1",
+          "n2"
+        ],
+        "existing_pairwise_applicable": false
+      },
+      {
+        "kind": "reference_loop",
+        "seed": 2,
+        "pair_conflicts": 0,
+        "status": "cyclic_obstruction",
+        "minimal_family": [
+          "n0",
+          "n1",
+          "n2"
+        ],
+        "expected_family": [
+          "n0",
+          "n1",
+          "n2"
+        ],
+        "existing_pairwise_applicable": false
+      },
+      {
+        "kind": "reference_loop",
+        "seed": 3,
+        "pair_conflicts": 0,
+        "status": "cyclic_obstruction",
+        "minimal_family": [
+          "n0",
+          "n1",
+          "n2"
+        ],
+        "expected_family": [
+          "n0",
+          "n1",
+          "n2"
+        ],
+        "existing_pairwise_applicable": false
+      },
+      {
+        "kind": "reference_loop",
+        "seed": 4,
+        "pair_conflicts": 0,
+        "status": "cyclic_obstruction",
+        "minimal_family": [
+          "n0",
+          "n1",
+          "n2"
+        ],
+        "expected_family": [
+          "n0",
+          "n1",
+          "n2"
+        ],
+        "existing_pairwise_applicable": false
+      },
+      {
+        "kind": "reference_loop",
+        "seed": 5,
+        "pair_conflicts": 0,
+        "status": "cyclic_obstruction",
+        "minimal_family": [
+          "n0",
+          "n1",
+          "n2"
+        ],
+        "expected_family": [
+          "n0",
+          "n1",
+          "n2"
+        ],
+        "existing_pairwise_applicable": false
+      },
+      {
+        "kind": "reference_loop",
+        "seed": 6,
+        "pair_conflicts": 0,
+        "status": "cyclic_obstruction",
+        "minimal_family": [
+          "n0",
+          "n1",
+          "n2"
+        ],
+        "expected_family": [
+          "n0",
+          "n1",
+          "n2"
+        ],
+        "existing_pairwise_applicable": false
+      },
+      {
+        "kind": "reference_loop",
+        "seed": 7,
+        "pair_conflicts": 0,
+        "status": "cyclic_obstruction",
+        "minimal_family": [
+          "n0",
+          "n1",
+          "n2"
+        ],
+        "expected_family": [
+          "n0",
+          "n1",
+          "n2"
+        ],
+        "existing_pairwise_applicable": false
+      }
+    ]
+  },
+  "F2_unqualified_pair_SAT_sufficiency": false,
+  "acyclic_counterexample": {
+    "schema": "vle-obstruction-report/v1",
+    "backend": "exhaustive",
+    "horizon": 1,
+    "input_basis": "explicit_assumed_reviewed_demo_not_expert_validation",
+    "acyclic_cover": true,
+    "minimal_family": [
+      "0",
+      "1",
+      "2"
+    ],
+    "cycle": [],
+    "witness": null,
+    "nerve": {
+      "vertices": [
+        "0",
+        "1",
+        "2"
+      ],
+      "simplices": [
+        [
+          "0"
+        ],
+        [
+          "1"
+        ],
+        [
+          "2"
+        ],
+        [
+          "0",
+          "1"
+        ],
+        [
+          "1",
+          "2"
+        ]
+      ]
+    },
+    "pair_checks": [
+      {
+        "ids": [
+          "0",
+          "1"
+        ],
+        "consistent": true
+      },
+      {
+        "ids": [
+          "0",
+          "2"
+        ],
+        "consistent": true
+      },
+      {
+        "ids": [
+          "1",
+          "2"
+        ],
+        "consistent": true
+      }
+    ],
+    "certificate": {
+      "schema": "vle-certificate/v1",
+      "type": "conflict",
+      "query": {
+        "property": {
+          "op": "true"
+        },
+        "horizon": 1,
+        "assumptions": [
+          {
+            "op": "atom",
+            "name": "p"
+          },
+          {
+            "op": "or",
+            "args": [
+              {
+                "op": "and",
+                "args": [
+                  {
+                    "op": "atom",
+                    "name": "p"
+                  },
+                  {
+                    "op": "atom",
+                    "name": "q"
+                  }
+                ]
+              },
+              {
+                "op": "and",
+                "args": [
+                  {
+                    "op": "not",
+                    "args": [
+                      {
+                        "op": "atom",
+                        "name": "p"
+                      }
+                    ]
+                  },
+                  {
+                    "op": "not",
+                    "args": [
+                      {
+                        "op": "atom",
+                        "name": "q"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "op": "not",
+            "args": [
+              {
+                "op": "atom",
+                "name": "q"
+              }
+            ]
+          }
+        ],
+        "observations": [],
+        "binding": {
+          "cell_ids": [
+            "0",
+            "1",
+            "2"
+          ],
+          "overlap_edges": [
+            [
+              "0",
+              "1"
+            ],
+            [
+              "1",
+              "2"
+            ]
+          ]
+        }
+      },
+      "query_sha256": "24aded4caace49dd6c64f171ea3b0d71c53335c02c9555732429026a7e698b01",
+      "evidence": {
+        "state_count": 4,
+        "admissible_count": 0,
+        "merkle_root": "91215b60cd3a337a2b7a73cf4b81bcf0aeb09cde4dbfa0d061da2936eb21e0a7",
+        "minimal_ids": [
+          "0",
+          "1",
+          "2"
+        ],
+        "cycle": [],
+        "deletion_witnesses": [
+          {
+            "removed": "0",
+            "trace": [
+              {
+                "p": false,
+                "q": false
+              }
+            ]
+          },
+          {
+            "removed": "1",
+            "trace": [
+              {
+                "p": true,
+                "q": false
+              }
+            ]
+          },
+          {
+            "removed": "2",
+            "trace": [
+              {
+                "p": true,
+                "q": true
+              }
+            ]
+          }
+        ]
+      },
+      "review_status": "unreviewed",
+      "decision_authorized": false,
+      "legal_certification": false
+    },
+    "reference_findings": [],
+    "existing_pairwise_conflicts": [],
+    "existing_pairwise_applicable": false,
+    "acyclic_shortcut": {
+      "join_tree": [
+        [
+          "0",
+          "1"
+        ],
+        [
+          "1",
+          "2"
+        ]
+      ],
+      "empty_after_semijoins": true
+    },
+    "status": "higher_order_conflict",
+    "reason": "minimal_unsatisfiable_explicit_family",
+    "bounds": {
+      "max_states": 65536,
+      "timeout_ms": 5000,
+      "checked_states": 36
+    },
+    "request_sha256": "666efc04ad5f48c4305d8ad14b3051a7dde790e3ace060139be3560c03d5d864",
+    "review_status": "unreviewed",
+    "decision_authorized": false,
+    "legal_certification": false
+  },
+  "F3": {
+    "status": "not_run_missing_reviewed_data",
+    "inventory": "no local ingested SQLite/snapshot corpus located",
+    "eligible_documents": null,
+    "eligible_norms": null,
+    "cyclic_structures": null,
+    "obstructions": null
+  },
+  "decision_authorized": false,
+  "legal_certification": false
+}

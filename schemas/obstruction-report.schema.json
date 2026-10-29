@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "vle-obstruction-report/v1"
+    },
+    "status": {
+      "enum": [
+        "globally_consistent",
+        "pairwise_conflict",
+        "cyclic_obstruction",
+        "higher_order_conflict",
+        "unknown"
+      ]
+    },
+    "reason": {
+      "type": "string"
+    },
+    "request_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "review_status": {
+      "const": "unreviewed"
+    },
+    "decision_authorized": {
+      "const": false
+    },
+    "legal_certification": {
+      "const": false
+    },
+    "minimal_family": {
+      "type": "array"
+    },
+    "cycle": {
+      "type": "array"
+    },
+    "bounds": {
+      "type": "object"
+    },
+    "witness": {
+      "type": [
+        "array",
+        "null"
+      ]
+    },
+    "certificate": {
+      "type": [
+        "object",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "schema",
+    "status",
+    "reason",
+    "request_sha256",
+    "review_status",
+    "decision_authorized",
+    "legal_certification",
+    "minimal_family",
+    "cycle",
+    "bounds",
+    "witness",
+    "certificate"
+  ],
+  "additionalProperties": true,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "unknown"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "witness": {
+            "type": "null"
+          },
+          "certificate": {
+            "type": "null"
+          },
+          "minimal_family": {
+            "maxItems": 0
+          }
+        }
+      }
+    }
+  ]
+}
