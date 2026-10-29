@@ -1,0 +1,139 @@
+{
+  "schema": "vle-metamorphic-corpus/v1",
+  "synthetic": true,
+  "review_status": "unreviewed",
+  "cases": [
+    {
+      "id": "voice",
+      "text": "The operator must file the report.",
+      "language": "en",
+      "modality": "obligation",
+      "relations": [
+        "voice"
+      ]
+    },
+    {
+      "id": "clause",
+      "text": "If risk, the operator must notify.",
+      "language": "en",
+      "modality": "obligation",
+      "relations": [
+        "condition_order"
+      ]
+    },
+    {
+      "id": "exception",
+      "text": "The operator must notify unless waived.",
+      "language": "en",
+      "modality": "obligation",
+      "relations": [
+        "exception_synonym"
+      ]
+    },
+    {
+      "id": "position",
+      "text": "The operator must notify unless waived.",
+      "language": "en",
+      "modality": "obligation",
+      "relations": [
+        "exception_position"
+      ]
+    },
+    {
+      "id": "modality-en",
+      "text": "The operator must notify.",
+      "language": "en",
+      "modality": "obligation",
+      "relations": [
+        "modality_synonym"
+      ]
+    },
+    {
+      "id": "modality-fr",
+      "text": "L\u2019op\u00e9rateur doit notifier.",
+      "language": "fr",
+      "modality": "obligation",
+      "relations": [
+        "modality_synonym"
+      ]
+    },
+    {
+      "id": "double",
+      "text": "The operator must notify.",
+      "language": "en",
+      "modality": "obligation",
+      "relations": [
+        "double_negation"
+      ]
+    },
+    {
+      "id": "list",
+      "text": "If risk and consent, the operator must notify.",
+      "language": "en",
+      "modality": "obligation",
+      "relations": [
+        "list_order"
+      ]
+    },
+    {
+      "id": "parallel",
+      "text": "The operator must notify.",
+      "language": "en",
+      "modality": "obligation",
+      "relations": [
+        "parallel"
+      ],
+      "parallel": "L\u2019op\u00e9rateur doit notifier.",
+      "aliases": {
+        "The operator": "operator",
+        "L\u2019op\u00e9rateur": "operator",
+        "notifier": "notify"
+      }
+    },
+    {
+      "id": "weaken",
+      "text": "The operator must notify.",
+      "language": "en",
+      "modality": "obligation",
+      "relations": [
+        "weaken_modality"
+      ]
+    },
+    {
+      "id": "except-o",
+      "text": "The operator must notify.",
+      "language": "en",
+      "modality": "obligation",
+      "relations": [
+        "add_exception"
+      ]
+    },
+    {
+      "id": "except-f",
+      "text": "The operator must not disclose.",
+      "language": "en",
+      "modality": "prohibition",
+      "relations": [
+        "add_exception"
+      ]
+    },
+    {
+      "id": "remove",
+      "text": "If risk, the operator must notify.",
+      "language": "en",
+      "modality": "obligation",
+      "relations": [
+        "remove_condition"
+      ]
+    },
+    {
+      "id": "inverse",
+      "text": "The operator must notify.",
+      "language": "en",
+      "modality": "obligation",
+      "relations": [
+        "invert_modality"
+      ]
+    }
+  ]
+}

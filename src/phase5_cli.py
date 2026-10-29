@@ -9,7 +9,7 @@ from .audit_bundle import MAX_BYTES, create_bundle
 from .model_runtime import strict_json
 from .phase4 import envelope
 
-COMMANDS = ("certify", "check-certificate", "obstruction")
+COMMANDS = ("certify", "check-certificate", "obstruction", "metamorphic")
 
 
 def configure(subs):
@@ -17,6 +17,8 @@ def configure(subs):
         p = subs.add_parser(name)
         p.add_argument("--input", required=True)
         p.add_argument("--bundle")
+        if name == "metamorphic":
+            p.add_argument("--provider", choices=("extractor", "fake", "ollama", "vllm"), default="fake")
         if name == "obstruction":
             p.add_argument("--backend", choices=("exhaustive", "z3"))
         if name == "check-certificate":
@@ -34,6 +36,10 @@ def execute(args):
             from .certificates import certify
 
             result = certify(request)
+        elif args.command == "metamorphic":
+            from .metamorphic import metamorphic
+
+            result = metamorphic(request, provider=args.provider)
         elif args.command == "obstruction":
             from .obstruction import obstruction
 
