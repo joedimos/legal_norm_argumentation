@@ -1,0 +1,485 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "breakdowns": {
+      "additionalProperties": false,
+      "properties": {
+        "exceptions": {
+          "additionalProperties": false,
+          "properties": {
+            "absent": {
+              "additionalProperties": false,
+              "properties": {
+                "abstentions": {
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "case_count": {
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                "correct": {
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "extraction_f1": {
+                  "maximum": 1,
+                  "minimum": 0,
+                  "type": "number"
+                },
+                "false_compliance": {
+                  "minimum": 0,
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "case_count",
+                "correct",
+                "abstentions",
+                "false_compliance",
+                "extraction_f1"
+              ],
+              "type": "object"
+            },
+            "present": {
+              "additionalProperties": false,
+              "properties": {
+                "abstentions": {
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "case_count": {
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                "correct": {
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "extraction_f1": {
+                  "maximum": 1,
+                  "minimum": 0,
+                  "type": "number"
+                },
+                "false_compliance": {
+                  "minimum": 0,
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "case_count",
+                "correct",
+                "abstentions",
+                "false_compliance",
+                "extraction_f1"
+              ],
+              "type": "object"
+            }
+          },
+          "required": [
+            "absent",
+            "present"
+          ],
+          "type": "object"
+        },
+        "language": {
+          "additionalProperties": false,
+          "properties": {
+            "en": {
+              "additionalProperties": false,
+              "properties": {
+                "abstentions": {
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "case_count": {
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                "correct": {
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "extraction_f1": {
+                  "maximum": 1,
+                  "minimum": 0,
+                  "type": "number"
+                },
+                "false_compliance": {
+                  "minimum": 0,
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "case_count",
+                "correct",
+                "abstentions",
+                "false_compliance",
+                "extraction_f1"
+              ],
+              "type": "object"
+            },
+            "fr": {
+              "additionalProperties": false,
+              "properties": {
+                "abstentions": {
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "case_count": {
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                "correct": {
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "extraction_f1": {
+                  "maximum": 1,
+                  "minimum": 0,
+                  "type": "number"
+                },
+                "false_compliance": {
+                  "minimum": 0,
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "case_count",
+                "correct",
+                "abstentions",
+                "false_compliance",
+                "extraction_f1"
+              ],
+              "type": "object"
+            }
+          },
+          "required": [
+            "en",
+            "fr"
+          ],
+          "type": "object"
+        },
+        "modality": {
+          "additionalProperties": false,
+          "properties": {
+            "obligation": {
+              "additionalProperties": false,
+              "properties": {
+                "abstentions": {
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "case_count": {
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                "correct": {
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "extraction_f1": {
+                  "maximum": 1,
+                  "minimum": 0,
+                  "type": "number"
+                },
+                "false_compliance": {
+                  "minimum": 0,
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "case_count",
+                "correct",
+                "abstentions",
+                "false_compliance",
+                "extraction_f1"
+              ],
+              "type": "object"
+            },
+            "permission": {
+              "additionalProperties": false,
+              "properties": {
+                "abstentions": {
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "case_count": {
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                "correct": {
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "extraction_f1": {
+                  "maximum": 1,
+                  "minimum": 0,
+                  "type": "number"
+                },
+                "false_compliance": {
+                  "minimum": 0,
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "case_count",
+                "correct",
+                "abstentions",
+                "false_compliance",
+                "extraction_f1"
+              ],
+              "type": "object"
+            },
+            "prohibition": {
+              "additionalProperties": false,
+              "properties": {
+                "abstentions": {
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "case_count": {
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                "correct": {
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "extraction_f1": {
+                  "maximum": 1,
+                  "minimum": 0,
+                  "type": "number"
+                },
+                "false_compliance": {
+                  "minimum": 0,
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "case_count",
+                "correct",
+                "abstentions",
+                "false_compliance",
+                "extraction_f1"
+              ],
+              "type": "object"
+            }
+          },
+          "required": [
+            "obligation",
+            "permission",
+            "prohibition"
+          ],
+          "type": "object"
+        },
+        "source_kind": {
+          "additionalProperties": false,
+          "properties": {
+            "code_article": {
+              "additionalProperties": false,
+              "properties": {
+                "abstentions": {
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "case_count": {
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                "correct": {
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "extraction_f1": {
+                  "maximum": 1,
+                  "minimum": 0,
+                  "type": "number"
+                },
+                "false_compliance": {
+                  "minimum": 0,
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "case_count",
+                "correct",
+                "abstentions",
+                "false_compliance",
+                "extraction_f1"
+              ],
+              "type": "object"
+            },
+            "judicial_opinion": {
+              "additionalProperties": false,
+              "properties": {
+                "abstentions": {
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "case_count": {
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                "correct": {
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "extraction_f1": {
+                  "maximum": 1,
+                  "minimum": 0,
+                  "type": "number"
+                },
+                "false_compliance": {
+                  "minimum": 0,
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "case_count",
+                "correct",
+                "abstentions",
+                "false_compliance",
+                "extraction_f1"
+              ],
+              "type": "object"
+            }
+          },
+          "required": [
+            "code_article",
+            "judicial_opinion"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "language",
+        "modality",
+        "exceptions",
+        "source_kind"
+      ],
+      "type": "object"
+    },
+    "build_revision": {
+      "pattern": "^[0-9a-f]{40}$",
+      "type": "string"
+    },
+    "case_count": {
+      "minimum": 1,
+      "type": "integer"
+    },
+    "compliance_accuracy": {
+      "maximum": 1,
+      "minimum": 0,
+      "type": "number"
+    },
+    "corpus_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "extraction_f1": {
+      "maximum": 1,
+      "minimum": 0,
+      "type": "number"
+    },
+    "faithfulness": {
+      "additionalProperties": false,
+      "properties": {
+        "direct_vs_gold": {
+          "additionalProperties": false,
+          "properties": {
+            "disagreements": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "total": {
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          "required": [
+            "total",
+            "disagreements"
+          ],
+          "type": "object"
+        },
+        "direct_vs_symbolic": {
+          "additionalProperties": false,
+          "properties": {
+            "disagreements": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "total": {
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          "required": [
+            "total",
+            "disagreements"
+          ],
+          "type": "object"
+        },
+        "symbolic_vs_gold": {
+          "additionalProperties": false,
+          "properties": {
+            "disagreements": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "total": {
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          "required": [
+            "total",
+            "disagreements"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "direct_vs_symbolic",
+        "direct_vs_gold",
+        "symbolic_vs_gold"
+      ],
+      "type": "object"
+    },
+    "independent_assessment_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "predictions_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "protocol_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "schema": {
+      "const": "vle-production-benchmark/v2"
+    },
+    "split": {
+      "const": "test"
+    }
+  },
+  "required": [
+    "schema",
+    "build_revision",
+    "split",
+    "case_count",
+    "extraction_f1",
+    "compliance_accuracy",
+    "corpus_sha256",
+    "independent_assessment_sha256",
+    "predictions_sha256",
+    "protocol_sha256",
+    "breakdowns",
+    "faithfulness"
+  ],
+  "type": "object"
+}

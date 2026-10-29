@@ -8,7 +8,7 @@ import urllib3
 
 @pytest.fixture(autouse=True)
 def phase4_no_network(request, monkeypatch):
-    if not any(prefix in request.node.path.name for prefix in ("test_phase4_", "test_phase5_", "test_automatic_imports")):
+    if not any(prefix in request.node.path.name for prefix in ("test_phase4_", "test_phase5_", "test_automatic_imports", "test_release_candidate")):
         return
 
     def blocked(*args, **kwargs):

@@ -7,6 +7,7 @@ from pathlib import Path
 
 from .audit_bundle import MAX_BYTES, create_bundle
 from .model_runtime import strict_json
+from .resources import resource_path
 
 COMMANDS = ("aspic", "redundant-formalize", "redundancy-report", "assumptions", "ddl", "faithfulness")
 
@@ -21,7 +22,7 @@ def configure(subs):
             p.add_argument("--provider", choices=("fake", "ollama", "vllm"), default="fake")
             p.add_argument("--model")
         elif name == "faithfulness":
-            p.add_argument("--input", default="benchmarks/phase4-v1.json")
+            p.add_argument("--input", default=str(resource_path("benchmarks", "phase4-v1.json")))
             p.add_argument("--live", action="store_true")
             p.add_argument("--provider", choices=("ollama", "vllm"), default="ollama")
             p.add_argument("--model")

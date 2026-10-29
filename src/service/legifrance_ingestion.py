@@ -78,6 +78,10 @@ def ingest_legal_items(
         extraction_audit["provenance"] = provenance
         extraction_audit["language"] = language
         extraction_audit["review_status"] = "unreviewed"
+        if provenance.get("document_type") == "judicial_opinion":
+            from .ip_release import REVIEW_CHECKS
+            extraction_audit["judicial_authority_status"] = "unassessed"
+            extraction_audit["judicial_review_requirements"] = list(REVIEW_CHECKS)
         try:
             with session.begin_nested():
                 source = create_source(

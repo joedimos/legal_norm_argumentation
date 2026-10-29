@@ -1,0 +1,8 @@
+include alembic.ini
+recursive-include benchmarks *.json *.md
+recursive-include schemas *.json
+recursive-include examples *.json
+recursive-include migrations *.py *.mako
+recursive-include tools *.py
+recursive-include docs *.md *.json *.py *.txt
+global-exclude *.py[cod]

@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "checks": {
+      "additionalProperties": false,
+      "properties": {
+        "conditions_exceptions_cross_references": {
+          "const": true
+        },
+        "holdings_vs_dicta": {
+          "const": true
+        },
+        "independent_review_and_adjudication": {
+          "const": true
+        },
+        "jurisdiction_and_date": {
+          "const": true
+        },
+        "majority_vs_separate_opinions": {
+          "const": true
+        },
+        "precedential_status": {
+          "const": true
+        },
+        "quotations_vs_court_reasoning": {
+          "const": true
+        },
+        "source_change_reassessment": {
+          "const": true
+        }
+      },
+      "required": [
+        "holdings_vs_dicta",
+        "quotations_vs_court_reasoning",
+        "majority_vs_separate_opinions",
+        "precedential_status",
+        "jurisdiction_and_date",
+        "conditions_exceptions_cross_references",
+        "source_change_reassessment",
+        "independent_review_and_adjudication"
+      ],
+      "type": "object"
+    },
+    "instructions_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "schema": {
+      "const": "vle-ip-review-protocol/v1"
+    },
+    "scope": {
+      "const": "fr-us-ip-supervised/v1"
+    }
+  },
+  "required": [
+    "schema",
+    "scope",
+    "instructions_sha256",
+    "checks"
+  ],
+  "type": "object"
+}

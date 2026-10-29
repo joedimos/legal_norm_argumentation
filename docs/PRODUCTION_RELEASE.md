@@ -1,5 +1,10 @@
 # Governed production release and persistent inference
 
+For the 0.9.0 supervised French/U.S. IP profile, installed-package migrations and
+versioned v2 evidence requirements, follow [RELEASE_CANDIDATE.md](RELEASE_CANDIDATE.md).
+The v1/legacy policy below remains supported. Current schema head is
+`0004_automatic_imports`; older migration descriptions below are historical.
+
 Version 0.6 adds stricter release authorization, persistent research workflows,
 an inference worker and executable staging probes. It does not supply a model
 server, real independent legal annotations, PISTE credentials, TLS infrastructure
