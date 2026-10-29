@@ -71,3 +71,40 @@ in the project environment. SMT differential tests require the existing
 Every bounded search must return unknown on exhaustion without publishing
 partial acceptance/minimality as a complete result. Inputs and budgets are
 hashed in reports; fixtures remain synthetic and unreviewed.
+
+## M1: structured arguments
+
+`analyze_aspic` constructs finite acyclic propositional arguments, propagates
+undermining/rebutting/undercutting to superarguments, and reduces successful
+attacks to `OptimizedAAF`. Last-link uses the frontier of final defeasible
+rules through strict steps; weakest-link uses all defeasible rules. Both
+include ordinary premises and use explicitly recorded elitist set lifting.
+Empty fallible sets are firm/strict. Directed contraries are supported.
+Undercutters bypass preferences. Cyclic derivation systems return unknown;
+they are not approximated by simple paths. Arguments <=256, depth <=32,
+construction/attack work <=1,000,000, timeout <=60s; non-grounded extension
+search <=16 arguments and within the configured subset budget. Dung calls
+are finite, with a deadline check that discards late results.
+
+Rationality is reported as observed checks, not a universal theorem.
+Strict-transposition and directly consistent axioms are checked explicitly;
+subargument closure, direct consistency and strict closure are checked on
+computed extensions. Indirect consistency follows only when the reported
+strict closure and direct consistency both hold. No automatic strict
+transposition, contraposition, axiom repair or preference repair is performed.
+
+The 512 directed three-node graph fixtures match Dung under all three
+semantics via flat defeasible arguments and explicit directed contraries.
+The 62-case corpus is preserved: its 18 common-start, no-explicit-order
+research cases cross-check the *activation/priority* bridge against `reason`;
+other temporal/verification/abstract-preference cases lack this bridge's
+signature. Full temporal verdict equivalence is not claimed. In particular,
+partially overlapping achievement/prohibition windows may be jointly
+satisfiable in temporal research but conflict in single-context reasoning.
+The adapter uses legacy exception activation rather than invented exception
+arguments; general ASPIC+ inputs can instead name explicit undercutters.
+
+Verification: full suite 298 passed, 3 PostgreSQL-only skipped; five legacy
+benchmark runs all green (62/62 twice, 19/19 twice, 15/15). No fixtures changed.
+The new `aspic` command uses `--input`, `--lifting last|weakest`, and optional
+`--bundle`; every analysis remains unreviewed and unauthorized.
