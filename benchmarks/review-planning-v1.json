@@ -1,0 +1,1645 @@
+{
+  "schema": "vle-review-simulation-corpus/v1",
+  "synthetic": true,
+  "review_status": "unreviewed",
+  "cases": [
+    {
+      "id": "review-0",
+      "synthetic": true,
+      "review_status": "unreviewed",
+      "request": {
+        "schema": "vle-review-plan/v1",
+        "worlds": [
+          {
+            "id": "w0",
+            "property": {
+              "op": "atom",
+              "name": "p2"
+            },
+            "trace": [
+              {
+                "p0": false,
+                "p1": false,
+                "p2": false
+              }
+            ]
+          },
+          {
+            "id": "w1",
+            "property": {
+              "op": "atom",
+              "name": "p2"
+            },
+            "trace": [
+              {
+                "p0": false,
+                "p1": false,
+                "p2": true
+              }
+            ]
+          },
+          {
+            "id": "w2",
+            "property": {
+              "op": "atom",
+              "name": "p2"
+            },
+            "trace": [
+              {
+                "p0": false,
+                "p1": true,
+                "p2": false
+              }
+            ]
+          },
+          {
+            "id": "w3",
+            "property": {
+              "op": "atom",
+              "name": "p2"
+            },
+            "trace": [
+              {
+                "p0": false,
+                "p1": true,
+                "p2": true
+              }
+            ]
+          },
+          {
+            "id": "w4",
+            "property": {
+              "op": "atom",
+              "name": "p2"
+            },
+            "trace": [
+              {
+                "p0": true,
+                "p1": false,
+                "p2": false
+              }
+            ]
+          },
+          {
+            "id": "w5",
+            "property": {
+              "op": "atom",
+              "name": "p2"
+            },
+            "trace": [
+              {
+                "p0": true,
+                "p1": false,
+                "p2": true
+              }
+            ]
+          },
+          {
+            "id": "w6",
+            "property": {
+              "op": "atom",
+              "name": "p2"
+            },
+            "trace": [
+              {
+                "p0": true,
+                "p1": true,
+                "p2": false
+              }
+            ]
+          },
+          {
+            "id": "w7",
+            "property": {
+              "op": "atom",
+              "name": "p2"
+            },
+            "trace": [
+              {
+                "p0": true,
+                "p1": true,
+                "p2": true
+              }
+            ]
+          }
+        ],
+        "questions": [
+          {
+            "id": "q0",
+            "kind": "assumption_confirmation",
+            "domain": [
+              "no",
+              "yes"
+            ],
+            "answers": {
+              "w0": "no",
+              "w1": "no",
+              "w2": "no",
+              "w3": "no",
+              "w4": "yes",
+              "w5": "yes",
+              "w6": "yes",
+              "w7": "yes"
+            },
+            "prompt": "Synthetic question 0",
+            "cost": 1
+          },
+          {
+            "id": "q1",
+            "kind": "assumption_confirmation",
+            "domain": [
+              "no",
+              "yes"
+            ],
+            "answers": {
+              "w0": "no",
+              "w1": "no",
+              "w2": "yes",
+              "w3": "yes",
+              "w4": "no",
+              "w5": "no",
+              "w6": "yes",
+              "w7": "yes"
+            },
+            "prompt": "Synthetic question 1",
+            "cost": 1
+          },
+          {
+            "id": "q2",
+            "kind": "assumption_confirmation",
+            "domain": [
+              "no",
+              "yes"
+            ],
+            "answers": {
+              "w0": "no",
+              "w1": "yes",
+              "w2": "no",
+              "w3": "yes",
+              "w4": "no",
+              "w5": "yes",
+              "w6": "no",
+              "w7": "yes"
+            },
+            "prompt": "Synthetic question 2",
+            "cost": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "review-1",
+      "synthetic": true,
+      "review_status": "unreviewed",
+      "request": {
+        "schema": "vle-review-plan/v1",
+        "worlds": [
+          {
+            "id": "w0",
+            "property": {
+              "op": "or",
+              "args": [
+                {
+                  "op": "and",
+                  "args": [
+                    {
+                      "op": "atom",
+                      "name": "p0"
+                    },
+                    {
+                      "op": "not",
+                      "args": [
+                        {
+                          "op": "atom",
+                          "name": "p1"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "op": "and",
+                  "args": [
+                    {
+                      "op": "not",
+                      "args": [
+                        {
+                          "op": "atom",
+                          "name": "p0"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "atom",
+                      "name": "p1"
+                    }
+                  ]
+                }
+              ]
+            },
+            "trace": [
+              {
+                "p0": false,
+                "p1": false,
+                "p2": false
+              }
+            ]
+          },
+          {
+            "id": "w1",
+            "property": {
+              "op": "or",
+              "args": [
+                {
+                  "op": "and",
+                  "args": [
+                    {
+                      "op": "atom",
+                      "name": "p0"
+                    },
+                    {
+                      "op": "not",
+                      "args": [
+                        {
+                          "op": "atom",
+                          "name": "p1"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "op": "and",
+                  "args": [
+                    {
+                      "op": "not",
+                      "args": [
+                        {
+                          "op": "atom",
+                          "name": "p0"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "atom",
+                      "name": "p1"
+                    }
+                  ]
+                }
+              ]
+            },
+            "trace": [
+              {
+                "p0": false,
+                "p1": false,
+                "p2": true
+              }
+            ]
+          },
+          {
+            "id": "w2",
+            "property": {
+              "op": "or",
+              "args": [
+                {
+                  "op": "and",
+                  "args": [
+                    {
+                      "op": "atom",
+                      "name": "p0"
+                    },
+                    {
+                      "op": "not",
+                      "args": [
+                        {
+                          "op": "atom",
+                          "name": "p1"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "op": "and",
+                  "args": [
+                    {
+                      "op": "not",
+                      "args": [
+                        {
+                          "op": "atom",
+                          "name": "p0"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "atom",
+                      "name": "p1"
+                    }
+                  ]
+                }
+              ]
+            },
+            "trace": [
+              {
+                "p0": false,
+                "p1": true,
+                "p2": false
+              }
+            ]
+          },
+          {
+            "id": "w3",
+            "property": {
+              "op": "or",
+              "args": [
+                {
+                  "op": "and",
+                  "args": [
+                    {
+                      "op": "atom",
+                      "name": "p0"
+                    },
+                    {
+                      "op": "not",
+                      "args": [
+                        {
+                          "op": "atom",
+                          "name": "p1"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "op": "and",
+                  "args": [
+                    {
+                      "op": "not",
+                      "args": [
+                        {
+                          "op": "atom",
+                          "name": "p0"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "atom",
+                      "name": "p1"
+                    }
+                  ]
+                }
+              ]
+            },
+            "trace": [
+              {
+                "p0": false,
+                "p1": true,
+                "p2": true
+              }
+            ]
+          },
+          {
+            "id": "w4",
+            "property": {
+              "op": "or",
+              "args": [
+                {
+                  "op": "and",
+                  "args": [
+                    {
+                      "op": "atom",
+                      "name": "p0"
+                    },
+                    {
+                      "op": "not",
+                      "args": [
+                        {
+                          "op": "atom",
+                          "name": "p1"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "op": "and",
+                  "args": [
+                    {
+                      "op": "not",
+                      "args": [
+                        {
+                          "op": "atom",
+                          "name": "p0"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "atom",
+                      "name": "p1"
+                    }
+                  ]
+                }
+              ]
+            },
+            "trace": [
+              {
+                "p0": true,
+                "p1": false,
+                "p2": false
+              }
+            ]
+          },
+          {
+            "id": "w5",
+            "property": {
+              "op": "or",
+              "args": [
+                {
+                  "op": "and",
+                  "args": [
+                    {
+                      "op": "atom",
+                      "name": "p0"
+                    },
+                    {
+                      "op": "not",
+                      "args": [
+                        {
+                          "op": "atom",
+                          "name": "p1"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "op": "and",
+                  "args": [
+                    {
+                      "op": "not",
+                      "args": [
+                        {
+                          "op": "atom",
+                          "name": "p0"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "atom",
+                      "name": "p1"
+                    }
+                  ]
+                }
+              ]
+            },
+            "trace": [
+              {
+                "p0": true,
+                "p1": false,
+                "p2": true
+              }
+            ]
+          },
+          {
+            "id": "w6",
+            "property": {
+              "op": "or",
+              "args": [
+                {
+                  "op": "and",
+                  "args": [
+                    {
+                      "op": "atom",
+                      "name": "p0"
+                    },
+                    {
+                      "op": "not",
+                      "args": [
+                        {
+                          "op": "atom",
+                          "name": "p1"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "op": "and",
+                  "args": [
+                    {
+                      "op": "not",
+                      "args": [
+                        {
+                          "op": "atom",
+                          "name": "p0"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "atom",
+                      "name": "p1"
+                    }
+                  ]
+                }
+              ]
+            },
+            "trace": [
+              {
+                "p0": true,
+                "p1": true,
+                "p2": false
+              }
+            ]
+          },
+          {
+            "id": "w7",
+            "property": {
+              "op": "or",
+              "args": [
+                {
+                  "op": "and",
+                  "args": [
+                    {
+                      "op": "atom",
+                      "name": "p0"
+                    },
+                    {
+                      "op": "not",
+                      "args": [
+                        {
+                          "op": "atom",
+                          "name": "p1"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "op": "and",
+                  "args": [
+                    {
+                      "op": "not",
+                      "args": [
+                        {
+                          "op": "atom",
+                          "name": "p0"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "atom",
+                      "name": "p1"
+                    }
+                  ]
+                }
+              ]
+            },
+            "trace": [
+              {
+                "p0": true,
+                "p1": true,
+                "p2": true
+              }
+            ]
+          }
+        ],
+        "questions": [
+          {
+            "id": "q0",
+            "kind": "assumption_confirmation",
+            "domain": [
+              "no",
+              "yes"
+            ],
+            "answers": {
+              "w0": "no",
+              "w1": "no",
+              "w2": "no",
+              "w3": "no",
+              "w4": "yes",
+              "w5": "yes",
+              "w6": "yes",
+              "w7": "yes"
+            },
+            "prompt": "Synthetic question 0",
+            "cost": 1
+          },
+          {
+            "id": "q1",
+            "kind": "assumption_confirmation",
+            "domain": [
+              "no",
+              "yes"
+            ],
+            "answers": {
+              "w0": "no",
+              "w1": "no",
+              "w2": "yes",
+              "w3": "yes",
+              "w4": "no",
+              "w5": "no",
+              "w6": "yes",
+              "w7": "yes"
+            },
+            "prompt": "Synthetic question 1",
+            "cost": 1
+          },
+          {
+            "id": "q2",
+            "kind": "assumption_confirmation",
+            "domain": [
+              "no",
+              "yes"
+            ],
+            "answers": {
+              "w0": "no",
+              "w1": "yes",
+              "w2": "no",
+              "w3": "yes",
+              "w4": "no",
+              "w5": "yes",
+              "w6": "no",
+              "w7": "yes"
+            },
+            "prompt": "Synthetic question 2",
+            "cost": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "review-2",
+      "synthetic": true,
+      "review_status": "unreviewed",
+      "request": {
+        "schema": "vle-review-plan/v1",
+        "worlds": [
+          {
+            "id": "w0",
+            "property": {
+              "op": "atom",
+              "name": "p2"
+            },
+            "trace": [
+              {
+                "p0": false,
+                "p1": false,
+                "p2": false
+              }
+            ]
+          },
+          {
+            "id": "w1",
+            "property": {
+              "op": "atom",
+              "name": "p2"
+            },
+            "trace": [
+              {
+                "p0": false,
+                "p1": false,
+                "p2": true
+              }
+            ]
+          },
+          {
+            "id": "w2",
+            "property": {
+              "op": "atom",
+              "name": "p2"
+            },
+            "trace": [
+              {
+                "p0": false,
+                "p1": true,
+                "p2": false
+              }
+            ]
+          },
+          {
+            "id": "w3",
+            "property": {
+              "op": "atom",
+              "name": "p2"
+            },
+            "trace": [
+              {
+                "p0": false,
+                "p1": true,
+                "p2": true
+              }
+            ]
+          },
+          {
+            "id": "w4",
+            "property": {
+              "op": "atom",
+              "name": "p2"
+            },
+            "trace": [
+              {
+                "p0": true,
+                "p1": false,
+                "p2": false
+              }
+            ]
+          },
+          {
+            "id": "w5",
+            "property": {
+              "op": "atom",
+              "name": "p2"
+            },
+            "trace": [
+              {
+                "p0": true,
+                "p1": false,
+                "p2": true
+              }
+            ]
+          },
+          {
+            "id": "w6",
+            "property": {
+              "op": "atom",
+              "name": "p2"
+            },
+            "trace": [
+              {
+                "p0": true,
+                "p1": true,
+                "p2": false
+              }
+            ]
+          },
+          {
+            "id": "w7",
+            "property": {
+              "op": "atom",
+              "name": "p2"
+            },
+            "trace": [
+              {
+                "p0": true,
+                "p1": true,
+                "p2": true
+              }
+            ]
+          }
+        ],
+        "questions": [
+          {
+            "id": "q0",
+            "kind": "assumption_confirmation",
+            "domain": [
+              "no",
+              "yes"
+            ],
+            "answers": {
+              "w0": "no",
+              "w1": "no",
+              "w2": "no",
+              "w3": "no",
+              "w4": "yes",
+              "w5": "yes",
+              "w6": "yes",
+              "w7": "yes"
+            },
+            "prompt": "Synthetic question 0",
+            "cost": 1
+          },
+          {
+            "id": "q1",
+            "kind": "assumption_confirmation",
+            "domain": [
+              "no",
+              "yes"
+            ],
+            "answers": {
+              "w0": "no",
+              "w1": "no",
+              "w2": "yes",
+              "w3": "yes",
+              "w4": "no",
+              "w5": "no",
+              "w6": "yes",
+              "w7": "yes"
+            },
+            "prompt": "Synthetic question 1",
+            "cost": 1
+          },
+          {
+            "id": "q2",
+            "kind": "assumption_confirmation",
+            "domain": [
+              "no",
+              "yes"
+            ],
+            "answers": {
+              "w0": "no",
+              "w1": "yes",
+              "w2": "no",
+              "w3": "yes",
+              "w4": "no",
+              "w5": "yes",
+              "w6": "no",
+              "w7": "yes"
+            },
+            "prompt": "Synthetic question 2",
+            "cost": 1
+          },
+          {
+            "id": "direct",
+            "kind": "interpretation_selection",
+            "domain": [
+              "no",
+              "yes"
+            ],
+            "answers": {
+              "w0": "no",
+              "w1": "yes",
+              "w2": "no",
+              "w3": "yes",
+              "w4": "no",
+              "w5": "yes",
+              "w6": "no",
+              "w7": "yes"
+            },
+            "prompt": "Synthetic expensive direct selection",
+            "cost": 10
+          }
+        ]
+      }
+    },
+    {
+      "id": "review-3",
+      "synthetic": true,
+      "review_status": "unreviewed",
+      "request": {
+        "schema": "vle-review-plan/v1",
+        "worlds": [
+          {
+            "id": "w0",
+            "property": {
+              "op": "atom",
+              "name": "p2"
+            },
+            "trace": [
+              {
+                "p0": false,
+                "p1": false,
+                "p2": false
+              }
+            ]
+          },
+          {
+            "id": "w1",
+            "property": {
+              "op": "atom",
+              "name": "p2"
+            },
+            "trace": [
+              {
+                "p0": false,
+                "p1": false,
+                "p2": true
+              }
+            ]
+          },
+          {
+            "id": "w2",
+            "property": {
+              "op": "atom",
+              "name": "p2"
+            },
+            "trace": [
+              {
+                "p0": false,
+                "p1": true,
+                "p2": false
+              }
+            ]
+          },
+          {
+            "id": "w3",
+            "property": {
+              "op": "atom",
+              "name": "p2"
+            },
+            "trace": [
+              {
+                "p0": false,
+                "p1": true,
+                "p2": true
+              }
+            ]
+          },
+          {
+            "id": "w4",
+            "property": {
+              "op": "atom",
+              "name": "p2"
+            },
+            "trace": [
+              {
+                "p0": true,
+                "p1": false,
+                "p2": false
+              }
+            ]
+          },
+          {
+            "id": "w5",
+            "property": {
+              "op": "atom",
+              "name": "p2"
+            },
+            "trace": [
+              {
+                "p0": true,
+                "p1": false,
+                "p2": true
+              }
+            ]
+          },
+          {
+            "id": "w6",
+            "property": {
+              "op": "atom",
+              "name": "p2"
+            },
+            "trace": [
+              {
+                "p0": true,
+                "p1": true,
+                "p2": false
+              }
+            ]
+          },
+          {
+            "id": "w7",
+            "property": {
+              "op": "atom",
+              "name": "p2"
+            },
+            "trace": [
+              {
+                "p0": true,
+                "p1": true,
+                "p2": true
+              }
+            ]
+          }
+        ],
+        "questions": [
+          {
+            "id": "q0",
+            "kind": "assumption_confirmation",
+            "domain": [
+              "no",
+              "yes"
+            ],
+            "answers": {
+              "w0": "no",
+              "w1": "no",
+              "w2": "no",
+              "w3": "no",
+              "w4": "yes",
+              "w5": "yes",
+              "w6": "yes",
+              "w7": "yes"
+            },
+            "prompt": "Synthetic question 0",
+            "cost": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "review-4",
+      "synthetic": true,
+      "review_status": "unreviewed",
+      "request": {
+        "schema": "vle-review-plan/v1",
+        "worlds": [
+          {
+            "id": "w0",
+            "property": {
+              "op": "true"
+            },
+            "trace": [
+              {
+                "p0": false,
+                "p1": false,
+                "p2": false
+              }
+            ]
+          },
+          {
+            "id": "w1",
+            "property": {
+              "op": "true"
+            },
+            "trace": [
+              {
+                "p0": false,
+                "p1": false,
+                "p2": true
+              }
+            ]
+          },
+          {
+            "id": "w2",
+            "property": {
+              "op": "true"
+            },
+            "trace": [
+              {
+                "p0": false,
+                "p1": true,
+                "p2": false
+              }
+            ]
+          },
+          {
+            "id": "w3",
+            "property": {
+              "op": "true"
+            },
+            "trace": [
+              {
+                "p0": false,
+                "p1": true,
+                "p2": true
+              }
+            ]
+          },
+          {
+            "id": "w4",
+            "property": {
+              "op": "true"
+            },
+            "trace": [
+              {
+                "p0": true,
+                "p1": false,
+                "p2": false
+              }
+            ]
+          },
+          {
+            "id": "w5",
+            "property": {
+              "op": "true"
+            },
+            "trace": [
+              {
+                "p0": true,
+                "p1": false,
+                "p2": true
+              }
+            ]
+          },
+          {
+            "id": "w6",
+            "property": {
+              "op": "true"
+            },
+            "trace": [
+              {
+                "p0": true,
+                "p1": true,
+                "p2": false
+              }
+            ]
+          },
+          {
+            "id": "w7",
+            "property": {
+              "op": "true"
+            },
+            "trace": [
+              {
+                "p0": true,
+                "p1": true,
+                "p2": true
+              }
+            ]
+          }
+        ],
+        "questions": [
+          {
+            "id": "q0",
+            "kind": "assumption_confirmation",
+            "domain": [
+              "no",
+              "yes"
+            ],
+            "answers": {
+              "w0": "no",
+              "w1": "no",
+              "w2": "no",
+              "w3": "no",
+              "w4": "yes",
+              "w5": "yes",
+              "w6": "yes",
+              "w7": "yes"
+            },
+            "prompt": "Synthetic question 0",
+            "cost": 1
+          },
+          {
+            "id": "q1",
+            "kind": "assumption_confirmation",
+            "domain": [
+              "no",
+              "yes"
+            ],
+            "answers": {
+              "w0": "no",
+              "w1": "no",
+              "w2": "yes",
+              "w3": "yes",
+              "w4": "no",
+              "w5": "no",
+              "w6": "yes",
+              "w7": "yes"
+            },
+            "prompt": "Synthetic question 1",
+            "cost": 1
+          },
+          {
+            "id": "q2",
+            "kind": "assumption_confirmation",
+            "domain": [
+              "no",
+              "yes"
+            ],
+            "answers": {
+              "w0": "no",
+              "w1": "yes",
+              "w2": "no",
+              "w3": "yes",
+              "w4": "no",
+              "w5": "yes",
+              "w6": "no",
+              "w7": "yes"
+            },
+            "prompt": "Synthetic question 2",
+            "cost": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "review-5",
+      "synthetic": true,
+      "review_status": "unreviewed",
+      "request": {
+        "schema": "vle-review-plan/v1",
+        "worlds": [
+          {
+            "id": "w0",
+            "property": {
+              "op": "atom",
+              "name": "p1"
+            },
+            "trace": [
+              {
+                "p0": false,
+                "p1": false
+              }
+            ]
+          },
+          {
+            "id": "w1",
+            "property": {
+              "op": "atom",
+              "name": "p1"
+            },
+            "trace": [
+              {
+                "p0": false,
+                "p1": true
+              }
+            ]
+          },
+          {
+            "id": "w2",
+            "property": {
+              "op": "atom",
+              "name": "p1"
+            },
+            "trace": [
+              {
+                "p0": true,
+                "p1": false
+              }
+            ]
+          },
+          {
+            "id": "w3",
+            "property": {
+              "op": "atom",
+              "name": "p1"
+            },
+            "trace": [
+              {
+                "p0": true,
+                "p1": true
+              }
+            ]
+          }
+        ],
+        "questions": [
+          {
+            "id": "multi",
+            "kind": "predicate_alignment",
+            "domain": [
+              "0",
+              "1",
+              "2",
+              "3"
+            ],
+            "answers": {
+              "w0": "0",
+              "w1": "1",
+              "w2": "2",
+              "w3": "3"
+            },
+            "cost": 1,
+            "prompt": "Synthetic finite alignment choices"
+          }
+        ]
+      }
+    },
+    {
+      "id": "review-6",
+      "synthetic": true,
+      "review_status": "unreviewed",
+      "request": {
+        "schema": "vle-review-plan/v1",
+        "worlds": [
+          {
+            "id": "w0",
+            "property": {
+              "op": "atom",
+              "name": "p2"
+            },
+            "trace": [
+              {
+                "p0": false,
+                "p1": false,
+                "p2": false
+              }
+            ]
+          },
+          {
+            "id": "w1",
+            "property": {
+              "op": "atom",
+              "name": "p2"
+            },
+            "trace": [
+              {
+                "p0": false,
+                "p1": false,
+                "p2": true
+              }
+            ]
+          },
+          {
+            "id": "w2",
+            "property": {
+              "op": "atom",
+              "name": "p2"
+            },
+            "trace": [
+              {
+                "p0": false,
+                "p1": true,
+                "p2": false
+              }
+            ]
+          },
+          {
+            "id": "w3",
+            "property": {
+              "op": "atom",
+              "name": "p2"
+            },
+            "trace": [
+              {
+                "p0": false,
+                "p1": true,
+                "p2": true
+              }
+            ]
+          },
+          {
+            "id": "w4",
+            "property": {
+              "op": "atom",
+              "name": "p2"
+            },
+            "trace": [
+              {
+                "p0": true,
+                "p1": false,
+                "p2": false
+              }
+            ]
+          },
+          {
+            "id": "w5",
+            "property": {
+              "op": "atom",
+              "name": "p2"
+            },
+            "trace": [
+              {
+                "p0": true,
+                "p1": false,
+                "p2": true
+              }
+            ]
+          },
+          {
+            "id": "w6",
+            "property": {
+              "op": "atom",
+              "name": "p2"
+            },
+            "trace": [
+              {
+                "p0": true,
+                "p1": true,
+                "p2": false
+              }
+            ]
+          },
+          {
+            "id": "w7",
+            "property": {
+              "op": "atom",
+              "name": "p2"
+            },
+            "trace": [
+              {
+                "p0": true,
+                "p1": true,
+                "p2": true
+              }
+            ]
+          }
+        ],
+        "questions": [
+          {
+            "id": "q2",
+            "kind": "assumption_confirmation",
+            "domain": [
+              "no",
+              "yes"
+            ],
+            "answers": {
+              "w0": "no",
+              "w1": "yes",
+              "w2": "no",
+              "w3": "yes",
+              "w4": "no",
+              "w5": "yes",
+              "w6": "no",
+              "w7": "yes"
+            },
+            "prompt": "Synthetic question 2",
+            "cost": 1
+          },
+          {
+            "id": "q1",
+            "kind": "assumption_confirmation",
+            "domain": [
+              "no",
+              "yes"
+            ],
+            "answers": {
+              "w0": "no",
+              "w1": "no",
+              "w2": "yes",
+              "w3": "yes",
+              "w4": "no",
+              "w5": "no",
+              "w6": "yes",
+              "w7": "yes"
+            },
+            "prompt": "Synthetic question 1",
+            "cost": 1
+          },
+          {
+            "id": "q0",
+            "kind": "assumption_confirmation",
+            "domain": [
+              "no",
+              "yes"
+            ],
+            "answers": {
+              "w0": "no",
+              "w1": "no",
+              "w2": "no",
+              "w3": "no",
+              "w4": "yes",
+              "w5": "yes",
+              "w6": "yes",
+              "w7": "yes"
+            },
+            "prompt": "Synthetic question 0",
+            "cost": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "review-7",
+      "synthetic": true,
+      "review_status": "unreviewed",
+      "request": {
+        "schema": "vle-review-plan/v1",
+        "worlds": [
+          {
+            "id": "w0",
+            "property": {
+              "op": "atom",
+              "name": "p2"
+            },
+            "trace": [
+              {
+                "p0": false,
+                "p1": false,
+                "p2": false
+              }
+            ]
+          },
+          {
+            "id": "w1",
+            "property": {
+              "op": "atom",
+              "name": "p2"
+            },
+            "trace": [
+              {
+                "p0": false,
+                "p1": false,
+                "p2": true
+              }
+            ]
+          },
+          {
+            "id": "w2",
+            "property": {
+              "op": "atom",
+              "name": "p2"
+            },
+            "trace": [
+              {
+                "p0": false,
+                "p1": true,
+                "p2": false
+              }
+            ]
+          },
+          {
+            "id": "w3",
+            "property": {
+              "op": "atom",
+              "name": "p2"
+            },
+            "trace": [
+              {
+                "p0": false,
+                "p1": true,
+                "p2": true
+              }
+            ]
+          },
+          {
+            "id": "w4",
+            "property": {
+              "op": "atom",
+              "name": "p2"
+            },
+            "trace": [
+              {
+                "p0": true,
+                "p1": false,
+                "p2": false
+              }
+            ]
+          },
+          {
+            "id": "w5",
+            "property": {
+              "op": "atom",
+              "name": "p2"
+            },
+            "trace": [
+              {
+                "p0": true,
+                "p1": false,
+                "p2": true
+              }
+            ]
+          },
+          {
+            "id": "w6",
+            "property": {
+              "op": "atom",
+              "name": "p2"
+            },
+            "trace": [
+              {
+                "p0": true,
+                "p1": true,
+                "p2": false
+              }
+            ]
+          },
+          {
+            "id": "w7",
+            "property": {
+              "op": "atom",
+              "name": "p2"
+            },
+            "trace": [
+              {
+                "p0": true,
+                "p1": true,
+                "p2": true
+              }
+            ]
+          }
+        ],
+        "questions": [
+          {
+            "id": "q0",
+            "kind": "assumption_confirmation",
+            "domain": [
+              "no",
+              "yes"
+            ],
+            "answers": {
+              "w0": "no",
+              "w1": "no",
+              "w2": "no",
+              "w3": "no",
+              "w4": "yes",
+              "w5": "yes",
+              "w6": "yes",
+              "w7": "yes"
+            },
+            "prompt": "Synthetic question 0",
+            "cost": 1
+          },
+          {
+            "id": "q1",
+            "kind": "assumption_confirmation",
+            "domain": [
+              "no",
+              "yes"
+            ],
+            "answers": {
+              "w0": "no",
+              "w1": "no",
+              "w2": "yes",
+              "w3": "yes",
+              "w4": "no",
+              "w5": "no",
+              "w6": "yes",
+              "w7": "yes"
+            },
+            "prompt": "Synthetic question 1",
+            "cost": 1
+          },
+          {
+            "id": "q2",
+            "kind": "assumption_confirmation",
+            "domain": [
+              "no",
+              "yes"
+            ],
+            "answers": {
+              "w0": "no",
+              "w1": "yes",
+              "w2": "no",
+              "w3": "yes",
+              "w4": "no",
+              "w5": "yes",
+              "w6": "no",
+              "w7": "yes"
+            },
+            "prompt": "Synthetic question 2",
+            "cost": 4
+          }
+        ]
+      }
+    }
+  ]
+}

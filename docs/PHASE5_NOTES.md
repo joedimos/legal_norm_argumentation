@@ -147,3 +147,23 @@ threshold or expected relation is changed. Main behavior inclusion and Phase4
 normative modality distinction are separately reported. Full suite382 passed,
 3 skipped; all legacy benchmarks green. Live paths remain configured-only and
 are not actual model-performance experiments.
+
+## M4 / N5
+
+Interpretive questions partition explicit formula/trace worlds or worlds generated
+from the existing interpretation-family parser. Verdicts are recomputed and carry
+finite-query certificates, not trusted caller truth labels. Finite answer domains
+and positive integer costs are explicit; default costs1 are assumptions. The
+multi-answer minimax extension is differentially checked against the unchanged
+Boolean observation kernel wherever both apply. An insufficient question set
+returns opposite-verdict witnesses rather than a selected interpretation.
+Plan optimality is relative to the finite caller model and is not independently
+certified by the small verdict checker. Unknown worlds/bound hits publish no plan
+or partial optimality. Suggested queue nodes never answer or approve a question.
+
+Eight frozen simulations retain fixed-order and8 seeded random-order distributions,
+including ties, unequal costs, constant outcomes and an unresolvable case.
+No real people, personal cost estimates or implicit priors are represented.
+Question-count comparisons are meaningful as the objective only in equal-cost
+cases; unequal-cost cases optimize cost. Full suite385 passed,3 skipped; all
+legacy benchmark runs pass. No threshold/corpus changes after simulation.

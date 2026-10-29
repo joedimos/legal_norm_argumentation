@@ -85,3 +85,11 @@ def assumption_review_prompts(corrections):
              '; '.join(a['description'] for a in c['assumptions']) +
              '. This only restores a feasible bounded completion, not universal compliance.'}
             for c in corrections if c['assumption_ids']]
+
+
+def suggested_review_order(plan,questions):
+    """Suggestions for existing human queues; never create decisions or answers."""
+    indexed={q['id']:q for q in questions}
+    return [{'node_id':n['id'],'question_id':n['question_id'],'kind':indexed[n['question_id']]['kind'],
+             'prompt':indexed[n['question_id']]['prompt'],'review_status':'unreviewed','auto_answered':False}
+            for n in plan['nodes'] if 'question_id' in n]
