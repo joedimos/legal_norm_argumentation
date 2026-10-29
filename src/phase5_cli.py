@@ -9,7 +9,7 @@ from .audit_bundle import MAX_BYTES, create_bundle
 from .model_runtime import strict_json
 from .phase4 import envelope
 
-COMMANDS = ("certify", "check-certificate", "obstruction", "metamorphic")
+COMMANDS = ("certify", "check-certificate", "obstruction", "metamorphic", "plan-review")
 
 
 def configure(subs):
@@ -36,6 +36,10 @@ def execute(args):
             from .certificates import certify
 
             result = certify(request)
+        elif args.command == "plan-review":
+            from .review_planning import plan_review
+
+            result = plan_review(request)
         elif args.command == "metamorphic":
             from .metamorphic import metamorphic
 

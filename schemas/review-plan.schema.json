@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "vle-review-plan-result/v1"
+    },
+    "status": {
+      "enum": [
+        "planned",
+        "already_decided",
+        "unresolvable",
+        "unknown"
+      ]
+    },
+    "plan": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "optimal_in_scope": {
+      "type": "boolean"
+    },
+    "suggested_order_only": {
+      "const": true
+    },
+    "default_costs_are_assumptions": {
+      "const": true
+    },
+    "decision_authorized": {
+      "const": false
+    },
+    "legal_certification": {
+      "const": false
+    },
+    "review_status": {
+      "const": "unreviewed"
+    },
+    "bounds": {
+      "type": "object"
+    },
+    "review_prompts": {
+      "type": "array"
+    }
+  },
+  "required": [
+    "schema",
+    "status",
+    "plan",
+    "optimal_in_scope",
+    "suggested_order_only",
+    "default_costs_are_assumptions",
+    "decision_authorized",
+    "legal_certification",
+    "review_status",
+    "bounds",
+    "review_prompts"
+  ],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "enum": [
+              "unknown",
+              "unresolvable"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "plan": {
+            "type": "null"
+          },
+          "optimal_in_scope": {
+            "const": false
+          },
+          "review_prompts": {
+            "maxItems": 0
+          }
+        }
+      }
+    }
+  ]
+}

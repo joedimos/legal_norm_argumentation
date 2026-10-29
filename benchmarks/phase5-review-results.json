@@ -1,0 +1,3402 @@
+{
+  "schema": "vle-review-simulation/v1",
+  "synthetic": true,
+  "review_status": "unreviewed",
+  "real_reviewers": 0,
+  "rows": [
+    {
+      "id": "review-0",
+      "status": "planned",
+      "equal_cost": true,
+      "optimal_worst_case_cost": 1,
+      "distributions": {
+        "fixed": [
+          {
+            "questions": 3,
+            "cost": 3,
+            "determinate": true
+          },
+          {
+            "questions": 3,
+            "cost": 3,
+            "determinate": true
+          },
+          {
+            "questions": 3,
+            "cost": 3,
+            "determinate": true
+          },
+          {
+            "questions": 3,
+            "cost": 3,
+            "determinate": true
+          },
+          {
+            "questions": 3,
+            "cost": 3,
+            "determinate": true
+          },
+          {
+            "questions": 3,
+            "cost": 3,
+            "determinate": true
+          },
+          {
+            "questions": 3,
+            "cost": 3,
+            "determinate": true
+          },
+          {
+            "questions": 3,
+            "cost": 3,
+            "determinate": true
+          }
+        ],
+        "random": [
+          {
+            "seed": 0,
+            "worlds": [
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              }
+            ]
+          },
+          {
+            "seed": 1,
+            "worlds": [
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              }
+            ]
+          },
+          {
+            "seed": 2,
+            "worlds": [
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              }
+            ]
+          },
+          {
+            "seed": 3,
+            "worlds": [
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              }
+            ]
+          },
+          {
+            "seed": 4,
+            "worlds": [
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              }
+            ]
+          },
+          {
+            "seed": 5,
+            "worlds": [
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              }
+            ]
+          },
+          {
+            "seed": 6,
+            "worlds": [
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              }
+            ]
+          },
+          {
+            "seed": 7,
+            "worlds": [
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              }
+            ]
+          }
+        ],
+        "minimax": [
+          {
+            "questions": 1,
+            "cost": 1,
+            "determinate": true
+          },
+          {
+            "questions": 1,
+            "cost": 1,
+            "determinate": true
+          },
+          {
+            "questions": 1,
+            "cost": 1,
+            "determinate": true
+          },
+          {
+            "questions": 1,
+            "cost": 1,
+            "determinate": true
+          },
+          {
+            "questions": 1,
+            "cost": 1,
+            "determinate": true
+          },
+          {
+            "questions": 1,
+            "cost": 1,
+            "determinate": true
+          },
+          {
+            "questions": 1,
+            "cost": 1,
+            "determinate": true
+          },
+          {
+            "questions": 1,
+            "cost": 1,
+            "determinate": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "review-1",
+      "status": "planned",
+      "equal_cost": true,
+      "optimal_worst_case_cost": 2,
+      "distributions": {
+        "fixed": [
+          {
+            "questions": 2,
+            "cost": 2,
+            "determinate": true
+          },
+          {
+            "questions": 2,
+            "cost": 2,
+            "determinate": true
+          },
+          {
+            "questions": 2,
+            "cost": 2,
+            "determinate": true
+          },
+          {
+            "questions": 2,
+            "cost": 2,
+            "determinate": true
+          },
+          {
+            "questions": 2,
+            "cost": 2,
+            "determinate": true
+          },
+          {
+            "questions": 2,
+            "cost": 2,
+            "determinate": true
+          },
+          {
+            "questions": 2,
+            "cost": 2,
+            "determinate": true
+          },
+          {
+            "questions": 2,
+            "cost": 2,
+            "determinate": true
+          }
+        ],
+        "random": [
+          {
+            "seed": 0,
+            "worlds": [
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              }
+            ]
+          },
+          {
+            "seed": 1,
+            "worlds": [
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              }
+            ]
+          },
+          {
+            "seed": 2,
+            "worlds": [
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              }
+            ]
+          },
+          {
+            "seed": 3,
+            "worlds": [
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              }
+            ]
+          },
+          {
+            "seed": 4,
+            "worlds": [
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              }
+            ]
+          },
+          {
+            "seed": 5,
+            "worlds": [
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              }
+            ]
+          },
+          {
+            "seed": 6,
+            "worlds": [
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              }
+            ]
+          },
+          {
+            "seed": 7,
+            "worlds": [
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              }
+            ]
+          }
+        ],
+        "minimax": [
+          {
+            "questions": 2,
+            "cost": 2,
+            "determinate": true
+          },
+          {
+            "questions": 2,
+            "cost": 2,
+            "determinate": true
+          },
+          {
+            "questions": 2,
+            "cost": 2,
+            "determinate": true
+          },
+          {
+            "questions": 2,
+            "cost": 2,
+            "determinate": true
+          },
+          {
+            "questions": 2,
+            "cost": 2,
+            "determinate": true
+          },
+          {
+            "questions": 2,
+            "cost": 2,
+            "determinate": true
+          },
+          {
+            "questions": 2,
+            "cost": 2,
+            "determinate": true
+          },
+          {
+            "questions": 2,
+            "cost": 2,
+            "determinate": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "review-2",
+      "status": "planned",
+      "equal_cost": false,
+      "optimal_worst_case_cost": 1,
+      "distributions": {
+        "fixed": [
+          {
+            "questions": 3,
+            "cost": 3,
+            "determinate": true
+          },
+          {
+            "questions": 3,
+            "cost": 3,
+            "determinate": true
+          },
+          {
+            "questions": 3,
+            "cost": 3,
+            "determinate": true
+          },
+          {
+            "questions": 3,
+            "cost": 3,
+            "determinate": true
+          },
+          {
+            "questions": 3,
+            "cost": 3,
+            "determinate": true
+          },
+          {
+            "questions": 3,
+            "cost": 3,
+            "determinate": true
+          },
+          {
+            "questions": 3,
+            "cost": 3,
+            "determinate": true
+          },
+          {
+            "questions": 3,
+            "cost": 3,
+            "determinate": true
+          }
+        ],
+        "random": [
+          {
+            "seed": 0,
+            "worlds": [
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              }
+            ]
+          },
+          {
+            "seed": 1,
+            "worlds": [
+              {
+                "questions": 1,
+                "cost": 10,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 10,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 10,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 10,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 10,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 10,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 10,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 10,
+                "determinate": true
+              }
+            ]
+          },
+          {
+            "seed": 2,
+            "worlds": [
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              }
+            ]
+          },
+          {
+            "seed": 3,
+            "worlds": [
+              {
+                "questions": 1,
+                "cost": 10,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 10,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 10,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 10,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 10,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 10,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 10,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 10,
+                "determinate": true
+              }
+            ]
+          },
+          {
+            "seed": 4,
+            "worlds": [
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              }
+            ]
+          },
+          {
+            "seed": 5,
+            "worlds": [
+              {
+                "questions": 3,
+                "cost": 12,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 12,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 12,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 12,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 12,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 12,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 12,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 12,
+                "determinate": true
+              }
+            ]
+          },
+          {
+            "seed": 6,
+            "worlds": [
+              {
+                "questions": 1,
+                "cost": 10,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 10,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 10,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 10,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 10,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 10,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 10,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 10,
+                "determinate": true
+              }
+            ]
+          },
+          {
+            "seed": 7,
+            "worlds": [
+              {
+                "questions": 1,
+                "cost": 10,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 10,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 10,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 10,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 10,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 10,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 10,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 10,
+                "determinate": true
+              }
+            ]
+          }
+        ],
+        "minimax": [
+          {
+            "questions": 1,
+            "cost": 1,
+            "determinate": true
+          },
+          {
+            "questions": 1,
+            "cost": 1,
+            "determinate": true
+          },
+          {
+            "questions": 1,
+            "cost": 1,
+            "determinate": true
+          },
+          {
+            "questions": 1,
+            "cost": 1,
+            "determinate": true
+          },
+          {
+            "questions": 1,
+            "cost": 1,
+            "determinate": true
+          },
+          {
+            "questions": 1,
+            "cost": 1,
+            "determinate": true
+          },
+          {
+            "questions": 1,
+            "cost": 1,
+            "determinate": true
+          },
+          {
+            "questions": 1,
+            "cost": 1,
+            "determinate": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "review-3",
+      "status": "unresolvable",
+      "equal_cost": true,
+      "optimal_worst_case_cost": null,
+      "distributions": {
+        "fixed": [
+          {
+            "questions": 1,
+            "cost": 1,
+            "determinate": false
+          },
+          {
+            "questions": 1,
+            "cost": 1,
+            "determinate": false
+          },
+          {
+            "questions": 1,
+            "cost": 1,
+            "determinate": false
+          },
+          {
+            "questions": 1,
+            "cost": 1,
+            "determinate": false
+          },
+          {
+            "questions": 1,
+            "cost": 1,
+            "determinate": false
+          },
+          {
+            "questions": 1,
+            "cost": 1,
+            "determinate": false
+          },
+          {
+            "questions": 1,
+            "cost": 1,
+            "determinate": false
+          },
+          {
+            "questions": 1,
+            "cost": 1,
+            "determinate": false
+          }
+        ],
+        "random": [
+          {
+            "seed": 0,
+            "worlds": [
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              }
+            ]
+          },
+          {
+            "seed": 1,
+            "worlds": [
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              }
+            ]
+          },
+          {
+            "seed": 2,
+            "worlds": [
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              }
+            ]
+          },
+          {
+            "seed": 3,
+            "worlds": [
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              }
+            ]
+          },
+          {
+            "seed": 4,
+            "worlds": [
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              }
+            ]
+          },
+          {
+            "seed": 5,
+            "worlds": [
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              }
+            ]
+          },
+          {
+            "seed": 6,
+            "worlds": [
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              }
+            ]
+          },
+          {
+            "seed": 7,
+            "worlds": [
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": false
+              }
+            ]
+          }
+        ],
+        "minimax": []
+      }
+    },
+    {
+      "id": "review-4",
+      "status": "already_decided",
+      "equal_cost": true,
+      "optimal_worst_case_cost": 0,
+      "distributions": {
+        "fixed": [
+          {
+            "questions": 0,
+            "cost": 0,
+            "determinate": true
+          },
+          {
+            "questions": 0,
+            "cost": 0,
+            "determinate": true
+          },
+          {
+            "questions": 0,
+            "cost": 0,
+            "determinate": true
+          },
+          {
+            "questions": 0,
+            "cost": 0,
+            "determinate": true
+          },
+          {
+            "questions": 0,
+            "cost": 0,
+            "determinate": true
+          },
+          {
+            "questions": 0,
+            "cost": 0,
+            "determinate": true
+          },
+          {
+            "questions": 0,
+            "cost": 0,
+            "determinate": true
+          },
+          {
+            "questions": 0,
+            "cost": 0,
+            "determinate": true
+          }
+        ],
+        "random": [
+          {
+            "seed": 0,
+            "worlds": [
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              },
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              },
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              },
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              },
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              },
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              },
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              },
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              }
+            ]
+          },
+          {
+            "seed": 1,
+            "worlds": [
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              },
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              },
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              },
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              },
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              },
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              },
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              },
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              }
+            ]
+          },
+          {
+            "seed": 2,
+            "worlds": [
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              },
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              },
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              },
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              },
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              },
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              },
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              },
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              }
+            ]
+          },
+          {
+            "seed": 3,
+            "worlds": [
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              },
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              },
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              },
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              },
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              },
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              },
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              },
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              }
+            ]
+          },
+          {
+            "seed": 4,
+            "worlds": [
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              },
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              },
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              },
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              },
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              },
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              },
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              },
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              }
+            ]
+          },
+          {
+            "seed": 5,
+            "worlds": [
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              },
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              },
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              },
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              },
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              },
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              },
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              },
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              }
+            ]
+          },
+          {
+            "seed": 6,
+            "worlds": [
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              },
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              },
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              },
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              },
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              },
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              },
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              },
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              }
+            ]
+          },
+          {
+            "seed": 7,
+            "worlds": [
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              },
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              },
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              },
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              },
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              },
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              },
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              },
+              {
+                "questions": 0,
+                "cost": 0,
+                "determinate": true
+              }
+            ]
+          }
+        ],
+        "minimax": [
+          {
+            "questions": 0,
+            "cost": 0,
+            "determinate": true
+          },
+          {
+            "questions": 0,
+            "cost": 0,
+            "determinate": true
+          },
+          {
+            "questions": 0,
+            "cost": 0,
+            "determinate": true
+          },
+          {
+            "questions": 0,
+            "cost": 0,
+            "determinate": true
+          },
+          {
+            "questions": 0,
+            "cost": 0,
+            "determinate": true
+          },
+          {
+            "questions": 0,
+            "cost": 0,
+            "determinate": true
+          },
+          {
+            "questions": 0,
+            "cost": 0,
+            "determinate": true
+          },
+          {
+            "questions": 0,
+            "cost": 0,
+            "determinate": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "review-5",
+      "status": "planned",
+      "equal_cost": true,
+      "optimal_worst_case_cost": 1,
+      "distributions": {
+        "fixed": [
+          {
+            "questions": 1,
+            "cost": 1,
+            "determinate": true
+          },
+          {
+            "questions": 1,
+            "cost": 1,
+            "determinate": true
+          },
+          {
+            "questions": 1,
+            "cost": 1,
+            "determinate": true
+          },
+          {
+            "questions": 1,
+            "cost": 1,
+            "determinate": true
+          }
+        ],
+        "random": [
+          {
+            "seed": 0,
+            "worlds": [
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              }
+            ]
+          },
+          {
+            "seed": 1,
+            "worlds": [
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              }
+            ]
+          },
+          {
+            "seed": 2,
+            "worlds": [
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              }
+            ]
+          },
+          {
+            "seed": 3,
+            "worlds": [
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              }
+            ]
+          },
+          {
+            "seed": 4,
+            "worlds": [
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              }
+            ]
+          },
+          {
+            "seed": 5,
+            "worlds": [
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              }
+            ]
+          },
+          {
+            "seed": 6,
+            "worlds": [
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              }
+            ]
+          },
+          {
+            "seed": 7,
+            "worlds": [
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              }
+            ]
+          }
+        ],
+        "minimax": [
+          {
+            "questions": 1,
+            "cost": 1,
+            "determinate": true
+          },
+          {
+            "questions": 1,
+            "cost": 1,
+            "determinate": true
+          },
+          {
+            "questions": 1,
+            "cost": 1,
+            "determinate": true
+          },
+          {
+            "questions": 1,
+            "cost": 1,
+            "determinate": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "review-6",
+      "status": "planned",
+      "equal_cost": true,
+      "optimal_worst_case_cost": 1,
+      "distributions": {
+        "fixed": [
+          {
+            "questions": 1,
+            "cost": 1,
+            "determinate": true
+          },
+          {
+            "questions": 1,
+            "cost": 1,
+            "determinate": true
+          },
+          {
+            "questions": 1,
+            "cost": 1,
+            "determinate": true
+          },
+          {
+            "questions": 1,
+            "cost": 1,
+            "determinate": true
+          },
+          {
+            "questions": 1,
+            "cost": 1,
+            "determinate": true
+          },
+          {
+            "questions": 1,
+            "cost": 1,
+            "determinate": true
+          },
+          {
+            "questions": 1,
+            "cost": 1,
+            "determinate": true
+          },
+          {
+            "questions": 1,
+            "cost": 1,
+            "determinate": true
+          }
+        ],
+        "random": [
+          {
+            "seed": 0,
+            "worlds": [
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              }
+            ]
+          },
+          {
+            "seed": 1,
+            "worlds": [
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              }
+            ]
+          },
+          {
+            "seed": 2,
+            "worlds": [
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              }
+            ]
+          },
+          {
+            "seed": 3,
+            "worlds": [
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              }
+            ]
+          },
+          {
+            "seed": 4,
+            "worlds": [
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 3,
+                "determinate": true
+              }
+            ]
+          },
+          {
+            "seed": 5,
+            "worlds": [
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 1,
+                "determinate": true
+              }
+            ]
+          },
+          {
+            "seed": 6,
+            "worlds": [
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              }
+            ]
+          },
+          {
+            "seed": 7,
+            "worlds": [
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 2,
+                "determinate": true
+              }
+            ]
+          }
+        ],
+        "minimax": [
+          {
+            "questions": 1,
+            "cost": 1,
+            "determinate": true
+          },
+          {
+            "questions": 1,
+            "cost": 1,
+            "determinate": true
+          },
+          {
+            "questions": 1,
+            "cost": 1,
+            "determinate": true
+          },
+          {
+            "questions": 1,
+            "cost": 1,
+            "determinate": true
+          },
+          {
+            "questions": 1,
+            "cost": 1,
+            "determinate": true
+          },
+          {
+            "questions": 1,
+            "cost": 1,
+            "determinate": true
+          },
+          {
+            "questions": 1,
+            "cost": 1,
+            "determinate": true
+          },
+          {
+            "questions": 1,
+            "cost": 1,
+            "determinate": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "review-7",
+      "status": "planned",
+      "equal_cost": false,
+      "optimal_worst_case_cost": 4,
+      "distributions": {
+        "fixed": [
+          {
+            "questions": 3,
+            "cost": 6,
+            "determinate": true
+          },
+          {
+            "questions": 3,
+            "cost": 6,
+            "determinate": true
+          },
+          {
+            "questions": 3,
+            "cost": 6,
+            "determinate": true
+          },
+          {
+            "questions": 3,
+            "cost": 6,
+            "determinate": true
+          },
+          {
+            "questions": 3,
+            "cost": 6,
+            "determinate": true
+          },
+          {
+            "questions": 3,
+            "cost": 6,
+            "determinate": true
+          },
+          {
+            "questions": 3,
+            "cost": 6,
+            "determinate": true
+          },
+          {
+            "questions": 3,
+            "cost": 6,
+            "determinate": true
+          }
+        ],
+        "random": [
+          {
+            "seed": 0,
+            "worlds": [
+              {
+                "questions": 2,
+                "cost": 5,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 5,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 5,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 5,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 5,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 5,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 5,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 5,
+                "determinate": true
+              }
+            ]
+          },
+          {
+            "seed": 1,
+            "worlds": [
+              {
+                "questions": 2,
+                "cost": 5,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 5,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 5,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 5,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 5,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 5,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 5,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 5,
+                "determinate": true
+              }
+            ]
+          },
+          {
+            "seed": 2,
+            "worlds": [
+              {
+                "questions": 2,
+                "cost": 5,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 5,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 5,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 5,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 5,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 5,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 5,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 5,
+                "determinate": true
+              }
+            ]
+          },
+          {
+            "seed": 3,
+            "worlds": [
+              {
+                "questions": 2,
+                "cost": 5,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 5,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 5,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 5,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 5,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 5,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 5,
+                "determinate": true
+              },
+              {
+                "questions": 2,
+                "cost": 5,
+                "determinate": true
+              }
+            ]
+          },
+          {
+            "seed": 4,
+            "worlds": [
+              {
+                "questions": 1,
+                "cost": 4,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 4,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 4,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 4,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 4,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 4,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 4,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 4,
+                "determinate": true
+              }
+            ]
+          },
+          {
+            "seed": 5,
+            "worlds": [
+              {
+                "questions": 3,
+                "cost": 6,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 6,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 6,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 6,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 6,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 6,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 6,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 6,
+                "determinate": true
+              }
+            ]
+          },
+          {
+            "seed": 6,
+            "worlds": [
+              {
+                "questions": 3,
+                "cost": 6,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 6,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 6,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 6,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 6,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 6,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 6,
+                "determinate": true
+              },
+              {
+                "questions": 3,
+                "cost": 6,
+                "determinate": true
+              }
+            ]
+          },
+          {
+            "seed": 7,
+            "worlds": [
+              {
+                "questions": 1,
+                "cost": 4,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 4,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 4,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 4,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 4,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 4,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 4,
+                "determinate": true
+              },
+              {
+                "questions": 1,
+                "cost": 4,
+                "determinate": true
+              }
+            ]
+          }
+        ],
+        "minimax": [
+          {
+            "questions": 1,
+            "cost": 4,
+            "determinate": true
+          },
+          {
+            "questions": 1,
+            "cost": 4,
+            "determinate": true
+          },
+          {
+            "questions": 1,
+            "cost": 4,
+            "determinate": true
+          },
+          {
+            "questions": 1,
+            "cost": 4,
+            "determinate": true
+          },
+          {
+            "questions": 1,
+            "cost": 4,
+            "determinate": true
+          },
+          {
+            "questions": 1,
+            "cost": 4,
+            "determinate": true
+          },
+          {
+            "questions": 1,
+            "cost": 4,
+            "determinate": true
+          },
+          {
+            "questions": 1,
+            "cost": 4,
+            "determinate": true
+          }
+        ]
+      }
+    }
+  ],
+  "decision_authorized": false,
+  "legal_certification": false,
+  "scope": "finite_noiseless_oracles_not_real_reviewers"
+}
