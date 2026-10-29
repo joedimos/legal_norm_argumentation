@@ -4,11 +4,11 @@
 
 **Joseph Dimos**
 
-Research software manuscript | 27 October 2026 | Version 0.6.2
+Research software manuscript | 29 October 2026 | Version 0.9.0
 
 ## Abstract
 
-Automatically converting legal language into executable rules creates two distinct verification problems: whether a representation preserves the source's meaning, and whether a system behaves consistently with that representation. This paper presents legal_norm_argumentation, a research and service framework that keeps those problems separate while connecting them through versioned evidence. The implementation combines source-bound extraction, explicit interpretation alternatives, defeasible activation, structured conflict analysis, preference-aware argumentation, finite-trace temporal verification, and counterexample-guided response revision. A product model over normative interpretations, response-behavior mappings, and factual completions preserves uncertainty rather than choosing a convenient interpretation. A finite minimax planner identifies informative factual questions without treating interpretive choices as observable facts. Operational components include authenticated review, signed independent annotations, append-only persistence, durable inference claims, runtime configuration binding, source ingestion, and reproducible audit archives. Local evaluation reports 287 passing tests and three PostgreSQL-specific skips, together with complete agreement on the expected labels of 62 semantic, 19 experiment, and 15 interpretation-family regression cases. These results concern implementation behavior on synthetic fixtures; they do not establish real-world legal accuracy. The paper specifies conditional correctness arguments, the deployment trust model, current limitations, and a falsifiable empirical research agenda.
+Automatically converting legal language into executable rules creates two distinct verification problems: whether a representation preserves the source's meaning, and whether a system behaves consistently with that representation. This paper presents legal_norm_argumentation, a research and service framework that keeps those problems separate while connecting them through versioned evidence. The implementation combines source-bound extraction, explicit interpretation alternatives, defeasible activation, structured conflict analysis, preference-aware argumentation, finite-trace temporal verification, and counterexample-guided response revision. A product model over normative interpretations, response-behavior mappings, and factual completions preserves uncertainty rather than choosing a convenient interpretation. A finite minimax planner identifies informative factual questions without treating interpretive choices as observable facts. Operational components include authenticated review, signed independent annotations, append-only persistence, durable inference claims, runtime configuration binding, source ingestion, and reproducible audit archives. The expanded implementation adds redundant formalizations, explicit DDL losses, assumption corrections, structured arguments, independently checkable finite-model certificates, local/global consistency diagnostics, metamorphic tests, interpretation geometry and review planning. Automated acquisition targets French IP-code articles and U.S. IP opinions. Local evaluation reports 461 passing tests and four PostgreSQL-specific skips, together with complete agreement on the expected labels of 62 semantic, 19 experiment, and 15 interpretation-family regression cases. These results concern implementation behavior on synthetic fixtures; they do not establish real-world legal accuracy. The paper specifies conditional correctness arguments, the deployment trust model, current limitations, and a falsifiable empirical research agenda.
 
 **Keywords:** legal autoformalization; normative reasoning; argumentation; finite-trace verification; interpretation uncertainty; statutory alignment; reproducibility.
 
@@ -34,6 +34,8 @@ Statutory AI uses legal material to guide the critique and revision of model out
 
 Governance literature also distinguishes technical measurements from contextual risk management. NIST AI RMF 1.0 is a voluntary, use-case-agnostic risk-management framework [6]. We use this distinction to explain why runtime tests, external legal review and release decisions are different evidence categories. The project is not certified against that framework. Ed25519 signatures [7] establish attribution to enrolled keys; they do not establish the expertise, independence or correctness of the person holding a key.
 
+An et al. [11] use redundant formalizations and semantic-equivalence checks in a neurosymbolic policy-verification pipeline. Horner et al. [12] segment legal text into atomic snippets, extract DDL rules and apply a dedicated refinement stage, emphasizing completeness-aware evaluation. These motivate the complementary redundancy and DDL layers here. Their reported model performance is not reproduced by this project's synthetic software tests, and agreement among models cannot establish legal source faithfulness.
+
 ## 3. System architecture and scope
 
 The project has a deterministic source-processing path, a bounded research path and a service-governance layer. The source path ingests a versioned document, proposes norm candidates, audits extraction, constructs typed interpretations, resolves supported priorities and evaluates a fact/action context. The research path accepts explicit temporal formulas, interpretation families and candidate response mappings. The service layer persists sources, reviews, selections, evaluations and workflow events and exposes role-constrained APIs and browser interfaces.
@@ -55,6 +57,12 @@ The project has a deterministic source-processing path, a bounded research path 
 The default extractor combines explicit English/French modal and clause patterns with the project's NLP facilities. It is an inspectable baseline, not a demonstrated state-of-the-art legal parser. The service's extraction path and the interpretation-family research path are also not the same reasoner. The service evaluates its typed single-context norm model; the research path evaluates explicitly supplied finite-trace formulas. Connecting both paths under identical semantics requires a reviewed translation, not an implicit claim of equivalence.
 
 Légifrance acquisition targets French intellectual-property and competition-law corpora. The service supports the official PISTE transport with configured credentials and an explicitly selected bounded HTML route. URL restrictions, article bounds, version hashes and visible transport failures support controlled ingestion. They do not establish that the chosen corpus contains every applicable legal provision or that every cross-reference has been resolved.
+
+### 3.1 Automated IP acquisition
+
+A supervised importer acquires dated current IP-code manifests from production PISTE and hydrates article text using official IDs. CourtListener v4 discovery targets copyright, patent, trademark and trade-secret queries, then retrieves individual full opinions. Opinion IDs are distinct from the cluster IDs used in website URLs [10]. Each document retains source identity, raw/content hashes, language, jurisdiction and version provenance. Search snippets never substitute for full text. Opinion type is retained, while controlling authority remains unassessed.
+
+Acquisition has durable cursors, conditional database leases, fenced atomic batch commits, provider-wide 429 cooldown and periodic reconciliation of older U.S. cases. Crashes resume the declared query cycle. Missing/oversized documents and unsupported responses block their job rather than silently counting as a completed import. Current French acquisition does not cover all French judgments, and U.S. keyword results are not a census of applicable IP law. All generated norm candidates enter unreviewed. Live provider access has not been demonstrated in this evaluation.
 
 ## 4. Source-bound representations and defeasible activation
 
@@ -170,6 +178,18 @@ Signed judgments bind the complete payload, packet hash, role and UTC timestamp 
 
 Operational trust remains external. A registry custodian checks identity and qualifications, retains evidence under appropriate access controls and distributes the trust anchor independently of submissions. A signature verifies possession of an enrolled key, not the person's expertise or actual independence. The implementation retains these limitations explicitly and does not convert collected annotations into automatic family-review receipts or legal certification.
 
+### 8.1 Complementary formalization and diagnostic layers
+
+Redundant formalization retains independent unreviewed candidates and their model/prompt provenance. Predicate alignment uses explicit supported mappings and exposes unresolved atoms. Bounded cross-checks partition equivalent candidates and return stronger/weaker/incomparable witnesses. Consensus is a review aid; candidates can agree on the same omitted exception. Structured-argument analysis distinguishes strict/defeasible rules and undermining, rebutting and undercutting, lifting explicit priorities before invoking Dung semantics. It does not invent authority from model confidence.
+
+DDL interchange records unrepresentable fields as explicit losses. Atomic snippet segmentation and second-stage refinement remain reviewable proposals. Completeness-aware evaluation reports a vector rather than allowing a correct simple fragment to hide omitted obligations. Assumption analysis surfaces bounded minimal correction/unsatisfiable subsets and source-bound review prompts. Relaxing an assumption restores satisfiability in a supplied model, not legal permission to change the source.
+
+The Phase 5 constraint layer distinguishes pairwise inconsistency from higher-order unsatisfiability. Minimal cyclic examples can have every proper subfamily satisfiable. However, acyclicity and pairwise satisfiability alone do not imply global satisfiability: p, p iff q and not q form a counterexample. The implemented acyclic shortcut therefore requires a verified join tree and relational semijoin consistency, cross-checked against exact global enumeration. Reports preserve higher-order acyclic conflict as a separate outcome. This is a bounded set-valued constraint analysis, not a claim that linear cohomology decides legal consistency.
+
+A small independent standard-library checker replays finite-trace violation witnesses and exhaustive compliant-within-bound certificates. Enumeration counts and Merkle roots bind the visited states. Conflict certificates provide an unsatisfiable family and witnesses for single deletions. A certificate can faithfully prove the wrong encoded question; independent intended-query binding is necessary. The checker is differential- and mutation-tested, not mechanized or a proof of the Python implementation.
+
+Metamorphic testing applies deterministic source transformations and compares resulting behaviors, including bilingual fixtures. Behavioral geometry measures symmetric differences of compliant behavior sets: it is a pseudometric on syntax and a metric on bounded behavioral equivalence classes. Exact and seeded sampled analyses remain distinct. Rips H0/H1 diagnostics do not establish legal schools, cohomological obstruction or normative non-transitivity. Interpretive review planning computes bounded minimax question order over supplied finite worlds/costs; it suggests questions and never auto-answers them or invents priors.
+
 ## 9. Production service and authorization policy
 
 ### 9.1 Durable execution and runtime binding
@@ -210,15 +230,23 @@ Executable probes cover authenticated ingestion/review/evaluation/audit export, 
 
 Audit archives use deterministic JSON entries and content digests. Audit events form a chained history; external anchoring is needed for stronger tamper accountability. The archive's own hashes cannot authenticate themselves. No DELETE or UPDATE API is supplied for governed evidence, and any legally required retention/deletion process needs a separately governed administrative procedure.
 
+### 9.4 Scoped release-candidate preparation
+
+Version 0.9.0 introduces an opt-in strict supervised French/U.S. IP profile while preserving the legacy deployment contract. A v2 pinned evidence graph binds the exact build/model revision, signed held-out annotations, predictions and judicial review protocol, all three direct/symbolic/gold disagreements, recent full-text provider receipts, and real staging smoke/load/restore reports. Quality accounting retains abstentions and false compliance per language, modality, exception presence and source kind. Custodians must verify the underlying experiment and reviewer qualifications; the software checks attestation integrity and arithmetic.
+
+The profile requires a supported imported source type, upstream provenance and matching jurisdiction in addition to the existing strict predicates. Judicial holdings, dicta, quotations, separate opinions, precedential status, dates and source changes require explicit independent assessment. A source receipt establishes retrieval, not binding authority. Read-only readiness diagnostics report missing prerequisites and remain unauthorized even when supplied prerequisites pass. The default zero-observed-false-compliance budget is a configurable organizational policy, not a zero-error population guarantee.
+
+Distributions contain the versioned schemas, examples, regression corpora and migration scripts. Benchmark defaults and forward-only migration commands work outside a checkout. CI rebuilds a wheel from the sdist under a fixed build timestamp and checks identical bytes in the same environment, then executes the installed package from an unrelated directory. This establishes a bounded reproducibility check, not universal reproducible builds or a signed supply-chain guarantee. Real credentials, expert annotation, staging qualification, licensing and enforced repository protection remain external release actions.
+
 ## 10. Evaluation and reproducibility
 
 ### 10.1 Evidence actually obtained
 
-The evaluated software snapshot is version 0.6.2, commit `9dbb08289ca6a494f5f514332e5201c529a74bdf`. The exact regression-corpus digests and test commands are retained with the paper's evaluation record. The local environment used Python 3.12.14. Local pytest completed with 287 passed tests, three PostgreSQL-specific skips and one existing Starlette/httpx deprecation warning. Ruff, Bandit and dependency-consistency checks were also run; the production dependency audit reported no known vulnerabilities at execution time.
+The evaluated runtime-code snapshot is version 0.9.0, commit `e54d2c81b6107a62fdf21a25b4d4ba24093af7de`, tree 2d2d78075eb18f534901f8eaeccb8340b379da71. The exact code/resource hashes and regression commands are retained in RC_EVALUATION.json and the paper evaluation record; the earlier 0.6.2 record remains archived. Python 3.12.14 completed 461 tests with four PostgreSQL-specific skips and one existing Starlette/httpx warning. Ruff, Bandit, schema/YAML validation, a wheel-from-sdist byte comparison and installed-package/migration checks passed locally. The repository's CI additionally exercises Python 3.13, PostgreSQL and container/dependency gates. Deployment-specific qualification and live expert/model evaluation were not performed. The current paper is a separate documentation update to that runtime snapshot.
 
 | Evaluation component | Configuration | Observed result | Supported interpretation |
 | --- | --- | --- | --- |
-| Local automated tests | Python 3.12; current source snapshot | 287 passed; 3 skipped | Covered code behavior agrees with tests |
+| Local automated tests | Python 3.12; current source snapshot | 461 passed; 4 skipped | Covered code behavior agrees with tests |
 | Semantic regression corpus | Exhaustive backend | 62 / 62 expected labels | Synthetic temporal/verification/reasoning behavior |
 | Semantic regression corpus | Z3 backend | 62 / 62 expected labels | Cross-backend agreement on this corpus |
 | Completion/amendment experiments | Exhaustive backend | 19 / 19 expected labels | Bounded uncertainty and inclusion behavior |
@@ -244,11 +272,23 @@ Install the project's dev, verification and annotation extras in a supported Pyt
 
 For model studies, additionally freeze the source versions, prompt templates, weights revision or digest, server release, tokenizer/chat template, inference parameters, review policy, candidate hashes and split lineage. A model's served name is not an immutable weights identifier. For independent annotation, preserve the original separate submissions, enrollment records, adjudication and external trust anchors. For operational tests, retain configuration, workload, database baseline and restore evidence for the actual deployment.
 
+### 10.4 Frozen Phase 5 results, including unavailable and negative outcomes
+
+| Protocol | Observation | Interpretation |
+| --- | --- | --- |
+| F1 | 32/32 planted minimal cyclic families detected; all pairs satisfiable | Synthetic Boolean constraint examples only |
+| F2 | Unqualified acyclic pair-satisfiability claim refuted | Corrected join-tree/semijoin shortcut tested against exact checking |
+| F3 | Not run: no eligible reviewed Légifrance corpus | Counts are unavailable, not an empirical zero |
+| H2 | Baseline 6/14 violations plus 2 inconclusive; treatment 3/14 plus 2 inconclusive | Token-boundary repair retains original fixture results; 2/2 planted fake faults detected |
+| H3 | H0 MSE 0.20565; mean distance 0.17836; alternative count 0.46113 | H0 fails to beat both baselines; no real reviewer predictive validity |
+| H4 | Wrong-model artifact escape 1/3 unpinned, 0/3 with trusted query pin | Runtime mutants also include unknown outcomes and a no-certificate case |
+| H5 | Eight simulated tasks; 1 improvement and 4 ties among five equal-cost resolvable fixed-order comparisons | Distributions and insufficient-question cases retained; not a real reviewer study |
+
+The protocol, dated addendum, per-case outputs and negative results remain in the Phase 5 artifacts. No thresholds were retuned to manufacture empirical support. Subsequent automatic acquisition does not turn unreviewed data into eligible reviewed data for F3. The current release-profile tests use explicitly synthetic/unreviewed graphs to exercise software branches, never supplied production evidence.
+
 ## 11. Threats to validity and research agenda
 
-Phase 5 extension note (software 0.8.0): we hypothesize that bounded local/global constraints, metamorphic source tests, behavioral geometry, independent finite-model certificates and review planning can improve inspection. The extension has only synthetic/unreviewed experiments. The unqualified acyclic pair-satisfiability premise is refuted; no eligible reviewed Légifrance corpus was available for F3. H3's H0 predictor fails to beat mean pairwise distance in the simulated annotation pipeline. Wrong-model certificates can escape without an independently trusted query binding. A measured token-boundary extractor defect is repaired while retaining pre/post outputs on unchanged fixtures. These observations do not establish legal accuracy, demonstrated originality, real reviewer efficiency, field predictive validity or certification. Behavioral distance is a metric on bounded equivalence classes, not legal syntax; Rips H1 is not sheaf cohomology or normative non-transitivity. No Lean project is present and no mechanized verification of the Python implementation is claimed. The historical empirical snapshot elsewhere in this paper remains unchanged.
-
-Phase 4 extension note (software 0.7.0): redundant candidate comparisons, DDL interchange, assumption corrections, structured ASPIC+ reasoning and faithfulness disagreements have additional synthetic, unreviewed regression fixtures. These are not independent legal annotations or live-model performance measurements and are not part of the 0.6.2 empirical snapshot reported above. Agreement among formalizations can reproduce a shared omission; DDL round-trips establish representation preservation rather than legal meaning; minimal corrections restore bounded satisfiability rather than authorize legal changes. The structured-argument fragment has explicit resource/rationality preconditions, and no mechanized verification of the Python implementation is claimed. New readiness diagnostics are advisory, never legal certification.
+All Phase 4/5 results above remain synthetic and unreviewed. Consensus, round-trips, bounded repairs, diagnostic geometry and independent replay do not establish source faithfulness, demonstrated originality or legal certification. There is no Lean project and no mechanized correctness claim. The wrong-model/query-binding limitation and the negative/unavailable research outcomes are retained rather than omitted from the release narrative.
 
 Construct validity is the principal limitation. Synthetic fixtures establish that the implementation follows selected formal examples; they do not establish faithful interpretation of French intellectual-property or competition law. Rule-based extraction may miss implicit norms, scope-bearing definitions, judicial interpretation or interactions among provisions. A source quote and content hash can be exact while the associated legal predicate is wrong.
 
@@ -268,7 +308,7 @@ legal_norm_argumentation supplies an inspectable path from normative source snap
 
 ## Reproducibility, authorship and disclosure
 
-Repository: https://github.com/joedimos/legal_norm_argumentation. Software snapshot: `9dbb08289ca6a494f5f514332e5201c529a74bdf`; version 0.6.2. This is an academic-style research-software manuscript, not a claim of acceptance by LEGATO, VLE, JURIX or any publisher. The paper and software were developed with ChatGPT/Codex assistance; the manuscript is grounded in repository inspection, executed regression tests and the cited primary references. No independent legal study participants, institutional affiliations, funding awards, ethics approvals or expert endorsements are asserted. The author should review the manuscript and arrange any required consent, permissions and institutional review before an empirical study or submission.
+Repository: https://github.com/joedimos/legal_norm_argumentation. Runtime-code snapshot: `e54d2c81b6107a62fdf21a25b4d4ba24093af7de`; version 0.9.0. The accompanying paper update is a separate documentation commit. The archived 0.6.2 evaluation remains available. This is an academic-style research-software manuscript, not a claim of acceptance by LEGATO, VLE, JURIX or any publisher. The paper and software were developed with ChatGPT/Codex assistance; the manuscript is grounded in repository inspection, executed regression tests and the cited primary references. No independent legal study participants, institutional affiliations, funding awards, ethics approvals or expert endorsements are asserted. The author should review the manuscript and arrange any required consent, permissions and institutional review before an empirical study or submission.
 
 ## References
 
@@ -289,3 +329,9 @@ Repository: https://github.com/joedimos/legal_norm_argumentation. Software snaps
 [8] PostgreSQL Global Development Group. PostgreSQL 18 Documentation: Explicit Locking. https://www.postgresql.org/docs/18/explicit-locking.html
 
 [9] Cohen, J. (1960). A Coefficient of Agreement for Nominal Scales. Educational and Psychological Measurement, 20(1), 37-46. https://doi.org/10.1177/001316446002000104
+
+[10] Free Law Project. CourtListener Case Law APIs, REST API v4. Official documentation, accessed 29 October 2026. https://wiki.free.law/c/courtlistener/help/api/rest/v4/case-law
+
+[11] An, C., Bayless, S., Buliani, S., et al. (2026). A Neurosymbolic Approach to Natural Language Formalization and Verification. arXiv:2511.09008v2, revised 13 July 2026. https://arxiv.org/abs/2511.09008
+
+[12] Horner, E., Mateis, C., Governatori, G., and Ciabattoni, A. (2025). Toward Robust Legal Text Formalization into Defeasible Deontic Logic using LLMs. arXiv:2506.08899v3, revised 31 December 2025. https://arxiv.org/abs/2506.08899

@@ -222,6 +222,10 @@ def render(source, output, font_dir):
         ),
     }
     text = source.read_text(encoding="utf-8")
+    metadata = re.search(r"Research software manuscript \| ([^\n|]+) \| Version ([^\n]+)", text)
+    if metadata is None:
+        raise ValueError("Manuscript must identify its date and software version")
+    footer = f"Dimos | Version {metadata[2].strip()} | {metadata[1].strip()}"
     if "@CODE_COMMIT@" in text:
         raise ValueError("Unresolved code commit")
     for symbol in ("\u2011", "\u2013", "\u2014"):
@@ -271,7 +275,8 @@ def render(source, output, font_dir):
                 [Paragraph(markup(cell), styles["tablehead" if j == 0 else "table"]) for cell in row]
                 for j, row in enumerate(rows)
             ]
-            table = Table(data, colWidths=[WIDTH * f for f in fractions], repeatRows=1, hAlign="LEFT")
+            table = Table(data, colWidths=[WIDTH * f for f in fractions], repeatRows=1, hAlign="LEFT",
+                          rowSplitRange=(3, -1) if len(rows) > 4 else None)
             table.setStyle(
                 TableStyle(
                     [
@@ -321,7 +326,7 @@ def render(source, output, font_dir):
         c.setFillColor(GRAY)
         c.drawString(22 * mm, PAGE_H - 13.3 * mm, "LEGAL NORM ARGUMENTATION | Research software manuscript")
         c.drawRightString(PAGE_W - 22 * mm, 13 * mm, str(doc.page))
-        c.drawString(22 * mm, 13 * mm, "Dimos | Version 0.6.2 | 27 October 2026")
+        c.drawString(22 * mm, 13 * mm, footer)
         c.restoreState()
 
     output.parent.mkdir(parents=True, exist_ok=True)
