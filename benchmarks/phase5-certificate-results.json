@@ -1,0 +1,44 @@
+{
+  "schema": "vle-certificate-study/v1",
+  "synthetic": true,
+  "review_status": "unreviewed",
+  "rows": [
+    {
+      "mutant": "unknown_promotion",
+      "attempts": 1,
+      "certificate_produced": true,
+      "rejected_unpinned": true,
+      "rejected_pinned": true
+    },
+    {
+      "mutant": "off_by_one_horizon",
+      "attempts": 1,
+      "certificate_produced": true,
+      "rejected_unpinned": true,
+      "rejected_pinned": true
+    },
+    {
+      "mutant": "priority_binding",
+      "attempts": 1,
+      "certificate_produced": true,
+      "rejected_unpinned": false,
+      "rejected_pinned": true
+    },
+    {
+      "mutant": "no_certificate",
+      "attempts": 1,
+      "certificate_produced": false,
+      "rejected_unpinned": null,
+      "rejected_pinned": null
+    }
+  ],
+  "attempts": 4,
+  "certificates_produced": 3,
+  "no_certificate": 1,
+  "unpinned_escape_rate": 0.3333333333333333,
+  "pinned_escape_rate": 0.0,
+  "real_reviewer_count": 0,
+  "decision_authorized": false,
+  "legal_certification": false,
+  "limitation": "A self-consistent certificate of the wrong model can escape without an independently trusted query binding."
+}
