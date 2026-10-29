@@ -126,6 +126,7 @@ def verify_bundle(data: bytes, *, expected_manifest_digest: str | None = None) -
                 raise ValueError("invalid manifest fields")
             if set(names) != {"manifest.json", *manifest["entries"]}:
                 raise ValueError("manifest membership mismatch")
+            certificate_checks = []
             for name, expected in manifest["entries"].items():
                 if (not isinstance(expected, dict) or set(expected) != {"sha256", "size"}
                         or type(expected["size"]) is not int or expected["size"] < 0
@@ -135,13 +136,20 @@ def verify_bundle(data: bytes, *, expected_manifest_digest: str | None = None) -
                 payload = archive.read(name)
                 if expected != {"sha256": digest(payload), "size": len(payload)}:
                     raise ValueError("artifact digest or length mismatch")
-                _json(payload)
+                artifact = _json(payload)
+                if isinstance(artifact, dict) and artifact.get("schema") == "vle-certificate/v1":
+                    from .checker import check_certificate
+                    checked = check_certificate(artifact)
+                    if not checked["valid"]:
+                        raise ValueError("invalid proof certificate: " + checked["reason"])
+                    certificate_checks.append({"artifact": name, **checked})
             actual = digest(raw)
             if expected_manifest_digest is not None and actual != expected_manifest_digest:
                 raise ValueError("trusted manifest digest mismatch")
             return {"valid": True, "manifest_digest": actual, "artifact_count": len(names) - 1,
                     "trusted_digest_matched": expected_manifest_digest is not None,
-                    "signature_verified": False, "legal_certification": False}
+                    "signature_verified": False, "legal_certification": False,
+                    **({"certificate_checks": certificate_checks} if certificate_checks else {})}
     except (ValueError, TypeError, KeyError, OSError, UnicodeError, zipfile.BadZipFile, RecursionError) as exc:
         return {"valid": False, "reason": str(exc), "trusted_digest_matched": False,
                 "signature_verified": False, "legal_certification": False}

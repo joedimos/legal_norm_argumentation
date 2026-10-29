@@ -78,3 +78,25 @@ cannot establish priority. Primary grounding:
 F3 requires frozen, eligible Légifrance snapshots. Inventory existing local data
 before analysis; if none are eligible, report `not_run_missing_reviewed_data`
 with null empirical counts, not a manufactured zero-obstruction result.
+
+## M1 / N4
+
+The independent checker is standard-library-only and under500 lines after
+formatting. It re-evaluates the complete explicit query, observations and exact
+horizon; enumeration certificates commit to every visited complete state with
+a domain-separated Merkle root and require nonempty admissible behavior.
+Unknown certificates are bound diagnostics only. Conflict certificates additionally
+require single-deletion witnesses and validate a cycle against declared overlap
+edges; semantic correctness of the declared source mapping still needs review.
+Z3 unsat cores are not treated as independently checkable refutations: bounded
+enumeration is the supported refutation format. Existing bundle manifests remain
+v1; certificate artifacts trigger offline checker execution.
+
+The frozen mutation study produces3 certificates in4 attempts. Without a trusted
+query digest, the priority-binding mutant escapes (1/3); with the separately
+pinned intended query all3 produced invalid certificates are rejected. The fourth
+case emits no certificate and is retained in the denominator. This establishes
+only the tested formal-model boundary, not correct priorities or legal meaning.
+Baseline reports/routes remain unchanged; `certify` and `check-certificate` are
+additive finite-query interfaces. There is no Lean project and no mechanized
+Python claim. Full suite374 passed,3 skipped; all legacy benchmark runs pass.

@@ -94,7 +94,13 @@ def main() -> None:
 
     from .phase4_cli import COMMANDS, configure, execute
     configure(subs)
+    from .phase5_cli import COMMANDS as PHASE5_COMMANDS
+    from .phase5_cli import configure as configure_phase5
+    from .phase5_cli import execute as execute_phase5
+    configure_phase5(subs)
     args = parser.parse_args()
+    if args.command in PHASE5_COMMANDS:
+        raise SystemExit(execute_phase5(args))
     if args.command in COMMANDS:
         raise SystemExit(execute(args))
     if args.command in {"verify", "research", "experiment", "plan-evidence", "family", "statutory-revise", "family-review", "family-benchmark", "benchmark", "experiment-benchmark", "verify-bundle", "live-generate", "annotation-prepare", "annotation-assess", "model-doctor", "annotation-verify", "annotation-template", "annotation-sign", "annotation-keygen"}:

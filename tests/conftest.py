@@ -8,7 +8,7 @@ import urllib3
 
 @pytest.fixture(autouse=True)
 def phase4_no_network(request, monkeypatch):
-    if "test_phase4_" not in request.node.path.name:
+    if not any(prefix in request.node.path.name for prefix in ("test_phase4_", "test_phase5_")):
         return
 
     def blocked(*args, **kwargs):
