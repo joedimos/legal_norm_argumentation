@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "vle-assumption-report/v1"
+    },
+    "status": {
+      "enum": [
+        "expected_feasible",
+        "corrections_found",
+        "hard_conflict",
+        "unknown"
+      ]
+    },
+    "reason": {
+      "type": "string"
+    },
+    "backend": {
+      "enum": [
+        "exhaustive",
+        "z3"
+      ]
+    },
+    "horizon": {
+      "type": "integer"
+    },
+    "assumptions": {
+      "type": "array"
+    },
+    "expected": {
+      "type": "object"
+    },
+    "minimal_corrections": {
+      "type": "array"
+    },
+    "minimal_unsatisfiable": {
+      "type": "array"
+    },
+    "solver_unsat_core": {
+      "type": "array"
+    },
+    "truncated": {
+      "type": "boolean"
+    },
+    "minimality_established": {
+      "type": "boolean"
+    },
+    "review_prompts": {
+      "type": "array"
+    },
+    "bounds": {
+      "type": "object"
+    },
+    "semantics": {
+      "const": "bounded_existential_restoration_not_universal_compliance"
+    },
+    "request_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "review_status": {
+      "const": "unreviewed"
+    },
+    "decision_authorized": {
+      "const": false
+    },
+    "legal_certification": {
+      "const": false
+    }
+  },
+  "required": [
+    "schema",
+    "status",
+    "reason",
+    "backend",
+    "horizon",
+    "assumptions",
+    "expected",
+    "minimal_corrections",
+    "minimal_unsatisfiable",
+    "solver_unsat_core",
+    "truncated",
+    "minimality_established",
+    "review_prompts",
+    "bounds",
+    "semantics",
+    "request_sha256",
+    "review_status",
+    "decision_authorized",
+    "legal_certification"
+  ],
+  "additionalProperties": false
+}

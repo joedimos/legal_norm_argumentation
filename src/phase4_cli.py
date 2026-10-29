@@ -7,7 +7,7 @@ from pathlib import Path
 from .audit_bundle import MAX_BYTES, create_bundle
 from .model_runtime import strict_json
 
-COMMANDS = ('aspic', 'redundant-formalize', 'redundancy-report')
+COMMANDS = ('aspic', 'redundant-formalize', 'redundancy-report', 'assumptions')
 
 
 def configure(subs):
@@ -22,6 +22,9 @@ def configure(subs):
         else:
             p.add_argument('--input', required=True)
         p.add_argument('--bundle')
+        if name == 'assumptions':
+            p.add_argument('--backend', choices=('exhaustive', 'z3'))
+            p.add_argument('--max-mcs', type=int)
         if name == 'aspic':
             p.add_argument('--lifting', choices=('last', 'weakest'), default=None)
 
@@ -48,6 +51,9 @@ def execute(args):
             request = strict_json(raw)
             if args.command == 'aspic':
                 result = analyze_aspic(request, lifting=args.lifting)
+            elif args.command == 'assumptions':
+                from .assumptions import assumption_report
+                result = assumption_report(request, backend=args.backend, max_mcs=args.max_mcs)
             else:
                 from .redundancy.crosscheck import consensus_report
                 if request.get('schema') == 'vle-redundancy-generation/v1':
