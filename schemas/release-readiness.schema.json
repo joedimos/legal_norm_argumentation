@@ -8,7 +8,7 @@
         "max_import_jobs": {
           "const": 5
         },
-        "network_calls": {
+        "provider_model_calls": {
           "const": 0
         },
         "source_max_age_seconds": {
@@ -18,7 +18,7 @@
       },
       "required": [
         "max_import_jobs",
-        "network_calls",
+        "provider_model_calls",
         "source_max_age_seconds"
       ],
       "type": "object"

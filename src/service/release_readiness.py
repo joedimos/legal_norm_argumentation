@@ -65,7 +65,7 @@ def release_readiness(settings, database, *, now=None):
             "version": settings.service_version, "build_revision": settings.build_revision,
             "profile": settings.release_profile, "checks": checks,
             "missing": [c["check"] for c in checks if not c["passed"]], "import_freshness": freshness,
-            "observed_at": now.isoformat(), "bounds": {"max_import_jobs": 5, "network_calls": 0,
+            "observed_at": now.isoformat(), "bounds": {"max_import_jobs": 5, "provider_model_calls": 0,
                                                         "source_max_age_seconds": settings.release_source_max_age_seconds},
             "scope": "deployment_prerequisites_only_case_review_still_required",
             "decision_authorized": False, "legal_certification": False}
