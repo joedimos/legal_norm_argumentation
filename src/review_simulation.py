@@ -32,7 +32,8 @@ def simulate(corpus):
         distributions = {"fixed": [fixed(queries, i) for i in range(len(worlds))], "random": [], "minimax": []}
         for seed in range(8):
             order = list(queries)
-            random.Random(seed).shuffle(order)
+            # Fixed simulation orders; not security randomness.
+            random.Random(seed).shuffle(order)  # nosec B311
             distributions["random"].append({"seed": seed, "worlds": [fixed(order, i) for i in range(len(worlds))]})
         if r["status"] in {"planned", "already_decided"}:
             nodes = {n["id"]: n for n in r["plan"]["nodes"]}

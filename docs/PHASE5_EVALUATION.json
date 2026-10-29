@@ -1,0 +1,262 @@
+{
+  "decision_authorized": false,
+  "final_code_reproductions": {
+    "certificates": {
+      "all_passed": null,
+      "canonical_json_sha256": "e2d59f5a5e3b10dab28a559f20e7dc168bd39e8fcca94cb7a13bbe41c14d7fdc",
+      "case_count": null,
+      "command": "python -m src.certificate_study",
+      "status": null
+    },
+    "experiments-exhaustive": {
+      "all_passed": true,
+      "canonical_json_sha256": "cacc690c1b25804776a301fea618cd085cff2a2ed7fe5ef70b18ee1ff091e514",
+      "case_count": 19,
+      "command": "python -m src.cli experiment-benchmark --backend exhaustive",
+      "status": null
+    },
+    "experiments-z3": {
+      "all_passed": true,
+      "canonical_json_sha256": "2695d9fbf8af9a7190377131898f6ce12484c38c0b9a46adbf9a2ec2c8c81679",
+      "case_count": 19,
+      "command": "python -m src.cli experiment-benchmark --backend z3",
+      "status": null
+    },
+    "faithfulness": {
+      "all_passed": null,
+      "canonical_json_sha256": "16042398362290f3bd37ef9495f789753c92dc12ad72856dbc0213c8e4878ec9",
+      "case_count": 12,
+      "command": "python -m src.cli faithfulness",
+      "status": "reported"
+    },
+    "families": {
+      "all_passed": true,
+      "canonical_json_sha256": "363d8d8a6b4e2e66b9e0a3fd7a053d90477fba751cdaa5aeeb1cefe042ad636a",
+      "case_count": 15,
+      "command": "python -m src.cli family-benchmark",
+      "status": null
+    },
+    "geometry": {
+      "all_passed": null,
+      "canonical_json_sha256": "4521bb8f9e8df5cc82c89f34b04f361ae1724d3026cdb55a7da63c6da85171c2",
+      "case_count": null,
+      "command": "python -m src.geometry_study",
+      "status": null
+    },
+    "legacy-exhaustive": {
+      "all_passed": true,
+      "canonical_json_sha256": "3c4653058057af85a95908bb79fdc44706ea2c2778bbf858b8ecf15781690c1c",
+      "case_count": 62,
+      "command": "python -m src.cli benchmark --backend exhaustive",
+      "status": null
+    },
+    "legacy-z3": {
+      "all_passed": true,
+      "canonical_json_sha256": "a608bec5cc9bcc926e55724976b420f6ad55687dd516ddf8671d73efe2648fb9",
+      "case_count": 62,
+      "command": "python -m src.cli benchmark --backend z3",
+      "status": null
+    },
+    "metamorphic": {
+      "all_passed": null,
+      "canonical_json_sha256": "0dbac829d52e14c31f77c7eab6247a6445baec959ebbedb93051498e14c79c9b",
+      "case_count": null,
+      "command": "python -m src.cli metamorphic --input benchmarks/metamorphic-v1.json --provider extractor",
+      "status": "reported"
+    },
+    "obstructions": {
+      "all_passed": null,
+      "canonical_json_sha256": "b30cb83ea121693e88fac2d3fe5ee9995dd198ab3335219d8a96d851544fbf02",
+      "case_count": null,
+      "command": "python -m src.obstruction_study",
+      "status": null
+    },
+    "review": {
+      "all_passed": null,
+      "canonical_json_sha256": "4c67a8f9a62640bc34d606cdb35cb1f1eac4a8fdfaac4f3be6d2e8475dee94fd",
+      "case_count": null,
+      "command": "python -m src.review_simulation",
+      "status": null
+    },
+    "runtime_mutations": {
+      "all_passed": null,
+      "canonical_json_sha256": "3391dddf9d675fc65bea6349955c5443d40a1cd9a1bd999b0961d27b7bb61dc4",
+      "case_count": null,
+      "command": "python -c 'import json; from src.certificate_study import runtime_mutations; print(json.dumps(runtime_mutations()))'",
+      "status": null
+    }
+  },
+  "inputs_raw_sha256": {
+    "benchmarks/experiments-v1.json": "72d38e6a4fc7452f629b47cbc3a425f4a7a8fcc3b76b84a75a7692970aa431e8",
+    "benchmarks/families-v1.json": "8f65ec8d83a82fd074b4312feee32546a0880616e11e4dd94bd67c8747ae773c",
+    "benchmarks/geometry-study-v1.json": "4743af9b37d288212bc9595dcbc07b7b1c79980c8c4ba970b4c05d4da66180aa",
+    "benchmarks/metamorphic-v1.json": "b66047bca812e31d8109e62b71ee712712815f47baf994ee1f988380f7d25e77",
+    "benchmarks/research-v1.json": "fb3326ab811f354044742733a2484c4a67fd8d2f001f4e951a07287dab76d721",
+    "benchmarks/review-planning-v1.json": "05c7ae3785b9c52c3a6c741861b559547461e46281a53360dc939b3c169eff58",
+    "docs/PHASE5_PROTOCOL.md": "c92cd016b8a6daf3a45274eef215b13b4b770b329cf57b47114a8676f18ac473"
+  },
+  "legal_certification": false,
+  "limitations": [
+    "No eligible reviewed real corpus for F3; null counts do not mean zero obstructions.",
+    "Negative H3 simulation result retained under the frozen comparison rule.",
+    "All model/reviewer outcomes are deterministic offline or simulated; no live inference or expert-performance measurements.",
+    "No Lean or TDA project present; checker is independently tested Python, not mechanically verified.",
+    "Historical milestone artifacts remain unchanged; final-code canonical hashes above may differ in budget counters.",
+    "Commit/CI binding is supplied by the PR commit and workflow artifacts, not a self-referential hash in this file."
+  ],
+  "recorded_artifacts_raw_sha256": {
+    "benchmarks/phase5-certificate-results.json": "eeb7c6406a6eb5702c08a2ffdf8a23574b7e563986d1c15db8ed5bc15700841a",
+    "benchmarks/phase5-geometry-results.json": "af040e0c0dc5ad92847d0b0549a98d7ed35172e3a6398e5f9b61ecaec1a329d7",
+    "benchmarks/phase5-metamorphic-results.json": "9b78f5eeb22caa65e7ef0bb90d3aedaa3dc13f8881acb4302a8b90dabc6786f8",
+    "benchmarks/phase5-metamorphic-treatment-v080.json": "c6383c63944b8769d6c9501531b054638c171e2d91415b7dffa5527fa4bd68e0",
+    "benchmarks/phase5-obstruction-results.json": "ceec0fdaa97dbedf131ed636feaccf74d28843a84e96cdf881ee788f500c8819",
+    "benchmarks/phase5-review-results.json": "e7d5c676a124b466567ce9b4783d967aa3091e558fc47970412551c856f554b8",
+    "benchmarks/phase5-runtime-mutation-results.json": "fa1c3b4cc3091d6a8c0fb92772ab2f4e8dddd40d98518e69d6be2e0fffdf2252"
+  },
+  "recorded_utc_date": "2026-10-29",
+  "results": {
+    "F1": {
+      "cases": 32,
+      "existing_typed_pairwise_detector": "inapplicable_on_formula_only_fixtures",
+      "passed": 32
+    },
+    "F2": {
+      "corrected_semijoin_crosscheck": "passed_on_tested_acyclic_systems",
+      "unqualified_pair_SAT_sufficiency": false
+    },
+    "F3": {
+      "cyclic_structures": null,
+      "eligible_documents": null,
+      "eligible_norms": null,
+      "inventory": "no local ingested SQLite/snapshot corpus located",
+      "obstructions": null,
+      "status": "not_run_missing_reviewed_data"
+    },
+    "H2": {
+      "baseline": {
+        "MVR": 0.42857142857142855,
+        "complete_comparisons": 14,
+        "inapplicable": 0,
+        "passed": 8,
+        "unknown": 2,
+        "violated": 6
+      },
+      "full_ordering_hypothesis": "unestablished",
+      "planted_faults": 2,
+      "planted_faults_detected": 2,
+      "treatment": {
+        "MVR": 0.21428571428571427,
+        "complete_comparisons": 14,
+        "inapplicable": 0,
+        "passed": 11,
+        "unknown": 2,
+        "violated": 3
+      }
+    },
+    "H3": {
+      "LOOCV_MSE": {
+        "alternatives": 0.4611274197178871,
+        "h0": 0.2056505102040816,
+        "mean_distance": 0.17835790947671196
+      },
+      "real_predictive_validity": "unmeasured",
+      "simulation_supported": false
+    },
+    "H4": {
+      "artifact_tampering": {
+        "attempts": 4,
+        "certificates_produced": 3,
+        "no_certificate": 1,
+        "pinned_escape_rate": 0.0,
+        "unpinned_escape_rate": 0.3333333333333333
+      },
+      "limitation": "Self-consistent wrong-model certificates need an independently trusted intended-query digest.",
+      "runtime_mutations": {
+        "affirmative_certificates": 1,
+        "affirmative_pinned_escape_rate": 0.0,
+        "affirmative_unpinned_escape_rate": 1.0,
+        "attempts": 4,
+        "decision_authorized": false,
+        "diagnostic_unknown_certificates": 2,
+        "legal_certification": false,
+        "no_certificate": 1,
+        "review_status": "unreviewed",
+        "rows": [
+          {
+            "affirmative_escape": false,
+            "certificate_type": "unknown",
+            "mutant": "forced_unknown_to_positive"
+          },
+          {
+            "affirmative_escape": false,
+            "certificate_type": "unknown",
+            "mutant": "shortened_reasoning_horizon"
+          },
+          {
+            "certificate_type": "compliant_within_bound",
+            "mutant": "priority_translation_binding",
+            "pinned_escape": false,
+            "unpinned_escape": true
+          },
+          {
+            "certificate_type": null,
+            "mutant": "no_certificate",
+            "reason": "mutant_emitted_no_verdict_certificate"
+          }
+        ],
+        "schema": "vle-runtime-certificate-mutation/v1",
+        "synthetic": true
+      }
+    },
+    "H5": {
+      "distributions": "benchmarks/phase5-review-results.json",
+      "equal_cost_resolvable_fixed_order_comparisons": 5,
+      "real_reviewers": 0,
+      "strict_question_count_improvements": 1,
+      "tasks": 8,
+      "ties": 4
+    }
+  },
+  "review_status": "unreviewed",
+  "runtime": {
+    "python": "3.12.14",
+    "z3": "5.3.0"
+  },
+  "schema": "vle-phase5-evaluation/v1",
+  "synthetic": true,
+  "verification": {
+    "all_schemas_valid": true,
+    "bandit": "passed",
+    "ci_yaml_valid": true,
+    "coverage_percent": 90.02433090024331,
+    "full_suite": {
+      "command": "python -m pytest -q",
+      "passed": 406,
+      "skipped": 3,
+      "skips": "PostgreSQL integration requires a server; CI runs it separately",
+      "warnings": 1
+    },
+    "legacy_corpora_byte_identical_to_main": true,
+    "per_module_coverage_percent": {
+      "src/certificate_study.py": 95.74468085106383,
+      "src/certificates.py": 92.6829268292683,
+      "src/checker/__init__.py": 86.38743455497382,
+      "src/geometry.py": 89.56521739130434,
+      "src/geometry_study.py": 85.36585365853658,
+      "src/metamorphic.py": 91.12426035502959,
+      "src/obstruction.py": 89.31297709923665,
+      "src/obstruction_study.py": 93.33333333333333,
+      "src/persistence.py": 96.96969696969697,
+      "src/phase5_cli.py": 97.10144927536231,
+      "src/review_planning.py": 86.48648648648648,
+      "src/review_simulation.py": 93.47826086956522
+    },
+    "phase5_suite": {
+      "command": "python -m pytest -q tests/test_phase5_*.py",
+      "passed": 37
+    },
+    "protocol_byte_identical_to_M0": true,
+    "ruff": "passed"
+  },
+  "version": "0.8.0"
+}

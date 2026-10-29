@@ -42,6 +42,15 @@
     },
     "review_prompts": {
       "type": "array"
+    },
+    "certificates": {
+      "type": "array"
+    },
+    "worst_case_cost": {
+      "type": [
+        "number",
+        "null"
+      ]
     }
   },
   "required": [
@@ -55,7 +64,9 @@
     "legal_certification",
     "review_status",
     "bounds",
-    "review_prompts"
+    "review_prompts",
+    "certificates",
+    "worst_case_cost"
   ],
   "allOf": [
     {
@@ -79,6 +90,25 @@
           },
           "review_prompts": {
             "maxItems": 0
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "unknown"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "certificates": {
+            "maxItems": 0
+          },
+          "worst_case_cost": {
+            "type": "null"
           }
         }
       }

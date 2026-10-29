@@ -34,8 +34,10 @@ jobs:
           cache: pip
       - run: python -m pip install --upgrade pip
       - run: python -m pip install -e '.[dev]'
+      - run: ruff check src/checker src/certificates.py src/certificate_study.py src/obstruction.py src/obstruction_study.py src/metamorphic.py src/review_planning.py src/review_simulation.py src/geometry.py src/geometry_study.py src/persistence.py src/phase5_cli.py tests/test_phase5_*.py
       - run: ruff check src/phase4.py src/phase4_cli.py src/aspic.py src/assumptions.py src/assumptions_z3.py src/norm_codec.py src/redundancy src/ddl src/faithfulness.py src/certification.py tests/test_phase4_*.py tests/conftest.py
       - run: ruff check src/service src/legifrance.py src/legifrance_piste.py src/formalization.py src/lifecycle.py src/temporal.py src/temporal_deontic.py src/model_checking.py src/conflicts.py src/preferences.py src/audit_bundle.py src/research.py src/research_benchmark.py src/experiments.py src/evidence_planning.py src/family_contract.py src/interpretation_family.py src/observation_strategy.py src/response_alignment.py src/live_generation.py src/legal_annotation.py src/model_runtime.py src/signed_annotation.py src/priority.py src/defeasible.py src/compliance.py src/normative_model.py src/norm_extraction.py src/cli.py tests/test_service.py tests/test_production_workflows.py tests/test_legifrance.py tests/test_web_console_workflow.py tests/test_norm_extraction.py tests/test_research_logic.py tests/test_audit_bundle.py tests/test_research_benchmark.py tests/test_experiments.py tests/test_evidence_planning.py tests/test_interpretation_family.py tests/test_response_alignment.py tests/test_live_generation.py tests/test_legal_annotation.py tests/test_model_runtime.py tests/test_signed_annotation.py
+      - run: bandit -q -r src/checker src/certificates.py src/certificate_study.py src/obstruction.py src/obstruction_study.py src/metamorphic.py src/review_planning.py src/review_simulation.py src/geometry.py src/geometry_study.py src/persistence.py src/phase5_cli.py
       - run: bandit -q -r src/phase4.py src/phase4_cli.py src/aspic.py src/assumptions.py src/assumptions_z3.py src/norm_codec.py src/redundancy src/ddl src/faithfulness.py
       - run: bandit -q -r src/service src/legifrance.py src/legifrance_piste.py src/audit_bundle.py src/model_checking.py src/experiments.py src/evidence_planning.py src/family_contract.py src/interpretation_family.py src/observation_strategy.py src/response_alignment.py src/live_generation.py src/legal_annotation.py src/model_runtime.py src/signed_annotation.py src/research.py src/temporal.py src/temporal_deontic.py
       - run: pip-audit -r requirements-prod.txt
@@ -224,5 +226,46 @@ jobs:
         with:
           name: phase4-reproducibility
           path: phase4-*.json
+          if-no-files-found: error
+          retention-days: 30
+
+  phase5-verification:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+      - run: python -m pip install -e '.[dev,verification,geometry]'
+      - name: Offline Phase 5 differential, property, mutation and schema checks
+        run: >-
+          python -m pytest -q tests/test_phase5_*.py
+          --cov=src.checker --cov=src.certificates --cov=src.certificate_study
+          --cov=src.obstruction --cov=src.obstruction_study --cov=src.metamorphic
+          --cov=src.review_planning --cov=src.review_simulation --cov=src.geometry
+          --cov=src.geometry_study --cov=src.persistence --cov=src.phase5_cli
+          --cov-report=json:phase5-coverage.json --cov-report=term --cov-fail-under=80
+      - name: Preserve every new module's baseline coverage
+        run: |
+          python - <<'PY'
+          import json
+          report = json.load(open('phase5-coverage.json'))
+          low = {p: v['summary']['percent_covered'] for p, v in report['files'].items()
+                 if v['summary']['percent_covered'] < 80}
+          if low:
+              raise SystemExit(str(low))
+          PY
+      - run: python -m src.certificate_study > phase5-certificate-tampering.json
+      - run: python -c 'import json; from src.certificate_study import runtime_mutations; print(json.dumps(runtime_mutations()))' > phase5-runtime-mutations.json
+      - run: python -m src.obstruction_study > phase5-obstructions.json
+      - run: python -m src.review_simulation > phase5-review-simulation.json
+      - run: python -m src.geometry_study > phase5-geometry-simulation.json
+      - run: python -m src.cli metamorphic --input benchmarks/metamorphic-v1.json --provider extractor > phase5-metamorphic-current.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: phase5-reproducibility
+          path: phase5-*.json
           if-no-files-found: error
           retention-days: 30

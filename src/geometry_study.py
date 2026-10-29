@@ -21,6 +21,8 @@ def loocv_mse(x, y):
 def run_study(corpus):
     if corpus.get("synthetic") is not True or corpus.get("review_status") != "unreviewed":
         raise ValueError("synthetic study only")
+    if len(corpus["study"]["units"]) != 8:
+        raise ValueError("the frozen study requires exactly8 units; no silent exclusions")
     packet = prepare_annotation(corpus["study"])
     submissions = []
     for reviewer in range(2):

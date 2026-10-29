@@ -174,6 +174,9 @@ def metamorphic(request, *, provider="extractor", runtime=None):
                 "params": {"temperature": 0},
                 "timestamp": "2000-01-01T00:00:00+00:00" if provider == "fake" else datetime.now(UTC).isoformat(),
             }
+            if getattr(used, "last_request", None) is not None:
+                provenance["prompt_sha256"] = digest(canonical_json(used.last_request))
+                provenance["generation_request"] = used.last_request
         budget.tick()
         return norm, provenance
 
@@ -300,6 +303,12 @@ def metamorphic(request, *, provider="extractor", runtime=None):
                         if relation in EQUIVALENT and variant not in seen:
                             seen.add(variant)
                             queue.append((variant, level + 1))
+            uncertain_depths = [
+                r["depth"]
+                for r in rows
+                if r["case"] == case["id"] and r["relation"] in EQUIVALENT and r["outcome"] == "unknown"
+            ]
+            lower_inconclusive = any(d < (fail_depth or depth + 1) for d in uncertain_depths)
             radii.append(
                 {
                     "case": case["id"],
@@ -307,6 +316,13 @@ def metamorphic(request, *, provider="extractor", runtime=None):
                     "tested_depth": depth,
                     "right_censored": fail_depth is None,
                     "infinite_robustness_claimed": False,
+                    "lower_depth_inconclusive": lower_inconclusive,
+                    "exact_radius_established": fail_depth is not None and not lower_inconclusive,
+                    "right_censored_at_depth": min(uncertain_depths) - 1
+                    if fail_depth is None and uncertain_depths
+                    else depth
+                    if fail_depth is None
+                    else None,
                 }
             )
     except BoundHit as exc:

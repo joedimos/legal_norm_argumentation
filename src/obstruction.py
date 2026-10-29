@@ -67,6 +67,11 @@ def parse_cells(raw, horizon):
     return sorted(cells, key=lambda c: c["id"])
 
 
+def restrict_section(section, domain):
+    """Projection onto an explicit overlap; no values are completed or guessed."""
+    return {name: section[name] for name in sorted(domain)}
+
+
 def join_tree_reduce(cells, horizon, budget):
     """Full relational semijoins, not pair-SAT. Return replayable global section."""
     graph = nx.Graph()
@@ -100,8 +105,8 @@ def join_tree_reduce(cells, horizon, budget):
     for child in reversed(order[1:]):
         p = parent[child]
         shared = sorted({(t, n) for t in range(horizon) for n in cells[p]["atoms"] & cells[child]["atoms"]})
-        signatures = {tuple(r[k] for k in shared) for r in relations[child]}
-        relations[p] = [r for r in relations[p] if tuple(r[k] for k in shared) in signatures]
+        signatures = {tuple(restrict_section(r, shared).values()) for r in relations[child]}
+        relations[p] = [r for r in relations[p] if tuple(restrict_section(r, shared).values()) in signatures]
         budget.tick()
     if not relations[0]:
         return None, {
@@ -146,6 +151,8 @@ def obstruction(request, *, backend=None):
     backend = backend or request.get("backend", "exhaustive")
     if backend not in {"exhaustive", "z3"}:
         raise ValueError("backend must be exhaustive or z3")
+    if type(request.get("crosscheck_shortcut", True)) is not bool:
+        raise ValueError("crosscheck_shortcut must be Boolean")
     if type(request.get("assume_reviewed_demo", False)) is not bool:
         raise ValueError("demo flag must be Boolean")
     base = {
@@ -162,6 +169,8 @@ def obstruction(request, *, backend=None):
     }
 
     def done(status, reason, **extra):
+        if status != "unknown":
+            budget.tick()
         return envelope(
             "vle-obstruction-report/v1",
             request,
@@ -215,6 +224,8 @@ def obstruction(request, *, backend=None):
                 else:
                     unresolved.append({"cell": c["id"], "reference": ref})
         base["reference_findings"] = unresolved
+        if unresolved:
+            raise BoundHit("unresolved_cross_references")
         typed = [c["norm"] for c in cells if c["norm"] is not None]
         base["existing_pairwise_conflicts"] = [c.to_dict() for c in detect_conflicts(typed)]
         base["existing_pairwise_applicable"] = len(typed) == len(cells)
@@ -265,9 +276,16 @@ def obstruction(request, *, backend=None):
             if minimal is not None:
                 break
         ids = [cells[i]["id"] for i in minimal]
-        cycles = nx.cycle_basis(graph.subgraph(ids))
+        cycles = nx.cycle_basis(graph.subgraph(ids), root=min(ids))
         cycle = min(cycles, key=lambda c: (len(c), sorted(c))) if cycles else []
         if cycle:
+            smallest = min(cycle)
+            offset = cycle.index(smallest)
+            left = cycle[offset:] + cycle[:offset]
+            reverse = list(reversed(cycle))
+            offset = reverse.index(smallest)
+            right = reverse[offset:] + reverse[:offset]
+            cycle = min(left, right)
             cycle = cycle + [cycle[0]]
         q = {
             "property": {"op": "true"},

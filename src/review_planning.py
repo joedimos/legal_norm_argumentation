@@ -67,6 +67,8 @@ def plan_review(request):
     }
 
     def finish(status, reason, **extra):
+        if status != "unknown":
+            budget.tick()
         return envelope(
             "vle-review-plan-result/v1",
             request,
@@ -240,4 +242,5 @@ def plan_review(request):
             question_costs={q["id"]: q["cost"] for q in queries},
         )
     except (BoundHit, PlanningLimit) as exc:
+        result.update(plan=None, optimal_in_scope=False, worst_case_cost=None, review_prompts=[], certificates=[])
         return finish("unknown", str(exc))

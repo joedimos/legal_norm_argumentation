@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "review_status": {
+      "const": "unreviewed"
+    },
+    "decision_authorized": {
+      "const": false
+    },
+    "legal_certification": {
+      "const": false
+    },
+    "request_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "schema": {
+      "const": "vle-obstruction-timeline-report/v1"
+    },
+    "status": {
+      "enum": [
+        "reported",
+        "unknown"
+      ]
+    },
+    "bounds": {
+      "type": "object"
+    },
+    "frames": {
+      "type": "array"
+    },
+    "intervals": {
+      "type": "array"
+    }
+  },
+  "required": [
+    "review_status",
+    "decision_authorized",
+    "legal_certification",
+    "request_sha256",
+    "schema",
+    "status",
+    "bounds",
+    "frames",
+    "intervals"
+  ],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "unknown"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "frames": {
+            "maxItems": 0
+          },
+          "intervals": {
+            "maxItems": 0
+          }
+        }
+      }
+    }
+  ]
+}

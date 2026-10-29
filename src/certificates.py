@@ -36,6 +36,8 @@ def enumeration_evidence(q, budget):
     free = [(t, k) for t in range(h) for k in names if (t, k) not in fixed]
     if len(free) > budget.max_states.bit_length() or 2 ** len(free) > budget.max_states:
         raise BoundHit("state_limit")
+    if 2 ** len(free) * (len(names) * h + 1) > 262144:
+        raise BoundHit("work_limit")
     property = Formula.from_dict(q["property"])
     assumptions = [Formula.from_dict(a) for a in q["assumptions"]]
     leaves = []
@@ -69,22 +71,33 @@ def make_certificate(q, kind, evidence):
     }
 
 
-def certify(request):
+def certify(request, *, expected_query_sha256=None):
     q = query_from_request(request)
     budget = Budget(max_states=request.get("max_states", 65536), timeout_ms=request.get("timeout_ms", 5000))
     backend = request.get("backend", "exhaustive")
-    checked = verify_request(
-        {
-            "property": q["property"],
-            "horizon": q["horizon"],
-            "assumptions": q["assumptions"],
-            "observations": q["observations"] or None,
-            "backend": backend,
-            "max_traces": budget.max_states,
-            "timeout_ms": budget.timeout_ms,
-        }
-    )
+    if backend not in {"exhaustive", "z3"}:
+        raise ValueError("backend must be exhaustive or z3")
     try:
+        budget.tick()
+        names = validate_query(q)
+        fixed_count = sum(v is not None for state in q["observations"] for v in state.values())
+        free_count = len(names) * q["horizon"] - fixed_count
+        if free_count > budget.max_states.bit_length() or 2 ** free_count > budget.max_states:
+            raise BoundHit("state_limit")
+        if 2 ** free_count * (len(names) * q["horizon"] + 1) > 262144:
+            raise BoundHit("work_limit")
+        checked = verify_request(
+            {
+                "property": q["property"],
+                "horizon": q["horizon"],
+                "assumptions": q["assumptions"],
+                "observations": q["observations"] or None,
+                "backend": backend,
+                "max_traces": budget.max_states,
+                "timeout_ms": budget.timeout_ms,
+            }
+        )
+        budget.tick()
         if checked["status"] == "counterexample":
             certificate = make_certificate(q, "violation", {"trace": list(checked["counterexample"])})
         elif checked["status"] == "verified_bounded":
@@ -99,26 +112,65 @@ def certify(request):
                 else "timeout"
                 if "timeout" in checked["reason"]
                 else "state_limit"
+                if checked["reason"] == "state_space_limit"
+                else "encoding_limit"
+                if checked["reason"] == "encoding_budget"
+                else "unsupported_fragment"
             )
     except BoundHit as exc:
         bound = str(exc)
         certificate = make_certificate(
-            q, "unknown", {"bound": bound, "limit": budget.timeout_ms if bound == "timeout" else budget.max_states}
+            q,
+            "unknown",
+            {
+                "bound": bound,
+                "limit": budget.timeout_ms
+                if bound == "timeout"
+                else 262144
+                if bound == "work_limit"
+                else 250000
+                if bound == "encoding_limit"
+                else 0
+                if bound == "unsupported_fragment"
+                else budget.max_states,
+            },
         )
     validation = check_certificate(
         certificate,
-        expected_query_sha256=certificate["query_sha256"],
+        expected_query_sha256=expected_query_sha256,
         max_states=budget.max_states,
         timeout_ms=budget.timeout_ms,
     )
+    try:
+        budget.tick()
+    except BoundHit as exc:
+        bound = str(exc)
+        certificate = make_certificate(
+            q,
+            "unknown",
+            {
+                "bound": bound,
+                "limit": budget.timeout_ms
+                if bound == "timeout"
+                else 262144
+                if bound == "work_limit"
+                else 250000
+                if bound == "encoding_limit"
+                else 0
+                if bound == "unsupported_fragment"
+                else budget.max_states,
+            },
+        )
     if not validation["valid"]:
-        certificate = make_certificate(q, "unknown", {"bound": "work_limit", "limit": budget.max_states})
+        certificate = make_certificate(q, "unknown", {"bound": "unsupported_fragment", "limit": 0})
+    if certificate["type"] == "unknown":
+        validation = check_certificate(certificate, expected_query_sha256=expected_query_sha256)
     return envelope(
         "vle-certified-result/v1",
         request,
         status=certificate["type"],
         certificate=certificate,
-        checker=check_certificate(certificate, expected_query_sha256=certificate["query_sha256"]),
+        checker=validation,
         bounds=budget.to_dict(),
         proof_scope="explicit_formula_not_legal_or_priority_faithfulness",
     )

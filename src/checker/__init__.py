@@ -214,7 +214,10 @@ def check_certificate(certificate, *, expected_query_sha256=None, max_states=655
             if (
                 not isinstance(trace, list)
                 or len(trace) != q["horizon"]
-                or any(set(s) != set(names) or any(type(v) is not bool for v in s.values()) for s in trace)
+                or any(
+                    not isinstance(s, dict) or set(s) != set(names) or any(type(v) is not bool for v in s.values())
+                    for s in trace
+                )
             ):
                 raise ValueError("witness must be complete at exact horizon")
             if any(trace[t][k] != v for (t, k), v in fixed.items()):
@@ -229,7 +232,8 @@ def check_certificate(certificate, *, expected_query_sha256=None, max_states=655
             if (
                 not isinstance(evidence, dict)
                 or set(evidence) != {"bound", "limit"}
-                or evidence["bound"] not in {"state_limit", "timeout", "work_limit", "unsupported_fragment"}
+                or evidence["bound"]
+                not in {"state_limit", "timeout", "work_limit", "encoding_limit", "unsupported_fragment"}
                 or type(evidence["limit"]) is not int
                 or evidence["limit"] < 0
             ):
@@ -250,6 +254,8 @@ def check_certificate(certificate, *, expected_query_sha256=None, max_states=655
             free = [(t, k) for t in range(q["horizon"]) for k in names if (t, k) not in fixed]
             if len(free) > max_states.bit_length() or 2 ** len(free) > max_states:
                 raise ValueError("checker state limit")
+            if (2 ** len(free)) * (len(names) * q["horizon"] + 1) > 262144:
+                raise ValueError("checker certificate cell limit 262144")
             leaves = []
             feasible = 0
             all_true = True
@@ -302,6 +308,7 @@ def check_certificate(certificate, *, expected_query_sha256=None, max_states=655
                     raise ValueError("invalid declared overlap cycle")
         else:
             raise ValueError("unsupported certificate type")
+        tick()
         return {**result, "valid": True, "certificate_type": kind, "diagnostic_only": kind == "unknown"}
     except (ValueError, TypeError, KeyError, RecursionError, OverflowError) as exc:
         return {**result, "reason": str(exc)}

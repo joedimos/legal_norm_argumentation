@@ -194,3 +194,63 @@ alternating labels were assigned without consulting measured geometry; that is
 not a claim of statistical independence of deterministic index-based arrays.
 Full suite389 passed,3 skipped; all legacy benchmarks green. No Lean/TDA project
 exists and no mathematical verification of Python is claimed.
+
+## M6 / integration and 0.8.0 evidence
+
+Final local verification: **406 passed, 3 skipped**, one pre-existing Starlette
+httpx deprecation warning. The three skips need PostgreSQL; the unchanged CI
+integration job supplies it. Phase 5's 37 focused tests cover 90.02% of statements
+in the new modules (minimum module 85.37%, above the existing 80% gate). Ruff,
+Bandit, JSON-schema validation and CI YAML parsing pass. Original 62/19/15 corpus
+files and the M0 protocol remain byte-identical. Full verification commands:
+
+```bash
+python -m pytest -q
+python -m pytest -q tests/test_phase5_*.py
+python -m src.cli benchmark --backend exhaustive
+python -m src.cli benchmark --backend z3
+python -m src.cli experiment-benchmark --backend exhaustive
+python -m src.cli experiment-benchmark --backend z3
+python -m src.cli family-benchmark
+python -m src.cli faithfulness
+```
+
+Both 62-case and both 19-case backend runs pass; all 15 family fixtures pass.
+The Phase 4 faithfulness report remains reproducible. The dedicated Phase 5 CI
+job gives the exact coverage-module arguments, repeats the studies offline and
+uploads outputs. All six earlier milestone PR heads had 14 successful checks each
+when inspected before M6 publication. Final integration CI is recorded on its PR;
+this local document does not pretend those future checks have already run.
+
+Nested bundle certificates now replay under one bounded deadline/cache; external
+query pins restrict the exact expected query set. Old v1 archives with no
+certificates keep their old integrity result. Schema tests reject unknown reports
+with partial successful distances/plans, positive verdicts with failed checker
+results, and unauthorized changes. Malformed trace shapes reject cleanly.
+The producer preflights a 262144-cell evidence-materialization limit before the
+main reasoner, preserves distinct encoding/state/work/time reasons, and never
+marks its own computed digest independently trusted. Late deadlines clear
+obstruction witnesses and review-plan optimality/certificates. Unresolved
+cross-references block obstruction analysis rather than erasing dependencies.
+
+The fixed token-boundary extractor yields 3 violations/14 complete comparisons
+plus 2 unknowns, compared with the preserved pre-fix 6/14 plus 2 unknowns. Both
+injected fake faults are detected. Actual runtime mutations retain two diagnostic
+unknowns, one no-certificate case and the explicit wrong-model escape without an
+external intended-query pin. This extends the original artifact-tampering study;
+it does not hide its escape or count a diagnostic as compliance.
+
+H3 remains **negative**: H0 MSE 0.20565051 exceeds mean-distance MSE 0.17835791,
+although below alternative-count MSE 0.46112742. H5 includes one strict fixed-order
+question-count improvement and four ties among five equal-cost resolvable tasks;
+full random-order/per-world distributions remain available. F3 remains not run
+with null empirical counts. No synthetic study becomes independent legal review.
+
+`PHASE5_EVALUATION.json` records frozen input/artifact hashes, final-code
+reproduction hashes/commands, exact coverage and all outcome summaries. Historical
+milestone outputs are retained: final budget counters may differ after guards
+were added. The dated protocol addendum identifies repairs without changing
+thresholds, source fixtures or labels. README and manuscript limitations describe
+the synthetic/unreviewed scope; the old paper PDF remains its historical snapshot.
+No optional Lean/TDA code or HTTP route was introduced: neither project exists,
+and the research CLI/bundle path covers the requested analyses additively.

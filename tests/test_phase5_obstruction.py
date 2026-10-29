@@ -71,3 +71,13 @@ def test_amendment_obstruction_lifetimes_are_censored_and_bounded():
     assert r["intervals"][0]["birth"] == "v1" and r["intervals"][0]["death"] == "v2"
     assert r["intervals"][0]["left_censored"]
     assert obstruction({**timeline, "max_states": 1})["status"] == "unknown"
+
+
+def test_unresolved_cross_references_block_global_claims():
+    req = planted(3, 0, "triangle")
+    req["cells"][0]["references"] = ["missing"]
+    result = obstruction(req)
+    assert result["status"] == "unknown" and result["certificate"] is None
+    assert result["reason"] == "unresolved_cross_references" and result["reference_findings"]
+    with pytest.raises(ValueError):
+        obstruction({**req, "crosscheck_shortcut": "false"})

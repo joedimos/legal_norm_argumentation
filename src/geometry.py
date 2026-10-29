@@ -114,7 +114,8 @@ def geometry(request, *, horizon=None, samples=None, seed=None, topology=None):
         bits = len(names) * h
         if sample is None and (bits > 20 or 2**bits > budget.max_states):
             raise BoundHit("state_limit")
-        rng = random.Random(seed)
+        # Reproducible research sampling; never credentials or authentication material.
+        rng = random.Random(seed)  # nosec B311
         valuations = (
             product((False, True), repeat=bits)
             if sample is None
