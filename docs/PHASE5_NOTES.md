@@ -167,3 +167,30 @@ No real people, personal cost estimates or implicit priors are represented.
 Question-count comparisons are meaningful as the objective only in equal-cost
 cases; unequal-cost cases optimize cost. Full suite385 passed,3 skipped; all
 legacy benchmark runs pass. No threshold/corpus changes after simulation.
+
+## M5 / N3
+
+Distances use one explicit bounded Boolean universe and normalized symmetric
+differences of compliant behavior sets. They are pseudometrics on syntax and
+metrics on bounded-behavior equivalence classes; no candidate is selected.
+Samples are shared across pairs with seed23 and simultaneous Hoeffding intervals,
+not independent pair estimates or inferred legal likelihoods. Nonshared family
+assumptions, response contracts or observation constraints require an explicit
+shared universe rather than being silently discarded. Exact triangle checks
+use integer disagreement counts. Sample equality is labelled empirical only.
+
+Topology is opt-in (`--topology`), dependency-free and limited to16 points and
+the2-skeleton. The optional geometry install group adds no external dependency.
+F2 boundary reduction includes triangle faces; a square-loop test confirms H1
+birth/death. H0 lifetimes are diagnostic predictors, not discovered legal schools;
+H1 bars do not establish non-transitive norms or amendment causality.
+
+The protocol-frozen8-unit pipeline runs the existing annotation assessment on
+explicitly SIMULATED_NONEXPERT oracles (zero real reviewers, no signatures).
+LOOCV errors and the exact H3 comparison are retained in the result artifact;
+whatever the ordering, real predictive validity is unmeasured. No fixture,
+threshold, label rule or protocol changed after seeing these scores. The
+alternating labels were assigned without consulting measured geometry; that is
+not a claim of statistical independence of deterministic index-based arrays.
+Full suite389 passed,3 skipped; all legacy benchmarks green. No Lean/TDA project
+exists and no mathematical verification of Python is claimed.

@@ -1,0 +1,1411 @@
+{
+  "schema": "vle-geometry-study/v1",
+  "synthetic": true,
+  "review_status": "unreviewed",
+  "study": {
+    "schema": "vle-annotation-study/v1",
+    "study_id": "simulated-nonexpert-geometry",
+    "units": [
+      {
+        "id": "u0",
+        "source_group": "synthetic-same-policy",
+        "split": "test",
+        "prompt": "Synthetic simulation only.",
+        "family": {
+          "schema": "vle-family/v1",
+          "context": {
+            "jurisdiction": "FR",
+            "as_of": "2026-10-27",
+            "actor": "synthetic assistant",
+            "capacity": "research"
+          },
+          "documents": [
+            {
+              "id": "synthetic-policy",
+              "version": "1",
+              "kind": "normative",
+              "language": "en",
+              "text": "Synthetic research policy: do not disclose confidential records. This is not a statute.",
+              "sha256": "8221cbbc581dcf52e702a5d60eed02984cc2eb9c3a84a46f3eae752024c1fd6f",
+              "jurisdiction": "FR",
+              "effective_from": null,
+              "effective_to": null
+            }
+          ],
+          "horizon": 1,
+          "interpretations": [
+            {
+              "id": "i0",
+              "property": {
+                "op": "atom",
+                "name": "p"
+              },
+              "source_refs": [
+                {
+                  "document_id": "synthetic-policy",
+                  "start": 0,
+                  "end": 87,
+                  "quote": "Synthetic research policy: do not disclose confidential records. This is not a statute."
+                }
+              ],
+              "rationale": "Synthetic unreviewed geometry mapping, not legal interpretation."
+            },
+            {
+              "id": "i1",
+              "property": {
+                "op": "atom",
+                "name": "q"
+              },
+              "source_refs": [
+                {
+                  "document_id": "synthetic-policy",
+                  "start": 0,
+                  "end": 87,
+                  "quote": "Synthetic research policy: do not disclose confidential records. This is not a statute."
+                }
+              ],
+              "rationale": "Synthetic unreviewed geometry mapping, not legal interpretation."
+            }
+          ],
+          "reviews": {}
+        }
+      },
+      {
+        "id": "u1",
+        "source_group": "synthetic-same-policy",
+        "split": "test",
+        "prompt": "Synthetic simulation only.",
+        "family": {
+          "schema": "vle-family/v1",
+          "context": {
+            "jurisdiction": "FR",
+            "as_of": "2026-10-27",
+            "actor": "synthetic assistant",
+            "capacity": "research"
+          },
+          "documents": [
+            {
+              "id": "synthetic-policy",
+              "version": "1",
+              "kind": "normative",
+              "language": "en",
+              "text": "Synthetic research policy: do not disclose confidential records. This is not a statute.",
+              "sha256": "8221cbbc581dcf52e702a5d60eed02984cc2eb9c3a84a46f3eae752024c1fd6f",
+              "jurisdiction": "FR",
+              "effective_from": null,
+              "effective_to": null
+            }
+          ],
+          "horizon": 1,
+          "interpretations": [
+            {
+              "id": "i0",
+              "property": {
+                "op": "atom",
+                "name": "q"
+              },
+              "source_refs": [
+                {
+                  "document_id": "synthetic-policy",
+                  "start": 0,
+                  "end": 87,
+                  "quote": "Synthetic research policy: do not disclose confidential records. This is not a statute."
+                }
+              ],
+              "rationale": "Synthetic unreviewed geometry mapping, not legal interpretation."
+            },
+            {
+              "id": "i1",
+              "property": {
+                "op": "not",
+                "args": [
+                  {
+                    "op": "atom",
+                    "name": "p"
+                  }
+                ]
+              },
+              "source_refs": [
+                {
+                  "document_id": "synthetic-policy",
+                  "start": 0,
+                  "end": 87,
+                  "quote": "Synthetic research policy: do not disclose confidential records. This is not a statute."
+                }
+              ],
+              "rationale": "Synthetic unreviewed geometry mapping, not legal interpretation."
+            },
+            {
+              "id": "i2",
+              "property": {
+                "op": "and",
+                "args": [
+                  {
+                    "op": "atom",
+                    "name": "p"
+                  },
+                  {
+                    "op": "atom",
+                    "name": "q"
+                  }
+                ]
+              },
+              "source_refs": [
+                {
+                  "document_id": "synthetic-policy",
+                  "start": 0,
+                  "end": 87,
+                  "quote": "Synthetic research policy: do not disclose confidential records. This is not a statute."
+                }
+              ],
+              "rationale": "Synthetic unreviewed geometry mapping, not legal interpretation."
+            }
+          ],
+          "reviews": {}
+        }
+      },
+      {
+        "id": "u2",
+        "source_group": "synthetic-same-policy",
+        "split": "test",
+        "prompt": "Synthetic simulation only.",
+        "family": {
+          "schema": "vle-family/v1",
+          "context": {
+            "jurisdiction": "FR",
+            "as_of": "2026-10-27",
+            "actor": "synthetic assistant",
+            "capacity": "research"
+          },
+          "documents": [
+            {
+              "id": "synthetic-policy",
+              "version": "1",
+              "kind": "normative",
+              "language": "en",
+              "text": "Synthetic research policy: do not disclose confidential records. This is not a statute.",
+              "sha256": "8221cbbc581dcf52e702a5d60eed02984cc2eb9c3a84a46f3eae752024c1fd6f",
+              "jurisdiction": "FR",
+              "effective_from": null,
+              "effective_to": null
+            }
+          ],
+          "horizon": 1,
+          "interpretations": [
+            {
+              "id": "i0",
+              "property": {
+                "op": "not",
+                "args": [
+                  {
+                    "op": "atom",
+                    "name": "p"
+                  }
+                ]
+              },
+              "source_refs": [
+                {
+                  "document_id": "synthetic-policy",
+                  "start": 0,
+                  "end": 87,
+                  "quote": "Synthetic research policy: do not disclose confidential records. This is not a statute."
+                }
+              ],
+              "rationale": "Synthetic unreviewed geometry mapping, not legal interpretation."
+            },
+            {
+              "id": "i1",
+              "property": {
+                "op": "and",
+                "args": [
+                  {
+                    "op": "atom",
+                    "name": "p"
+                  },
+                  {
+                    "op": "atom",
+                    "name": "q"
+                  }
+                ]
+              },
+              "source_refs": [
+                {
+                  "document_id": "synthetic-policy",
+                  "start": 0,
+                  "end": 87,
+                  "quote": "Synthetic research policy: do not disclose confidential records. This is not a statute."
+                }
+              ],
+              "rationale": "Synthetic unreviewed geometry mapping, not legal interpretation."
+            },
+            {
+              "id": "i2",
+              "property": {
+                "op": "atom",
+                "name": "p"
+              },
+              "source_refs": [
+                {
+                  "document_id": "synthetic-policy",
+                  "start": 0,
+                  "end": 87,
+                  "quote": "Synthetic research policy: do not disclose confidential records. This is not a statute."
+                }
+              ],
+              "rationale": "Synthetic unreviewed geometry mapping, not legal interpretation."
+            },
+            {
+              "id": "i3",
+              "property": {
+                "op": "atom",
+                "name": "q"
+              },
+              "source_refs": [
+                {
+                  "document_id": "synthetic-policy",
+                  "start": 0,
+                  "end": 87,
+                  "quote": "Synthetic research policy: do not disclose confidential records. This is not a statute."
+                }
+              ],
+              "rationale": "Synthetic unreviewed geometry mapping, not legal interpretation."
+            }
+          ],
+          "reviews": {}
+        }
+      },
+      {
+        "id": "u3",
+        "source_group": "synthetic-same-policy",
+        "split": "test",
+        "prompt": "Synthetic simulation only.",
+        "family": {
+          "schema": "vle-family/v1",
+          "context": {
+            "jurisdiction": "FR",
+            "as_of": "2026-10-27",
+            "actor": "synthetic assistant",
+            "capacity": "research"
+          },
+          "documents": [
+            {
+              "id": "synthetic-policy",
+              "version": "1",
+              "kind": "normative",
+              "language": "en",
+              "text": "Synthetic research policy: do not disclose confidential records. This is not a statute.",
+              "sha256": "8221cbbc581dcf52e702a5d60eed02984cc2eb9c3a84a46f3eae752024c1fd6f",
+              "jurisdiction": "FR",
+              "effective_from": null,
+              "effective_to": null
+            }
+          ],
+          "horizon": 1,
+          "interpretations": [
+            {
+              "id": "i0",
+              "property": {
+                "op": "and",
+                "args": [
+                  {
+                    "op": "atom",
+                    "name": "p"
+                  },
+                  {
+                    "op": "atom",
+                    "name": "q"
+                  }
+                ]
+              },
+              "source_refs": [
+                {
+                  "document_id": "synthetic-policy",
+                  "start": 0,
+                  "end": 87,
+                  "quote": "Synthetic research policy: do not disclose confidential records. This is not a statute."
+                }
+              ],
+              "rationale": "Synthetic unreviewed geometry mapping, not legal interpretation."
+            },
+            {
+              "id": "i1",
+              "property": {
+                "op": "atom",
+                "name": "p"
+              },
+              "source_refs": [
+                {
+                  "document_id": "synthetic-policy",
+                  "start": 0,
+                  "end": 87,
+                  "quote": "Synthetic research policy: do not disclose confidential records. This is not a statute."
+                }
+              ],
+              "rationale": "Synthetic unreviewed geometry mapping, not legal interpretation."
+            }
+          ],
+          "reviews": {}
+        }
+      },
+      {
+        "id": "u4",
+        "source_group": "synthetic-same-policy",
+        "split": "test",
+        "prompt": "Synthetic simulation only.",
+        "family": {
+          "schema": "vle-family/v1",
+          "context": {
+            "jurisdiction": "FR",
+            "as_of": "2026-10-27",
+            "actor": "synthetic assistant",
+            "capacity": "research"
+          },
+          "documents": [
+            {
+              "id": "synthetic-policy",
+              "version": "1",
+              "kind": "normative",
+              "language": "en",
+              "text": "Synthetic research policy: do not disclose confidential records. This is not a statute.",
+              "sha256": "8221cbbc581dcf52e702a5d60eed02984cc2eb9c3a84a46f3eae752024c1fd6f",
+              "jurisdiction": "FR",
+              "effective_from": null,
+              "effective_to": null
+            }
+          ],
+          "horizon": 1,
+          "interpretations": [
+            {
+              "id": "i0",
+              "property": {
+                "op": "atom",
+                "name": "p"
+              },
+              "source_refs": [
+                {
+                  "document_id": "synthetic-policy",
+                  "start": 0,
+                  "end": 87,
+                  "quote": "Synthetic research policy: do not disclose confidential records. This is not a statute."
+                }
+              ],
+              "rationale": "Synthetic unreviewed geometry mapping, not legal interpretation."
+            },
+            {
+              "id": "i1",
+              "property": {
+                "op": "atom",
+                "name": "q"
+              },
+              "source_refs": [
+                {
+                  "document_id": "synthetic-policy",
+                  "start": 0,
+                  "end": 87,
+                  "quote": "Synthetic research policy: do not disclose confidential records. This is not a statute."
+                }
+              ],
+              "rationale": "Synthetic unreviewed geometry mapping, not legal interpretation."
+            },
+            {
+              "id": "i2",
+              "property": {
+                "op": "not",
+                "args": [
+                  {
+                    "op": "atom",
+                    "name": "p"
+                  }
+                ]
+              },
+              "source_refs": [
+                {
+                  "document_id": "synthetic-policy",
+                  "start": 0,
+                  "end": 87,
+                  "quote": "Synthetic research policy: do not disclose confidential records. This is not a statute."
+                }
+              ],
+              "rationale": "Synthetic unreviewed geometry mapping, not legal interpretation."
+            }
+          ],
+          "reviews": {}
+        }
+      },
+      {
+        "id": "u5",
+        "source_group": "synthetic-same-policy",
+        "split": "test",
+        "prompt": "Synthetic simulation only.",
+        "family": {
+          "schema": "vle-family/v1",
+          "context": {
+            "jurisdiction": "FR",
+            "as_of": "2026-10-27",
+            "actor": "synthetic assistant",
+            "capacity": "research"
+          },
+          "documents": [
+            {
+              "id": "synthetic-policy",
+              "version": "1",
+              "kind": "normative",
+              "language": "en",
+              "text": "Synthetic research policy: do not disclose confidential records. This is not a statute.",
+              "sha256": "8221cbbc581dcf52e702a5d60eed02984cc2eb9c3a84a46f3eae752024c1fd6f",
+              "jurisdiction": "FR",
+              "effective_from": null,
+              "effective_to": null
+            }
+          ],
+          "horizon": 1,
+          "interpretations": [
+            {
+              "id": "i0",
+              "property": {
+                "op": "atom",
+                "name": "q"
+              },
+              "source_refs": [
+                {
+                  "document_id": "synthetic-policy",
+                  "start": 0,
+                  "end": 87,
+                  "quote": "Synthetic research policy: do not disclose confidential records. This is not a statute."
+                }
+              ],
+              "rationale": "Synthetic unreviewed geometry mapping, not legal interpretation."
+            },
+            {
+              "id": "i1",
+              "property": {
+                "op": "not",
+                "args": [
+                  {
+                    "op": "atom",
+                    "name": "p"
+                  }
+                ]
+              },
+              "source_refs": [
+                {
+                  "document_id": "synthetic-policy",
+                  "start": 0,
+                  "end": 87,
+                  "quote": "Synthetic research policy: do not disclose confidential records. This is not a statute."
+                }
+              ],
+              "rationale": "Synthetic unreviewed geometry mapping, not legal interpretation."
+            },
+            {
+              "id": "i2",
+              "property": {
+                "op": "and",
+                "args": [
+                  {
+                    "op": "atom",
+                    "name": "p"
+                  },
+                  {
+                    "op": "atom",
+                    "name": "q"
+                  }
+                ]
+              },
+              "source_refs": [
+                {
+                  "document_id": "synthetic-policy",
+                  "start": 0,
+                  "end": 87,
+                  "quote": "Synthetic research policy: do not disclose confidential records. This is not a statute."
+                }
+              ],
+              "rationale": "Synthetic unreviewed geometry mapping, not legal interpretation."
+            },
+            {
+              "id": "i3",
+              "property": {
+                "op": "atom",
+                "name": "p"
+              },
+              "source_refs": [
+                {
+                  "document_id": "synthetic-policy",
+                  "start": 0,
+                  "end": 87,
+                  "quote": "Synthetic research policy: do not disclose confidential records. This is not a statute."
+                }
+              ],
+              "rationale": "Synthetic unreviewed geometry mapping, not legal interpretation."
+            }
+          ],
+          "reviews": {}
+        }
+      },
+      {
+        "id": "u6",
+        "source_group": "synthetic-same-policy",
+        "split": "test",
+        "prompt": "Synthetic simulation only.",
+        "family": {
+          "schema": "vle-family/v1",
+          "context": {
+            "jurisdiction": "FR",
+            "as_of": "2026-10-27",
+            "actor": "synthetic assistant",
+            "capacity": "research"
+          },
+          "documents": [
+            {
+              "id": "synthetic-policy",
+              "version": "1",
+              "kind": "normative",
+              "language": "en",
+              "text": "Synthetic research policy: do not disclose confidential records. This is not a statute.",
+              "sha256": "8221cbbc581dcf52e702a5d60eed02984cc2eb9c3a84a46f3eae752024c1fd6f",
+              "jurisdiction": "FR",
+              "effective_from": null,
+              "effective_to": null
+            }
+          ],
+          "horizon": 1,
+          "interpretations": [
+            {
+              "id": "i0",
+              "property": {
+                "op": "not",
+                "args": [
+                  {
+                    "op": "atom",
+                    "name": "p"
+                  }
+                ]
+              },
+              "source_refs": [
+                {
+                  "document_id": "synthetic-policy",
+                  "start": 0,
+                  "end": 87,
+                  "quote": "Synthetic research policy: do not disclose confidential records. This is not a statute."
+                }
+              ],
+              "rationale": "Synthetic unreviewed geometry mapping, not legal interpretation."
+            },
+            {
+              "id": "i1",
+              "property": {
+                "op": "and",
+                "args": [
+                  {
+                    "op": "atom",
+                    "name": "p"
+                  },
+                  {
+                    "op": "atom",
+                    "name": "q"
+                  }
+                ]
+              },
+              "source_refs": [
+                {
+                  "document_id": "synthetic-policy",
+                  "start": 0,
+                  "end": 87,
+                  "quote": "Synthetic research policy: do not disclose confidential records. This is not a statute."
+                }
+              ],
+              "rationale": "Synthetic unreviewed geometry mapping, not legal interpretation."
+            }
+          ],
+          "reviews": {}
+        }
+      },
+      {
+        "id": "u7",
+        "source_group": "synthetic-same-policy",
+        "split": "test",
+        "prompt": "Synthetic simulation only.",
+        "family": {
+          "schema": "vle-family/v1",
+          "context": {
+            "jurisdiction": "FR",
+            "as_of": "2026-10-27",
+            "actor": "synthetic assistant",
+            "capacity": "research"
+          },
+          "documents": [
+            {
+              "id": "synthetic-policy",
+              "version": "1",
+              "kind": "normative",
+              "language": "en",
+              "text": "Synthetic research policy: do not disclose confidential records. This is not a statute.",
+              "sha256": "8221cbbc581dcf52e702a5d60eed02984cc2eb9c3a84a46f3eae752024c1fd6f",
+              "jurisdiction": "FR",
+              "effective_from": null,
+              "effective_to": null
+            }
+          ],
+          "horizon": 1,
+          "interpretations": [
+            {
+              "id": "i0",
+              "property": {
+                "op": "and",
+                "args": [
+                  {
+                    "op": "atom",
+                    "name": "p"
+                  },
+                  {
+                    "op": "atom",
+                    "name": "q"
+                  }
+                ]
+              },
+              "source_refs": [
+                {
+                  "document_id": "synthetic-policy",
+                  "start": 0,
+                  "end": 87,
+                  "quote": "Synthetic research policy: do not disclose confidential records. This is not a statute."
+                }
+              ],
+              "rationale": "Synthetic unreviewed geometry mapping, not legal interpretation."
+            },
+            {
+              "id": "i1",
+              "property": {
+                "op": "atom",
+                "name": "p"
+              },
+              "source_refs": [
+                {
+                  "document_id": "synthetic-policy",
+                  "start": 0,
+                  "end": 87,
+                  "quote": "Synthetic research policy: do not disclose confidential records. This is not a statute."
+                }
+              ],
+              "rationale": "Synthetic unreviewed geometry mapping, not legal interpretation."
+            },
+            {
+              "id": "i2",
+              "property": {
+                "op": "atom",
+                "name": "q"
+              },
+              "source_refs": [
+                {
+                  "document_id": "synthetic-policy",
+                  "start": 0,
+                  "end": 87,
+                  "quote": "Synthetic research policy: do not disclose confidential records. This is not a statute."
+                }
+              ],
+              "rationale": "Synthetic unreviewed geometry mapping, not legal interpretation."
+            }
+          ],
+          "reviews": {}
+        }
+      }
+    ]
+  },
+  "geometry_inputs": {
+    "u0": {
+      "schema": "vle-geometry/v1",
+      "family": {
+        "schema": "vle-family/v1",
+        "context": {
+          "jurisdiction": "FR",
+          "as_of": "2026-10-27",
+          "actor": "synthetic assistant",
+          "capacity": "research"
+        },
+        "documents": [
+          {
+            "id": "synthetic-policy",
+            "version": "1",
+            "kind": "normative",
+            "language": "en",
+            "text": "Synthetic research policy: do not disclose confidential records. This is not a statute.",
+            "sha256": "8221cbbc581dcf52e702a5d60eed02984cc2eb9c3a84a46f3eae752024c1fd6f",
+            "jurisdiction": "FR",
+            "effective_from": null,
+            "effective_to": null
+          }
+        ],
+        "horizon": 1,
+        "interpretations": [
+          {
+            "id": "i0",
+            "property": {
+              "op": "atom",
+              "name": "p"
+            },
+            "source_refs": [
+              {
+                "document_id": "synthetic-policy",
+                "start": 0,
+                "end": 87,
+                "quote": "Synthetic research policy: do not disclose confidential records. This is not a statute."
+              }
+            ],
+            "rationale": "Synthetic unreviewed geometry mapping, not legal interpretation."
+          },
+          {
+            "id": "i1",
+            "property": {
+              "op": "atom",
+              "name": "q"
+            },
+            "source_refs": [
+              {
+                "document_id": "synthetic-policy",
+                "start": 0,
+                "end": 87,
+                "quote": "Synthetic research policy: do not disclose confidential records. This is not a statute."
+              }
+            ],
+            "rationale": "Synthetic unreviewed geometry mapping, not legal interpretation."
+          }
+        ],
+        "reviews": {}
+      },
+      "horizon": 1,
+      "topology": true
+    },
+    "u1": {
+      "schema": "vle-geometry/v1",
+      "family": {
+        "schema": "vle-family/v1",
+        "context": {
+          "jurisdiction": "FR",
+          "as_of": "2026-10-27",
+          "actor": "synthetic assistant",
+          "capacity": "research"
+        },
+        "documents": [
+          {
+            "id": "synthetic-policy",
+            "version": "1",
+            "kind": "normative",
+            "language": "en",
+            "text": "Synthetic research policy: do not disclose confidential records. This is not a statute.",
+            "sha256": "8221cbbc581dcf52e702a5d60eed02984cc2eb9c3a84a46f3eae752024c1fd6f",
+            "jurisdiction": "FR",
+            "effective_from": null,
+            "effective_to": null
+          }
+        ],
+        "horizon": 1,
+        "interpretations": [
+          {
+            "id": "i0",
+            "property": {
+              "op": "atom",
+              "name": "q"
+            },
+            "source_refs": [
+              {
+                "document_id": "synthetic-policy",
+                "start": 0,
+                "end": 87,
+                "quote": "Synthetic research policy: do not disclose confidential records. This is not a statute."
+              }
+            ],
+            "rationale": "Synthetic unreviewed geometry mapping, not legal interpretation."
+          },
+          {
+            "id": "i1",
+            "property": {
+              "op": "not",
+              "args": [
+                {
+                  "op": "atom",
+                  "name": "p"
+                }
+              ]
+            },
+            "source_refs": [
+              {
+                "document_id": "synthetic-policy",
+                "start": 0,
+                "end": 87,
+                "quote": "Synthetic research policy: do not disclose confidential records. This is not a statute."
+              }
+            ],
+            "rationale": "Synthetic unreviewed geometry mapping, not legal interpretation."
+          },
+          {
+            "id": "i2",
+            "property": {
+              "op": "and",
+              "args": [
+                {
+                  "op": "atom",
+                  "name": "p"
+                },
+                {
+                  "op": "atom",
+                  "name": "q"
+                }
+              ]
+            },
+            "source_refs": [
+              {
+                "document_id": "synthetic-policy",
+                "start": 0,
+                "end": 87,
+                "quote": "Synthetic research policy: do not disclose confidential records. This is not a statute."
+              }
+            ],
+            "rationale": "Synthetic unreviewed geometry mapping, not legal interpretation."
+          }
+        ],
+        "reviews": {}
+      },
+      "horizon": 1,
+      "topology": true
+    },
+    "u2": {
+      "schema": "vle-geometry/v1",
+      "family": {
+        "schema": "vle-family/v1",
+        "context": {
+          "jurisdiction": "FR",
+          "as_of": "2026-10-27",
+          "actor": "synthetic assistant",
+          "capacity": "research"
+        },
+        "documents": [
+          {
+            "id": "synthetic-policy",
+            "version": "1",
+            "kind": "normative",
+            "language": "en",
+            "text": "Synthetic research policy: do not disclose confidential records. This is not a statute.",
+            "sha256": "8221cbbc581dcf52e702a5d60eed02984cc2eb9c3a84a46f3eae752024c1fd6f",
+            "jurisdiction": "FR",
+            "effective_from": null,
+            "effective_to": null
+          }
+        ],
+        "horizon": 1,
+        "interpretations": [
+          {
+            "id": "i0",
+            "property": {
+              "op": "not",
+              "args": [
+                {
+                  "op": "atom",
+                  "name": "p"
+                }
+              ]
+            },
+            "source_refs": [
+              {
+                "document_id": "synthetic-policy",
+                "start": 0,
+                "end": 87,
+                "quote": "Synthetic research policy: do not disclose confidential records. This is not a statute."
+              }
+            ],
+            "rationale": "Synthetic unreviewed geometry mapping, not legal interpretation."
+          },
+          {
+            "id": "i1",
+            "property": {
+              "op": "and",
+              "args": [
+                {
+                  "op": "atom",
+                  "name": "p"
+                },
+                {
+                  "op": "atom",
+                  "name": "q"
+                }
+              ]
+            },
+            "source_refs": [
+              {
+                "document_id": "synthetic-policy",
+                "start": 0,
+                "end": 87,
+                "quote": "Synthetic research policy: do not disclose confidential records. This is not a statute."
+              }
+            ],
+            "rationale": "Synthetic unreviewed geometry mapping, not legal interpretation."
+          },
+          {
+            "id": "i2",
+            "property": {
+              "op": "atom",
+              "name": "p"
+            },
+            "source_refs": [
+              {
+                "document_id": "synthetic-policy",
+                "start": 0,
+                "end": 87,
+                "quote": "Synthetic research policy: do not disclose confidential records. This is not a statute."
+              }
+            ],
+            "rationale": "Synthetic unreviewed geometry mapping, not legal interpretation."
+          },
+          {
+            "id": "i3",
+            "property": {
+              "op": "atom",
+              "name": "q"
+            },
+            "source_refs": [
+              {
+                "document_id": "synthetic-policy",
+                "start": 0,
+                "end": 87,
+                "quote": "Synthetic research policy: do not disclose confidential records. This is not a statute."
+              }
+            ],
+            "rationale": "Synthetic unreviewed geometry mapping, not legal interpretation."
+          }
+        ],
+        "reviews": {}
+      },
+      "horizon": 1,
+      "topology": true
+    },
+    "u3": {
+      "schema": "vle-geometry/v1",
+      "family": {
+        "schema": "vle-family/v1",
+        "context": {
+          "jurisdiction": "FR",
+          "as_of": "2026-10-27",
+          "actor": "synthetic assistant",
+          "capacity": "research"
+        },
+        "documents": [
+          {
+            "id": "synthetic-policy",
+            "version": "1",
+            "kind": "normative",
+            "language": "en",
+            "text": "Synthetic research policy: do not disclose confidential records. This is not a statute.",
+            "sha256": "8221cbbc581dcf52e702a5d60eed02984cc2eb9c3a84a46f3eae752024c1fd6f",
+            "jurisdiction": "FR",
+            "effective_from": null,
+            "effective_to": null
+          }
+        ],
+        "horizon": 1,
+        "interpretations": [
+          {
+            "id": "i0",
+            "property": {
+              "op": "and",
+              "args": [
+                {
+                  "op": "atom",
+                  "name": "p"
+                },
+                {
+                  "op": "atom",
+                  "name": "q"
+                }
+              ]
+            },
+            "source_refs": [
+              {
+                "document_id": "synthetic-policy",
+                "start": 0,
+                "end": 87,
+                "quote": "Synthetic research policy: do not disclose confidential records. This is not a statute."
+              }
+            ],
+            "rationale": "Synthetic unreviewed geometry mapping, not legal interpretation."
+          },
+          {
+            "id": "i1",
+            "property": {
+              "op": "atom",
+              "name": "p"
+            },
+            "source_refs": [
+              {
+                "document_id": "synthetic-policy",
+                "start": 0,
+                "end": 87,
+                "quote": "Synthetic research policy: do not disclose confidential records. This is not a statute."
+              }
+            ],
+            "rationale": "Synthetic unreviewed geometry mapping, not legal interpretation."
+          }
+        ],
+        "reviews": {}
+      },
+      "horizon": 1,
+      "topology": true
+    },
+    "u4": {
+      "schema": "vle-geometry/v1",
+      "family": {
+        "schema": "vle-family/v1",
+        "context": {
+          "jurisdiction": "FR",
+          "as_of": "2026-10-27",
+          "actor": "synthetic assistant",
+          "capacity": "research"
+        },
+        "documents": [
+          {
+            "id": "synthetic-policy",
+            "version": "1",
+            "kind": "normative",
+            "language": "en",
+            "text": "Synthetic research policy: do not disclose confidential records. This is not a statute.",
+            "sha256": "8221cbbc581dcf52e702a5d60eed02984cc2eb9c3a84a46f3eae752024c1fd6f",
+            "jurisdiction": "FR",
+            "effective_from": null,
+            "effective_to": null
+          }
+        ],
+        "horizon": 1,
+        "interpretations": [
+          {
+            "id": "i0",
+            "property": {
+              "op": "atom",
+              "name": "p"
+            },
+            "source_refs": [
+              {
+                "document_id": "synthetic-policy",
+                "start": 0,
+                "end": 87,
+                "quote": "Synthetic research policy: do not disclose confidential records. This is not a statute."
+              }
+            ],
+            "rationale": "Synthetic unreviewed geometry mapping, not legal interpretation."
+          },
+          {
+            "id": "i1",
+            "property": {
+              "op": "atom",
+              "name": "q"
+            },
+            "source_refs": [
+              {
+                "document_id": "synthetic-policy",
+                "start": 0,
+                "end": 87,
+                "quote": "Synthetic research policy: do not disclose confidential records. This is not a statute."
+              }
+            ],
+            "rationale": "Synthetic unreviewed geometry mapping, not legal interpretation."
+          },
+          {
+            "id": "i2",
+            "property": {
+              "op": "not",
+              "args": [
+                {
+                  "op": "atom",
+                  "name": "p"
+                }
+              ]
+            },
+            "source_refs": [
+              {
+                "document_id": "synthetic-policy",
+                "start": 0,
+                "end": 87,
+                "quote": "Synthetic research policy: do not disclose confidential records. This is not a statute."
+              }
+            ],
+            "rationale": "Synthetic unreviewed geometry mapping, not legal interpretation."
+          }
+        ],
+        "reviews": {}
+      },
+      "horizon": 1,
+      "topology": true
+    },
+    "u5": {
+      "schema": "vle-geometry/v1",
+      "family": {
+        "schema": "vle-family/v1",
+        "context": {
+          "jurisdiction": "FR",
+          "as_of": "2026-10-27",
+          "actor": "synthetic assistant",
+          "capacity": "research"
+        },
+        "documents": [
+          {
+            "id": "synthetic-policy",
+            "version": "1",
+            "kind": "normative",
+            "language": "en",
+            "text": "Synthetic research policy: do not disclose confidential records. This is not a statute.",
+            "sha256": "8221cbbc581dcf52e702a5d60eed02984cc2eb9c3a84a46f3eae752024c1fd6f",
+            "jurisdiction": "FR",
+            "effective_from": null,
+            "effective_to": null
+          }
+        ],
+        "horizon": 1,
+        "interpretations": [
+          {
+            "id": "i0",
+            "property": {
+              "op": "atom",
+              "name": "q"
+            },
+            "source_refs": [
+              {
+                "document_id": "synthetic-policy",
+                "start": 0,
+                "end": 87,
+                "quote": "Synthetic research policy: do not disclose confidential records. This is not a statute."
+              }
+            ],
+            "rationale": "Synthetic unreviewed geometry mapping, not legal interpretation."
+          },
+          {
+            "id": "i1",
+            "property": {
+              "op": "not",
+              "args": [
+                {
+                  "op": "atom",
+                  "name": "p"
+                }
+              ]
+            },
+            "source_refs": [
+              {
+                "document_id": "synthetic-policy",
+                "start": 0,
+                "end": 87,
+                "quote": "Synthetic research policy: do not disclose confidential records. This is not a statute."
+              }
+            ],
+            "rationale": "Synthetic unreviewed geometry mapping, not legal interpretation."
+          },
+          {
+            "id": "i2",
+            "property": {
+              "op": "and",
+              "args": [
+                {
+                  "op": "atom",
+                  "name": "p"
+                },
+                {
+                  "op": "atom",
+                  "name": "q"
+                }
+              ]
+            },
+            "source_refs": [
+              {
+                "document_id": "synthetic-policy",
+                "start": 0,
+                "end": 87,
+                "quote": "Synthetic research policy: do not disclose confidential records. This is not a statute."
+              }
+            ],
+            "rationale": "Synthetic unreviewed geometry mapping, not legal interpretation."
+          },
+          {
+            "id": "i3",
+            "property": {
+              "op": "atom",
+              "name": "p"
+            },
+            "source_refs": [
+              {
+                "document_id": "synthetic-policy",
+                "start": 0,
+                "end": 87,
+                "quote": "Synthetic research policy: do not disclose confidential records. This is not a statute."
+              }
+            ],
+            "rationale": "Synthetic unreviewed geometry mapping, not legal interpretation."
+          }
+        ],
+        "reviews": {}
+      },
+      "horizon": 1,
+      "topology": true
+    },
+    "u6": {
+      "schema": "vle-geometry/v1",
+      "family": {
+        "schema": "vle-family/v1",
+        "context": {
+          "jurisdiction": "FR",
+          "as_of": "2026-10-27",
+          "actor": "synthetic assistant",
+          "capacity": "research"
+        },
+        "documents": [
+          {
+            "id": "synthetic-policy",
+            "version": "1",
+            "kind": "normative",
+            "language": "en",
+            "text": "Synthetic research policy: do not disclose confidential records. This is not a statute.",
+            "sha256": "8221cbbc581dcf52e702a5d60eed02984cc2eb9c3a84a46f3eae752024c1fd6f",
+            "jurisdiction": "FR",
+            "effective_from": null,
+            "effective_to": null
+          }
+        ],
+        "horizon": 1,
+        "interpretations": [
+          {
+            "id": "i0",
+            "property": {
+              "op": "not",
+              "args": [
+                {
+                  "op": "atom",
+                  "name": "p"
+                }
+              ]
+            },
+            "source_refs": [
+              {
+                "document_id": "synthetic-policy",
+                "start": 0,
+                "end": 87,
+                "quote": "Synthetic research policy: do not disclose confidential records. This is not a statute."
+              }
+            ],
+            "rationale": "Synthetic unreviewed geometry mapping, not legal interpretation."
+          },
+          {
+            "id": "i1",
+            "property": {
+              "op": "and",
+              "args": [
+                {
+                  "op": "atom",
+                  "name": "p"
+                },
+                {
+                  "op": "atom",
+                  "name": "q"
+                }
+              ]
+            },
+            "source_refs": [
+              {
+                "document_id": "synthetic-policy",
+                "start": 0,
+                "end": 87,
+                "quote": "Synthetic research policy: do not disclose confidential records. This is not a statute."
+              }
+            ],
+            "rationale": "Synthetic unreviewed geometry mapping, not legal interpretation."
+          }
+        ],
+        "reviews": {}
+      },
+      "horizon": 1,
+      "topology": true
+    },
+    "u7": {
+      "schema": "vle-geometry/v1",
+      "family": {
+        "schema": "vle-family/v1",
+        "context": {
+          "jurisdiction": "FR",
+          "as_of": "2026-10-27",
+          "actor": "synthetic assistant",
+          "capacity": "research"
+        },
+        "documents": [
+          {
+            "id": "synthetic-policy",
+            "version": "1",
+            "kind": "normative",
+            "language": "en",
+            "text": "Synthetic research policy: do not disclose confidential records. This is not a statute.",
+            "sha256": "8221cbbc581dcf52e702a5d60eed02984cc2eb9c3a84a46f3eae752024c1fd6f",
+            "jurisdiction": "FR",
+            "effective_from": null,
+            "effective_to": null
+          }
+        ],
+        "horizon": 1,
+        "interpretations": [
+          {
+            "id": "i0",
+            "property": {
+              "op": "and",
+              "args": [
+                {
+                  "op": "atom",
+                  "name": "p"
+                },
+                {
+                  "op": "atom",
+                  "name": "q"
+                }
+              ]
+            },
+            "source_refs": [
+              {
+                "document_id": "synthetic-policy",
+                "start": 0,
+                "end": 87,
+                "quote": "Synthetic research policy: do not disclose confidential records. This is not a statute."
+              }
+            ],
+            "rationale": "Synthetic unreviewed geometry mapping, not legal interpretation."
+          },
+          {
+            "id": "i1",
+            "property": {
+              "op": "atom",
+              "name": "p"
+            },
+            "source_refs": [
+              {
+                "document_id": "synthetic-policy",
+                "start": 0,
+                "end": 87,
+                "quote": "Synthetic research policy: do not disclose confidential records. This is not a statute."
+              }
+            ],
+            "rationale": "Synthetic unreviewed geometry mapping, not legal interpretation."
+          },
+          {
+            "id": "i2",
+            "property": {
+              "op": "atom",
+              "name": "q"
+            },
+            "source_refs": [
+              {
+                "document_id": "synthetic-policy",
+                "start": 0,
+                "end": 87,
+                "quote": "Synthetic research policy: do not disclose confidential records. This is not a statute."
+              }
+            ],
+            "rationale": "Synthetic unreviewed geometry mapping, not legal interpretation."
+          }
+        ],
+        "reviews": {}
+      },
+      "horizon": 1,
+      "topology": true
+    }
+  }
+}

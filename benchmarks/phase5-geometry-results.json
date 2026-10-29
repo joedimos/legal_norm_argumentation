@@ -1,0 +1,468 @@
+{
+  "schema": "vle-geometry-study-result/v1",
+  "synthetic": true,
+  "review_status": "unreviewed",
+  "real_reviewers": 0,
+  "simulated_only": true,
+  "rows": [
+    {
+      "id": "u0",
+      "h0": 0.5,
+      "alternatives": 2,
+      "mean_distance": 0.5,
+      "disagreement": 0
+    },
+    {
+      "id": "u1",
+      "h0": 0.5,
+      "alternatives": 3,
+      "mean_distance": 0.5,
+      "disagreement": 1
+    },
+    {
+      "id": "u2",
+      "h0": 0.5,
+      "alternatives": 4,
+      "mean_distance": 0.5416666666666666,
+      "disagreement": 0
+    },
+    {
+      "id": "u3",
+      "h0": 0.25,
+      "alternatives": 2,
+      "mean_distance": 0.25,
+      "disagreement": 1
+    },
+    {
+      "id": "u4",
+      "h0": 0.5,
+      "alternatives": 3,
+      "mean_distance": 0.6666666666666666,
+      "disagreement": 0
+    },
+    {
+      "id": "u5",
+      "h0": 0.5,
+      "alternatives": 4,
+      "mean_distance": 0.5416666666666666,
+      "disagreement": 1
+    },
+    {
+      "id": "u6",
+      "h0": 0.75,
+      "alternatives": 2,
+      "mean_distance": 0.75,
+      "disagreement": 0
+    },
+    {
+      "id": "u7",
+      "h0": 0.25,
+      "alternatives": 3,
+      "mean_distance": 0.3333333333333333,
+      "disagreement": 1
+    }
+  ],
+  "LOOCV_MSE": {
+    "h0": 0.2056505102040816,
+    "alternatives": 0.4611274197178871,
+    "mean_distance": 0.17835790947671196
+  },
+  "H3_simulation_supported": false,
+  "real_predictive_validity": "unmeasured",
+  "assessment": {
+    "schema": "vle-annotation-result/v1",
+    "request_sha256": "220c77392f1575c5c6500d55d8c0585d773747cca00c34740c32eba7cb887f26",
+    "status": "adjudication_required",
+    "packet_sha256": "ac2637eed2e316b203e5fbb96c936341f9d82d07596db86cb39c0a2ed40b7df8",
+    "submissions": [
+      {
+        "reviewer": {
+          "id": "SIMULATED_ORACLE_0",
+          "qualification": "SIMULATED_NONEXPERT_NOT_A_PERSON",
+          "independent": true,
+          "conflicts_disclosed": false
+        },
+        "packet_sha256": "ac2637eed2e316b203e5fbb96c936341f9d82d07596db86cb39c0a2ed40b7df8",
+        "annotations": [
+          {
+            "unit_id": "u0",
+            "unit_sha256": "987bfbd218e81b77e5677a1b276c0b61870652e4668d8a61dcc01ede01081593",
+            "judgment": {
+              "labels": {
+                "applicability": "not_applicable",
+                "faithfulness": "supported",
+                "conditions_exceptions": "not_applicable",
+                "grounding": "not_applicable",
+                "response_behavior": "not_applicable",
+                "harmful_assistance": "not_applicable",
+                "usefulness": "not_applicable",
+                "refusal_appropriateness": "not_applicable"
+              },
+              "rationale": "SIMULATED_NONEXPERT_ORACLE; no person or expert judgment.",
+              "alternative_interpretations": []
+            }
+          },
+          {
+            "unit_id": "u1",
+            "unit_sha256": "5ec792bd422e505b57d91dc03a68181f00246435d73d9a99fe0d45d3d3980fb5",
+            "judgment": {
+              "labels": {
+                "applicability": "not_applicable",
+                "faithfulness": "supported",
+                "conditions_exceptions": "not_applicable",
+                "grounding": "not_applicable",
+                "response_behavior": "not_applicable",
+                "harmful_assistance": "not_applicable",
+                "usefulness": "not_applicable",
+                "refusal_appropriateness": "not_applicable"
+              },
+              "rationale": "SIMULATED_NONEXPERT_ORACLE; no person or expert judgment.",
+              "alternative_interpretations": []
+            }
+          },
+          {
+            "unit_id": "u2",
+            "unit_sha256": "0cfdba4fd26bda5355ac559e34db0024a38d4389bbb8b0cd9b62b4ea7a935ab3",
+            "judgment": {
+              "labels": {
+                "applicability": "not_applicable",
+                "faithfulness": "supported",
+                "conditions_exceptions": "not_applicable",
+                "grounding": "not_applicable",
+                "response_behavior": "not_applicable",
+                "harmful_assistance": "not_applicable",
+                "usefulness": "not_applicable",
+                "refusal_appropriateness": "not_applicable"
+              },
+              "rationale": "SIMULATED_NONEXPERT_ORACLE; no person or expert judgment.",
+              "alternative_interpretations": []
+            }
+          },
+          {
+            "unit_id": "u3",
+            "unit_sha256": "e55f07c1fd8da95088fbc332b58bdd2e55514d30cb78c364ae2fe8bd0c55cd8e",
+            "judgment": {
+              "labels": {
+                "applicability": "not_applicable",
+                "faithfulness": "supported",
+                "conditions_exceptions": "not_applicable",
+                "grounding": "not_applicable",
+                "response_behavior": "not_applicable",
+                "harmful_assistance": "not_applicable",
+                "usefulness": "not_applicable",
+                "refusal_appropriateness": "not_applicable"
+              },
+              "rationale": "SIMULATED_NONEXPERT_ORACLE; no person or expert judgment.",
+              "alternative_interpretations": []
+            }
+          },
+          {
+            "unit_id": "u4",
+            "unit_sha256": "c6ff32d2dcfb73058b020982fff3e1453b94befc0622c36bc357d4513c82e29a",
+            "judgment": {
+              "labels": {
+                "applicability": "not_applicable",
+                "faithfulness": "supported",
+                "conditions_exceptions": "not_applicable",
+                "grounding": "not_applicable",
+                "response_behavior": "not_applicable",
+                "harmful_assistance": "not_applicable",
+                "usefulness": "not_applicable",
+                "refusal_appropriateness": "not_applicable"
+              },
+              "rationale": "SIMULATED_NONEXPERT_ORACLE; no person or expert judgment.",
+              "alternative_interpretations": []
+            }
+          },
+          {
+            "unit_id": "u5",
+            "unit_sha256": "1af4931e38499575afdcd20ade3d5692d00934ff71f47d29999a648f8a419ac0",
+            "judgment": {
+              "labels": {
+                "applicability": "not_applicable",
+                "faithfulness": "supported",
+                "conditions_exceptions": "not_applicable",
+                "grounding": "not_applicable",
+                "response_behavior": "not_applicable",
+                "harmful_assistance": "not_applicable",
+                "usefulness": "not_applicable",
+                "refusal_appropriateness": "not_applicable"
+              },
+              "rationale": "SIMULATED_NONEXPERT_ORACLE; no person or expert judgment.",
+              "alternative_interpretations": []
+            }
+          },
+          {
+            "unit_id": "u6",
+            "unit_sha256": "22ef459a2d6674906fae9f27d7c07c0c1baa73d726eb7b422cb01e3d32edb745",
+            "judgment": {
+              "labels": {
+                "applicability": "not_applicable",
+                "faithfulness": "supported",
+                "conditions_exceptions": "not_applicable",
+                "grounding": "not_applicable",
+                "response_behavior": "not_applicable",
+                "harmful_assistance": "not_applicable",
+                "usefulness": "not_applicable",
+                "refusal_appropriateness": "not_applicable"
+              },
+              "rationale": "SIMULATED_NONEXPERT_ORACLE; no person or expert judgment.",
+              "alternative_interpretations": []
+            }
+          },
+          {
+            "unit_id": "u7",
+            "unit_sha256": "d579a8d687f18b53194c9bdea247477008fc73fbbab9508bf9da9c6110cb2cbe",
+            "judgment": {
+              "labels": {
+                "applicability": "not_applicable",
+                "faithfulness": "supported",
+                "conditions_exceptions": "not_applicable",
+                "grounding": "not_applicable",
+                "response_behavior": "not_applicable",
+                "harmful_assistance": "not_applicable",
+                "usefulness": "not_applicable",
+                "refusal_appropriateness": "not_applicable"
+              },
+              "rationale": "SIMULATED_NONEXPERT_ORACLE; no person or expert judgment.",
+              "alternative_interpretations": []
+            }
+          }
+        ]
+      },
+      {
+        "reviewer": {
+          "id": "SIMULATED_ORACLE_1",
+          "qualification": "SIMULATED_NONEXPERT_NOT_A_PERSON",
+          "independent": true,
+          "conflicts_disclosed": false
+        },
+        "packet_sha256": "ac2637eed2e316b203e5fbb96c936341f9d82d07596db86cb39c0a2ed40b7df8",
+        "annotations": [
+          {
+            "unit_id": "u0",
+            "unit_sha256": "987bfbd218e81b77e5677a1b276c0b61870652e4668d8a61dcc01ede01081593",
+            "judgment": {
+              "labels": {
+                "applicability": "not_applicable",
+                "faithfulness": "supported",
+                "conditions_exceptions": "not_applicable",
+                "grounding": "not_applicable",
+                "response_behavior": "not_applicable",
+                "harmful_assistance": "not_applicable",
+                "usefulness": "not_applicable",
+                "refusal_appropriateness": "not_applicable"
+              },
+              "rationale": "SIMULATED_NONEXPERT_ORACLE; no person or expert judgment.",
+              "alternative_interpretations": []
+            }
+          },
+          {
+            "unit_id": "u1",
+            "unit_sha256": "5ec792bd422e505b57d91dc03a68181f00246435d73d9a99fe0d45d3d3980fb5",
+            "judgment": {
+              "labels": {
+                "applicability": "not_applicable",
+                "faithfulness": "unsupported",
+                "conditions_exceptions": "not_applicable",
+                "grounding": "not_applicable",
+                "response_behavior": "not_applicable",
+                "harmful_assistance": "not_applicable",
+                "usefulness": "not_applicable",
+                "refusal_appropriateness": "not_applicable"
+              },
+              "rationale": "SIMULATED_NONEXPERT_ORACLE; no person or expert judgment.",
+              "alternative_interpretations": []
+            }
+          },
+          {
+            "unit_id": "u2",
+            "unit_sha256": "0cfdba4fd26bda5355ac559e34db0024a38d4389bbb8b0cd9b62b4ea7a935ab3",
+            "judgment": {
+              "labels": {
+                "applicability": "not_applicable",
+                "faithfulness": "supported",
+                "conditions_exceptions": "not_applicable",
+                "grounding": "not_applicable",
+                "response_behavior": "not_applicable",
+                "harmful_assistance": "not_applicable",
+                "usefulness": "not_applicable",
+                "refusal_appropriateness": "not_applicable"
+              },
+              "rationale": "SIMULATED_NONEXPERT_ORACLE; no person or expert judgment.",
+              "alternative_interpretations": []
+            }
+          },
+          {
+            "unit_id": "u3",
+            "unit_sha256": "e55f07c1fd8da95088fbc332b58bdd2e55514d30cb78c364ae2fe8bd0c55cd8e",
+            "judgment": {
+              "labels": {
+                "applicability": "not_applicable",
+                "faithfulness": "unsupported",
+                "conditions_exceptions": "not_applicable",
+                "grounding": "not_applicable",
+                "response_behavior": "not_applicable",
+                "harmful_assistance": "not_applicable",
+                "usefulness": "not_applicable",
+                "refusal_appropriateness": "not_applicable"
+              },
+              "rationale": "SIMULATED_NONEXPERT_ORACLE; no person or expert judgment.",
+              "alternative_interpretations": []
+            }
+          },
+          {
+            "unit_id": "u4",
+            "unit_sha256": "c6ff32d2dcfb73058b020982fff3e1453b94befc0622c36bc357d4513c82e29a",
+            "judgment": {
+              "labels": {
+                "applicability": "not_applicable",
+                "faithfulness": "supported",
+                "conditions_exceptions": "not_applicable",
+                "grounding": "not_applicable",
+                "response_behavior": "not_applicable",
+                "harmful_assistance": "not_applicable",
+                "usefulness": "not_applicable",
+                "refusal_appropriateness": "not_applicable"
+              },
+              "rationale": "SIMULATED_NONEXPERT_ORACLE; no person or expert judgment.",
+              "alternative_interpretations": []
+            }
+          },
+          {
+            "unit_id": "u5",
+            "unit_sha256": "1af4931e38499575afdcd20ade3d5692d00934ff71f47d29999a648f8a419ac0",
+            "judgment": {
+              "labels": {
+                "applicability": "not_applicable",
+                "faithfulness": "unsupported",
+                "conditions_exceptions": "not_applicable",
+                "grounding": "not_applicable",
+                "response_behavior": "not_applicable",
+                "harmful_assistance": "not_applicable",
+                "usefulness": "not_applicable",
+                "refusal_appropriateness": "not_applicable"
+              },
+              "rationale": "SIMULATED_NONEXPERT_ORACLE; no person or expert judgment.",
+              "alternative_interpretations": []
+            }
+          },
+          {
+            "unit_id": "u6",
+            "unit_sha256": "22ef459a2d6674906fae9f27d7c07c0c1baa73d726eb7b422cb01e3d32edb745",
+            "judgment": {
+              "labels": {
+                "applicability": "not_applicable",
+                "faithfulness": "supported",
+                "conditions_exceptions": "not_applicable",
+                "grounding": "not_applicable",
+                "response_behavior": "not_applicable",
+                "harmful_assistance": "not_applicable",
+                "usefulness": "not_applicable",
+                "refusal_appropriateness": "not_applicable"
+              },
+              "rationale": "SIMULATED_NONEXPERT_ORACLE; no person or expert judgment.",
+              "alternative_interpretations": []
+            }
+          },
+          {
+            "unit_id": "u7",
+            "unit_sha256": "d579a8d687f18b53194c9bdea247477008fc73fbbab9508bf9da9c6110cb2cbe",
+            "judgment": {
+              "labels": {
+                "applicability": "not_applicable",
+                "faithfulness": "unsupported",
+                "conditions_exceptions": "not_applicable",
+                "grounding": "not_applicable",
+                "response_behavior": "not_applicable",
+                "harmful_assistance": "not_applicable",
+                "usefulness": "not_applicable",
+                "refusal_appropriateness": "not_applicable"
+              },
+              "rationale": "SIMULATED_NONEXPERT_ORACLE; no person or expert judgment.",
+              "alternative_interpretations": []
+            }
+          }
+        ]
+      }
+    ],
+    "adjudication": null,
+    "disagreements": {
+      "u1": [
+        "faithfulness"
+      ],
+      "u3": [
+        "faithfulness"
+      ],
+      "u5": [
+        "faithfulness"
+      ],
+      "u7": [
+        "faithfulness"
+      ]
+    },
+    "unresolved_units": [
+      "u1",
+      "u3",
+      "u5",
+      "u7"
+    ],
+    "metrics": {
+      "applicability": {
+        "units": 8,
+        "agreement": 1.0,
+        "cohen_kappa": null,
+        "kappa_undefined_reason": "constant_identical_labels"
+      },
+      "faithfulness": {
+        "units": 8,
+        "agreement": 0.5,
+        "cohen_kappa": 0.0,
+        "kappa_undefined_reason": null
+      },
+      "conditions_exceptions": {
+        "units": 8,
+        "agreement": 1.0,
+        "cohen_kappa": null,
+        "kappa_undefined_reason": "constant_identical_labels"
+      },
+      "grounding": {
+        "units": 8,
+        "agreement": 1.0,
+        "cohen_kappa": null,
+        "kappa_undefined_reason": "constant_identical_labels"
+      },
+      "response_behavior": {
+        "units": 8,
+        "agreement": 1.0,
+        "cohen_kappa": null,
+        "kappa_undefined_reason": "constant_identical_labels"
+      },
+      "harmful_assistance": {
+        "units": 8,
+        "agreement": 1.0,
+        "cohen_kappa": null,
+        "kappa_undefined_reason": "constant_identical_labels"
+      },
+      "usefulness": {
+        "units": 8,
+        "agreement": 1.0,
+        "cohen_kappa": null,
+        "kappa_undefined_reason": "constant_identical_labels"
+      },
+      "refusal_appropriateness": {
+        "units": 8,
+        "agreement": 1.0,
+        "cohen_kappa": null,
+        "kappa_undefined_reason": "constant_identical_labels"
+      }
+    },
+    "reviewers_authenticated": false,
+    "qualifications_verified": false,
+    "independence_verified": false,
+    "deployment_authorized": false,
+    "legal_certification": false
+  },
+  "decision_authorized": false,
+  "legal_certification": false
+}
