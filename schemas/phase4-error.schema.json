@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "vle-phase4-error/v1"
+    },
+    "status": {
+      "const": "unknown"
+    },
+    "reason": {
+      "const": "invalid_or_unavailable_input"
+    },
+    "error": {
+      "type": "string"
+    },
+    "request_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "review_status": {
+      "const": "unreviewed"
+    },
+    "decision_authorized": {
+      "const": false
+    },
+    "legal_certification": {
+      "const": false
+    }
+  },
+  "required": [
+    "schema",
+    "status",
+    "reason",
+    "error",
+    "request_sha256",
+    "review_status",
+    "decision_authorized",
+    "legal_certification"
+  ],
+  "additionalProperties": false
+}

@@ -143,5 +143,26 @@
     "decision_authorized",
     "legal_certification"
   ],
-  "additionalProperties": false
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "unknown"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "rows": {
+            "maxItems": 0
+          },
+          "evaluated_count": {
+            "const": 0
+          }
+        }
+      }
+    }
+  ]
 }

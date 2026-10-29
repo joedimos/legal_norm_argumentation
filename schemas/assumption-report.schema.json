@@ -90,5 +90,35 @@
     "decision_authorized",
     "legal_certification"
   ],
-  "additionalProperties": false
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "unknown"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "minimal_corrections": {
+            "maxItems": 0
+          },
+          "minimal_unsatisfiable": {
+            "maxItems": 0
+          },
+          "review_prompts": {
+            "maxItems": 0
+          },
+          "minimality_established": {
+            "const": false
+          },
+          "truncated": {
+            "const": true
+          }
+        }
+      }
+    }
+  ]
 }

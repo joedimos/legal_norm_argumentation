@@ -1,0 +1,99 @@
+{
+  "scope": "synthetic_unreviewed_regression_only",
+  "version": "0.7.0",
+  "baseline_revision": "61b3f785fd6bd879b0bc25b13c3596cfb82c8202",
+  "legal_certification": false,
+  "decision_authorized": false,
+  "benchmarks": [
+    {
+      "command": "python -m src.cli benchmark --backend exhaustive",
+      "case_count": 62,
+      "all_passed": true,
+      "status": null
+    },
+    {
+      "command": "python -m src.cli benchmark --backend z3",
+      "case_count": 62,
+      "all_passed": true,
+      "status": null
+    },
+    {
+      "command": "python -m src.cli experiment-benchmark --backend exhaustive",
+      "case_count": 19,
+      "all_passed": true,
+      "status": null
+    },
+    {
+      "command": "python -m src.cli experiment-benchmark --backend z3",
+      "case_count": 19,
+      "all_passed": true,
+      "status": null
+    },
+    {
+      "command": "python -m src.cli family-benchmark",
+      "case_count": 15,
+      "all_passed": true,
+      "status": null
+    },
+    {
+      "command": "python -m src.cli faithfulness",
+      "case_count": 12,
+      "all_passed": null,
+      "status": "reported"
+    }
+  ],
+  "corpus_digests": {
+    "benchmarks/research-v1.json": {
+      "raw_sha256": "fb3326ab811f354044742733a2484c4a67fd8d2f001f4e951a07287dab76d721",
+      "canonical_sha256": "92b58b85da578309f969a4e4c0edc15a1da94aabe98e5b84243c4b57b04ee556"
+    },
+    "benchmarks/experiments-v1.json": {
+      "raw_sha256": "72d38e6a4fc7452f629b47cbc3a425f4a7a8fcc3b76b84a75a7692970aa431e8",
+      "canonical_sha256": "10b0c42a9c83f3b33614a5be307315512f0b749e967fc9131027bbfc417afb12"
+    },
+    "benchmarks/families-v1.json": {
+      "raw_sha256": "8f65ec8d83a82fd074b4312feee32546a0880616e11e4dd94bd67c8747ae773c",
+      "canonical_sha256": "85b001b2c14ecee226e2ba8f77272cff795440ac43941712287bd41004e8e2e3"
+    },
+    "benchmarks/phase4-v1.json": {
+      "raw_sha256": "53c4bc8357ea7c90b265adf71cf36cc8afd93c14cfb48758020459bf431aa427",
+      "canonical_sha256": "22f0235306e34996d2600d8eef907098b0476758074312f78cbe9c75f98068e7"
+    },
+    "tests/fixtures/phase4/ddl-v1.json": {
+      "raw_sha256": "28b2b81af5c96b217b1c0118b93d75a829a9806bfd663f10d032b11cd477c282",
+      "canonical_sha256": "6cad642e10d755233670b4a55a93bb098668f98b88a06e0aafba51b0dfc216de"
+    }
+  },
+  "coverage": {
+    "scope": "final_phase4_modules",
+    "combined_percent": 95.18768046198268,
+    "per_file": {
+      "src/aspic.py": 95.80838323353294,
+      "src/assumptions.py": 94.56521739130434,
+      "src/assumptions_z3.py": 92.5925925925926,
+      "src/ddl/__init__.py": 100.0,
+      "src/ddl/export.py": 96.96969696969697,
+      "src/ddl/import_.py": 93.65079365079364,
+      "src/ddl/metrics.py": 100.0,
+      "src/ddl/model.py": 92.06349206349206,
+      "src/ddl/refine.py": 95.0,
+      "src/ddl/segment.py": 100.0,
+      "src/faithfulness.py": 91.45299145299145,
+      "src/norm_codec.py": 94.33962264150944,
+      "src/phase4.py": 100.0,
+      "src/phase4_cli.py": 98.85057471264368,
+      "src/redundancy/__init__.py": 100.0,
+      "src/redundancy/align.py": 94.73684210526316,
+      "src/redundancy/crosscheck.py": 93.24324324324324,
+      "src/redundancy/generate.py": 97.43589743589743
+    }
+  },
+  "model_experiments": "deterministic_fakes_only_no_live_provider_or_independent_legal_annotations",
+  "ci": "see_per_milestone_PR_head_checks",
+  "tests": {
+    "full_passed": 369,
+    "postgres_only_local_skips": 3,
+    "existing_deprecation_warnings": 1,
+    "phase4_focused_passed": 82
+  }
+}

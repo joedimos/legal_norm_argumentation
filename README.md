@@ -320,3 +320,18 @@ The [research-software paper](docs/paper/manuscript.md) explains the complete
 framework, formal semantics, conditional correctness arguments, synthetic
 evaluation and limitations. [Build instructions and the evaluation record](docs/paper/README.md)
 allow regeneration of the PDF and inspection of the reported evidence.
+
+
+## Research phase 4
+
+Version 0.7.0 adds bounded ASPIC+ structured arguments, redundant unreviewed
+formalizations with semantic cross-checks, local DDL interchange, minimal
+assumption corrections, and three-way faithfulness disagreement reports.
+Every new analysis preserves unknowns and remains unauthorized/unreviewed.
+Consensus never replaces human review; new readiness gates are advisory.
+
+See [Phase 4 semantics, commands, limits and reproduction](docs/PHASE4_REDUNDANCY_DDL_ASSUMPTIONS.md)
+and [inspected APIs, deltas and milestone evidence](docs/PHASE4_NOTES.md).
+Run `python -m src.cli faithfulness` for the offline synthetic corpus.
+The 62/19/15 existing fixture suites are unchanged. Live provider evaluation
+and independent legal-expert assessment remain separate empirical work.
