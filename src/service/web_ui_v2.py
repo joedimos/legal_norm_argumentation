@@ -30,7 +30,7 @@ HTML = r'''<!doctype html>
   </aside>
   <main>
     <header class="topbar">
-      <div><h1>Legal Norm Operations</h1><p>Acquire, review, formalise, evaluate, and audit French normative sources.</p></div>
+      <div><h1>Legal Norm Operations</h1><p>Acquire, review, formalise, evaluate, and audit French and U.S. IP sources.</p></div>
       <div class="auth">
         <input id="apiKey" type="password" autocomplete="off" placeholder="API key (session only)" aria-label="API key">
         <button id="saveKey" class="btn">Connect</button><button id="clearKey" class="btn ghost">Clear</button>
@@ -40,7 +40,7 @@ HTML = r'''<!doctype html>
 
     <section id="overview" class="hero">
       <div class="card hero-main">
-        <div><div class="eyebrow">Governed legal reasoning</div><h2>From official French law to reviewable, verifiable decisions.</h2><p>The console keeps source provenance, human review, ambiguity resolution, temporal/deontic reasoning and audit evidence in one guarded workflow. High-stakes outputs remain blocked until the backend readiness gates pass.</p></div>
+        <div><div class="eyebrow">Governed legal reasoning</div><h2>From IP law and case law to reviewable, verifiable decisions.</h2><p>The console keeps source provenance, human review, ambiguity resolution, temporal/deontic reasoning and audit evidence in one guarded workflow. High-stakes outputs remain blocked until the backend readiness gates pass.</p></div>
         <div class="hero-actions"><button id="jumpIngest" class="btn primary">Ingest Légifrance</button><button id="refreshAll" class="btn">Refresh workspace</button></div>
       </div>
       <div class="card metrics">
@@ -67,8 +67,13 @@ HTML = r'''<!doctype html>
         </div>
       </section>
 
+      <section class="card section span12" id="automaticImports">
+        <div class="section-head"><div><h3>Automatic IP imports</h3><p>Légifrance IP code and U.S. copyright, patent, trademark and trade-secret opinions. Acquisition does not approve legal interpretations.</p></div><button id="refreshImports" class="btn small">Refresh import status</button></div>
+        <div id="importStatus" class="result">Connect to see scheduled imports and setup requirements.</div>
+      </section>
+
       <section id="sources" class="card section span7">
-        <div class="section-head"><div><h3>Source registry</h3><p>Select a version to review and formalise its candidates.</p></div><select id="sourceFilter" class="btn" aria-label="Source filter"><option value="legifrance:">Légifrance</option><option value="">All sources</option></select></div>
+        <div class="section-head"><div><h3>Source registry</h3><p>Select a version to review and formalise its candidates.</p></div><select id="sourceFilter" class="btn" aria-label="Source filter"><option value="legifrance:ip:">Légifrance IP code</option><option value="courtlistener:">U.S. opinions · Free Law Project</option><option value="">All sources</option><option value="legifrance:">All Légifrance</option></select></div>
         <div class="table-wrap"><table><thead><tr><th>Source</th><th>Created</th><th>Candidates</th><th>Review</th></tr></thead><tbody id="sourceRows"><tr><td colspan="4" class="empty">Connect an API key to load sources.</td></tr></tbody></table></div>
       </section>
       <section class="card section span5">
@@ -132,6 +137,7 @@ HTML = r'''<!doctype html>
   function parseFacts(raw){const out={};for(const line of raw.split(/\n+/)){const value=line.trim();if(!value)continue;const m=value.match(/^(.+?)\s*(?:=|:)\s*(true|false)$/i);if(!m)throw new Error(`Invalid fact: ${value}`);out[m[1].trim()]=m[2].toLowerCase()==='true';}return out;}
   function actions(){return $('actions').value.split(/[\n,]+/).map(v=>v.trim()).filter(Boolean);}
 
+  async function loadImports(){if(!state.session)return;try{const d=await api('/v1/imports/status',{headers:headers()});$('importStatus').textContent=[d.enabled?'Automatic acquisition enabled':'Automatic acquisition disabled',...d.missing_credentials.map(v=>'Setup required: '+v),...d.jobs.filter(j=>j.enabled).map(j=>`${j.key}: ${j.status}${j.report.reason?' · '+j.report.reason:''} · next ${j.due_at}`),d.jobs.length?'':'No worker batches recorded yet. Start the importer service.'].filter(Boolean).join('\n');}catch(e){$('importStatus').textContent=e.message;}}
   async function health(){try{const d=await api('/health/live');$('healthDot').className='dot ok';$('healthText').textContent=`Online · ${d.version}`;}catch{$('healthDot').className='dot bad';$('healthText').textContent='Service unavailable';}}
   function renderIdentity(){const e=$('identity');if(!state.session){e.innerHTML='<span>Not authenticated</span>';return;}e.innerHTML=`<span>${esc(state.session.subject)}</span>${state.session.roles.map(r=>pill(r,r==='auditor'?'green':'')).join('')}`;}
   async function loadSession(){if(!token()){state.session=null;renderIdentity();return false;}try{state.session=await api('/v1/session',{headers:headers()});renderIdentity();return true;}catch(e){state.session=null;renderIdentity();toast(e.message,true);return false;}}
@@ -151,11 +157,11 @@ HTML = r'''<!doctype html>
   async function loadRuns(){if(!token()||!state.selectedSource){state.runs=[];$('runRows').innerHTML='<tr><td colspan="5" class="empty">Select a source to load run history.</td></tr>';$('runCount').textContent='—';return;}try{const p=new URLSearchParams({source_id:state.selectedSource.id,limit:'50'});const d=await api(`/v1/console/runs?${p}`,{headers:headers()});state.runs=d.runs;renderRuns();}catch(e){toast(e.message,true);}}
   async function verifyAudit(){if(!role('auditor')){toast('An auditor credential is required.',true);return;}try{const d=await api('/v1/audit-chain/verify',{headers:headers()});$('auditState').innerHTML=`${d.valid?'Valid':'Invalid'} audit chain · ${d.event_count} events${d.head_hash?` · head ${esc(d.head_hash.slice(0,12))}…`:''}`;toast(d.valid?'Audit chain verified.':'Audit chain verification failed.',!d.valid);}catch(e){toast(e.message,true);}}
   async function downloadBundle(runId){if(!runId){toast('Select or create a lifecycle run first.',true);return;}if(!role('auditor')){toast('An auditor credential is required to export bundles.',true);return;}try{const r=await fetch(`/v1/runs/${encodeURIComponent(runId)}/audit-bundle`,{headers:headers()});if(!r.ok){const ct=r.headers.get('content-type')||'';const body=ct.includes('json')?await r.json():await r.text();throw new Error(body?.detail||body||`HTTP ${r.status}`);}const blob=await r.blob();const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`vle-legato-audit-${runId}.zip`;document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);$('auditState').textContent=`Audit bundle exported for run ${runId}.`;toast('Audit bundle downloaded.');}catch(e){toast(e.message,true);}}
-  async function refreshWorkspace(){await loadSession();await Promise.all([loadCorpora(),loadSources()]);if(state.selectedSource)await loadDetail(state.selectedSource.id);}
+  async function refreshWorkspace(){await loadSession();await loadImports();await Promise.all([loadCorpora(),loadSources()]);if(state.selectedSource)await loadDetail(state.selectedSource.id);}
 
   $('saveKey').onclick=async()=>{const value=$('apiKey').value.trim();if(!value){toast('Enter an API key.',true);return;}sessionStorage.setItem('vleApiKey',value);$('apiKey').value='';if(await loadSession()){toast('Credential connected for this tab.');await loadSources();if(state.selectedSource)await loadDetail(state.selectedSource.id);}};
   $('clearKey').onclick=()=>{sessionStorage.removeItem('vleApiKey');state.session=null;state.sources=[];state.selectedSource=null;state.sourceState=null;state.runs=[];state.selectedRunId=null;renderIdentity();renderSources();$('sourceCount').textContent='—';$('candidateCount').textContent='—';$('reviewedCount').textContent='—';$('runCount').textContent='—';$('sourceContext').innerHTML='<div class="empty">Select a source to inspect provenance.</div>';$('candidateDetail').innerHTML='<div class="empty">Select a source to inspect extracted norms and formal interpretations.</div>';$('evaluationResult').innerHTML='<div class="empty">Run an evaluation to see the governed outcome.</div>';$('runRows').innerHTML='<tr><td colspan="5" class="empty">Select a source to load run history.</td></tr>';toast('Session credential cleared.');};
-  $('scrape').onclick=scrape;$('evaluate').onclick=evaluate;$('refreshRuns').onclick=loadRuns;$('verifyAudit').onclick=verifyAudit;$('downloadBundle').onclick=()=>downloadBundle(state.selectedRunId);$('sourceFilter').onchange=loadSources;$('refreshAll').onclick=refreshWorkspace;$('jumpIngest').onclick=()=>$('ingestion').scrollIntoView({behavior:'smooth'});document.querySelectorAll('[data-jump]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-jump]').forEach(x=>x.classList.remove('active'));b.classList.add('active');$(b.dataset.jump).scrollIntoView({behavior:'smooth'});});
+  $('refreshImports').onclick=loadImports;$('scrape').onclick=scrape;$('evaluate').onclick=evaluate;$('refreshRuns').onclick=loadRuns;$('verifyAudit').onclick=verifyAudit;$('downloadBundle').onclick=()=>downloadBundle(state.selectedRunId);$('sourceFilter').onchange=loadSources;$('refreshAll').onclick=refreshWorkspace;$('jumpIngest').onclick=()=>$('ingestion').scrollIntoView({behavior:'smooth'});document.querySelectorAll('[data-jump]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-jump]').forEach(x=>x.classList.remove('active'));b.classList.add('active');$(b.dataset.jump).scrollIntoView({behavior:'smooth'});});
   health();loadCorpora();loadSession().then(loadSources);
 })();
 </script>

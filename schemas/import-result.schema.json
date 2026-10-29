@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "vle-import-result/v1"
+    },
+    "review_status": {
+      "const": "unreviewed"
+    },
+    "decision_authorized": {
+      "const": false
+    },
+    "legal_certification": {
+      "const": false
+    },
+    "status": {
+      "enum": [
+        "in_progress",
+        "query_cycle_completed",
+        "retry_scheduled",
+        "idle",
+        "disabled",
+        "lease_lost"
+      ]
+    }
+  },
+  "required": [
+    "schema",
+    "review_status",
+    "decision_authorized",
+    "legal_certification",
+    "status"
+  ],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "retry_scheduled"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "reason",
+          "retry_seconds"
+        ],
+        "properties": {
+          "retry_seconds": {
+            "type": "number",
+            "minimum": 1
+          }
+        }
+      }
+    }
+  ]
+}

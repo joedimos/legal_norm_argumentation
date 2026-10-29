@@ -117,3 +117,15 @@ See [RESEARCH_PHASE_2.md](RESEARCH_PHASE_2.md) for exact temporal boundaries,
 preference reduction, bounded solver claims, benchmark protocol and audit-export
 trust assumptions. The legacy lifecycle now uses scope inclusion and grounded
 defeat semantics; unknown applicability also blocks readiness.
+
+
+## Automatic IP acquisition (0.8.1)
+
+A separate supervised importer discovers French IP-code articles from a dated
+PISTE manifest and U.S. IP opinions through CourtListener search/full-opinion APIs.
+Mutable database cursors, conditional leases, provider-wide cooldowns and fenced
+atomic batch commits provide restart recovery without mutating source/review
+history. Full texts enter the existing extraction/source registry as unreviewed
+candidates. This acquisition layer does not classify controlling holdings or
+supply independent legal review. See `AUTOMATIC_IP_IMPORTS.md` for interfaces,
+coverage boundaries and operational limits.

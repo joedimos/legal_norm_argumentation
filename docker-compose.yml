@@ -10,6 +10,18 @@ x-vle-environment: &vle-environment
   VLE_REQUIRE_SEPARATION_OF_DUTIES: "true"
   VLE_ALLOW_DOCS: "false"
   VLE_AUTO_CREATE_SCHEMA: "false"
+  VLE_AUTO_IMPORT_ENABLED: ${VLE_AUTO_IMPORT_ENABLED:-true}
+  VLE_COURTLISTENER_ENABLED: ${VLE_COURTLISTENER_ENABLED:-true}
+  VLE_COURTLISTENER_API_TOKEN: ${VLE_COURTLISTENER_API_TOKEN:-}
+  VLE_COURTLISTENER_REQUEST_DELAY_SECONDS: ${VLE_COURTLISTENER_REQUEST_DELAY_SECONDS:-13}
+  VLE_IMPORT_BATCH_SIZE: ${VLE_IMPORT_BATCH_SIZE:-3}
+  VLE_IMPORT_POLL_SECONDS: ${VLE_IMPORT_POLL_SECONDS:-15}
+  VLE_IMPORT_REFRESH_SECONDS: ${VLE_IMPORT_REFRESH_SECONDS:-86400}
+  VLE_IMPORT_RECONCILE_SECONDS: ${VLE_IMPORT_RECONCILE_SECONDS:-604800}
+  VLE_IMPORT_RECENT_DAYS: ${VLE_IMPORT_RECENT_DAYS:-90}
+  VLE_IMPORT_START_DATE: ${VLE_IMPORT_START_DATE:-1700-01-01}
+  VLE_IMPORT_MAX_RUN_SECONDS: ${VLE_IMPORT_MAX_RUN_SECONDS:-120}
+  VLE_IMPORT_LEASE_SECONDS: ${VLE_IMPORT_LEASE_SECONDS:-180}
   VLE_LEGIFRANCE_ENABLED: ${VLE_LEGIFRANCE_ENABLED:-true}
   VLE_LEGIFRANCE_SOURCE: ${VLE_LEGIFRANCE_SOURCE:-piste}
   VLE_LEGIFRANCE_PISTE_CLIENT_ID: ${VLE_LEGIFRANCE_PISTE_CLIENT_ID:-}
@@ -100,6 +112,29 @@ services:
       - ALL
     healthcheck:
       test: ["CMD", "python", "-c", "from pathlib import Path; import time,tempfile; assert any(time.time()-p.stat().st_mtime < 300 for p in Path(tempfile.gettempdir()).glob('vle-worker-*/heartbeat'))"]
+      interval: 30s
+      timeout: 3s
+      start_period: 20s
+      retries: 3
+
+
+  importer:
+    build: .
+    command: ["vle-legato-importer"]
+    environment: *vle-environment
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    healthcheck:
+      test: ["CMD", "python", "-c", "from pathlib import Path; import time,tempfile; assert any(time.time()-p.stat().st_mtime < 900 for p in Path(tempfile.gettempdir()).glob('vle-import-*/heartbeat'))"]
       interval: 30s
       timeout: 3s
       start_period: 20s

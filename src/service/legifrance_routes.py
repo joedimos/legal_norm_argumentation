@@ -167,3 +167,14 @@ def scrape_legifrance(
         actor=principal.subject,
         request_id=request.state.request_id,
     )
+
+
+@router.get("/v1/imports/status")
+def automatic_import_status(
+    request: Request,
+    session: Session = Depends(_db_session),
+    principal: Principal = Depends(require_roles("reader", "operator", "reviewer", "auditor")),
+) -> dict:
+    del principal
+    from .automatic_imports import import_status
+    return import_status(session, request.app.state.settings)

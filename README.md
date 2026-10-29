@@ -337,6 +337,21 @@ The 62/19/15 existing fixture suites are unchanged. Live provider evaluation
 and independent legal-expert assessment remain separate empirical work.
 
 
+## Automatic IP-source acquisition
+
+Version 0.8.1 adds a persistent import worker that runs automatically with Docker
+Compose: Légifrance's intellectual-property code through production PISTE, plus
+Free Law Project / CourtListener opinions on copyright, patents, trademarks and
+trade secrets. It retrieves full text, resumes cursors after restarts, deduplicates
+and versions source documents, refreshes recent cases separately from historical
+backfills, and honors provider-wide rate-limit cooldowns. Source extraction stays
+unreviewed; importing data does not approve legal judgments.
+
+Provide the PISTE client ID/secret and CourtListener API token once. The daemon
+handles subsequent discovery/import/refresh; no manual source files are needed.
+See [setup, scheduling, scope, limits and status endpoints](docs/AUTOMATIC_IP_IMPORTS.md).
+No credentials were available for live collection in the implementation session.
+
 ## Research phase 5
 
 Version 0.8.0 adds bounded local/global obstruction diagnostics, metamorphic

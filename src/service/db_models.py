@@ -135,3 +135,18 @@ class WorkflowEventRecord(Base):
     payload: Mapped[dict[str, Any]] = mapped_column(JSON, nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, default=utcnow)
     __table_args__ = (UniqueConstraint("workflow_id", "slot", name="uq_workflow_event_slot"),)
+
+
+class ImportCursorRecord(Base):
+    """Mutable acquisition state; source versions and audit events stay append-only."""
+    __tablename__ = "import_cursors"
+    key: Mapped[str] = mapped_column(String(128), primary_key=True)
+    config_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    position: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
+    status: Mapped[str] = mapped_column(String(32), nullable=False, default="pending")
+    due_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, default=utcnow, index=True)
+    lease_token: Mapped[str | None] = mapped_column(String(36))
+    lease_expires_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    failure_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    last_success_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    report: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
