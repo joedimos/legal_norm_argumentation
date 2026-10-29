@@ -108,3 +108,34 @@ Verification: full suite 298 passed, 3 PostgreSQL-only skipped; five legacy
 benchmark runs all green (62/62 twice, 19/19 twice, 15/15). No fixtures changed.
 The new `aspic` command uses `--input`, `--lifting last|weakest`, and optional
 `--bundle`; every analysis remains unreviewed and unauthorized.
+
+## M2: redundant formalization
+
+The new provider protocol wraps existing transports rather than replacing live
+response-generation. Default fake generation requires one extracted norm; a
+multi-unit source must be segmented first or supplied as recorded candidates.
+Samples vary templates, seeds and temperatures; statistical independence is not
+asserted. Provenance binds source and user prompt hashes, model, parameters and
+timestamp. Fake timestamps are fixed for reproducibility; live timestamps record
+actual generation. Every member is explicitly unselected/unreviewed.
+
+Alignment chooses the most expressive candidate's vocabulary deterministically;
+extra atoms there need no invented counterparts in narrower scopes. Unknown
+names in other candidates require an explicit reviewer map. Lexical normalization
+is deliberately not morphological/synonym inference. Many-to-one collisions
+block consensus. Reviewer maps are unverified attestations, not signatures.
+
+Pair inclusion uses the existing amendment checker on a shared achievement
+window (1-33 steps), plus a separate normative modal-distinction witness to
+prevent O/P collapse. Textual deadlines, unresolved references/assumptions and
+calendar scope are outside this fragment and yield unknown. Comparisons are
+bounded, not all-time equivalence. Consensus requires zero unaligned atoms,
+complete pair checks and at least k equivalent candidates. It never selects a
+member or changes review. Budget is per solver call, at most 84 calls for 8
+candidates, with each call bounded by the recorded trace/time limits.
+
+`redundancy-report --bundle` retains candidates, alignments, pair checks and
+witnesses in additive v1 artifacts; old archive verification is unchanged.
+Full suite: 308 passed, 3 skipped, plus the added small-family symmetry test;
+new redundancy+codec coverage 91% (every module >=81%). All five legacy
+benchmark runs passed. New schema/CLI reports contain no approval path.

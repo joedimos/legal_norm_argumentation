@@ -145,3 +145,12 @@ def verify_bundle(data: bytes, *, expected_manifest_digest: str | None = None) -
     except (ValueError, TypeError, KeyError, OSError, UnicodeError, zipfile.BadZipFile, RecursionError) as exc:
         return {"valid": False, "reason": str(exc), "trusted_digest_matched": False,
                 "signature_verified": False, "legal_certification": False}
+
+
+def redundancy_artifacts(request, report):
+    """Additive v1 artifacts, including exact candidate/alignment/pair evidence."""
+    if report.get("schema") != "vle-redundancy-report/v1":
+        raise ValueError("requires redundancy report")
+    return {"request.json": request, "result.json": report,
+            "candidates.json": report["candidates"], "alignment.json": report["alignment"],
+            "pairs.json": report["pairs"]}

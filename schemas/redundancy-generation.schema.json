@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "vle-redundancy-generation/v1"
+    },
+    "status": {
+      "enum": [
+        "unreviewed",
+        "unknown"
+      ]
+    },
+    "candidates": {
+      "type": "array"
+    },
+    "failures": {
+      "type": "array"
+    },
+    "interpretation_set": {
+      "type": "object",
+      "properties": {
+        "selected_id": {
+          "type": "null"
+        },
+        "unresolved": {
+          "const": true
+        }
+      }
+    },
+    "sample_independence_established": {
+      "const": false
+    },
+    "generation_calls": {
+      "type": "integer"
+    },
+    "request_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "review_status": {
+      "const": "unreviewed"
+    },
+    "decision_authorized": {
+      "const": false
+    },
+    "legal_certification": {
+      "const": false
+    }
+  },
+  "required": [
+    "schema",
+    "status",
+    "candidates",
+    "failures",
+    "interpretation_set",
+    "sample_independence_established",
+    "generation_calls",
+    "request_sha256",
+    "review_status",
+    "decision_authorized",
+    "legal_certification"
+  ],
+  "additionalProperties": false
+}
