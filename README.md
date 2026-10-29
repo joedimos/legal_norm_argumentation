@@ -51,7 +51,7 @@ Version 0.9.0 is preparation for an RC, not a claim that those tasks are complet
 | Extraction/compliance benchmark metrics | `src/benchmark.py` |
 | Upstream uncertainty propagation metric | `propagation_report` |
 | Certification-readiness evidence gates | `src/certification.py` |
-| Optional probabilistic reasoning backend | `src/pyreason_connector.py` |
+| Optional advisory interval-logic backend | `src/pyreason_connector.py` |
 | Bounded finite-trace temporal/deontic semantics | `src/temporal.py`, `src/temporal_deontic.py` |
 | Structured target/scope/window conflicts | `src/conflicts.py` |
 | Explicit preference-aware argumentation | `src/preferences.py`, `src/research.py` |
@@ -387,3 +387,14 @@ results alongside positive synthetic checks. F3 has no eligible local reviewed
 data; H3 is not supported in its simulation. No legal accuracy or priority-of-
 publication claim is made. The pre-fix extractor report is retained separately
 from the token-boundary repair's result. Legacy fixture suites remain unchanged.
+
+## PyReason advisory integration
+
+The optional `.[pyreason]` extra targets PyReason 3.8.0. Each adapter invocation
+runs in a fresh subprocess with a deadline, bounded graph/horizon and validated
+interval output. Argument identifiers are mapped to safe symbols. Missing input
+confidence and missing derived predicates remain `[0,1]` (unknown).
+
+`OptimizedAAF.run_pyreason()` retains its interface and legacy result keys, but
+these are graph annotations, not Dung acceptance or compliance verdicts. Matching
+snapshots no longer imply convergence. See [integration semantics and limits](docs/PYREASON_INTEGRATION.md).

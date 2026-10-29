@@ -184,3 +184,23 @@ data forward rather than deleting evidence. Version 0.9.0 adds no DB revision.
 Automated acquisition remains unattended after setup. Human interpretation,
 independent legal judgment, real credentials and organizational release approval
 are deliberately not fabricated or auto-completed.
+
+## 0.9.1 hardening additions
+
+`python -m src.api_contract` compares the actual integrated `/v1/` OpenAPI surface
+and declared role guards against the pinned packaged compatibility baseline.
+Bounds or unsupported schema references produce unknown; incompatible changes
+require review. This conservative shape comparison does not prove runtime/API
+behavior or authorization correctness for untyped response bodies.
+
+`vle-legato-operations` snapshot/restore probes accept `--include-operational` for
+v2 snapshots including importer cursors, idempotency receipts and rate-limit state.
+The original v1 snapshot remains supported. V2 reads use a consistent transaction
+and explicit row/byte/time bounds. Quiesce writes before taking the baseline and
+database dump: these are separate transactions. Restore does not silently clear
+leases or replay model calls. IP-source failure receipts now preserve unknown
+status and configured bounds without exposing partial successful imports.
+
+These software changes and the advisory PyReason adapter do not satisfy live
+provider, independent legal annotation, staging qualification or maintainer
+licensing/protection prerequisites by themselves.

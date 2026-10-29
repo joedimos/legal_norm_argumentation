@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.9.1 - 2026-10-29
+
+- Conservative pinned `/v1/` API/role contract guard and bounded operational-state
+  restore snapshots; source-probe failures retain unknown evidence and bounds.
+- Optional PyReason 3.8.0 advisory adapter: isolated execution, deadlines, safe
+  identifiers, open-world intervals, strict receipts and deterministic input hashes.
+- Removed inferred convergence and implicit confidence from the adapter. Legal
+  authorization and certification remain false. See integration qualification notes.
+
 ## 0.9.0 - 2026-10-29
 
 Release-candidate preparation; no production/legal readiness is asserted.

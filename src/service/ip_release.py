@@ -7,6 +7,7 @@ truthful. Source probes measure bounded access, never corpus completeness.
 
 from datetime import UTC, datetime
 from math import isfinite
+from time import monotonic as monotonic_time
 
 from src.audit_bundle import canonical_json, digest
 from src.courtlistener import IP_QUERIES
@@ -114,16 +115,37 @@ def source_scope_gate(settings, source, context):
             "judicial_authority": "requires_independent_case_review" if kind == "judicial_opinion" else "not_assessed_here"}
 
 
-def probe_ip_sources(settings, *, client_factory=None, now=None):
+class SourceProbeBound(ValueError):
+    pass
+
+
+def source_probe_bounds(settings=None):
+    seconds = settings.import_max_run_seconds if settings else None
+    return {"max_pages_per_topic": 1, "max_texts": 5, "max_seconds_per_topic": seconds,
+            "max_total_seconds": 5 * seconds if seconds is not None else None}
+
+
+def probe_ip_sources(settings, *, client_factory=None, now=None, monotonic=monotonic_time):
     """At most one page and one full opinion per topic; no imports or reviews."""
     from .automatic_imports import build_client
 
     now = now or datetime.now(UTC)
+    started = monotonic()
+    topic_started = started
+
+    def check_bound():
+        instant = monotonic()
+        if instant - topic_started >= settings.import_max_run_seconds or instant - started >= 5 * settings.import_max_run_seconds:
+            raise SourceProbeBound("source_probe_time_bound")
+
     make = client_factory or build_client
     french = make(settings, "legifrance")
+    check_bound()
     day = now.date().isoformat()
     manifest = french.manifest(day)
+    check_bound()
     provision = french.article(manifest["articles"][0], effective_date=day, manifest_sha256=manifest["manifest_sha256"])
+    check_bound()
 
     def receipt(item):
         return {"source_key": item.source_key, "content_sha256": digest(item.source_text.encode()),
@@ -132,16 +154,36 @@ def probe_ip_sources(settings, *, client_factory=None, now=None):
     providers = {"legifrance_ip": {"ip": receipt(provision)}, "courtlistener_ip": {}}
     for topic in sorted(IP_QUERIES):
         # A new bounded transport gives each topic its own recorded deadline.
+        topic_started = monotonic()
+        check_bound()
         american = make(settings, "courtlistener")
+        check_bound()
         page = american.search_page(topic=topic, since=settings.import_start_date, until=day, cursor=None)
+        check_bound()
         if not page["pending"]:
             raise ValueError("no full-opinion evidence for a required IP topic")
         opinion = american.opinion(page["pending"][0])
+        check_bound()
         if opinion is None:
             raise ValueError("first opinion outside supported scope; inspect provider evidence")
         providers["courtlistener_ip"][topic] = receipt(opinion)
     return {"providers": providers, "scope": SCOPE, "evidence_origin": "live_provider_probe",
             "coverage": "one_full_text_per_declared_topic_not_corpus_completeness",
-            "bounds": {"max_pages_per_topic": 1, "max_texts": 5,
-                       "max_seconds_per_topic": settings.import_max_run_seconds,
-                       "max_total_seconds": 5 * settings.import_max_run_seconds}}
+            "bounds": source_probe_bounds(settings)}
+
+
+def ip_source_evidence(settings, *, deployment_id, build_revision, client_factory=None, now=None, monotonic=monotonic_time):
+    """Return a schema-stable, non-authorizing report even on failure/bound hits."""
+    now = now or datetime.now(UTC)
+    report = {"schema": "vle-operational-evidence/v2", "kind": "ip_sources", "scope": SCOPE,
+              "deployment_id": deployment_id, "build_revision": build_revision, "observed_at": now.isoformat(),
+              "evidence_origin": "live_provider_probe", "status": "unknown", "passed": False,
+              "bounds": source_probe_bounds(settings), "decision_authorized": False, "legal_certification": False}
+    try:
+        report.update(probe_ip_sources(settings, client_factory=client_factory, now=now, monotonic=monotonic),
+                      status="observed", passed=True)
+    except SourceProbeBound:
+        report.update(reason="source_probe_bound", bound_hit=True)
+    except Exception:
+        report.update(reason="source_probe_failed", bound_hit=False)
+    return report

@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "accepted",
+    "defeated",
+    "reinstated",
+    "strengthened",
+    "schema",
+    "status",
+    "converged",
+    "decision_authorized",
+    "legal_certification",
+    "review_status",
+    "semantics",
+    "bounds"
+  ],
+  "properties": {
+    "accepted": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "minItems": 2,
+        "maxItems": 2,
+        "items": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    },
+    "defeated": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "minItems": 2,
+        "maxItems": 2,
+        "items": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    },
+    "reinstated": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "minItems": 2,
+        "maxItems": 2,
+        "items": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    },
+    "strengthened": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "minItems": 2,
+        "maxItems": 2,
+        "items": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    },
+    "schema": {
+      "const": "vle-pyreason-report/v1"
+    },
+    "status": {
+      "enum": [
+        "unknown",
+        "observed_within_bound"
+      ]
+    },
+    "converged": {
+      "const": false
+    },
+    "decision_authorized": {
+      "const": false
+    },
+    "legal_certification": {
+      "const": false
+    },
+    "review_status": {
+      "const": "unreviewed"
+    },
+    "semantics": {
+      "const": "advisory_graph_annotations"
+    },
+    "bounds": {
+      "type": "object"
+    },
+    "input_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

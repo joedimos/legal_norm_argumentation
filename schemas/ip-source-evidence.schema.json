@@ -1,7 +1,63 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
+  "allOf": [
+    {
+      "else": {
+        "not": {
+          "required": [
+            "providers"
+          ]
+        },
+        "properties": {
+          "status": {
+            "const": "unknown"
+          }
+        },
+        "required": [
+          "status",
+          "bounds",
+          "reason"
+        ]
+      },
+      "if": {
+        "properties": {
+          "passed": {
+            "const": true
+          }
+        },
+        "required": [
+          "passed"
+        ]
+      },
+      "then": {
+        "properties": {
+          "bounds": {
+            "properties": {
+              "max_seconds_per_topic": {
+                "minimum": 1,
+                "type": "integer"
+              },
+              "max_total_seconds": {
+                "minimum": 1,
+                "type": "integer"
+              }
+            }
+          },
+          "status": {
+            "const": "observed"
+          }
+        },
+        "required": [
+          "providers"
+        ]
+      }
+    }
+  ],
   "properties": {
+    "bound_hit": {
+      "type": "boolean"
+    },
     "bounds": {
       "additionalProperties": false,
       "properties": {
@@ -10,14 +66,20 @@
         },
         "max_seconds_per_topic": {
           "minimum": 1,
-          "type": "integer"
+          "type": [
+            "integer",
+            "null"
+          ]
         },
         "max_texts": {
           "const": 5
         },
         "max_total_seconds": {
           "minimum": 1,
-          "type": "integer"
+          "type": [
+            "integer",
+            "null"
+          ]
         }
       },
       "required": [
@@ -36,6 +98,9 @@
       "minLength": 1,
       "type": "string"
     },
+    "decision_authorized": {
+      "const": false
+    },
     "deployment_id": {
       "minLength": 1,
       "type": "string"
@@ -46,12 +111,15 @@
     "kind": {
       "const": "ip_sources"
     },
+    "legal_certification": {
+      "const": false
+    },
     "observed_at": {
       "minLength": 1,
       "type": "string"
     },
     "passed": {
-      "const": true
+      "type": "boolean"
     },
     "providers": {
       "additionalProperties": false,
@@ -219,11 +287,20 @@
       ],
       "type": "object"
     },
+    "reason": {
+      "type": "string"
+    },
     "schema": {
       "const": "vle-operational-evidence/v2"
     },
     "scope": {
       "const": "fr-us-ip-supervised/v1"
+    },
+    "status": {
+      "enum": [
+        "unknown",
+        "observed"
+      ]
     }
   },
   "required": [
@@ -234,8 +311,7 @@
     "evidence_origin",
     "build_revision",
     "deployment_id",
-    "observed_at",
-    "providers"
+    "observed_at"
   ],
   "type": "object"
 }

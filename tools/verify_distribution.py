@@ -65,13 +65,15 @@ def main():
         for command in commands:
             value = json.loads(run([str(executable), "-I", "-c", bootstrap, *command], cwd=work, env=env))
             require(value.get("all_passed", value.get("status") == "reported"), "installed CLI regression failed")
+        contract = json.loads(run([str(executable), "-I", "-c", bootstrap, "src.api_contract"], cwd=work, env=env))
+        require(contract["status"] == "compatible_with_baseline", "installed API contract differs")
         env["VLE_DATABASE_URL"] = "sqlite+pysqlite:///" + str(work / "installed.db")
         for options in ([], ["--check"]):
             result = json.loads(run([str(executable), "-I", "-c", bootstrap, "src.service.migrate", *options], cwd=work, env=env))
             require(result["passed"], "installed migrations failed")
         # The installed console scripts must be present, not just modules.
         scripts = target / ("Scripts" if os.name == "nt" else "bin")
-        for name in ("vle-legato", "vle-legato-api", "vle-legato-migrate", "vle-legato-release-check", "vle-legato-importer"):
+        for name in ("vle-legato", "vle-legato-api", "vle-legato-migrate", "vle-legato-release-check", "vle-legato-importer", "vle-legato-api-contract"):
             require((scripts / (name + ".exe" if os.name == "nt" else name)).exists(), "console entry point is missing")
     print(json.dumps({"schema": "vle-distribution-check/v1", "passed": True, "resource_files": checked,
                       "wheel_sha256": hashlib.sha256(wheel.read_bytes()).hexdigest(), "network_calls": 0,

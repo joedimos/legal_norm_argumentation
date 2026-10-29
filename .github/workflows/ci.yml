@@ -34,7 +34,9 @@ jobs:
           cache: pip
       - run: python -m pip install --upgrade pip
       - run: python -m pip install -e '.[dev]'
-      - run: ruff check src/resources.py src/service/ip_release.py src/service/release_readiness.py src/service/migrate.py tests/test_release_candidate.py tools/verify_distribution.py setup.py
+      - run: python -m pytest -q tests/test_pyreason_connector.py --cov=src.pyreason_connector --cov=src.pyreason_worker --cov-fail-under=80
+      - run: python -m src.api_contract
+      - run: ruff check src/pyreason_connector.py src/pyreason_worker.py tests/test_pyreason_connector.py src/api_contract.py tests/test_release_reliability.py src/resources.py src/service/ip_release.py src/service/release_readiness.py src/service/migrate.py tests/test_release_candidate.py tools/verify_distribution.py setup.py
       - run: bandit -q -r src/resources.py src/service/ip_release.py src/service/release_readiness.py src/service/migrate.py tools/verify_distribution.py setup.py
       - run: ruff check src/legal_transport.py src/courtlistener.py src/legifrance_ip.py tests/test_automatic_imports.py
       - run: bandit -q -r src/legal_transport.py src/courtlistener.py src/legifrance_ip.py

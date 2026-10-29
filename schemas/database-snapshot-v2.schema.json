@@ -1,0 +1,283 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "audit_chain": {
+      "additionalProperties": false,
+      "properties": {
+        "broken_sequence": {
+          "type": "null"
+        },
+        "event_count": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "head_hash": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "valid": {
+          "const": true
+        }
+      },
+      "required": [
+        "valid",
+        "event_count",
+        "broken_sequence",
+        "head_hash"
+      ],
+      "type": "object"
+    },
+    "bounds": {
+      "additionalProperties": false,
+      "properties": {
+        "max_bytes": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "max_rows": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "max_seconds": {
+          "minimum": 1,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "max_rows",
+        "max_bytes",
+        "max_seconds"
+      ],
+      "type": "object"
+    },
+    "consistency": {
+      "const": "single_read_transaction"
+    },
+    "operational_tables": {
+      "additionalProperties": false,
+      "properties": {
+        "idempotency_records": {
+          "additionalProperties": false,
+          "properties": {
+            "count": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "sha256": {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "count",
+            "sha256"
+          ],
+          "type": "object"
+        },
+        "import_cursors": {
+          "additionalProperties": false,
+          "properties": {
+            "count": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "sha256": {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "count",
+            "sha256"
+          ],
+          "type": "object"
+        },
+        "rate_limit_buckets": {
+          "additionalProperties": false,
+          "properties": {
+            "count": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "sha256": {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "count",
+            "sha256"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "import_cursors",
+        "idempotency_records",
+        "rate_limit_buckets"
+      ],
+      "type": "object"
+    },
+    "schema": {
+      "const": "vle-database-snapshot/v2"
+    },
+    "tables": {
+      "additionalProperties": false,
+      "properties": {
+        "audit_events": {
+          "additionalProperties": false,
+          "properties": {
+            "count": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "sha256": {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "count",
+            "sha256"
+          ],
+          "type": "object"
+        },
+        "candidate_reviews": {
+          "additionalProperties": false,
+          "properties": {
+            "count": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "sha256": {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "count",
+            "sha256"
+          ],
+          "type": "object"
+        },
+        "interpretation_selections": {
+          "additionalProperties": false,
+          "properties": {
+            "count": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "sha256": {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "count",
+            "sha256"
+          ],
+          "type": "object"
+        },
+        "lifecycle_runs": {
+          "additionalProperties": false,
+          "properties": {
+            "count": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "sha256": {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "count",
+            "sha256"
+          ],
+          "type": "object"
+        },
+        "source_documents": {
+          "additionalProperties": false,
+          "properties": {
+            "count": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "sha256": {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "count",
+            "sha256"
+          ],
+          "type": "object"
+        },
+        "workflow_events": {
+          "additionalProperties": false,
+          "properties": {
+            "count": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "sha256": {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "count",
+            "sha256"
+          ],
+          "type": "object"
+        },
+        "workflow_requests": {
+          "additionalProperties": false,
+          "properties": {
+            "count": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "sha256": {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "count",
+            "sha256"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "source_documents",
+        "candidate_reviews",
+        "interpretation_selections",
+        "lifecycle_runs",
+        "audit_events",
+        "workflow_requests",
+        "workflow_events"
+      ],
+      "type": "object"
+    }
+  },
+  "required": [
+    "schema",
+    "tables",
+    "operational_tables",
+    "audit_chain",
+    "bounds",
+    "consistency"
+  ],
+  "type": "object"
+}

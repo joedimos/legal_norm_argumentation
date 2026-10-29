@@ -1,0 +1,99 @@
+{
+  "schema": "vle-software-evaluation/v1",
+  "scope": "synthetic_unreviewed_software_regression",
+  "version": "0.9.1",
+  "tests": {
+    "passed": 496,
+    "skipped": 4
+  },
+  "benchmarks": {
+    "benchmark-current": {
+      "case_count": 62,
+      "all_passed": true
+    },
+    "benchmark-z3-current": {
+      "case_count": 62,
+      "all_passed": true
+    },
+    "experiment-current": {
+      "case_count": 19,
+      "all_passed": true
+    },
+    "experiment-z3-current": {
+      "case_count": 19,
+      "all_passed": true
+    },
+    "family-current": {
+      "case_count": 15,
+      "all_passed": true
+    }
+  },
+  "pyreason_smoke": {
+    "accepted": {
+      "a": [
+        1.0,
+        1.0
+      ],
+      "b": [
+        0.0,
+        1.0
+      ]
+    },
+    "backend_version": "3.8.0",
+    "bounds": {
+      "max_arguments": 256,
+      "max_edges_per_relation": 4096,
+      "timeout_seconds": 60,
+      "timesteps": 2
+    },
+    "converged": false,
+    "decision_authorized": false,
+    "defeated": {
+      "a": [
+        0.0,
+        1.0
+      ],
+      "b": [
+        1.0,
+        1.0
+      ]
+    },
+    "input_sha256": "5d955490817b508c7a6e195506dea09ee4f844d87703e72d5d58c9fdf3a15b11",
+    "legal_certification": false,
+    "reinstated": {
+      "a": [
+        0.0,
+        1.0
+      ],
+      "b": [
+        0.0,
+        1.0
+      ]
+    },
+    "review_status": "unreviewed",
+    "schema": "vle-pyreason-report/v1",
+    "semantics": "advisory_graph_annotations",
+    "status": "observed_within_bound",
+    "strengthened": {
+      "a": [
+        0.0,
+        1.0
+      ],
+      "b": [
+        0.0,
+        1.0
+      ]
+    }
+  },
+  "installed_package": {
+    "decision_authorized": false,
+    "legal_certification": false,
+    "network_calls": 0,
+    "passed": true,
+    "resource_files": 61,
+    "schema": "vle-distribution-check/v1",
+    "wheel_sha256": "f39a61ce8021c42aaf1e9ab199cac3c90aa02d9c0431e514c92d9e37647ee0fb"
+  },
+  "decision_authorized": false,
+  "legal_certification": false
+}
