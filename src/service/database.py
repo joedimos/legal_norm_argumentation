@@ -62,6 +62,7 @@ class Database:
             "rate_limit_buckets",
             "workflow_requests",
             "workflow_events",
+            "import_cursors",
         }
         if not required.issubset(tables):
             return False
@@ -70,7 +71,7 @@ class Database:
         if require_migrations:
             try:
                 with self.engine.connect() as connection:
-                    if connection.execute(text("SELECT version_num FROM alembic_version")).scalar() != "0003_workflow_indexes":
+                    if connection.execute(text("SELECT version_num FROM alembic_version")).scalar() != "0004_automatic_imports":
                         return False
             except Exception:
                 return False

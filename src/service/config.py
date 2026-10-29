@@ -26,7 +26,7 @@ class Settings(BaseSettings):
 
     environment: Literal["development", "test", "production"] = "development"
     service_name: str = "legal-norm-argumentation"
-    service_version: str = "0.8.0"
+    service_version: str = "0.8.1"
     build_revision: str | None = Field(default=None, pattern=r"^[0-9a-f]{40}$")
     database_url: str = "sqlite+pysqlite:///./vle_legato.db"
     database_pool_size: int = Field(default=10, ge=1, le=100)
@@ -70,6 +70,32 @@ class Settings(BaseSettings):
     legifrance_request_delay_seconds: float = Field(default=0.2, ge=0.0, le=5.0)
     legifrance_max_articles_per_run: int = Field(default=50, ge=1, le=100)
     legifrance_max_full_sync_articles: int = Field(default=2500, ge=1, le=10_000)
+
+    # Source acquisition is separate from model inference and human review.
+    auto_import_enabled: bool = True
+    courtlistener_enabled: bool = False
+    courtlistener_api_token: SecretStr | None = None
+    courtlistener_request_delay_seconds: float = Field(default=13, ge=0, le=60)
+    import_batch_size: int = Field(default=3, ge=1, le=25)
+    import_poll_seconds: float = Field(default=15, ge=1, le=60)
+    import_refresh_seconds: int = Field(default=86400, ge=60, le=604800)
+    import_reconcile_seconds: int = Field(default=604800, ge=3600, le=2592000)
+    import_recent_days: int = Field(default=90, ge=1, le=3660)
+    import_start_date: str = "1700-01-01"
+    import_max_run_seconds: int = Field(default=120, ge=10, le=600)
+    import_lease_seconds: int = Field(default=180, ge=30, le=900)
+
+    @field_validator("import_start_date")
+    @classmethod
+    def validate_import_start(cls, value):
+        from datetime import date
+        return date.fromisoformat(value).isoformat()
+
+    @model_validator(mode="after")
+    def validate_import_lease(self):
+        if self.import_lease_seconds <= self.import_max_run_seconds + 10:
+            raise ValueError("import lease must exceed the run deadline by more than ten seconds")
+        return self
 
     @field_validator("model_revision", "reviewer_registry_path", "reviewer_registry_sha256", "release_evidence_path", "release_evidence_sha256", mode="before")
     @classmethod

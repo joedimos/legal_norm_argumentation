@@ -37,19 +37,23 @@ def _latest_source_for_key(session: Session, source_key: str) -> SourceDocumentR
     ).scalar_one_or_none()
 
 
-def ingest_legifrance_batch(
+def ingest_legal_items(
     session: Session,
-    batch: ScrapeBatch,
+    provisions,
     *,
     actor: str,
     request_id: str,
+    language: str,
+    provider_family: str,
+    context: dict | None = None,
 ) -> dict:
     created = 0
     updated = 0
     unchanged = 0
     items: list[dict] = []
 
-    for provision in batch.provisions:
+    for provision in provisions:
+        provenance = {**provision.provenance, **(context or {})}
         source_key = provision.source_key
         source_text = provision.source_text
         content_hash = hashlib.sha256(source_text.encode("utf-8")).hexdigest()
@@ -63,7 +67,7 @@ def ingest_legifrance_batch(
                 resource_type="source",
                 resource_id=existing.id,
                 request_id=request_id,
-                payload={"source_id": source_key, "content_hash": content_hash, **provision.provenance},
+                payload={"source_id": source_key, "content_hash": content_hash, **provenance},
             )
             items.append({"status": "unchanged", **source_summary(session, existing)})
             continue
@@ -71,8 +75,9 @@ def ingest_legifrance_batch(
         previous = _latest_source_for_key(session, source_key)
         candidates = extract_norms(source_text, source_id=source_key)
         extraction_audit = dict(audit_extraction(source_text, candidates))
-        extraction_audit["provenance"] = provision.provenance
-        extraction_audit["language"] = "fr"
+        extraction_audit["provenance"] = provenance
+        extraction_audit["language"] = language
+        extraction_audit["review_status"] = "unreviewed"
         try:
             with session.begin_nested():
                 source = create_source(
@@ -99,7 +104,7 @@ def ingest_legifrance_batch(
         append_audit(
             session,
             actor=actor,
-            action="source.ingested.legifrance",
+            action="source.ingested." + provider_family,
             resource_type="source",
             resource_id=source.id,
             request_id=request_id,
@@ -108,19 +113,29 @@ def ingest_legifrance_batch(
                 "content_hash": source.content_hash,
                 "candidate_ids": [candidate.get("id") for candidate in candidates],
                 "previous_source_id": previous.id if previous else None,
-                **provision.provenance,
+                **provenance,
             },
         )
         items.append({"status": status, **source_summary(session, source)})
 
     return {
+        "created": created,
+        "updated": updated,
+        "unchanged": unchanged,
+        "items": items,
+    }
+
+
+def ingest_legifrance_batch(session: Session, batch: ScrapeBatch, *, actor: str, request_id: str) -> dict:
+    """Backward-compatible manual route, sharing the governed source-version importer."""
+    result = ingest_legal_items(
+        session, batch.provisions, actor=actor, request_id=request_id, language="fr", provider_family="legifrance"
+    )
+    return {
         "corpus": batch.corpus,
         "seed_url": batch.seed_url,
         "discovered": batch.discovered,
         "selected": batch.selected,
-        "created": created,
-        "updated": updated,
-        "unchanged": unchanged,
         "errors": list(batch.errors),
-        "items": items,
+        **result,
     }
