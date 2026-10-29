@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "vle-redundancy-report/v1"
+    },
+    "status": {
+      "enum": [
+        "consensus_supported",
+        "review_required",
+        "unknown"
+      ]
+    },
+    "consensus_supported": {
+      "type": "boolean"
+    },
+    "selected_id": {
+      "type": "null"
+    },
+    "required_agreement": {
+      "type": "integer",
+      "minimum": 2
+    },
+    "candidates": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 8
+    },
+    "alignment": {
+      "type": "object"
+    },
+    "pairs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "left",
+          "right",
+          "classification",
+          "witnesses"
+        ],
+        "properties": {
+          "classification": {
+            "enum": [
+              "equivalent",
+              "strictly_stronger",
+              "strictly_weaker",
+              "incomparable",
+              "unknown"
+            ]
+          }
+        }
+      }
+    },
+    "equivalence_classes": {
+      "type": "array"
+    },
+    "largest_classes": {
+      "type": "array"
+    },
+    "bounds": {
+      "type": "object"
+    },
+    "review_prompts": {
+      "type": "array"
+    },
+    "request_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "review_status": {
+      "const": "unreviewed"
+    },
+    "decision_authorized": {
+      "const": false
+    },
+    "legal_certification": {
+      "const": false
+    }
+  },
+  "required": [
+    "schema",
+    "status",
+    "consensus_supported",
+    "selected_id",
+    "required_agreement",
+    "candidates",
+    "alignment",
+    "pairs",
+    "equivalence_classes",
+    "largest_classes",
+    "bounds",
+    "review_prompts",
+    "request_sha256",
+    "review_status",
+    "decision_authorized",
+    "legal_certification"
+  ],
+  "additionalProperties": false
+}
