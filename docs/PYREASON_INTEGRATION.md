@@ -10,7 +10,10 @@ attack-derived [1,1] defeat, and unknown [0,1] preservation. Cold JIT required
 an extended 300-second budget; the corrected warm run passed within 60 seconds.
 This small synthetic/unreviewed check is not full-engine qualification.
 
-Install explicitly with `pip install -e '.[pyreason]'`. The optional dependency is
+Install explicitly with `pip install -e '.[pyreason]'`, or use
+`pip install -r requirements-pyreason.txt` from the repository root. Both paths
+select 3.8.0 on the toolkit's Python 3.12/3.13 range. Other backend versions are
+rejected before their import-time initialization. The optional dependency is
 never imported by the verified core. Existing `OptimizedAAF.run_pyreason()` callers
 retain their interface. PyReason uses interval annotations, not calibrated
 probabilities. These diagnostics do not implement defeasible legal priorities,
@@ -41,8 +44,12 @@ state and enforces a deadline, but is not an operating-system security sandbox o
 a hard RAM quota. Deploy within existing container resource limits.
 
 Reports include canonical input SHA-256, bounds, engine version on observed runs,
-unreviewed status, and false authorization/certification fields. Identical inputs
-produce the same input hash. Runtime failures can differ across machines; they
+unreviewed status, and false authorization/certification fields. The input hash
+binds normalized graph annotations, horizon and rule-set hash. A separate
+argument-map hash binds source identifiers to normalized symbols. Together these
+distinguish renamed graphs while retaining structural reproducibility. Worker
+receipts must match the request hash and preserve supplied annotations exactly.
+Identical inputs produce the same hashes. Runtime failures can differ across machines; they
 never produce partial positive reports. Never treat a successful diagnostic as
 semantic equivalence to the core reasoner.
 
@@ -52,4 +59,22 @@ Offline synthetic/unreviewed fixtures check constructor calls, upstream-shaped
 trace extraction, unknown preservation, identifier isolation, invalid intervals,
 timeouts, incomplete output, deterministic encoding and no convergence claim.
 Required CI performs no network or real-engine inference. Broader real-engine differential evaluation remains qualification work.
-The recorded smoke receipt is in RC_0_9_1_EVALUATION.json.
+The original smoke receipt is in RC_0_9_1_EVALUATION.json; the public-wrapper
+follow-up is in PYREASON_QUALIFICATION.json. The latter covers an attack chain,
+support, unknown non-propagation, and a second isolated graph. It does not assert
+equivalence to Dung semantics. The legacy originality/protection scores remain
+keyword heuristics; their metadata now explicitly says they are not PyReason
+results or independent legal judgments.
+
+The installed-wheel verifier runs the actual adapter and child worker from
+outside the checkout with an explicitly synthetic provider. This checks packaging
+and process wiring without installing or running the real engine in CI.
+
+The public entry points accept an optional deadline without changing positional
+arguments: `aaf.run_pyreason(2, timeout_seconds=300)`,
+`reasoner.analyze_legal_case(text, run_pyreason=True, pyreason_timeout_seconds=300)`,
+and `annotator.annotate_originality(text, True, pyreason_timeout_seconds=300)`.
+Use the longer budget only for controlled cold-start qualification; first import
+may initialize upstream JIT caches and requires a writable upstream cache location.
+An unwritable cache, missing dependency or deadline hit returns unknown. There is
+no automatic retry, fallback verdict, or dependency download.

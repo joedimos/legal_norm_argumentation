@@ -1,0 +1,138 @@
+{
+  "cases": [
+    {
+      "accepted": {
+        "exception": [
+          0.0,
+          1.0
+        ],
+        "licensed work": [
+          1.0,
+          1.0
+        ],
+        "use": [
+          1.0,
+          1.0
+        ]
+      },
+      "argument_map_sha256": "cfb94118fa704205f2c5e89aeb3bd6b33c8994ab6f50b8047e42a7e45a2af89e",
+      "backend_version": "3.8.0",
+      "bounds": {
+        "max_arguments": 256,
+        "max_edges_per_relation": 4096,
+        "max_output_bytes": 2000000,
+        "max_timeout_seconds": 300,
+        "max_timesteps": 100,
+        "timeout_seconds": 120,
+        "timesteps": 2
+      },
+      "converged": false,
+      "decision_authorized": false,
+      "defeated": {
+        "exception": [
+          1.0,
+          1.0
+        ],
+        "licensed work": [
+          0.0,
+          1.0
+        ],
+        "use": [
+          0.0,
+          1.0
+        ]
+      },
+      "input_sha256": "3db2c9ccfe408596a473277d2234441db547b09964cdb7b6cd56e37c000cb96e",
+      "legal_certification": false,
+      "reinstated": {
+        "exception": [
+          0.0,
+          1.0
+        ],
+        "licensed work": [
+          0.0,
+          1.0
+        ],
+        "use": [
+          1.0,
+          1.0
+        ]
+      },
+      "review_status": "unreviewed",
+      "rule_set_sha256": "b8fde41a561d82cb5ca0a98b0eb0fd0c5574e0c54551640b7a6f1730e1e9d75c",
+      "schema": "vle-pyreason-report/v1",
+      "semantics": "advisory_graph_annotations",
+      "status": "observed_within_bound",
+      "strengthened": {
+        "exception": [
+          0.0,
+          1.0
+        ],
+        "licensed work": [
+          0.0,
+          1.0
+        ],
+        "use": [
+          1.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "accepted": {
+        "isolated": [
+          0.0,
+          1.0
+        ]
+      },
+      "argument_map_sha256": "d93904268f860afe8aa47cf1f8e8adfa7374570651fe7fdf15bdb9743b282844",
+      "backend_version": "3.8.0",
+      "bounds": {
+        "max_arguments": 256,
+        "max_edges_per_relation": 4096,
+        "max_output_bytes": 2000000,
+        "max_timeout_seconds": 300,
+        "max_timesteps": 100,
+        "timeout_seconds": 120,
+        "timesteps": 2
+      },
+      "converged": false,
+      "decision_authorized": false,
+      "defeated": {
+        "isolated": [
+          0.0,
+          1.0
+        ]
+      },
+      "input_sha256": "baf3a2d3eddd04fb51c4715ecf018f69a28fc54a618c926e6707a97aacfe7278",
+      "legal_certification": false,
+      "reinstated": {
+        "isolated": [
+          0.0,
+          1.0
+        ]
+      },
+      "review_status": "unreviewed",
+      "rule_set_sha256": "b8fde41a561d82cb5ca0a98b0eb0fd0c5574e0c54551640b7a6f1730e1e9d75c",
+      "schema": "vle-pyreason-report/v1",
+      "semantics": "advisory_graph_annotations",
+      "status": "observed_within_bound",
+      "strengthened": {
+        "isolated": [
+          0.0,
+          1.0
+        ]
+      }
+    }
+  ],
+  "decision_authorized": false,
+  "global_state_isolation": true,
+  "legal_certification": false,
+  "schema": "vle-pyreason-qualification/v1",
+  "scope": "synthetic_unreviewed_software_smoke_only",
+  "symbolic_results_unchanged": true,
+  "limitations": [
+    "Two bounded synthetic cases only; no claim of Dung equivalence, legal accuracy or full engine qualification.",
+    "Cold JIT cache initialization may require the extended deadline; no automatic retries."
+  ]
+}

@@ -394,6 +394,9 @@ The optional `.[pyreason]` extra targets PyReason 3.8.0. Each adapter invocation
 runs in a fresh subprocess with a deadline, bounded graph/horizon and validated
 interval output. Argument identifiers are mapped to safe symbols. Missing input
 confidence and missing derived predicates remain `[0,1]` (unknown).
+The legacy requirements file selects the same extra. Other backend versions,
+mismatched receipts and resource-limit hits fail closed. The public wrapper
+supports `aaf.run_pyreason(2, timeout_seconds=300)` for controlled cold starts.
 
 `OptimizedAAF.run_pyreason()` retains its interface and legacy result keys, but
 these are graph annotations, not Dung acceptance or compliance verdicts. Matching

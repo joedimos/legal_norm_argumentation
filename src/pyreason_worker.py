@@ -6,12 +6,14 @@ import sys
 from importlib.metadata import version
 from pathlib import Path
 
-from .pyreason_connector import PREDICATES, interval
+from .pyreason_connector import BACKEND_VERSION, PREDICATES, RULES, digest, interval
 
 
 def execute(payload, pr):
     import networkx as nx
 
+    if payload.get("rule_set_sha256") != digest(RULES):
+        raise ValueError("incompatible rules")
     pr.reset()
     pr.reset_rules()
     pr.reset_settings()
@@ -28,11 +30,7 @@ def execute(payload, pr):
         for i, (source, target) in enumerate(payload[label]):
             pr.add_fact(pr.Fact(f"{label}({source},{target}):[1,1]", name=f"{label}_{i}",
                                 start_time=0, end_time=end))
-    for name, text in (
-        ("defeat", "defeated(Y):[1,1] <- attacks(X,Y):[1,1], accepted(X):[0.5,1]"),
-        ("reinstate", "reinstated(Y):[1,1] <- attacks(X,Y):[1,1], defeated(X):[1,1]"),
-        ("support", "strengthened(Y):[1,1] <- supports(X,Y):[1,1], accepted(X):[0.5,1]"),
-    ):
+    for name, text in RULES:
         pr.add_rule(pr.Rule(text, name=name))
     interpretation = pr.reason(timesteps=end)
     data = interpretation.get_dict()
@@ -48,10 +46,14 @@ def main():
     target = Path(sys.argv[2])
     result = {"status": "unknown"}
     try:
-        import pyreason as pr
-        payload = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
-        result = {"status": "observed", "backend_version": version("pyreason"),
-                  "annotations": execute(payload, pr)}
+        backend_version = version("pyreason")
+        if backend_version != BACKEND_VERSION:
+            result["error"] = "unsupported_version"
+        else:
+            import pyreason as pr
+            payload = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+            result = {"status": "observed", "backend_version": backend_version,
+                      "input_sha256": digest(payload), "annotations": execute(payload, pr)}
     except Exception:
         result = {"status": "unknown"}  # No dependency diagnostics/source text.
     target.write_text(json.dumps(result, sort_keys=True, allow_nan=False), encoding="utf-8")

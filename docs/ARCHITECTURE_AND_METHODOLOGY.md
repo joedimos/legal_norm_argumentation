@@ -51,7 +51,9 @@ evidence graph ──► benchmark metrics ──► certification-readiness gat
 - `compliance.py`: obligation/prohibition/permission evaluation and bounded counterexample generation.
 - `monitoring.py`: incremental behavioural trace evaluation.
 - `argumentation.py`: Dung AAF semantics and argument graph analysis.
-- `pyreason_connector.py`: optional alternative reasoning adapter.
+- `pyreason_connector.py`, `pyreason_worker.py`: optional isolated interval-graph
+  diagnostics. These advisory annotations never replace Dung or compliance
+  semantics, set review state, or authorize decisions.
 - `certification.py`: evidence gates that explicitly do **not** claim legal certification.
 
 ## Joint layer

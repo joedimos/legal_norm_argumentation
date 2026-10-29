@@ -10,6 +10,25 @@ import tempfile
 from pathlib import Path
 
 PREDICATES = ("accepted", "defeated", "reinstated", "strengthened")
+BACKEND_VERSION = "3.8.0"
+MAX_OUTPUT_BYTES = 2_000_000
+RULES = (
+    ("defeat", "defeated(Y):[1,1] <- attacks(X,Y):[1,1], accepted(X):[0.5,1]"),
+    ("reinstate", "reinstated(Y):[1,1] <- attacks(X,Y):[1,1], defeated(X):[1,1]"),
+    ("support", "strengthened(Y):[1,1] <- supports(X,Y):[1,1], accepted(X):[0.5,1]"),
+)
+
+
+def canonical_json(value):
+    return json.dumps(value, sort_keys=True, separators=(",", ":"), allow_nan=False)
+
+
+def digest(value):
+    return hashlib.sha256(canonical_json(value).encode()).hexdigest()
+
+
+class ResourceBound(ValueError):
+    """No partial annotations may escape when a configured limit is reached."""
 
 
 def interval(value):
@@ -26,27 +45,37 @@ def interval(value):
 
 
 def prepare(arguments, attacks, supports, timesteps):
-    if type(timesteps) is not int or not 1 <= timesteps <= 100:
+    if type(timesteps) is not int:
         raise ValueError("horizon must be 1..100")
-    if not isinstance(arguments, dict) or len(arguments) > 256:
-        raise ValueError("argument bound")
+    if not 1 <= timesteps <= 100:
+        raise ResourceBound("horizon_bound")
+    if not isinstance(arguments, dict):
+        raise ValueError("invalid arguments")
+    if len(arguments) > 256:
+        raise ResourceBound("argument_bound")
     if any(not isinstance(key, str) or not key or len(key) > 512 for key in arguments):
         raise ValueError("invalid argument identifier")
     ids = sorted(arguments)
     # Never interpolate source identifiers into executable rule syntax.
     names = {key: f"n{i}" for i, key in enumerate(ids)}
     edges = []
-    for relation in (attacks, supports or set()):
+    for relation in (attacks, supports if supports is not None else set()):
+        if not isinstance(relation, (set, frozenset, tuple, list)):
+            raise ValueError("invalid relation")
         if len(relation) > 4096:
-            raise ValueError("edge bound")
-        normalized = []
+            raise ResourceBound("edge_bound")
+        normalized = set()
         for edge in relation:
-            if len(edge) != 2 or any(key not in names for key in edge):
+            if (not isinstance(edge, (tuple, list)) or len(edge) != 2
+                    or any(not isinstance(key, str) or key not in names for key in edge)):
                 raise ValueError("dangling edge")
-            normalized.append([names[edge[0]], names[edge[1]]])
+            normalized.add((names[edge[0]], names[edge[1]]))
         edges.append(sorted(normalized))
+    if any(not isinstance(metadata, dict) for metadata in arguments.values()):
+        raise ValueError("invalid argument metadata")
     return {"nodes": {names[key]: interval(arguments[key].get("confidence", [0, 1])) for key in ids},
-            "attacks": edges[0], "supports": edges[1], "timesteps": timesteps}, names
+            "attacks": edges[0], "supports": edges[1], "timesteps": timesteps,
+            "rule_set_sha256": digest(RULES)}, names
 
 
 class PyReasonConnector:
@@ -60,36 +89,48 @@ class PyReasonConnector:
         result = {key: {} for key in PREDICATES}
         result.update(schema="vle-pyreason-report/v1", status="unknown", converged=False,
                       decision_authorized=False, legal_certification=False, review_status="unreviewed",
-                      semantics="advisory_graph_annotations", bounds={"timesteps": timesteps,
-                      "timeout_seconds": timeout_seconds, "max_arguments": 256, "max_edges_per_relation": 4096})
+                      semantics="advisory_graph_annotations", bounds={
+                      "timesteps": timesteps if type(timesteps) is int and 1 <= timesteps <= 100 else None,
+                      "timeout_seconds": timeout_seconds if type(timeout_seconds) is int and 1 <= timeout_seconds <= 300 else None,
+                      "max_arguments": 256, "max_edges_per_relation": 4096,
+                      "max_timesteps": 100, "max_timeout_seconds": 300, "max_output_bytes": MAX_OUTPUT_BYTES})
         try:
             if type(timeout_seconds) is not int or not 1 <= timeout_seconds <= 300:
                 raise ValueError("timeout must be 1..300 seconds")
             payload, names = prepare(arguments, attacks, supports, timesteps)
-            encoded = json.dumps(payload, sort_keys=True, separators=(",", ":"))
+            encoded = canonical_json(payload)
             result["input_sha256"] = hashlib.sha256(encoded.encode()).hexdigest()
+            result["argument_map_sha256"] = digest(names)
+            result["rule_set_sha256"] = payload["rule_set_sha256"]
             with tempfile.TemporaryDirectory(prefix="vle-pyreason-") as directory:
                 source, target = Path(directory) / "input.json", Path(directory) / "output.json"
                 source.write_text(encoded, encoding="utf-8")
                 subprocess.run([sys.executable, "-m", "src.pyreason_worker", str(source), str(target)],
                                stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
                                timeout=timeout_seconds, check=True)  # nosec B603
-                if target.stat().st_size > 2_000_000:
-                    raise ValueError("output bound")
+                if target.stat().st_size > MAX_OUTPUT_BYTES:
+                    raise ResourceBound("output_bound")
                 output = json.loads(target.read_text(encoding="utf-8"))
             if output.get("status") != "observed":
-                result["error"] = "pyreason_unavailable_or_incompatible"
+                result["error"] = ("pyreason_unsupported_version" if output.get("error") == "unsupported_version"
+                                   else "pyreason_unavailable_or_incompatible")
                 return result
-            if not isinstance(output.get("backend_version"), str) or not output["backend_version"]:
-                raise ValueError("missing backend version")
+            if output.get("backend_version") != BACKEND_VERSION:
+                raise ValueError("unsupported backend version")
+            if output.get("input_sha256") != result["input_sha256"]:
+                raise ValueError("mismatched backend receipt")
             annotations = self._extract_results(output["annotations"], set(names.values()))
+            if annotations["accepted"] != payload["nodes"]:
+                raise ValueError("lost or changed input annotations")
             reverse = {value: key for key, value in names.items()}
             for predicate in PREDICATES:
                 result[predicate] = {reverse[key]: value for key, value in annotations[predicate].items()}
             result.update(status="observed_within_bound", backend_version=output["backend_version"])
         except subprocess.TimeoutExpired:
             result.update(error="pyreason_timeout", bound_hit=True)
-        except (ValueError, TypeError, KeyError, AttributeError, OSError, subprocess.SubprocessError):
+        except ResourceBound as exc:
+            result.update(error="pyreason_" + str(exc), bound_hit=True)
+        except (ValueError, TypeError, KeyError, AttributeError, OSError, OverflowError, RecursionError, subprocess.SubprocessError):
             # No partial annotations or provider exception text escape.
             for key in PREDICATES:
                 result[key] = {}

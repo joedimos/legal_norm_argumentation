@@ -67,6 +67,26 @@ def main():
             require(value.get("all_passed", value.get("status") == "reported"), "installed CLI regression failed")
         contract = json.loads(run([str(executable), "-I", "-c", bootstrap, "src.api_contract"], cwd=work, env=env))
         require(contract["status"] == "compatible_with_baseline", "installed API contract differs")
+        # A synthetic provider in this disposable environment checks the real
+        # worker process outside a checkout without importing the live engine.
+        (packages / "pyreason.py").write_bytes((root / "tools/fixtures/pyreason.py").read_bytes())
+        metadata = packages / "pyreason-3.8.0.dist-info"
+        metadata.mkdir()
+        (metadata / "METADATA").write_text("Metadata-Version: 2.1\nName: pyreason\nVersion: 3.8.0\n")
+        worker_check = (
+            "import json,pathlib,sys,src\n"
+            "assert pathlib.Path(src.__file__).resolve().is_relative_to(pathlib.Path(sys.prefix).resolve())\n"
+            "from src.argumentation import LegalArgument,OptimizedAAF\n"
+            "aaf=OptimizedAAF([LegalArgument('a',confidence=(1,1)),LegalArgument('b',confidence=(0,1))],"
+            "attacks={('a','b')})\n"
+            "before=aaf.export_to_dict(); r=aaf.run_pyreason(2,timeout_seconds=10)\n"
+            "assert r['status']=='observed_within_bound',r\n"
+            "assert r['accepted']['b']==[0,1] and r['defeated']['b']==[1,1]\n"
+            "assert aaf.export_to_dict()==before and not r['decision_authorized']\n"
+            "print(json.dumps(r))"
+        )
+        worker_result = json.loads(run([str(executable), "-I", "-c", worker_check], cwd=work, env=env))
+        require(worker_result["backend_version"] == "3.8.0", "installed worker contract failed")
         env["VLE_DATABASE_URL"] = "sqlite+pysqlite:///" + str(work / "installed.db")
         for options in ([], ["--check"]):
             result = json.loads(run([str(executable), "-I", "-c", bootstrap, "src.service.migrate", *options], cwd=work, env=env))
@@ -77,6 +97,7 @@ def main():
             require((scripts / (name + ".exe" if os.name == "nt" else name)).exists(), "console entry point is missing")
     print(json.dumps({"schema": "vle-distribution-check/v1", "passed": True, "resource_files": checked,
                       "wheel_sha256": hashlib.sha256(wheel.read_bytes()).hexdigest(), "network_calls": 0,
+                      "worker_subprocess_verified": True, "worker_provider": "synthetic_unreviewed_fixture",
                       "decision_authorized": False, "legal_certification": False}, sort_keys=True))
 
 

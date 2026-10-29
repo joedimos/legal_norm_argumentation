@@ -1,10 +1,10 @@
 from __future__ import annotations
 
+import logging
 from collections import defaultdict
+from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
 from itertools import combinations
-from typing import Dict, FrozenSet, Iterable, List, Optional, Sequence, Set, Tuple, Union
-import logging
 
 import networkx as nx
 
@@ -18,11 +18,11 @@ class LegalArgument:
     id: str
     premise: str = ""
     conclusion: str = ""
-    confidence: Tuple[float, float] = (0.8, 1.0)
-    supporting_args: FrozenSet[str] = frozenset()
-    attacking_args: FrozenSet[str] = frozenset()
+    confidence: tuple[float, float] = (0.8, 1.0)
+    supporting_args: frozenset[str] = frozenset()
+    attacking_args: frozenset[str] = frozenset()
     sequent_type: str = "hypothesis"
-    source_norm_ids: FrozenSet[str] = frozenset()
+    source_norm_ids: frozenset[str] = frozenset()
 
     def __post_init__(self) -> None:
         low, high = self.confidence
@@ -34,13 +34,13 @@ class LegalArgument:
 
 @dataclass(frozen=True)
 class Sequent:
-    antecedents: FrozenSet[str]
-    consequents: FrozenSet[str]
+    antecedents: frozenset[str]
+    consequents: frozenset[str]
     confidence: float
     is_contrapositive: bool = False
 
 
-ArgumentInput = Union[LegalArgument, str]
+ArgumentInput = LegalArgument | str
 
 
 class OptimizedAAF:
@@ -54,10 +54,10 @@ class OptimizedAAF:
     def __init__(
         self,
         arguments: Iterable[ArgumentInput],
-        attacks: Optional[Set[Tuple[str, str]]] = None,
-        supports: Optional[Set[Tuple[str, str]]] = None,
+        attacks: set[tuple[str, str]] | None = None,
+        supports: set[tuple[str, str]] | None = None,
     ) -> None:
-        normalized: List[LegalArgument] = []
+        normalized: list[LegalArgument] = []
         for arg in arguments:
             if isinstance(arg, LegalArgument):
                 normalized.append(arg)
@@ -66,12 +66,12 @@ class OptimizedAAF:
             else:
                 raise TypeError(f"Unsupported argument type: {type(arg)!r}")
 
-        self.arguments: Dict[str, LegalArgument] = {a.id: a for a in normalized}
+        self.arguments: dict[str, LegalArgument] = {a.id: a for a in normalized}
         if len(self.arguments) != len(normalized):
             raise ValueError("argument ids must be unique")
 
-        derived_attacks: Set[Tuple[str, str]] = set()
-        derived_supports: Set[Tuple[str, str]] = set()
+        derived_attacks: set[tuple[str, str]] = set()
+        derived_supports: set[tuple[str, str]] = set()
         for arg in normalized:
             derived_attacks.update((arg.id, target) for target in arg.attacking_args)
             derived_supports.update((arg.id, target) for target in arg.supporting_args)
@@ -81,10 +81,10 @@ class OptimizedAAF:
         self._validate_edges(self._attacks, "attack")
         self._validate_edges(self._supports, "support")
 
-        self.attacks_dict: Dict[str, Set[str]] = defaultdict(set)
-        self.attackers_dict: Dict[str, Set[str]] = defaultdict(set)
-        self.supports_dict: Dict[str, Set[str]] = defaultdict(set)
-        self.supporters_dict: Dict[str, Set[str]] = defaultdict(set)
+        self.attacks_dict: dict[str, set[str]] = defaultdict(set)
+        self.attackers_dict: dict[str, set[str]] = defaultdict(set)
+        self.supports_dict: dict[str, set[str]] = defaultdict(set)
+        self.supporters_dict: dict[str, set[str]] = defaultdict(set)
 
         self.attack_graph = nx.DiGraph()
         self.support_graph = nx.DiGraph()
@@ -100,27 +100,27 @@ class OptimizedAAF:
             self.supporters_dict[target].add(source)
             self.support_graph.add_edge(source, target)
 
-    def _validate_edges(self, edges: Set[Tuple[str, str]], relation: str) -> None:
+    def _validate_edges(self, edges: set[tuple[str, str]], relation: str) -> None:
         known = set(self.arguments)
         dangling = [(a, b) for a, b in edges if a not in known or b not in known]
         if dangling:
             raise ValueError(f"{relation} edges reference unknown arguments: {dangling}")
 
     @property
-    def attacks(self) -> Set[Tuple[str, str]]:
+    def attacks(self) -> set[tuple[str, str]]:
         return set(self._attacks)
 
     @property
-    def supports(self) -> Set[Tuple[str, str]]:
+    def supports(self) -> set[tuple[str, str]]:
         return set(self._supports)
 
-    def is_conflict_free(self, candidate: Set[str]) -> bool:
+    def is_conflict_free(self, candidate: set[str]) -> bool:
         subset = set(candidate)
         if not subset <= set(self.arguments):
             return False
         return all((source, target) not in self._attacks for source in subset for target in subset)
 
-    def defends(self, candidate: Set[str], argument: str) -> bool:
+    def defends(self, candidate: set[str], argument: str) -> bool:
         if argument not in self.arguments:
             return False
         subset = set(candidate)
@@ -131,14 +131,14 @@ class OptimizedAAF:
             for attacker in self.attackers_dict.get(argument, set())
         )
 
-    def characteristic(self, candidate: Set[str]) -> Set[str]:
+    def characteristic(self, candidate: set[str]) -> set[str]:
         """Dung characteristic function F(S): arguments defended by S."""
         subset = set(candidate)
         return {arg for arg in self.arguments if self.defends(subset, arg)}
 
-    def get_admissible_sets(self) -> List[Set[str]]:
+    def get_admissible_sets(self) -> list[set[str]]:
         ids = list(self.arguments)
-        admissible: List[Set[str]] = []
+        admissible: list[set[str]] = []
         for size in range(len(ids) + 1):
             for values in combinations(ids, size):
                 subset = set(values)
@@ -146,13 +146,13 @@ class OptimizedAAF:
                     admissible.append(subset)
         return admissible
 
-    def get_preferred_extensions(self) -> List[Set[str]]:
+    def get_preferred_extensions(self) -> list[set[str]]:
         admissible = self.get_admissible_sets()
         return [candidate for candidate in admissible if not any(candidate < other for other in admissible)]
 
-    def get_stable_extensions(self) -> List[Set[str]]:
+    def get_stable_extensions(self) -> list[set[str]]:
         ids = list(self.arguments)
-        stable: List[Set[str]] = []
+        stable: list[set[str]] = []
         for size in range(len(ids) + 1):
             for values in combinations(ids, size):
                 candidate = set(values)
@@ -163,15 +163,15 @@ class OptimizedAAF:
                     stable.append(candidate)
         return stable
 
-    def get_grounded_extension(self) -> Set[str]:
-        current: Set[str] = set()
+    def get_grounded_extension(self) -> set[str]:
+        current: set[str] = set()
         while True:
             nxt = self.characteristic(current)
             if nxt == current:
                 return current
             current = nxt
 
-    def grounded_labeling(self) -> Dict[str, str]:
+    def grounded_labeling(self) -> dict[str, str]:
         accepted = self.get_grounded_extension()
         rejected = {target for source in accepted for target in self.attacks_dict.get(source, set())}
         return {
@@ -182,13 +182,13 @@ class OptimizedAAF:
     def has_cycle(self) -> bool:
         return not nx.is_directed_acyclic_graph(self.attack_graph)
 
-    def shortest_attack_path(self, start: str, goal: str) -> Optional[List[str]]:
+    def shortest_attack_path(self, start: str, goal: str) -> list[str] | None:
         try:
             return nx.shortest_path(self.attack_graph, source=start, target=goal)
         except (nx.NodeNotFound, nx.NetworkXNoPath):
             return None
 
-    def pagerank_influence(self) -> Dict[str, float]:
+    def pagerank_influence(self) -> dict[str, float]:
         if not self.arguments:
             return {}
         return nx.pagerank(self.attack_graph, alpha=0.85)
@@ -213,8 +213,8 @@ class OptimizedAAF:
                     graph.add_edge(arg.id, target, relation="supports")
         return graph
 
-    def run_pyreason(self, timesteps: int = 10) -> Dict:
-        """Use the optional PyReason adapter without making it a core dependency."""
+    def run_pyreason(self, timesteps: int = 10, *, timeout_seconds: int = 60) -> dict:
+        """Bounded advisory annotations; never alter Dung or compliance results."""
         try:
             from .pyreason_connector import PyReasonConnector
         except ImportError:  # pragma: no cover - direct script fallback
@@ -233,9 +233,10 @@ class OptimizedAAF:
             attacks=self._attacks,
             supports=self._supports,
             timesteps=timesteps,
+            timeout_seconds=timeout_seconds,
         )
 
-    def get_argument_status(self, arg_id: str) -> Dict:
+    def get_argument_status(self, arg_id: str) -> dict:
         if arg_id not in self.arguments:
             return {"error": "Argument not found"}
         arg = self.arguments[arg_id]
@@ -251,7 +252,7 @@ class OptimizedAAF:
             "grounded_label": self.grounded_labeling()[arg_id],
         }
 
-    def export_to_dict(self) -> Dict:
+    def export_to_dict(self) -> dict:
         return {
             "arguments": [
                 {

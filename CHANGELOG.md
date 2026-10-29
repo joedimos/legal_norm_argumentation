@@ -8,6 +8,10 @@
   identifiers, open-world intervals, strict receipts and deterministic input hashes.
 - Removed inferred convergence and implicit confidence from the adapter. Legal
   authorization and certification remain false. See integration qualification notes.
+- Unified optional installation paths and deadline forwarding through public
+  wrappers; pinned backend/request/rule receipts and schema-checked limit failures.
+  Installed-worker tests use a deterministic fixture; two real-engine public-wrapper
+  checks cover propagation and process isolation without changing symbolic results.
 
 ## 0.9.0 - 2026-10-29
 
