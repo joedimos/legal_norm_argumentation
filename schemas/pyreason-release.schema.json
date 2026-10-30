@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "schema",
+    "scope",
+    "build_revision",
+    "deployment_id",
+    "expires_at",
+    "approved_by",
+    "worker_mode",
+    "release_sha256",
+    "native"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema": {
+      "const": "vle-pyreason-release/v1"
+    },
+    "scope": {
+      "const": "fr-us-ip-supervised/v1"
+    },
+    "build_revision": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "deployment_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "approved_by": {
+      "type": "array",
+      "minItems": 2,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "worker_mode": {
+      "enum": [
+        "isolated",
+        "pooled"
+      ]
+    },
+    "release_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "native": {
+      "type": "object",
+      "required": [
+        "filename",
+        "sha256"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "filename": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_-]{1,80}\\.json$"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    }
+  }
+}

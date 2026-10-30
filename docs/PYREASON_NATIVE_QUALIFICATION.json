@@ -1,0 +1,1063 @@
+{
+  "adapter_contract_sha256": "d8b248a3a75781ead3a3ab8c8ef38020919ba5f89d3c4d77855a51e44442bc69",
+  "bounds": {
+    "iterations": 128,
+    "max_cases": 256,
+    "timeout_seconds": 900
+  },
+  "build_revision": "98a5c7f19e28a38f0db0756b4e1cdc72fc76fb71",
+  "checks": [
+    {
+      "name": "activation_batch_0",
+      "passed": true
+    },
+    {
+      "name": "activation_values_0",
+      "passed": true
+    },
+    {
+      "name": "activation_batch_1",
+      "passed": true
+    },
+    {
+      "name": "activation_values_1",
+      "passed": true
+    },
+    {
+      "name": "activation_batch_2",
+      "passed": true
+    },
+    {
+      "name": "activation_values_2",
+      "passed": true
+    },
+    {
+      "name": "activation_batch_3",
+      "passed": true
+    },
+    {
+      "name": "activation_values_3",
+      "passed": true
+    },
+    {
+      "name": "activation_batch_4",
+      "passed": true
+    },
+    {
+      "name": "activation_values_4",
+      "passed": true
+    },
+    {
+      "name": "activation_batch_5",
+      "passed": true
+    },
+    {
+      "name": "activation_values_5",
+      "passed": true
+    },
+    {
+      "disagreements": [],
+      "failure_reason": null,
+      "inference_status": "computed",
+      "name": "delay_chain_expiry",
+      "passed": true
+    },
+    {
+      "disagreements": [],
+      "failure_reason": null,
+      "inference_status": "computed",
+      "name": "relational_join_new_edge",
+      "passed": true
+    },
+    {
+      "disagreements": [],
+      "failure_reason": null,
+      "inference_status": "computed",
+      "name": "interval_[0.7, 0.9]",
+      "passed": true
+    },
+    {
+      "disagreements": [],
+      "failure_reason": null,
+      "inference_status": "computed",
+      "name": "interval_[0, 0]",
+      "passed": true
+    },
+    {
+      "disagreements": [],
+      "failure_reason": null,
+      "inference_status": "computed",
+      "name": "interval_[1, 1]",
+      "passed": true
+    },
+    {
+      "disagreements": [],
+      "failure_reason": null,
+      "inference_status": "computed",
+      "name": "seeded_cycle",
+      "passed": true
+    },
+    {
+      "disagreements": [],
+      "failure_reason": null,
+      "inference_status": "computed",
+      "name": "unseeded_cycle",
+      "passed": true
+    },
+    {
+      "name": "derived_fact_controls_compliance",
+      "passed": true
+    },
+    {
+      "name": "performance_result_0",
+      "passed": true
+    },
+    {
+      "name": "performance_result_1",
+      "passed": true
+    },
+    {
+      "name": "performance_result_2",
+      "passed": true
+    },
+    {
+      "name": "performance_result_3",
+      "passed": true
+    },
+    {
+      "name": "performance_result_4",
+      "passed": true
+    },
+    {
+      "name": "performance_result_5",
+      "passed": true
+    },
+    {
+      "name": "performance_result_6",
+      "passed": true
+    },
+    {
+      "name": "performance_result_7",
+      "passed": true
+    },
+    {
+      "name": "performance_result_8",
+      "passed": true
+    },
+    {
+      "name": "performance_result_9",
+      "passed": true
+    },
+    {
+      "name": "performance_result_10",
+      "passed": true
+    },
+    {
+      "name": "performance_result_11",
+      "passed": true
+    },
+    {
+      "name": "performance_result_12",
+      "passed": true
+    },
+    {
+      "name": "performance_result_13",
+      "passed": true
+    },
+    {
+      "name": "performance_result_14",
+      "passed": true
+    },
+    {
+      "name": "performance_result_15",
+      "passed": true
+    },
+    {
+      "name": "performance_result_16",
+      "passed": true
+    },
+    {
+      "name": "performance_result_17",
+      "passed": true
+    },
+    {
+      "name": "performance_result_18",
+      "passed": true
+    },
+    {
+      "name": "performance_result_19",
+      "passed": true
+    },
+    {
+      "name": "performance_result_20",
+      "passed": true
+    },
+    {
+      "name": "performance_result_21",
+      "passed": true
+    },
+    {
+      "name": "performance_result_22",
+      "passed": true
+    },
+    {
+      "name": "performance_result_23",
+      "passed": true
+    },
+    {
+      "name": "performance_result_24",
+      "passed": true
+    },
+    {
+      "name": "performance_result_25",
+      "passed": true
+    },
+    {
+      "name": "performance_result_26",
+      "passed": true
+    },
+    {
+      "name": "performance_result_27",
+      "passed": true
+    },
+    {
+      "name": "performance_result_28",
+      "passed": true
+    },
+    {
+      "name": "performance_result_29",
+      "passed": true
+    },
+    {
+      "name": "performance_result_30",
+      "passed": true
+    },
+    {
+      "name": "performance_result_31",
+      "passed": true
+    },
+    {
+      "name": "performance_result_32",
+      "passed": true
+    },
+    {
+      "name": "performance_result_33",
+      "passed": true
+    },
+    {
+      "name": "performance_result_34",
+      "passed": true
+    },
+    {
+      "name": "performance_result_35",
+      "passed": true
+    },
+    {
+      "name": "performance_result_36",
+      "passed": true
+    },
+    {
+      "name": "performance_result_37",
+      "passed": true
+    },
+    {
+      "name": "performance_result_38",
+      "passed": true
+    },
+    {
+      "name": "performance_result_39",
+      "passed": true
+    },
+    {
+      "name": "performance_result_40",
+      "passed": true
+    },
+    {
+      "name": "performance_result_41",
+      "passed": true
+    },
+    {
+      "name": "performance_result_42",
+      "passed": true
+    },
+    {
+      "name": "performance_result_43",
+      "passed": true
+    },
+    {
+      "name": "performance_result_44",
+      "passed": true
+    },
+    {
+      "name": "performance_result_45",
+      "passed": true
+    },
+    {
+      "name": "performance_result_46",
+      "passed": true
+    },
+    {
+      "name": "performance_result_47",
+      "passed": true
+    },
+    {
+      "name": "performance_result_48",
+      "passed": true
+    },
+    {
+      "name": "performance_result_49",
+      "passed": true
+    },
+    {
+      "name": "performance_result_50",
+      "passed": true
+    },
+    {
+      "name": "performance_result_51",
+      "passed": true
+    },
+    {
+      "name": "performance_result_52",
+      "passed": true
+    },
+    {
+      "name": "performance_result_53",
+      "passed": true
+    },
+    {
+      "name": "performance_result_54",
+      "passed": true
+    },
+    {
+      "name": "performance_result_55",
+      "passed": true
+    },
+    {
+      "name": "performance_result_56",
+      "passed": true
+    },
+    {
+      "name": "performance_result_57",
+      "passed": true
+    },
+    {
+      "name": "performance_result_58",
+      "passed": true
+    },
+    {
+      "name": "performance_result_59",
+      "passed": true
+    },
+    {
+      "name": "performance_result_60",
+      "passed": true
+    },
+    {
+      "name": "performance_result_61",
+      "passed": true
+    },
+    {
+      "name": "performance_result_62",
+      "passed": true
+    },
+    {
+      "name": "performance_result_63",
+      "passed": true
+    },
+    {
+      "name": "performance_result_64",
+      "passed": true
+    },
+    {
+      "name": "performance_result_65",
+      "passed": true
+    },
+    {
+      "name": "performance_result_66",
+      "passed": true
+    },
+    {
+      "name": "performance_result_67",
+      "passed": true
+    },
+    {
+      "name": "performance_result_68",
+      "passed": true
+    },
+    {
+      "name": "performance_result_69",
+      "passed": true
+    },
+    {
+      "name": "performance_result_70",
+      "passed": true
+    },
+    {
+      "name": "performance_result_71",
+      "passed": true
+    },
+    {
+      "name": "performance_result_72",
+      "passed": true
+    },
+    {
+      "name": "performance_result_73",
+      "passed": true
+    },
+    {
+      "name": "performance_result_74",
+      "passed": true
+    },
+    {
+      "name": "performance_result_75",
+      "passed": true
+    },
+    {
+      "name": "performance_result_76",
+      "passed": true
+    },
+    {
+      "name": "performance_result_77",
+      "passed": true
+    },
+    {
+      "name": "performance_result_78",
+      "passed": true
+    },
+    {
+      "name": "performance_result_79",
+      "passed": true
+    },
+    {
+      "name": "performance_result_80",
+      "passed": true
+    },
+    {
+      "name": "performance_result_81",
+      "passed": true
+    },
+    {
+      "name": "performance_result_82",
+      "passed": true
+    },
+    {
+      "name": "performance_result_83",
+      "passed": true
+    },
+    {
+      "name": "performance_result_84",
+      "passed": true
+    },
+    {
+      "name": "performance_result_85",
+      "passed": true
+    },
+    {
+      "name": "performance_result_86",
+      "passed": true
+    },
+    {
+      "name": "performance_result_87",
+      "passed": true
+    },
+    {
+      "name": "performance_result_88",
+      "passed": true
+    },
+    {
+      "name": "performance_result_89",
+      "passed": true
+    },
+    {
+      "name": "performance_result_90",
+      "passed": true
+    },
+    {
+      "name": "performance_result_91",
+      "passed": true
+    },
+    {
+      "name": "performance_result_92",
+      "passed": true
+    },
+    {
+      "name": "performance_result_93",
+      "passed": true
+    },
+    {
+      "name": "performance_result_94",
+      "passed": true
+    },
+    {
+      "name": "performance_result_95",
+      "passed": true
+    },
+    {
+      "name": "performance_result_96",
+      "passed": true
+    },
+    {
+      "name": "performance_result_97",
+      "passed": true
+    },
+    {
+      "name": "performance_result_98",
+      "passed": true
+    },
+    {
+      "name": "performance_result_99",
+      "passed": true
+    },
+    {
+      "name": "performance_result_100",
+      "passed": true
+    },
+    {
+      "name": "performance_result_101",
+      "passed": true
+    },
+    {
+      "name": "performance_result_102",
+      "passed": true
+    },
+    {
+      "name": "performance_result_103",
+      "passed": true
+    },
+    {
+      "name": "performance_result_104",
+      "passed": true
+    },
+    {
+      "name": "performance_result_105",
+      "passed": true
+    },
+    {
+      "name": "performance_result_106",
+      "passed": true
+    },
+    {
+      "name": "performance_result_107",
+      "passed": true
+    },
+    {
+      "name": "performance_result_108",
+      "passed": true
+    },
+    {
+      "name": "performance_result_109",
+      "passed": true
+    },
+    {
+      "name": "performance_result_110",
+      "passed": true
+    },
+    {
+      "name": "performance_result_111",
+      "passed": true
+    },
+    {
+      "name": "performance_result_112",
+      "passed": true
+    },
+    {
+      "name": "performance_result_113",
+      "passed": true
+    },
+    {
+      "name": "performance_result_114",
+      "passed": true
+    },
+    {
+      "name": "performance_result_115",
+      "passed": true
+    },
+    {
+      "name": "performance_result_116",
+      "passed": true
+    },
+    {
+      "name": "performance_result_117",
+      "passed": true
+    },
+    {
+      "name": "performance_result_118",
+      "passed": true
+    },
+    {
+      "name": "performance_result_119",
+      "passed": true
+    },
+    {
+      "name": "performance_result_120",
+      "passed": true
+    },
+    {
+      "name": "performance_result_121",
+      "passed": true
+    },
+    {
+      "name": "performance_result_122",
+      "passed": true
+    },
+    {
+      "name": "performance_result_123",
+      "passed": true
+    },
+    {
+      "name": "performance_result_124",
+      "passed": true
+    },
+    {
+      "name": "performance_result_125",
+      "passed": true
+    },
+    {
+      "name": "performance_result_126",
+      "passed": true
+    },
+    {
+      "name": "performance_result_127",
+      "passed": true
+    }
+  ],
+  "corpus_sha256": "56a1541a8841f0197772a3c05a97e524dc0eb9cebcdcc5db358677ba9aff1642",
+  "decision_authorized": false,
+  "elapsed_ms": 38416.780862,
+  "legal_certification": false,
+  "native_activation_cases": 162,
+  "native_graph_cases": 7,
+  "performance": {
+    "core": {
+      "count": 128,
+      "max_ms": 0.8177709999017679,
+      "p50_ms": 0.2567569999882835,
+      "p95_ms": 0.5475139998907252,
+      "samples_ms": [
+        0.04681100017478457,
+        0.09744599992700387,
+        0.2671520001058525,
+        0.5118500000662607,
+        0.05348099989532784,
+        0.09209900008499972,
+        0.25776799998311617,
+        0.5244090000360302,
+        0.05296999984238937,
+        0.11001500001839304,
+        0.38509899991368,
+        0.8177709999017679,
+        0.05879900004401861,
+        0.09832799992182117,
+        0.2654399997936707,
+        0.49528599993209355,
+        0.057225999853471876,
+        0.09135699997386837,
+        0.2712380000957637,
+        0.47464400017815933,
+        0.06562899989148718,
+        0.23197900009108707,
+        0.27630599993244687,
+        0.5142139998497441,
+        0.06044099995961005,
+        0.09362099990539718,
+        0.2664410001216311,
+        0.48060400013127946,
+        0.060530999917318695,
+        0.09349099991595722,
+        0.2567569999882835,
+        0.4765880000832112,
+        0.0719180000032793,
+        0.09117700005845109,
+        0.27034699996875133,
+        0.4701880000084202,
+        0.1738819998990948,
+        0.09820800005400088,
+        0.2596910001102515,
+        0.5435390000911866,
+        0.1388179998684791,
+        0.09640500002205954,
+        0.30637099985142413,
+        0.49477500010652875,
+        0.06607900013477774,
+        0.09112800012189837,
+        0.279781000017465,
+        0.4786709998825245,
+        0.06608999979107466,
+        0.09628500015423924,
+        0.263947000121334,
+        0.48843599984138564,
+        0.29046700001345016,
+        0.0965449999057455,
+        0.48571100001026934,
+        0.6672649999472924,
+        0.06381599996529985,
+        0.09203800004797813,
+        0.29523400007747114,
+        0.49285199997939344,
+        0.06175199996505398,
+        0.08857299985720601,
+        0.26390700008960266,
+        0.47464400017815933,
+        0.06059099996491568,
+        0.10237400010737474,
+        0.28776299996025045,
+        0.674916000207304,
+        0.06282399999690824,
+        0.09428199996364128,
+        0.2668209999683313,
+        0.4951949999849603,
+        0.07122700003492355,
+        0.09661499984758848,
+        0.3194899998106848,
+        0.5079249999653257,
+        0.06294500008152681,
+        0.26907500000561413,
+        0.2698960001907835,
+        0.48443900004713214,
+        0.07604400002492184,
+        0.17067700014194997,
+        0.26065199995173316,
+        0.5423760001121991,
+        0.05931900000177848,
+        0.09883799998533505,
+        0.27991199999632954,
+        0.46822499984955357,
+        0.06438700006583531,
+        0.09015600016937242,
+        0.2657090001321194,
+        0.4798719999143941,
+        0.06276499993873585,
+        0.09567400002197246,
+        0.2933920000032231,
+        0.48990699997375486,
+        0.07986000014170713,
+        0.09262900016437925,
+        0.26313600005778426,
+        0.5475139998907252,
+        0.06524800005536235,
+        0.0942620001751493,
+        0.2543630000673147,
+        0.4707890000190673,
+        0.05402100009632704,
+        0.09251899996343127,
+        0.2767159999166324,
+        0.48510999999962223,
+        0.07475300003534358,
+        0.11016599978574959,
+        0.2921100001458399,
+        0.5866530000275816,
+        0.06318500004454108,
+        0.09933999990607845,
+        0.6645500000104221,
+        0.5053209999914543,
+        0.0967060000220954,
+        0.10016100009124784,
+        0.3997510000317561,
+        0.6302090000644966,
+        0.06798200001867372,
+        0.13319000004230475,
+        0.4674240001349972,
+        0.5216450001626072,
+        0.07189799998741364,
+        0.1010720000067522,
+        0.30829399997855944,
+        0.48935699987850967
+      ]
+    },
+    "native": {
+      "count": 128,
+      "max_ms": 9263.399588999846,
+      "p50_ms": 135.28674899998805,
+      "p95_ms": 323.9190649999273,
+      "samples_ms": [
+        10.568306000095617,
+        41.718957000057344,
+        144.7413820001202,
+        288.7820149999243,
+        21.008186999779355,
+        41.617064000092796,
+        145.3766639999685,
+        278.8337029999184,
+        21.04825800006438,
+        41.64638800011744,
+        145.7413489999908,
+        290.2228840000589,
+        21.14418500013926,
+        41.80308900004093,
+        155.14907500005393,
+        268.78229800013287,
+        10.99314700013565,
+        41.63630799985185,
+        155.10754799993265,
+        319.92591599987463,
+        21.34521700008918,
+        41.59040399986225,
+        165.21182999986195,
+        279.47665899978347,
+        21.175026000037178,
+        51.94018699990011,
+        165.33071899993956,
+        309.8312829999941,
+        21.01788499999202,
+        41.750288999992335,
+        155.18733799990514,
+        289.34516300000723,
+        21.11324800011971,
+        51.94008200010103,
+        155.10311999992155,
+        291.2881769998421,
+        21.258683000041856,
+        41.61530499982291,
+        155.1997560000018,
+        320.9114030000819,
+        21.220924999852286,
+        41.749207999828286,
+        145.11498299998493,
+        279.1150900000048,
+        10.846270999991248,
+        41.77726500006429,
+        156.48031299997456,
+        299.57783399981963,
+        21.251701999972283,
+        62.184695000041756,
+        165.64678000008826,
+        322.0318649998717,
+        21.4995149999595,
+        52.032851999911145,
+        176.49659499988957,
+        335.66787999984626,
+        21.079036999935852,
+        41.719913000179076,
+        144.83446500003083,
+        268.88870699986,
+        10.817882000083046,
+        41.627895000146964,
+        135.28674899998805,
+        290.20445499986636,
+        21.531038000148328,
+        41.92953000006128,
+        188.6965329999839,
+        493.1823140000233,
+        21.43374100000983,
+        51.904593000017485,
+        185.89928699998381,
+        381.45027100017614,
+        21.12320300011561,
+        41.6237680001359,
+        145.4285649999747,
+        300.14942599996175,
+        21.335872999998173,
+        41.74479000016618,
+        145.20956600017598,
+        290.09751700004927,
+        21.350803999894197,
+        41.7415560000336,
+        145.22959500004617,
+        279.30302000004303,
+        21.25049400001444,
+        41.74154499992255,
+        165.49850199999128,
+        310.2545649999229,
+        11.02474300000722,
+        51.8234900000607,
+        145.73630800009596,
+        289.9328889998287,
+        21.20145499998216,
+        41.579791999993176,
+        155.15146400002777,
+        279.96325300000535,
+        21.18596799982697,
+        41.641209000090385,
+        145.4977289999988,
+        279.44469800013394,
+        21.07421300001988,
+        41.72137499995188,
+        145.28214999995726,
+        330.32698599981813,
+        21.068972000193753,
+        51.827526000124635,
+        165.4705799999192,
+        320.2877720000288,
+        21.276392000117994,
+        52.12522400006492,
+        166.2228430000141,
+        340.72507599989876,
+        9263.399588999846,
+        69.45672000006198,
+        166.07787399993867,
+        311.7890759999682,
+        21.723902000076123,
+        42.03014399990934,
+        165.89377800005423,
+        310.4538859997774,
+        21.238776999780384,
+        52.356880999923305,
+        156.61546200021803,
+        322.05658699990636,
+        21.50618499990742,
+        52.19560399996226,
+        174.8685550001028,
+        323.9190649999273
+      ]
+    },
+    "native_is_faster": false,
+    "norm_counts": [
+      1,
+      8,
+      32,
+      64,
+      1,
+      8,
+      32,
+      64,
+      1,
+      8,
+      32,
+      64,
+      1,
+      8,
+      32,
+      64,
+      1,
+      8,
+      32,
+      64,
+      1,
+      8,
+      32,
+      64,
+      1,
+      8,
+      32,
+      64,
+      1,
+      8,
+      32,
+      64,
+      1,
+      8,
+      32,
+      64,
+      1,
+      8,
+      32,
+      64,
+      1,
+      8,
+      32,
+      64,
+      1,
+      8,
+      32,
+      64,
+      1,
+      8,
+      32,
+      64,
+      1,
+      8,
+      32,
+      64,
+      1,
+      8,
+      32,
+      64,
+      1,
+      8,
+      32,
+      64,
+      1,
+      8,
+      32,
+      64,
+      1,
+      8,
+      32,
+      64,
+      1,
+      8,
+      32,
+      64,
+      1,
+      8,
+      32,
+      64,
+      1,
+      8,
+      32,
+      64,
+      1,
+      8,
+      32,
+      64,
+      1,
+      8,
+      32,
+      64,
+      1,
+      8,
+      32,
+      64,
+      1,
+      8,
+      32,
+      64,
+      1,
+      8,
+      32,
+      64,
+      1,
+      8,
+      32,
+      64,
+      1,
+      8,
+      32,
+      64,
+      1,
+      8,
+      32,
+      64,
+      1,
+      8,
+      32,
+      64,
+      1,
+      8,
+      32,
+      64,
+      1,
+      8,
+      32,
+      64
+    ],
+    "population": "after_explicit_startup_probe",
+    "startup_included_in_samples": false
+  },
+  "provider": "native",
+  "runtime": {
+    "adapter_contract_sha256": "d8b248a3a75781ead3a3ab8c8ef38020919ba5f89d3c4d77855a51e44442bc69",
+    "architecture": "x86_64",
+    "engine_source_sha256": "d3b076101ca2cc34542755cbc56505241a8abf225d286678afd5ed7e79e12ae1",
+    "identity_sha256": "4fee4e6cc19ed24c5c38f2fcdf277c374da6b3ee8bb15de88222f76cb483c773",
+    "packages": {
+      "PyYAML": "6.0.3",
+      "llvmlite": "0.50.0",
+      "memory-profiler": "0.61.0",
+      "networkx": "3.7",
+      "numba": "0.68.1",
+      "numpy": "2.5.4",
+      "pandas": "3.0.6",
+      "psutil": "7.2.2",
+      "pyreason": "3.8.0",
+      "pytest": "9.0.3"
+    },
+    "provider": "native",
+    "python": "3.12.14"
+  },
+  "schema": "vle-pyreason-qualification/v2",
+  "scope": "synthetic_unreviewed_implementation_and_performance_only",
+  "startup_ms": 2235.483644999931,
+  "status": "passed",
+  "worker_mode": "pooled"
+}

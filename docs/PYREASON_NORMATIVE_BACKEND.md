@@ -80,12 +80,12 @@ for integrity. Hash integrity does not independently prove legal interpretation.
 Legacy core idempotency and signed-target bytes are preserved; selecting a backend
 or changing its timeout changes the evaluation target/request basis.
 
-All new outputs keep `decision_authorized=false` and `legal_certification=false`.
-The existing release attestations qualify the core backend only. They cannot be
-reused to authorize this new backend, including under the legacy reviewed-operation
-policy. High-stakes authorization stays blocked until a separately specified
-release-qualification process covers this backend. Computational compliance and
-organizational authorization remain distinct outputs.
+Standalone computational outputs keep `decision_authorized=false` and
+`legal_certification=false`. In 0.9.3 the separate [native qualification gate](PYREASON_NATIVE_INTEGRATION.md)
+requires exact native-runtime/load evidence and independently signed held-out IP
+judgments, together with all existing exact-case and release gates. Core-only
+attestations and the legacy reviewed-operation override cannot qualify PyReason.
+Computational compliance and organizational authorization remain distinct outputs.
 
 The legacy `OptimizedAAF.run_pyreason()` graph-annotation path remains available
 with its established advisory semantics. This active backend is a separate,
@@ -111,3 +111,7 @@ cross-norm rule leakage. The recorded requests/results are in
 `RC_0_9_2_EVALUATION.json`. These small cases
 are implementation checks, not independent legal annotation or full engine
 qualification. No legal accuracy or certification is established by this work.
+
+The broader native relational/temporal path, reusable worker, deployment profile
+and real-engine CI in 0.9.3 are documented in `PYREASON_NATIVE_INTEGRATION.md`.
+The small 0.9.2 qualification above is retained as historical evidence.

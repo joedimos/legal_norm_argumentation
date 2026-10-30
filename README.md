@@ -415,5 +415,27 @@ python -m src.cli norm-evaluate --input examples/pyreason-normative.json
 ```
 
 The example is synthetic and unreviewed. Source review remains required in the
-lifecycle; existing release artifacts do not authorize the new backend. See
+lifecycle; existing core-only release artifacts do not authorize the new backend. See
 [active backend semantics, bounds and usage](docs/PYREASON_NORMATIVE_BACKEND.md).
+
+### Native relational and temporal inference (0.9.3)
+
+PyReason can now derive facts through relational joins, delayed rules, same-tick
+chains and expiring interval observations, then use exact derived facts in norm
+activation and compliance. Missing/soft/conflicting evidence stays uncertain;
+failed or disagreeing native computation blocks the result. It is an active,
+required stage when selected.
+
+```sh
+pip install -e '.[pyreason]'
+python -m src.cli pyreason-infer --input examples/pyreason-graph.json --worker-mode pooled --bundle graph.zip
+python -m src.pyreason_qualification --iterations 128 --timeout-seconds 900
+```
+
+The native Docker target and `docker-compose.pyreason.yml` enable the installed
+engine, bounded reusable workers and startup readiness checks. Real CPU-engine
+CI covers Python 3.12/3.13 and a non-root, read-only, network-disabled container.
+The separate backend release gate accepts qualified native evidence and signed
+independent IP benchmarks; the legacy review override cannot substitute for them.
+Synthetic test success alone leaves high-stakes decisions blocked. See
+[native semantics, deployment and qualification](docs/PYREASON_NATIVE_INTEGRATION.md).

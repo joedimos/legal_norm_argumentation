@@ -138,7 +138,9 @@ class ProbeClient:
             response.close()
 
 
-def smoke(client, operator, reviewer, auditor):
+def smoke(client, operator, reviewer, auditor, *, reasoning_backend="core"):
+    if reasoning_backend not in {"core", "pyreason"}:
+        raise ValueError("unsupported backend")
     identities = [client.call("/v1/session", token=token)["subject"] for token in (operator, reviewer)]
     if identities[0] == identities[1]:
         raise ValueError("smoke requires separate operator and reviewer identities")
@@ -151,16 +153,21 @@ def smoke(client, operator, reviewer, auditor):
         client.call(f"/v1/sources/{id}/reviews", token=reviewer,
                     payload={"candidate_id": candidate["id"], "decision": "approved", "note": "Synthetic staging smoke fixture only."})
     run = client.call(f"/v1/sources/{id}/evaluate", token=operator,
-                      payload={"high_stakes": False, "observed_actions": ["retain logs"]})
+                      payload={"high_stakes": False, "observed_actions": ["retain logs"],
+                               **({"reasoning_backend": reasoning_backend} if reasoning_backend != "core" else {})})
     if run["decision_authorized"] or run["authorization_scope"] != "research_only" or run["compliance"]["status"] != "compliant":
         raise ValueError("research/production authorization boundary failed")
+    if reasoning_backend == "pyreason" and run["compliance"]["reasoning"]["backend"]["status"] != "computed":
+        raise ValueError("native smoke did not compute")
     archive, headers = client.call(f'/v1/runs/{run["run_id"]}/audit-bundle', token=auditor, binary=True)
     if not verify_bundle(archive, expected_manifest_digest=headers["X-Audit-Manifest-SHA256"])["valid"]:
         raise ValueError("smoke audit verification failed")
     return {"source_id": id, "run_id": run["run_id"], "synthetic": True, "audit_verified": True}
 
 
-def load_probe(client, token, *, count=100, concurrency=4, max_p95_ms=1000, evaluation_source=None):
+def load_probe(client, token, *, count=100, concurrency=4, max_p95_ms=1000, evaluation_source=None, reasoning_backend="core", worker_mode="isolated"):
+    if reasoning_backend not in {"core", "pyreason"} or worker_mode not in {"isolated", "pooled"}:
+        raise ValueError("unsupported backend/worker mode")
     if not 1 <= count <= 1000 or not 1 <= concurrency <= 32 or max_p95_ms <= 0:
         raise ValueError("load probe bounds exceeded")
     def once(_):
@@ -168,9 +175,14 @@ def load_probe(client, token, *, count=100, concurrency=4, max_p95_ms=1000, eval
         try:
             if evaluation_source:
                 result = client.call(f"/v1/sources/{evaluation_source}/evaluate", token=token,
-                                     payload={"high_stakes": False, "observed_actions": ["retain logs"]})
+                                     payload={"high_stakes": False, "observed_actions": ["retain logs"],
+                               **({"reasoning_backend": reasoning_backend} if reasoning_backend != "core" else {})})
                 if result.get("decision_authorized") or result.get("compliance", {}).get("status") != "compliant":
                     raise ValueError("load workload boundary failed")
+                if reasoning_backend == "pyreason":
+                    backend = result["compliance"]["reasoning"]["backend"]
+                    if backend["status"] != "computed" or backend["worker_mode"] != worker_mode:
+                        raise ValueError("native load did not compute with the selected transport")
             else:
                 client.call("/v1/session", token=token)
             return (time.monotonic() - start) * 1000, True
@@ -183,6 +195,8 @@ def load_probe(client, token, *, count=100, concurrency=4, max_p95_ms=1000, eval
     return {"passed": all(x[1] for x in observations) and p95 <= max_p95_ms,
             "requests": count, "concurrency": concurrency, "errors": sum(not x[1] for x in observations),
             "p95_ms": p95, "median_ms": statistics.median(times), "slo_p95_ms": max_p95_ms,
+            **({"reasoning_backend": reasoning_backend, "worker_mode": worker_mode,
+                "backend_computations_checked": bool(evaluation_source)} if reasoning_backend == "pyreason" else {}),
             "coverage": "authenticated_evaluation_with_audit_writes" if evaluation_source else "authenticated_session_endpoint_only"}
 
 
@@ -192,6 +206,8 @@ def main():
     parser.add_argument("--deployment-id", required=True)
     parser.add_argument("--build-revision", required=True)
     parser.add_argument("--base-url")
+    parser.add_argument("--reasoning-backend", choices=("core", "pyreason"), default="core")
+    parser.add_argument("--worker-mode", choices=("isolated", "pooled"), default="isolated")
     parser.add_argument("--requests", type=int, default=100)
     parser.add_argument("--concurrency", type=int, default=4)
     parser.add_argument("--max-p95-ms", type=float, default=1000)
@@ -262,13 +278,14 @@ def main():
             client = ProbeClient(args.base_url or "")
             if args.mode == "smoke":
                 report.update(smoke(client, os.environ["VLE_PROBE_OPERATOR_TOKEN"], os.environ["VLE_PROBE_REVIEWER_TOKEN"],
-                                    os.environ["VLE_PROBE_AUDITOR_TOKEN"]), passed=True)
+                                    os.environ["VLE_PROBE_AUDITOR_TOKEN"], reasoning_backend=args.reasoning_backend), passed=True)
             else:
                 fixture = smoke(client, os.environ["VLE_PROBE_OPERATOR_TOKEN"], os.environ["VLE_PROBE_REVIEWER_TOKEN"],
-                                os.environ["VLE_PROBE_AUDITOR_TOKEN"]) if args.with_evaluation else None
+                                os.environ["VLE_PROBE_AUDITOR_TOKEN"], reasoning_backend=args.reasoning_backend) if args.with_evaluation else None
                 report.update(load_probe(client, os.environ["VLE_PROBE_OPERATOR_TOKEN"], count=args.requests,
                                           concurrency=args.concurrency, max_p95_ms=args.max_p95_ms,
-                                          evaluation_source=fixture["source_id"] if fixture else None))
+                                          evaluation_source=fixture["source_id"] if fixture else None,
+                                          reasoning_backend=args.reasoning_backend, worker_mode=args.worker_mode))
     except SnapshotBound:
         report.update(passed=False, status="unknown", reason="snapshot_bound", bound_hit=True)
     except Exception:

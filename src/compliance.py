@@ -22,8 +22,14 @@ def _action_seen(norm: NormInterpretation, context: FactContext) -> bool:
     return norm.action in context.observed_actions
 
 
-def evaluate(norms: Sequence[NormInterpretation], context: FactContext, *, backend="core", pyreason_timeout_seconds=60) -> dict:
-    reasoning = reason(norms, context, backend=backend, pyreason_timeout_seconds=pyreason_timeout_seconds)
+def evaluate(norms: Sequence[NormInterpretation], context: FactContext, *, backend="core", pyreason_timeout_seconds=60,
+             pyreason_program=None, pyreason_worker_mode="isolated") -> dict:
+    if pyreason_program is not None and backend != "pyreason":
+        raise ValueError("graph inference requires the PyReason backend")
+    if pyreason_worker_mode not in {"isolated", "pooled"}:
+        raise ValueError("unsupported PyReason worker mode")
+    reasoning = reason(norms, context, backend=backend, pyreason_timeout_seconds=pyreason_timeout_seconds,
+                       pyreason_program=pyreason_program, pyreason_worker_mode=pyreason_worker_mode)
     applicable = {item["norm_id"] for item in reasoning["conclusions"] if item["status"] == "applicable"}
     findings: list[ComplianceFinding] = []
 

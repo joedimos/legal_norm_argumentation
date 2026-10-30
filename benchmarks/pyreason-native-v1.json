@@ -1,0 +1,6232 @@
+{
+  "schema": "vle-pyreason-native-corpus/v1",
+  "kind": "synthetic",
+  "review_status": "unreviewed",
+  "activation_cases": [
+    {
+      "id": "synthetic-0",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c0": false,
+        "c1": false,
+        "e0": false,
+        "e1": false
+      }
+    },
+    {
+      "id": "synthetic-1",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c0": false,
+        "c1": false,
+        "e0": false,
+        "e1": true
+      }
+    },
+    {
+      "id": "synthetic-2",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c0": false,
+        "c1": false,
+        "e0": false
+      }
+    },
+    {
+      "id": "synthetic-3",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c0": false,
+        "c1": false,
+        "e0": true,
+        "e1": false
+      }
+    },
+    {
+      "id": "synthetic-4",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c0": false,
+        "c1": false,
+        "e0": true,
+        "e1": true
+      }
+    },
+    {
+      "id": "synthetic-5",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c0": false,
+        "c1": false,
+        "e0": true
+      }
+    },
+    {
+      "id": "synthetic-6",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c0": false,
+        "c1": false,
+        "e1": false
+      }
+    },
+    {
+      "id": "synthetic-7",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c0": false,
+        "c1": false,
+        "e1": true
+      }
+    },
+    {
+      "id": "synthetic-8",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c0": false,
+        "c1": false
+      }
+    },
+    {
+      "id": "synthetic-9",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c0": false,
+        "c1": true,
+        "e0": false,
+        "e1": false
+      }
+    },
+    {
+      "id": "synthetic-10",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c0": false,
+        "c1": true,
+        "e0": false,
+        "e1": true
+      }
+    },
+    {
+      "id": "synthetic-11",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c0": false,
+        "c1": true,
+        "e0": false
+      }
+    },
+    {
+      "id": "synthetic-12",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c0": false,
+        "c1": true,
+        "e0": true,
+        "e1": false
+      }
+    },
+    {
+      "id": "synthetic-13",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c0": false,
+        "c1": true,
+        "e0": true,
+        "e1": true
+      }
+    },
+    {
+      "id": "synthetic-14",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c0": false,
+        "c1": true,
+        "e0": true
+      }
+    },
+    {
+      "id": "synthetic-15",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c0": false,
+        "c1": true,
+        "e1": false
+      }
+    },
+    {
+      "id": "synthetic-16",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c0": false,
+        "c1": true,
+        "e1": true
+      }
+    },
+    {
+      "id": "synthetic-17",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c0": false,
+        "c1": true
+      }
+    },
+    {
+      "id": "synthetic-18",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c0": false,
+        "e0": false,
+        "e1": false
+      }
+    },
+    {
+      "id": "synthetic-19",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c0": false,
+        "e0": false,
+        "e1": true
+      }
+    },
+    {
+      "id": "synthetic-20",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c0": false,
+        "e0": false
+      }
+    },
+    {
+      "id": "synthetic-21",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c0": false,
+        "e0": true,
+        "e1": false
+      }
+    },
+    {
+      "id": "synthetic-22",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c0": false,
+        "e0": true,
+        "e1": true
+      }
+    },
+    {
+      "id": "synthetic-23",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c0": false,
+        "e0": true
+      }
+    },
+    {
+      "id": "synthetic-24",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c0": false,
+        "e1": false
+      }
+    },
+    {
+      "id": "synthetic-25",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c0": false,
+        "e1": true
+      }
+    },
+    {
+      "id": "synthetic-26",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c0": false
+      }
+    },
+    {
+      "id": "synthetic-27",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c0": true,
+        "c1": false,
+        "e0": false,
+        "e1": false
+      }
+    },
+    {
+      "id": "synthetic-28",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c0": true,
+        "c1": false,
+        "e0": false,
+        "e1": true
+      }
+    },
+    {
+      "id": "synthetic-29",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c0": true,
+        "c1": false,
+        "e0": false
+      }
+    },
+    {
+      "id": "synthetic-30",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c0": true,
+        "c1": false,
+        "e0": true,
+        "e1": false
+      }
+    },
+    {
+      "id": "synthetic-31",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c0": true,
+        "c1": false,
+        "e0": true,
+        "e1": true
+      }
+    },
+    {
+      "id": "synthetic-32",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c0": true,
+        "c1": false,
+        "e0": true
+      }
+    },
+    {
+      "id": "synthetic-33",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c0": true,
+        "c1": false,
+        "e1": false
+      }
+    },
+    {
+      "id": "synthetic-34",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c0": true,
+        "c1": false,
+        "e1": true
+      }
+    },
+    {
+      "id": "synthetic-35",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c0": true,
+        "c1": false
+      }
+    },
+    {
+      "id": "synthetic-36",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c0": true,
+        "c1": true,
+        "e0": false,
+        "e1": false
+      }
+    },
+    {
+      "id": "synthetic-37",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c0": true,
+        "c1": true,
+        "e0": false,
+        "e1": true
+      }
+    },
+    {
+      "id": "synthetic-38",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c0": true,
+        "c1": true,
+        "e0": false
+      }
+    },
+    {
+      "id": "synthetic-39",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c0": true,
+        "c1": true,
+        "e0": true,
+        "e1": false
+      }
+    },
+    {
+      "id": "synthetic-40",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c0": true,
+        "c1": true,
+        "e0": true,
+        "e1": true
+      }
+    },
+    {
+      "id": "synthetic-41",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c0": true,
+        "c1": true,
+        "e0": true
+      }
+    },
+    {
+      "id": "synthetic-42",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c0": true,
+        "c1": true,
+        "e1": false
+      }
+    },
+    {
+      "id": "synthetic-43",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c0": true,
+        "c1": true,
+        "e1": true
+      }
+    },
+    {
+      "id": "synthetic-44",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c0": true,
+        "c1": true
+      }
+    },
+    {
+      "id": "synthetic-45",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c0": true,
+        "e0": false,
+        "e1": false
+      }
+    },
+    {
+      "id": "synthetic-46",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c0": true,
+        "e0": false,
+        "e1": true
+      }
+    },
+    {
+      "id": "synthetic-47",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c0": true,
+        "e0": false
+      }
+    },
+    {
+      "id": "synthetic-48",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c0": true,
+        "e0": true,
+        "e1": false
+      }
+    },
+    {
+      "id": "synthetic-49",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c0": true,
+        "e0": true,
+        "e1": true
+      }
+    },
+    {
+      "id": "synthetic-50",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c0": true,
+        "e0": true
+      }
+    },
+    {
+      "id": "synthetic-51",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c0": true,
+        "e1": false
+      }
+    },
+    {
+      "id": "synthetic-52",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c0": true,
+        "e1": true
+      }
+    },
+    {
+      "id": "synthetic-53",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c0": true
+      }
+    },
+    {
+      "id": "synthetic-54",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c1": false,
+        "e0": false,
+        "e1": false
+      }
+    },
+    {
+      "id": "synthetic-55",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c1": false,
+        "e0": false,
+        "e1": true
+      }
+    },
+    {
+      "id": "synthetic-56",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c1": false,
+        "e0": false
+      }
+    },
+    {
+      "id": "synthetic-57",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c1": false,
+        "e0": true,
+        "e1": false
+      }
+    },
+    {
+      "id": "synthetic-58",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c1": false,
+        "e0": true,
+        "e1": true
+      }
+    },
+    {
+      "id": "synthetic-59",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c1": false,
+        "e0": true
+      }
+    },
+    {
+      "id": "synthetic-60",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c1": false,
+        "e1": false
+      }
+    },
+    {
+      "id": "synthetic-61",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c1": false,
+        "e1": true
+      }
+    },
+    {
+      "id": "synthetic-62",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c1": false
+      }
+    },
+    {
+      "id": "synthetic-63",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c1": true,
+        "e0": false,
+        "e1": false
+      }
+    },
+    {
+      "id": "synthetic-64",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c1": true,
+        "e0": false,
+        "e1": true
+      }
+    },
+    {
+      "id": "synthetic-65",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c1": true,
+        "e0": false
+      }
+    },
+    {
+      "id": "synthetic-66",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c1": true,
+        "e0": true,
+        "e1": false
+      }
+    },
+    {
+      "id": "synthetic-67",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c1": true,
+        "e0": true,
+        "e1": true
+      }
+    },
+    {
+      "id": "synthetic-68",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c1": true,
+        "e0": true
+      }
+    },
+    {
+      "id": "synthetic-69",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c1": true,
+        "e1": false
+      }
+    },
+    {
+      "id": "synthetic-70",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c1": true,
+        "e1": true
+      }
+    },
+    {
+      "id": "synthetic-71",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "c1": true
+      }
+    },
+    {
+      "id": "synthetic-72",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "e0": false,
+        "e1": false
+      }
+    },
+    {
+      "id": "synthetic-73",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "e0": false,
+        "e1": true
+      }
+    },
+    {
+      "id": "synthetic-74",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "e0": false
+      }
+    },
+    {
+      "id": "synthetic-75",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "e0": true,
+        "e1": false
+      }
+    },
+    {
+      "id": "synthetic-76",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "e0": true,
+        "e1": true
+      }
+    },
+    {
+      "id": "synthetic-77",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "e0": true
+      }
+    },
+    {
+      "id": "synthetic-78",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "e1": false
+      }
+    },
+    {
+      "id": "synthetic-79",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {
+        "e1": true
+      }
+    },
+    {
+      "id": "synthetic-80",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": false
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": false
+          }
+        ]
+      },
+      "facts": {}
+    },
+    {
+      "id": "synthetic-81",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c0": false,
+        "c1": false,
+        "e0": false,
+        "e1": false
+      }
+    },
+    {
+      "id": "synthetic-82",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c0": false,
+        "c1": false,
+        "e0": false,
+        "e1": true
+      }
+    },
+    {
+      "id": "synthetic-83",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c0": false,
+        "c1": false,
+        "e0": false
+      }
+    },
+    {
+      "id": "synthetic-84",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c0": false,
+        "c1": false,
+        "e0": true,
+        "e1": false
+      }
+    },
+    {
+      "id": "synthetic-85",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c0": false,
+        "c1": false,
+        "e0": true,
+        "e1": true
+      }
+    },
+    {
+      "id": "synthetic-86",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c0": false,
+        "c1": false,
+        "e0": true
+      }
+    },
+    {
+      "id": "synthetic-87",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c0": false,
+        "c1": false,
+        "e1": false
+      }
+    },
+    {
+      "id": "synthetic-88",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c0": false,
+        "c1": false,
+        "e1": true
+      }
+    },
+    {
+      "id": "synthetic-89",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c0": false,
+        "c1": false
+      }
+    },
+    {
+      "id": "synthetic-90",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c0": false,
+        "c1": true,
+        "e0": false,
+        "e1": false
+      }
+    },
+    {
+      "id": "synthetic-91",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c0": false,
+        "c1": true,
+        "e0": false,
+        "e1": true
+      }
+    },
+    {
+      "id": "synthetic-92",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c0": false,
+        "c1": true,
+        "e0": false
+      }
+    },
+    {
+      "id": "synthetic-93",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c0": false,
+        "c1": true,
+        "e0": true,
+        "e1": false
+      }
+    },
+    {
+      "id": "synthetic-94",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c0": false,
+        "c1": true,
+        "e0": true,
+        "e1": true
+      }
+    },
+    {
+      "id": "synthetic-95",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c0": false,
+        "c1": true,
+        "e0": true
+      }
+    },
+    {
+      "id": "synthetic-96",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c0": false,
+        "c1": true,
+        "e1": false
+      }
+    },
+    {
+      "id": "synthetic-97",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c0": false,
+        "c1": true,
+        "e1": true
+      }
+    },
+    {
+      "id": "synthetic-98",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c0": false,
+        "c1": true
+      }
+    },
+    {
+      "id": "synthetic-99",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c0": false,
+        "e0": false,
+        "e1": false
+      }
+    },
+    {
+      "id": "synthetic-100",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c0": false,
+        "e0": false,
+        "e1": true
+      }
+    },
+    {
+      "id": "synthetic-101",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c0": false,
+        "e0": false
+      }
+    },
+    {
+      "id": "synthetic-102",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c0": false,
+        "e0": true,
+        "e1": false
+      }
+    },
+    {
+      "id": "synthetic-103",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c0": false,
+        "e0": true,
+        "e1": true
+      }
+    },
+    {
+      "id": "synthetic-104",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c0": false,
+        "e0": true
+      }
+    },
+    {
+      "id": "synthetic-105",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c0": false,
+        "e1": false
+      }
+    },
+    {
+      "id": "synthetic-106",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c0": false,
+        "e1": true
+      }
+    },
+    {
+      "id": "synthetic-107",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c0": false
+      }
+    },
+    {
+      "id": "synthetic-108",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c0": true,
+        "c1": false,
+        "e0": false,
+        "e1": false
+      }
+    },
+    {
+      "id": "synthetic-109",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c0": true,
+        "c1": false,
+        "e0": false,
+        "e1": true
+      }
+    },
+    {
+      "id": "synthetic-110",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c0": true,
+        "c1": false,
+        "e0": false
+      }
+    },
+    {
+      "id": "synthetic-111",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c0": true,
+        "c1": false,
+        "e0": true,
+        "e1": false
+      }
+    },
+    {
+      "id": "synthetic-112",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c0": true,
+        "c1": false,
+        "e0": true,
+        "e1": true
+      }
+    },
+    {
+      "id": "synthetic-113",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c0": true,
+        "c1": false,
+        "e0": true
+      }
+    },
+    {
+      "id": "synthetic-114",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c0": true,
+        "c1": false,
+        "e1": false
+      }
+    },
+    {
+      "id": "synthetic-115",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c0": true,
+        "c1": false,
+        "e1": true
+      }
+    },
+    {
+      "id": "synthetic-116",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c0": true,
+        "c1": false
+      }
+    },
+    {
+      "id": "synthetic-117",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c0": true,
+        "c1": true,
+        "e0": false,
+        "e1": false
+      }
+    },
+    {
+      "id": "synthetic-118",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c0": true,
+        "c1": true,
+        "e0": false,
+        "e1": true
+      }
+    },
+    {
+      "id": "synthetic-119",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c0": true,
+        "c1": true,
+        "e0": false
+      }
+    },
+    {
+      "id": "synthetic-120",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c0": true,
+        "c1": true,
+        "e0": true,
+        "e1": false
+      }
+    },
+    {
+      "id": "synthetic-121",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c0": true,
+        "c1": true,
+        "e0": true,
+        "e1": true
+      }
+    },
+    {
+      "id": "synthetic-122",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c0": true,
+        "c1": true,
+        "e0": true
+      }
+    },
+    {
+      "id": "synthetic-123",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c0": true,
+        "c1": true,
+        "e1": false
+      }
+    },
+    {
+      "id": "synthetic-124",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c0": true,
+        "c1": true,
+        "e1": true
+      }
+    },
+    {
+      "id": "synthetic-125",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c0": true,
+        "c1": true
+      }
+    },
+    {
+      "id": "synthetic-126",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c0": true,
+        "e0": false,
+        "e1": false
+      }
+    },
+    {
+      "id": "synthetic-127",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c0": true,
+        "e0": false,
+        "e1": true
+      }
+    },
+    {
+      "id": "synthetic-128",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c0": true,
+        "e0": false
+      }
+    },
+    {
+      "id": "synthetic-129",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c0": true,
+        "e0": true,
+        "e1": false
+      }
+    },
+    {
+      "id": "synthetic-130",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c0": true,
+        "e0": true,
+        "e1": true
+      }
+    },
+    {
+      "id": "synthetic-131",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c0": true,
+        "e0": true
+      }
+    },
+    {
+      "id": "synthetic-132",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c0": true,
+        "e1": false
+      }
+    },
+    {
+      "id": "synthetic-133",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c0": true,
+        "e1": true
+      }
+    },
+    {
+      "id": "synthetic-134",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c0": true
+      }
+    },
+    {
+      "id": "synthetic-135",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c1": false,
+        "e0": false,
+        "e1": false
+      }
+    },
+    {
+      "id": "synthetic-136",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c1": false,
+        "e0": false,
+        "e1": true
+      }
+    },
+    {
+      "id": "synthetic-137",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c1": false,
+        "e0": false
+      }
+    },
+    {
+      "id": "synthetic-138",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c1": false,
+        "e0": true,
+        "e1": false
+      }
+    },
+    {
+      "id": "synthetic-139",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c1": false,
+        "e0": true,
+        "e1": true
+      }
+    },
+    {
+      "id": "synthetic-140",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c1": false,
+        "e0": true
+      }
+    },
+    {
+      "id": "synthetic-141",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c1": false,
+        "e1": false
+      }
+    },
+    {
+      "id": "synthetic-142",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c1": false,
+        "e1": true
+      }
+    },
+    {
+      "id": "synthetic-143",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c1": false
+      }
+    },
+    {
+      "id": "synthetic-144",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c1": true,
+        "e0": false,
+        "e1": false
+      }
+    },
+    {
+      "id": "synthetic-145",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c1": true,
+        "e0": false,
+        "e1": true
+      }
+    },
+    {
+      "id": "synthetic-146",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c1": true,
+        "e0": false
+      }
+    },
+    {
+      "id": "synthetic-147",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c1": true,
+        "e0": true,
+        "e1": false
+      }
+    },
+    {
+      "id": "synthetic-148",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c1": true,
+        "e0": true,
+        "e1": true
+      }
+    },
+    {
+      "id": "synthetic-149",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c1": true,
+        "e0": true
+      }
+    },
+    {
+      "id": "synthetic-150",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c1": true,
+        "e1": false
+      }
+    },
+    {
+      "id": "synthetic-151",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c1": true,
+        "e1": true
+      }
+    },
+    {
+      "id": "synthetic-152",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "c1": true
+      }
+    },
+    {
+      "id": "synthetic-153",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "e0": false,
+        "e1": false
+      }
+    },
+    {
+      "id": "synthetic-154",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "e0": false,
+        "e1": true
+      }
+    },
+    {
+      "id": "synthetic-155",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "e0": false
+      }
+    },
+    {
+      "id": "synthetic-156",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "e0": true,
+        "e1": false
+      }
+    },
+    {
+      "id": "synthetic-157",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "e0": true,
+        "e1": true
+      }
+    },
+    {
+      "id": "synthetic-158",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "e0": true
+      }
+    },
+    {
+      "id": "synthetic-159",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "e1": false
+      }
+    },
+    {
+      "id": "synthetic-160",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {
+        "e1": true
+      }
+    },
+    {
+      "id": "synthetic-161",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "norm": {
+        "id": "synthetic",
+        "modality": "prohibition",
+        "subject": "operator",
+        "action": "reproduce",
+        "conditions": [
+          {
+            "name": "c0",
+            "negated": true
+          },
+          {
+            "name": "c1"
+          }
+        ],
+        "exceptions": [
+          {
+            "name": "e0"
+          },
+          {
+            "name": "e1",
+            "negated": true
+          }
+        ]
+      },
+      "facts": {}
+    }
+  ],
+  "graph_cases": [
+    {
+      "id": "delay_chain_expiry",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "program": {
+        "schema": "vle-pyreason-graph/v1",
+        "entities": [
+          "operator",
+          "work"
+        ],
+        "predicates": {
+          "license_record": 2,
+          "license_effective": 2,
+          "licensed": 2
+        },
+        "horizon": 2,
+        "facts": [
+          {
+            "atom": {
+              "predicate": "license_record",
+              "arguments": [
+                "operator",
+                "work"
+              ]
+            },
+            "interval": [
+              1,
+              1
+            ],
+            "start": 0,
+            "end": 0
+          }
+        ],
+        "rules": [
+          {
+            "id": "synthetic-delay",
+            "head": {
+              "predicate": "license_effective",
+              "arguments": [
+                "$x",
+                "$y"
+              ]
+            },
+            "body": [
+              {
+                "atom": {
+                  "predicate": "license_record",
+                  "arguments": [
+                    "$x",
+                    "$y"
+                  ]
+                },
+                "interval": [
+                  1,
+                  1
+                ]
+              }
+            ],
+            "interval": [
+              1,
+              1
+            ],
+            "delay": 1
+          },
+          {
+            "id": "synthetic-chain",
+            "head": {
+              "predicate": "licensed",
+              "arguments": [
+                "$x",
+                "$y"
+              ]
+            },
+            "body": [
+              {
+                "atom": {
+                  "predicate": "license_effective",
+                  "arguments": [
+                    "$x",
+                    "$y"
+                  ]
+                },
+                "interval": [
+                  1,
+                  1
+                ]
+              }
+            ],
+            "interval": [
+              1,
+              1
+            ],
+            "delay": 0
+          }
+        ],
+        "queries": [
+          {
+            "id": "before",
+            "atom": {
+              "predicate": "licensed",
+              "arguments": [
+                "operator",
+                "work"
+              ]
+            },
+            "at": 0
+          },
+          {
+            "id": "effective",
+            "atom": {
+              "predicate": "licensed",
+              "arguments": [
+                "operator",
+                "work"
+              ]
+            },
+            "at": 1
+          },
+          {
+            "id": "expired",
+            "atom": {
+              "predicate": "licensed",
+              "arguments": [
+                "operator",
+                "work"
+              ]
+            },
+            "at": 2
+          }
+        ],
+        "bindings": {
+          "licensed": "effective"
+        }
+      },
+      "expected": {
+        "before": [
+          0,
+          1
+        ],
+        "effective": [
+          1,
+          1
+        ],
+        "expired": [
+          0,
+          1
+        ]
+      }
+    },
+    {
+      "id": "relational_join_new_edge",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "program": {
+        "schema": "vle-pyreason-graph/v1",
+        "entities": [
+          "author",
+          "licensee",
+          "sub_licensee"
+        ],
+        "predicates": {
+          "delegates": 2,
+          "authorized": 2
+        },
+        "horizon": 0,
+        "facts": [
+          {
+            "atom": {
+              "predicate": "delegates",
+              "arguments": [
+                "author",
+                "licensee"
+              ]
+            },
+            "interval": [
+              1,
+              1
+            ],
+            "start": 0,
+            "end": 0
+          },
+          {
+            "atom": {
+              "predicate": "delegates",
+              "arguments": [
+                "licensee",
+                "sub_licensee"
+              ]
+            },
+            "interval": [
+              1,
+              1
+            ],
+            "start": 0,
+            "end": 0
+          }
+        ],
+        "rules": [
+          {
+            "id": "synthetic-transfer",
+            "head": {
+              "predicate": "authorized",
+              "arguments": [
+                "$x",
+                "$z"
+              ]
+            },
+            "body": [
+              {
+                "atom": {
+                  "predicate": "delegates",
+                  "arguments": [
+                    "$x",
+                    "$y"
+                  ]
+                },
+                "interval": [
+                  1,
+                  1
+                ]
+              },
+              {
+                "atom": {
+                  "predicate": "delegates",
+                  "arguments": [
+                    "$y",
+                    "$z"
+                  ]
+                },
+                "interval": [
+                  1,
+                  1
+                ]
+              }
+            ],
+            "interval": [
+              1,
+              1
+            ],
+            "delay": 0
+          }
+        ],
+        "queries": [
+          {
+            "id": "joined",
+            "atom": {
+              "predicate": "authorized",
+              "arguments": [
+                "author",
+                "sub_licensee"
+              ]
+            },
+            "at": 0
+          },
+          {
+            "id": "reverse",
+            "atom": {
+              "predicate": "authorized",
+              "arguments": [
+                "sub_licensee",
+                "author"
+              ]
+            },
+            "at": 0
+          }
+        ]
+      },
+      "expected": {
+        "joined": [
+          1,
+          1
+        ],
+        "reverse": [
+          0,
+          1
+        ]
+      }
+    },
+    {
+      "id": "interval_[0.7, 0.9]",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "program": {
+        "schema": "vle-pyreason-graph/v1",
+        "entities": [
+          "work"
+        ],
+        "predicates": {
+          "evidence": 1,
+          "derived": 1
+        },
+        "horizon": 1,
+        "facts": [
+          {
+            "atom": {
+              "predicate": "evidence",
+              "arguments": [
+                "work"
+              ]
+            },
+            "interval": [
+              0.7,
+              0.9
+            ],
+            "start": 0,
+            "end": 0
+          }
+        ],
+        "rules": [
+          {
+            "id": "synthetic-propagate",
+            "head": {
+              "predicate": "derived",
+              "arguments": [
+                "$x"
+              ]
+            },
+            "body": [
+              {
+                "atom": {
+                  "predicate": "evidence",
+                  "arguments": [
+                    "$x"
+                  ]
+                },
+                "interval": [
+                  0.7,
+                  0.9
+                ]
+              }
+            ],
+            "interval": [
+              0.7,
+              0.9
+            ],
+            "delay": 0
+          }
+        ],
+        "queries": [
+          {
+            "id": "present",
+            "atom": {
+              "predicate": "derived",
+              "arguments": [
+                "work"
+              ]
+            },
+            "at": 0
+          },
+          {
+            "id": "expired",
+            "atom": {
+              "predicate": "derived",
+              "arguments": [
+                "work"
+              ]
+            },
+            "at": 1
+          }
+        ]
+      },
+      "expected": {
+        "present": [
+          0.7,
+          0.9
+        ],
+        "expired": [
+          0,
+          1
+        ]
+      }
+    },
+    {
+      "id": "interval_[0, 0]",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "program": {
+        "schema": "vle-pyreason-graph/v1",
+        "entities": [
+          "work"
+        ],
+        "predicates": {
+          "evidence": 1,
+          "derived": 1
+        },
+        "horizon": 1,
+        "facts": [
+          {
+            "atom": {
+              "predicate": "evidence",
+              "arguments": [
+                "work"
+              ]
+            },
+            "interval": [
+              0,
+              0
+            ],
+            "start": 0,
+            "end": 0
+          }
+        ],
+        "rules": [
+          {
+            "id": "synthetic-propagate",
+            "head": {
+              "predicate": "derived",
+              "arguments": [
+                "$x"
+              ]
+            },
+            "body": [
+              {
+                "atom": {
+                  "predicate": "evidence",
+                  "arguments": [
+                    "$x"
+                  ]
+                },
+                "interval": [
+                  0,
+                  0
+                ]
+              }
+            ],
+            "interval": [
+              0,
+              0
+            ],
+            "delay": 0
+          }
+        ],
+        "queries": [
+          {
+            "id": "present",
+            "atom": {
+              "predicate": "derived",
+              "arguments": [
+                "work"
+              ]
+            },
+            "at": 0
+          },
+          {
+            "id": "expired",
+            "atom": {
+              "predicate": "derived",
+              "arguments": [
+                "work"
+              ]
+            },
+            "at": 1
+          }
+        ]
+      },
+      "expected": {
+        "present": [
+          0,
+          0
+        ],
+        "expired": [
+          0,
+          1
+        ]
+      }
+    },
+    {
+      "id": "interval_[1, 1]",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "program": {
+        "schema": "vle-pyreason-graph/v1",
+        "entities": [
+          "work"
+        ],
+        "predicates": {
+          "evidence": 1,
+          "derived": 1
+        },
+        "horizon": 1,
+        "facts": [
+          {
+            "atom": {
+              "predicate": "evidence",
+              "arguments": [
+                "work"
+              ]
+            },
+            "interval": [
+              1,
+              1
+            ],
+            "start": 0,
+            "end": 0
+          }
+        ],
+        "rules": [
+          {
+            "id": "synthetic-propagate",
+            "head": {
+              "predicate": "derived",
+              "arguments": [
+                "$x"
+              ]
+            },
+            "body": [
+              {
+                "atom": {
+                  "predicate": "evidence",
+                  "arguments": [
+                    "$x"
+                  ]
+                },
+                "interval": [
+                  1,
+                  1
+                ]
+              }
+            ],
+            "interval": [
+              1,
+              1
+            ],
+            "delay": 0
+          }
+        ],
+        "queries": [
+          {
+            "id": "present",
+            "atom": {
+              "predicate": "derived",
+              "arguments": [
+                "work"
+              ]
+            },
+            "at": 0
+          },
+          {
+            "id": "expired",
+            "atom": {
+              "predicate": "derived",
+              "arguments": [
+                "work"
+              ]
+            },
+            "at": 1
+          }
+        ]
+      },
+      "expected": {
+        "present": [
+          1,
+          1
+        ],
+        "expired": [
+          0,
+          1
+        ]
+      }
+    },
+    {
+      "id": "seeded_cycle",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "program": {
+        "schema": "vle-pyreason-graph/v1",
+        "kind": "synthetic",
+        "review_status": "unreviewed",
+        "entities": [
+          "work"
+        ],
+        "predicates": {
+          "p": 1,
+          "q": 1
+        },
+        "rules": [
+          {
+            "id": "synthetic-cycle-p",
+            "head": {
+              "predicate": "p",
+              "arguments": [
+                "$x"
+              ]
+            },
+            "body": [
+              {
+                "atom": {
+                  "predicate": "q",
+                  "arguments": [
+                    "$x"
+                  ]
+                },
+                "interval": [
+                  1,
+                  1
+                ]
+              }
+            ],
+            "interval": [
+              1,
+              1
+            ],
+            "delay": 0
+          },
+          {
+            "id": "synthetic-cycle-q",
+            "head": {
+              "predicate": "q",
+              "arguments": [
+                "$x"
+              ]
+            },
+            "body": [
+              {
+                "atom": {
+                  "predicate": "p",
+                  "arguments": [
+                    "$x"
+                  ]
+                },
+                "interval": [
+                  1,
+                  1
+                ]
+              }
+            ],
+            "interval": [
+              1,
+              1
+            ],
+            "delay": 0
+          }
+        ],
+        "facts": [
+          {
+            "atom": {
+              "predicate": "p",
+              "arguments": [
+                "work"
+              ]
+            },
+            "interval": [
+              1,
+              1
+            ],
+            "start": 0,
+            "end": 0
+          }
+        ],
+        "queries": [
+          {
+            "id": "cycle",
+            "atom": {
+              "predicate": "q",
+              "arguments": [
+                "work"
+              ]
+            },
+            "at": 0
+          }
+        ],
+        "bindings": {
+          "cycle_fact": "cycle"
+        },
+        "horizon": 0
+      },
+      "expected": {
+        "cycle": [
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "id": "unseeded_cycle",
+      "kind": "synthetic",
+      "review_status": "unreviewed",
+      "program": {
+        "schema": "vle-pyreason-graph/v1",
+        "kind": "synthetic",
+        "review_status": "unreviewed",
+        "entities": [
+          "work"
+        ],
+        "predicates": {
+          "p": 1,
+          "q": 1
+        },
+        "rules": [
+          {
+            "id": "synthetic-cycle-p",
+            "head": {
+              "predicate": "p",
+              "arguments": [
+                "$x"
+              ]
+            },
+            "body": [
+              {
+                "atom": {
+                  "predicate": "q",
+                  "arguments": [
+                    "$x"
+                  ]
+                },
+                "interval": [
+                  1,
+                  1
+                ]
+              }
+            ],
+            "interval": [
+              1,
+              1
+            ],
+            "delay": 0
+          },
+          {
+            "id": "synthetic-cycle-q",
+            "head": {
+              "predicate": "q",
+              "arguments": [
+                "$x"
+              ]
+            },
+            "body": [
+              {
+                "atom": {
+                  "predicate": "p",
+                  "arguments": [
+                    "$x"
+                  ]
+                },
+                "interval": [
+                  1,
+                  1
+                ]
+              }
+            ],
+            "interval": [
+              1,
+              1
+            ],
+            "delay": 0
+          }
+        ],
+        "facts": [],
+        "queries": [
+          {
+            "id": "cycle",
+            "atom": {
+              "predicate": "q",
+              "arguments": [
+                "work"
+              ]
+            },
+            "at": 0
+          }
+        ],
+        "bindings": {
+          "cycle_fact": "cycle"
+        },
+        "horizon": 0
+      },
+      "expected": {
+        "cycle": [
+          0,
+          1
+        ]
+      }
+    }
+  ]
+}

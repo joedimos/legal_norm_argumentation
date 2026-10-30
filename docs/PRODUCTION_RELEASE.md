@@ -250,3 +250,6 @@ credentials while authenticating only one key.
 Run Alembic through `0003_workflow_indexes` before this release. It adds owner/time
 and kind/time indexes for private listings and pending-job selection. Schema
 readiness requires the new revision; no governed records are rewritten.
+
+For PyReason, additionally use the exact-runtime [backend qualification gate](PYREASON_NATIVE_INTEGRATION.md).
+Core-only artifacts and legacy reviewed-operation policy cannot authorize it.

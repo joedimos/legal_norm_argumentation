@@ -1,0 +1,80 @@
+{
+  "commands": [
+    "python -m pytest -q",
+    "python -m src.cli benchmark --backend exhaustive",
+    "python -m src.cli benchmark --backend z3",
+    "python -m src.cli experiment-benchmark --backend exhaustive",
+    "python -m src.cli experiment-benchmark --backend z3",
+    "python -m src.cli family-benchmark",
+    "python -m src.cli faithfulness",
+    "VLE_RUN_NATIVE_PYREASON=1 python -m pytest -q tests/test_pyreason_native.py",
+    "python -m src.api_contract",
+    "pip-audit -r requirements-pyreason.txt"
+  ],
+  "decision_authorized": false,
+  "dependency_audit": {
+    "command": "pip-audit -r requirements-pyreason.txt",
+    "known_vulnerabilities": 0,
+    "pytest": "9.0.3"
+  },
+  "kind": "synthetic",
+  "legal_certification": false,
+  "limitations": [
+    "Synthetic/unreviewed engineering evidence only; no independent real-IP accuracy or release approval.",
+    "Native timings concern bounded synthetic 1/8/32/64-norm workloads, not a production service SLO.",
+    "Docker unavailable locally; native image evidence is produced by CI.",
+    "Negative result: the core evaluator is faster on these small flat workloads.",
+    "CI artifacts bind their own exact build; this historical report records its named source commit."
+  ],
+  "native": {
+    "activation_cases": 162,
+    "api_and_isolation_tests_passed": 2,
+    "core_p95_ms": 0.5475139998907252,
+    "graph_cases": 7,
+    "iterations": 128,
+    "native_is_faster": false,
+    "p95_ms": 323.9190649999273,
+    "runtime_sha256": "4fee4e6cc19ed24c5c38f2fcdf277c374da6b3ee8bb15de88222f76cb483c773",
+    "startup_ms": 2235.483644999931,
+    "status": "passed"
+  },
+  "regressions": {
+    "core_install": {
+      "passed": 583,
+      "skipped": 24
+    },
+    "experiments_exhaustive": {
+      "passed": 19,
+      "total": 19
+    },
+    "experiments_z3": {
+      "passed": 19,
+      "total": 19
+    },
+    "faithfulness": {
+      "cases": 12,
+      "status": "reported"
+    },
+    "families": {
+      "passed": 15,
+      "total": 15
+    },
+    "full_with_verification": {
+      "passed": 601,
+      "skipped": 6
+    },
+    "semantic_exhaustive": {
+      "passed": 62,
+      "total": 62
+    },
+    "semantic_z3": {
+      "passed": 62,
+      "total": 62
+    }
+  },
+  "review_status": "unreviewed",
+  "schema": "vle-integration-evaluation/v1",
+  "source_commit": "98a5c7f19e28a38f0db0756b4e1cdc72fc76fb71",
+  "source_tree": "20786527f9ca96f9633aa0e7a0c18d45ca5dc84f",
+  "version": "0.9.3"
+}

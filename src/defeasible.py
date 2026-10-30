@@ -37,7 +37,8 @@ def activation(norm: NormInterpretation, context: FactContext) -> Activation:
     return Activation(norm.id, "active", ("conditions_satisfied",))
 
 
-def reason(norms: Sequence[NormInterpretation], context: FactContext, *, backend="core", pyreason_timeout_seconds=60) -> dict:
+def reason(norms: Sequence[NormInterpretation], context: FactContext, *, backend="core", pyreason_timeout_seconds=60,
+           pyreason_program=None, pyreason_worker_mode="isolated") -> dict:
     from .argumentation import OptimizedAAF
     from .conflicts import detect_conflicts
     from .priority import resolve_pair
@@ -48,9 +49,12 @@ def reason(norms: Sequence[NormInterpretation], context: FactContext, *, backend
     if backend == "core":
         activations = {norm.id: activation(norm, context) for norm in norms}
     elif backend == "pyreason":
+        from .pyreason_connector import worker_transport
         from .pyreason_normative import run_activation_backend
 
-        backend_report = run_activation_backend(norms, context, timeout_seconds=pyreason_timeout_seconds)
+        with worker_transport(pyreason_worker_mode):
+            backend_report = run_activation_backend(norms, context, timeout_seconds=pyreason_timeout_seconds,
+                                                    fact_program=pyreason_program)
         activations = ({key: Activation(key, item["status"], tuple(item["reasons"]))
                         for key, item in backend_report["activations"].items()}
                        if backend_report["status"] == "computed" else

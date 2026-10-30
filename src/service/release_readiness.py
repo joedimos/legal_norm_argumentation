@@ -9,6 +9,7 @@ from src.resources import resource_path
 
 from .automatic_imports import aware, configuration_hash, jobs
 from .db_models import ImportCursorRecord
+from .pyreason_release import pyreason_release_gate
 from .release_policy import deployment_release_gate
 
 
@@ -59,6 +60,9 @@ def release_readiness(settings, database, *, now=None):
     check("recent_import_batches", len(freshness) == len(required) and all(x["passed"] for x in freshness),
           "Complete fresh successful batches for the French IP code and each U.S. IP topic; this does not establish corpus completeness.")
     release = deployment_release_gate(settings)
+    if settings.pyreason_enabled:
+        check("pyreason_backend_qualification", pyreason_release_gate(settings)["passed"],
+              "Qualify this native runtime/build, persisted native load, and independently signed held-out IP benchmark.")
     check("pinned_external_evidence", release["passed"],
           "Supply current signed held-out legal annotations, model evidence, source probes and staging smoke/load/restore reports.")
     return {"schema": "vle-release-readiness/v1", "status": "prerequisites_met" if all(c["passed"] for c in checks) else "blocked",

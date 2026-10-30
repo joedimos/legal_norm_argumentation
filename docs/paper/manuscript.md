@@ -335,3 +335,25 @@ Repository: https://github.com/joedimos/legal_norm_argumentation. Runtime-code s
 [11] An, C., Bayless, S., Buliani, S., et al. (2026). A Neurosymbolic Approach to Natural Language Formalization and Verification. arXiv:2511.09008v2, revised 13 July 2026. https://arxiv.org/abs/2511.09008
 
 [12] Horner, E., Mateis, C., Governatori, G., and Ciabattoni, A. (2025). Toward Robust Legal Text Formalization into Defeasible Deontic Logic using LLMs. arXiv:2506.08899v3, revised 31 December 2025. https://arxiv.org/abs/2506.08899
+
+
+## Native-backend implementation addendum (0.9.3)
+
+The optional PyReason backend now computes a bounded relational/temporal interval
+fragment and supplies exact derived facts to typed norm activation, priority and
+compliance. An independent finite oracle checks every projected query; disagreement
+or a bound hit blocks the native result. A reusable bounded worker and a non-root
+read-only native image support deployment. Separate native-engine jobs exercise
+162 synthetic activation contexts, temporal expiry/chaining, relational joins,
+soft intervals and seeded/unseeded cycles. Mixed 1/8/32/64-norm timings preserve
+startup and all observations separately. The core is faster on small flat examples;
+no speedup claim is made. These are implementation checks on synthetic, unreviewed
+data, not independent legal validation. The earlier evaluation counts in this
+manuscript remain historical snapshots, not counts for this addendum.
+
+Native organizational release additionally requires runtime-specific evidence,
+independently signed held-out IP judgments, representative persisted load and all
+existing exact-case legal review gates. Content hashes do not establish experimental
+truth. No independent real-IP qualification, legal accuracy, certification or
+Python formal-verification claim follows from these additions. The supported
+fragment deliberately excludes arbitrary upstream annotations/neural functions.

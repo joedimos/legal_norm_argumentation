@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import logging
+from contextlib import asynccontextmanager
 from typing import Any
 
 from fastapi import Depends, FastAPI, Header, HTTPException, Request
@@ -9,6 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, Response
 from prometheus_client import CONTENT_TYPE_LATEST, generate_latest
 from sqlalchemy.orm import Session
+from starlette.concurrency import run_in_threadpool
 
 from src.audit_bundle import canonical_json, create_bundle, digest, runtime_evidence
 from src.formalization import formalize_candidates
@@ -25,6 +27,7 @@ from .ip_release import source_scope_gate
 from .logging import configure_logging
 from .metrics import LIFECYCLE_RUNS
 from .middleware import MaxBodySizeMiddleware, request_context_middleware
+from .pyreason_release import pyreason_release_gate
 from .rate_limit import DatabaseRateLimiter
 from .release_policy import case_review_gate, deployment_release_gate
 from .repository import (
@@ -98,12 +101,27 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     configure_logging(settings.log_level)
     configure_telemetry(settings)
 
+    @asynccontextmanager
+    async def lifespan(app):
+        if settings.pyreason_warmup:
+            from src.pyreason_warmup import warm_native
+            app.state.pyreason_startup = await run_in_threadpool(
+                warm_native, timeout_seconds=settings.pyreason_warmup_timeout_seconds,
+                worker_mode=settings.pyreason_worker_mode)
+        try:
+            yield
+        finally:
+            if settings.pyreason_warmup:
+                from src.pyreason_pool import close_worker
+                close_worker()
+
     app = FastAPI(
         title="Legal Norm Argumentation Service",
         version=settings.service_version,
         docs_url="/docs" if settings.allow_docs else None,
         redoc_url=None,
         openapi_url="/openapi.json" if settings.allow_docs else None,
+        lifespan=lifespan,
     )
     app.include_router(workflow_router)
     from .workflow_ui import register_ui
@@ -112,6 +130,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     if settings.auto_create_schema:
         database.create_schema_for_tests()
     app.state.settings = settings
+    app.state.pyreason_startup = {"status": "pending" if settings.pyreason_warmup else "not_required"}
     app.state.db = database
     app.state.api_key_store = APIKeyStore(settings.api_keys)
     app.state.rate_limiter = DatabaseRateLimiter(database, settings.rate_limit_per_minute)
@@ -147,6 +166,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     @app.get("/health/ready", include_in_schema=False)
     def ready():
         healthy = database.ready(require_migrations=settings.environment == "production")
+        healthy = healthy and (not settings.pyreason_warmup or app.state.pyreason_startup["status"] == "ready")
         if not healthy:
             return JSONResponse(status_code=503, content={"status": "not_ready"})
         return {"status": "ready"}
@@ -155,7 +175,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     def release_status(principal: Principal = Depends(require_roles("reader", "operator", "reviewer", "auditor"))):
         return {"release": deployment_release_gate(settings), "inference_enabled": settings.inference_enabled,
                 "build_revision": settings.build_revision, "release_enforcement": settings.release_enforcement,
-                "case_review_required": settings.release_enforcement == "strict", "legal_certification": False}
+                "case_review_required": settings.release_enforcement == "strict", "legal_certification": False,
+                "pyreason": pyreason_release_gate(settings)}
 
     @app.get("/metrics", include_in_schema=False, dependencies=[Depends(verify_metrics_token)])
     def metrics() -> Response:
@@ -374,6 +395,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     def evaluation_payload(payload, *, exclude=None):
         data = payload.model_dump(mode="json", exclude=exclude)
+        if payload.pyreason_program is None:
+            data.pop("pyreason_program", None)
         if payload.reasoning_backend == "core":
             # Preserve legacy idempotency and signed evaluation-target bytes.
             data.pop("reasoning_backend", None)
@@ -381,10 +404,15 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         return data
 
     def reasoning_options(payload):
+        if payload.pyreason_program is not None and payload.reasoning_backend != "pyreason":
+            raise HTTPException(422, "graph inference requires the PyReason backend")
         if payload.reasoning_backend == "pyreason" and not settings.pyreason_enabled:
             raise HTTPException(503, "PyReason normative backend is not enabled on this deployment")
+        if payload.reasoning_backend == "pyreason" and settings.pyreason_warmup and app.state.pyreason_startup["status"] != "ready":
+            raise HTTPException(503, "Native backend startup has not completed")
         return {"reasoning_backend": payload.reasoning_backend,
-                "pyreason_timeout_seconds": payload.reasoning_timeout_seconds}
+                "pyreason_timeout_seconds": payload.reasoning_timeout_seconds,
+                "pyreason_program": payload.pyreason_program, "pyreason_worker_mode": settings.pyreason_worker_mode}
 
     def target_snapshot(session, source, payload, result):
         snapshot = {"schema": "vle-evaluation-target/v1", "build_revision": settings.build_revision,
@@ -395,6 +423,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             snapshot["release_profile"] = settings.release_profile
             snapshot["model_revision"] = settings.model_revision
             snapshot["source_provenance"] = source.extraction_audit.get("provenance", {})
+        if payload.reasoning_backend == "pyreason" and settings.pyreason_worker_mode != "isolated":
+            snapshot["context"]["backend_runtime"] = {"worker_mode": settings.pyreason_worker_mode}
         return snapshot, digest(canonical_json(snapshot))
 
     @app.post("/v1/sources/{source_id}/release-target")
@@ -462,15 +492,17 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         source_scope = source_scope_gate(settings, source, snapshot["context"])
         assessment = session.get(WorkflowRecord, payload.legal_assessment_id) if payload.legal_assessment_id else None
         case = case_review_gate(settings, assessment, target_hash, source.content_hash,
-                                require_grounding=bool(payload.facts or payload.observed_actions or payload.actor), context=snapshot["context"]) if payload.high_stakes else {"passed": False}
+                                require_grounding=bool(payload.facts or payload.observed_actions or payload.actor or payload.pyreason_program), context=snapshot["context"]) if payload.high_stakes else {"passed": False}
         if assessment is not None and assessment.request_payload.get("source_id") != source.id:
             case = {"passed": False, "reason": "case_review_source_mismatch"}
-        # Existing release artifacts qualify only the core backend. A completed
-        # PyReason computation is operational evidence, not a new authorization.
-        backend_release_qualified = payload.reasoning_backend == "core"
+        # Native computation alone is insufficient. The additional gate requires
+        # exact runtime/build, native load evidence and independently signed IP data.
+        backend_release = ({"name": "core", "passed": True, "release_qualified": True}
+                           if payload.reasoning_backend == "core" else pyreason_release_gate(settings))
+        backend_release_qualified = backend_release["passed"]
         release_ready = bool(backend_release_qualified and ready and release["passed"] and case["passed"] and source_scope["passed"])
-        external_validation_satisfied = bool(release["passed"] and case["passed"])
-        reviewed_operation = bool(backend_release_qualified and payload.high_stakes and ready and settings.release_enforcement == "reviewed" and settings.release_profile == "legacy")
+        external_validation_satisfied = bool(backend_release_qualified and release["passed"] and case["passed"])
+        reviewed_operation = bool(payload.reasoning_backend == "core" and payload.high_stakes and ready and settings.release_enforcement == "reviewed" and settings.release_profile == "legacy")
         authorized = release_ready or reviewed_operation
         override_used = bool(authorized and not external_validation_satisfied)
         result["production_release"] = {"authorized": authorized, "evaluation_target_sha256": target_hash,
@@ -480,11 +512,11 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                                        "deployment": release, "independent_case_review": case, "legal_certification": False}
         if settings.release_profile != "legacy":
             result["production_release"].update(profile=settings.release_profile, source_scope=source_scope)
-        if not backend_release_qualified:
-            result["production_release"]["reasoning_backend"] = {"name": "pyreason", "release_qualified": False}
-            if payload.high_stakes:
+        if payload.reasoning_backend == "pyreason":
+            result["production_release"]["reasoning_backend"] = backend_release
+            if payload.high_stakes and not backend_release_qualified:
                 result["readiness"]["gates"].append({"gate": "reasoning_backend_release_qualification", "passed": False,
-                                                    "explanation": "Existing release artifacts do not qualify the PyReason backend."})
+                                                    "explanation": "Current native runtime, load and independently signed IP qualification evidence is required."})
                 result["readiness"]["failed_gates"].append("reasoning_backend_release_qualification")
                 result["readiness"]["status"] = "not_ready"
         result["authorization_scope"] = ("organizational_release" if release_ready else "reviewed_operation" if reviewed_operation
@@ -510,6 +542,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             return JSONResponse(status_code=409, content={"run_id": cached.response_payload.get("run_id"),
                 "decision_authorized": False, "production_release": result["production_release"],
                 "detail": "historical response has different authorization evidence/policy; submit a new Idempotency-Key"})
+        if "decision_authorized" in result:
+            result["decision_authorized"] = authorized  # Only the existing service release policy can authorize.
         run = create_run(
             session,
             source_id=source.id,
@@ -534,7 +568,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         LIFECYCLE_RUNS.labels(str(authorized).lower(), str(payload.high_stakes).lower()).inc()
         status_code = 200 if authorized or not payload.high_stakes else 409
         if authorized or not payload.high_stakes:
-            response_payload = {"run_id": run.id, "decision_authorized": authorized, **result}
+            response_payload = {**result, "run_id": run.id, "decision_authorized": authorized}
         else:
             response_payload = {
                 "run_id": run.id,

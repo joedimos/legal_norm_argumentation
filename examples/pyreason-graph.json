@@ -1,0 +1,132 @@
+{
+  "schema": "vle-pyreason-graph/v1",
+  "entities": [
+    "operator",
+    "work"
+  ],
+  "predicates": {
+    "license_record": 2,
+    "license_effective": 2,
+    "licensed": 2
+  },
+  "horizon": 2,
+  "facts": [
+    {
+      "atom": {
+        "predicate": "license_record",
+        "arguments": [
+          "operator",
+          "work"
+        ]
+      },
+      "interval": [
+        1,
+        1
+      ],
+      "start": 0,
+      "end": 0
+    }
+  ],
+  "rules": [
+    {
+      "id": "synthetic-delay",
+      "head": {
+        "predicate": "license_effective",
+        "arguments": [
+          "$x",
+          "$y"
+        ]
+      },
+      "body": [
+        {
+          "atom": {
+            "predicate": "license_record",
+            "arguments": [
+              "$x",
+              "$y"
+            ]
+          },
+          "interval": [
+            1,
+            1
+          ]
+        }
+      ],
+      "interval": [
+        1,
+        1
+      ],
+      "delay": 1
+    },
+    {
+      "id": "synthetic-chain",
+      "head": {
+        "predicate": "licensed",
+        "arguments": [
+          "$x",
+          "$y"
+        ]
+      },
+      "body": [
+        {
+          "atom": {
+            "predicate": "license_effective",
+            "arguments": [
+              "$x",
+              "$y"
+            ]
+          },
+          "interval": [
+            1,
+            1
+          ]
+        }
+      ],
+      "interval": [
+        1,
+        1
+      ],
+      "delay": 0
+    }
+  ],
+  "queries": [
+    {
+      "id": "before",
+      "atom": {
+        "predicate": "licensed",
+        "arguments": [
+          "operator",
+          "work"
+        ]
+      },
+      "at": 0
+    },
+    {
+      "id": "effective",
+      "atom": {
+        "predicate": "licensed",
+        "arguments": [
+          "operator",
+          "work"
+        ]
+      },
+      "at": 1
+    },
+    {
+      "id": "expired",
+      "atom": {
+        "predicate": "licensed",
+        "arguments": [
+          "operator",
+          "work"
+        ]
+      },
+      "at": 2
+    }
+  ],
+  "bindings": {
+    "licensed": "effective"
+  },
+  "kind": "synthetic",
+  "review_status": "unreviewed"
+}

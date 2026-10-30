@@ -1,0 +1,124 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "schema",
+    "status",
+    "review_status",
+    "decision_authorized",
+    "legal_certification",
+    "bounds",
+    "answers",
+    "derived_facts"
+  ],
+  "properties": {
+    "schema": {
+      "const": "vle-pyreason-inference/v1"
+    },
+    "status": {
+      "enum": [
+        "computed",
+        "unknown"
+      ]
+    },
+    "review_status": {
+      "const": "unreviewed"
+    },
+    "decision_authorized": {
+      "const": false
+    },
+    "legal_certification": {
+      "const": false
+    },
+    "bounds": {
+      "type": "object"
+    },
+    "answers": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "minItems": 2,
+        "maxItems": 2,
+        "items": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    },
+    "derived_facts": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "boolean"
+      }
+    },
+    "reason": {
+      "type": "string"
+    },
+    "independent_check": {
+      "const": "matched"
+    },
+    "backend_version": {
+      "const": "3.8.0"
+    },
+    "worker_mode": {
+      "enum": [
+        "pooled",
+        "isolated"
+      ]
+    },
+    "program_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "source_program_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "computed"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "program",
+          "program_sha256",
+          "source_program_sha256",
+          "symbol_maps",
+          "backend_version",
+          "independent_check",
+          "uncertain_bindings"
+        ],
+        "properties": {
+          "answers": {
+            "minProperties": 1
+          }
+        },
+        "not": {
+          "required": [
+            "reason"
+          ]
+        }
+      },
+      "else": {
+        "required": [
+          "reason"
+        ],
+        "properties": {
+          "answers": {
+            "maxProperties": 0
+          },
+          "derived_facts": {
+            "maxProperties": 0
+          }
+        }
+      }
+    }
+  ]
+}
