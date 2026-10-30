@@ -164,3 +164,9 @@ these synthetic workloads. The core evaluator remains substantially faster on
 small flat norms; PyReason supplies relational/temporal inference and a second
 computational implementation. Full deployment-scale performance and independent
 legal evaluation remain external release requirements.
+
+
+The recorded local run is `PYREASON_NATIVE_QUALIFICATION.json`, with command and
+regression accounting in `RC_0_9_3_EVALUATION.json`. It binds source commit
+`98a5c7f19e28a38f0db0756b4e1cdc72fc76fb71`. Later CI artifacts bind their own
+exact build; the historical local report is not deployment release approval.
