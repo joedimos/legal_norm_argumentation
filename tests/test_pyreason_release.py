@@ -132,11 +132,19 @@ def test_native_probe_never_counts_session_only_or_unknown_as_evaluation_load():
 
 def test_full_service_native_authorization_requires_both_backend_and_exact_case_gates(tmp_path,monkeypatch):
     # Test keys, fabricated reports and mocked engine are explicitly synthetic.
+    from src.pyreason_connector import BACKEND_VERSION
+    from src.pyreason_program import execute_program
     from tests.test_production_workflows import post, signed_packet, source_review
-    from tests.test_pyreason_normative import worker
     from tests.test_service import REVIEWER_TOKEN, ingest
-    # The existing worker fixture function supplies a deterministic recorded engine.
-    worker.__wrapped__(monkeypatch)
+    from tools.fixtures import pyreason as fake
+    # Pooled transport needs its own explicit stand-in; a real subprocess is forbidden.
+    def receipt(program,timeout):
+        return {'status':'observed','backend_version':BACKEND_VERSION,
+                'input_sha256':program_digest(program),'annotations':execute_program(program,fake)}
+    monkeypatch.setattr('src.pyreason_pool.invoke',receipt)
+    def forbidden(*a,**k):
+        pytest.fail('offline gate test attempted a native subprocess')
+    monkeypatch.setattr('subprocess.Popen',forbidden)
     cfg,m,release=synthetic_backend_graph(tmp_path,monkeypatch)
     monkeypatch.setattr('src.service.app.source_scope_gate',lambda *a:{'passed':True,'basis':'synthetic_gate_mechanics_only'})
     with TestClient(create_app(cfg)) as client:

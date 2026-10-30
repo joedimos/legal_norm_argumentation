@@ -44,7 +44,7 @@ def native_identity(pr):
     ]
     source = {name: hashlib.sha256((root / name).read_bytes()).hexdigest() for name in names}
     packages = {
-        name: version(name) for name in ["pyreason", "numba", "llvmlite", "numpy", "networkx", "pandas", "PyYAML"]
+        name: version(name) for name in ["pyreason", "numba", "llvmlite", "numpy", "networkx", "pandas", "PyYAML", "pytest", "memory-profiler", "psutil"]
     }
     result = {
         "provider": "native",
