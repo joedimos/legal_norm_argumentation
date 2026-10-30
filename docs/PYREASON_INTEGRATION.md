@@ -1,3 +1,9 @@
+# 0.9.3 update
+
+For active relational/temporal inference and backend release qualification, see
+[the native integration](PYREASON_NATIVE_INTEGRATION.md). This document describes
+the preserved legacy advisory graph API.
+
 # PyReason graph-diagnostic integration contract
 
 For the required normative activation backend introduced in 0.9.2, see

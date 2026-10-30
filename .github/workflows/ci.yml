@@ -34,7 +34,9 @@ jobs:
           cache: pip
       - run: python -m pip install --upgrade pip
       - run: python -m pip install -e '.[dev]'
-      - run: python -m pytest -q tests/test_pyreason_connector.py tests/test_pyreason_normative.py --cov=src.pyreason_connector --cov=src.pyreason_worker --cov=src.pyreason_program --cov=src.pyreason_normative --cov=src.normative_evaluation --cov-fail-under=80
+      - run: python -m pytest -q tests/test_pyreason_connector.py tests/test_pyreason_normative.py tests/test_pyreason_graph.py tests/test_pyreason_pool.py tests/test_pyreason_qualification.py tests/test_pyreason_release.py --cov=src.pyreason_graph --cov=src.pyreason_pool --cov=src.pyreason_runtime --cov=src.pyreason_qualification --cov=src.pyreason_warmup --cov=src.service.pyreason_release --cov=src.pyreason_connector --cov=src.pyreason_worker --cov=src.pyreason_program --cov=src.pyreason_normative --cov=src.normative_evaluation --cov-fail-under=80
+      - run: ruff check src/pyreason_graph.py src/pyreason_pool.py src/pyreason_runtime.py src/pyreason_qualification.py src/pyreason_warmup.py tests/test_pyreason_*.py
+      - run: bandit -q -r src/pyreason_graph.py src/pyreason_pool.py src/pyreason_runtime.py src/pyreason_qualification.py src/pyreason_warmup.py
       - run: ruff check src/pyreason_program.py src/pyreason_normative.py src/normative_evaluation.py tests/test_pyreason_normative.py
       - run: bandit -q -r src/pyreason_program.py src/pyreason_normative.py src/normative_evaluation.py
       - run: python -m src.api_contract
@@ -363,4 +365,89 @@ jobs:
         with:
           name: automated-ip-import-coverage
           path: ip-import-coverage.json
+          if-no-files-found: error
+
+  pyreason-native:
+    # Local CPU inference, no live model or provider calls. Required integration job.
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.12", "3.13"]
+    env:
+      VLE_RUN_NATIVE_PYREASON: "1"
+      VLE_NATIVE_REPORT_PATH: native-qualification.json
+      NUMBA_NUM_THREADS: "1"
+      OMP_NUM_THREADS: "1"
+      OPENBLAS_NUM_THREADS: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+      - run: python -m pip install -e '.[dev,verification,pyreason]'
+      - run: python -m pip check
+      - name: Native finite-fragment, isolation, performance and API checks
+        run: python -m pytest -q tests/test_pyreason_native.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pyreason-native-${{ matrix.python-version }}
+          path: native-qualification.json
+          if-no-files-found: error
+
+  pyreason-native-image:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          target: native
+          push: false
+          tags: legal-norm-argumentation:native-ci
+          load: true
+          provenance: false
+          sbom: false
+      - name: Native inference as non-root on a read-only root with no network
+        run: |
+          docker run --rm --network none --read-only --tmpfs /tmp:rw,noexec,nosuid,size=512m --cap-drop ALL --security-opt no-new-privileges --pids-limit 128 --memory 4g --cpus 2 --user 10001:10001 -v native_cache:/usr/local/lib/python3.13/site-packages/pyreason/cache legal-norm-argumentation:native-ci python -m src.pyreason_qualification --iterations 32 --timeout-seconds 600 --revision "$GITHUB_SHA" > native-image-qualification.json
+          python - <<'PYTHON'
+          import json
+          result = json.load(open('native-image-qualification.json'))
+          assert result['status'] == 'passed' and result['native_activation_cases'] == 162
+          assert result['native_graph_cases'] >= 5 and not result['decision_authorized']
+          PYTHON
+      - name: Native Compose profile forces engine and warmup
+        env:
+          POSTGRES_PASSWORD: ci-config-only-password
+          VLE_BUILD_REVISION: ${{ github.sha }}
+          VLE_API_KEYS_JSON: '[]'
+          VLE_METRICS_BEARER_TOKEN: ci-config-only-not-a-real-secret-123456
+          VLE_PYREASON_ENABLED: "false"
+        run: |
+          docker compose -f docker-compose.yml -f docker-compose.pyreason.yml config --format json > /tmp/native-compose.json
+          python - <<'PYTHON'
+          import json
+          service = json.load(open('/tmp/native-compose.json'))['services']['app']
+          assert service['read_only'] and service['build']['target'] == 'native'
+          assert service['environment']['VLE_PYREASON_ENABLED'] == 'true'
+          assert service['environment']['VLE_PYREASON_WARMUP'] == 'true'
+          PYTHON
+      - uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: legal-norm-argumentation:native-ci
+          format: table
+          exit-code: "1"
+          ignore-unfixed: true
+          severity: HIGH,CRITICAL
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pyreason-native-image
+          path: native-image-qualification.json
           if-no-files-found: error

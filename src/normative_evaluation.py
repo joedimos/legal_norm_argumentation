@@ -11,7 +11,7 @@ from .pyreason_connector import digest
 def evaluate_request(request, *, backend=None, timeout_seconds=None):
     if (
         not isinstance(request, dict)
-        or set(request) - {"schema", "norms", "context", "backend", "timeout_seconds"}
+        or set(request) - {"schema", "norms", "context", "backend", "timeout_seconds", "pyreason_program", "worker_mode"}
         or request.get("schema") != "vle-normative-evaluation/v1"
     ):
         raise ValueError("invalid normative evaluation request")
@@ -47,7 +47,8 @@ def evaluate_request(request, *, backend=None, timeout_seconds=None):
     context = FactContext(
         facts=facts, actor=data.get("actor"), observed_actions=tuple(actions), at_date=data.get("at_date")
     )
-    result = evaluate(norms, context, backend=selected, pyreason_timeout_seconds=timeout)
+    result = evaluate(norms, context, backend=selected, pyreason_timeout_seconds=timeout,
+                      pyreason_program=request.get("pyreason_program"), pyreason_worker_mode=request.get("worker_mode", "isolated"))
     return {
         "schema": "vle-normative-evaluation-result/v1",
         "status": result["status"],

@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "schema",
+    "status",
+    "provider",
+    "bounds",
+    "checks",
+    "worker_mode",
+    "decision_authorized",
+    "legal_certification",
+    "corpus_sha256",
+    "adapter_contract_sha256"
+  ],
+  "properties": {
+    "schema": {
+      "const": "vle-pyreason-qualification/v2"
+    },
+    "status": {
+      "enum": [
+        "passed",
+        "unknown"
+      ]
+    },
+    "provider": {
+      "const": "native"
+    },
+    "decision_authorized": {
+      "const": false
+    },
+    "legal_certification": {
+      "const": false
+    },
+    "corpus_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "adapter_contract_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "worker_mode": {
+      "enum": [
+        "isolated",
+        "pooled"
+      ]
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "passed"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "passed": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "bounds": {
+      "type": "object"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "passed"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "runtime",
+          "performance",
+          "native_activation_cases",
+          "native_graph_cases",
+          "startup_ms"
+        ],
+        "properties": {
+          "native_activation_cases": {
+            "const": 162
+          },
+          "native_graph_cases": {
+            "type": "integer",
+            "minimum": 7
+          },
+          "checks": {
+            "items": {
+              "properties": {
+                "passed": {
+                  "const": true
+                }
+              }
+            }
+          }
+        },
+        "not": {
+          "required": [
+            "reason"
+          ]
+        }
+      }
+    }
+  ]
+}

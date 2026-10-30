@@ -1,0 +1,27 @@
+# Apply after docker-compose.yml (and docker-compose.rc.yml for strict IP release).
+# Enable the actual engine, prewarm before readiness, keep the root read-only.
+services:
+  app:
+    build:
+      context: .
+      target: native
+    environment:
+      VLE_PYREASON_ENABLED: "true"
+      VLE_PYREASON_WORKER_MODE: pooled
+      VLE_PYREASON_WARMUP: "true"
+      VLE_PYREASON_WARMUP_TIMEOUT_SECONDS: "300"
+      VLE_PYREASON_RELEASE_PATH: ${VLE_PYREASON_RELEASE_PATH:-}
+      VLE_PYREASON_RELEASE_SHA256: ${VLE_PYREASON_RELEASE_SHA256:-}
+      NUMBA_NUM_THREADS: "1"
+      OMP_NUM_THREADS: "1"
+      OPENBLAS_NUM_THREADS: "1"
+    volumes:
+      - native_app_cache:/usr/local/lib/python3.13/site-packages/pyreason/cache
+    mem_limit: 4g
+    cpus: 2
+    pids_limit: 128
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health/ready', timeout=2).read()"]
+      start_period: 300s
+volumes:
+  native_app_cache:

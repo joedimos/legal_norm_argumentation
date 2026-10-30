@@ -26,8 +26,13 @@ class Settings(BaseSettings):
 
     environment: Literal["development", "test", "production"] = "development"
     service_name: str = "legal-norm-argumentation"
-    service_version: str = "0.9.2"
+    service_version: str = "0.9.3"
     pyreason_enabled: bool = False
+    pyreason_worker_mode: Literal["isolated", "pooled"] = "isolated"
+    pyreason_warmup: bool = False
+    pyreason_warmup_timeout_seconds: int = Field(default=300, ge=1, le=300)
+    pyreason_release_path: str | None = None
+    pyreason_release_sha256: str | None = Field(default=None, pattern=r"^[0-9a-f]{64}$")
     build_revision: str | None = Field(default=None, pattern=r"^[0-9a-f]{40}$")
     database_url: str = "sqlite+pysqlite:///./vle_legato.db"
     database_pool_size: int = Field(default=10, ge=1, le=100)
@@ -101,13 +106,15 @@ class Settings(BaseSettings):
             raise ValueError("import lease must exceed the run deadline by more than ten seconds")
         return self
 
-    @field_validator("model_revision", "reviewer_registry_path", "reviewer_registry_sha256", "release_evidence_path", "release_evidence_sha256", mode="before")
+    @field_validator("model_revision", "reviewer_registry_path", "reviewer_registry_sha256", "release_evidence_path", "release_evidence_sha256", "pyreason_release_path", "pyreason_release_sha256", mode="before")
     @classmethod
     def empty_optional_evidence(cls, value):
         return None if value == "" else value
 
     @model_validator(mode="after")
     def validate_workflow_settings(self) -> Settings:
+        if self.pyreason_warmup and not self.pyreason_enabled:
+            raise ValueError("PyReason warmup requires the native backend to be enabled")
         if self.release_profile == "ip-supervised-v1":
             if self.release_enforcement != "strict":
                 raise ValueError("the IP release profile requires strict release enforcement")
@@ -122,7 +129,8 @@ class Settings(BaseSettings):
         if len(set(tokens)) != len(tokens):
             raise ValueError("API key tokens must be unique across configured principals")
         for path, sha in ((self.reviewer_registry_path, self.reviewer_registry_sha256),
-                          (self.release_evidence_path, self.release_evidence_sha256)):
+                          (self.release_evidence_path, self.release_evidence_sha256),
+                          (self.pyreason_release_path, self.pyreason_release_sha256)):
             if bool(path) != bool(sha):
                 raise ValueError("evidence/registry paths require separately pinned SHA-256 digests")
         if self.inference_enabled:

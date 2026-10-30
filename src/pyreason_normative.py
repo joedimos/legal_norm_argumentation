@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import subprocess  # nosec B404
+import time
+from dataclasses import replace
 
 from .defeasible import Activation, activation
 from .pyreason_connector import (
@@ -11,6 +13,7 @@ from .pyreason_connector import (
     MAX_PARALLEL_WORKERS,
     ResourceBound,
     WorkerFailure,
+    current_worker_mode,
     digest,
     interval,
     run_worker,
@@ -95,11 +98,23 @@ def unknown_report(reason, timeout_seconds=60):
     }
 
 
-def run_activation_backend(norms, context, *, timeout_seconds=60):
+def run_activation_backend(norms, context, *, timeout_seconds=60, fact_program=None):
     report = unknown_report("computation_not_completed", timeout_seconds)
+    started = time.monotonic()
     try:
         if type(timeout_seconds) is not int or not 1 <= timeout_seconds <= 300:
             raise ValueError("invalid timeout")
+        if fact_program is not None:
+            from .pyreason_graph import infer_graph
+            inference = infer_graph(fact_program, timeout_seconds=timeout_seconds)
+            report["fact_inference"] = inference
+            if inference["status"] != "computed":
+                report["reason"] = "required_fact_inference_incomplete"
+                return report
+            if any(k in context.facts and context.facts[k] != v for k, v in inference["derived_facts"].items()):
+                report["reason"] = "derived_observation_conflict"
+                return report
+            context = replace(context, facts={**context.facts, **inference["derived_facts"]})
         program, names = compile_activations(norms, context)
         report.update(
             input_sha256=digest(program),
@@ -116,7 +131,10 @@ def run_activation_backend(norms, context, *, timeout_seconds=60):
             program=program,
             node_map=names,
         )
-        output = run_worker(program, timeout_seconds)
+        remaining = timeout_seconds - (time.monotonic() - started)
+        if remaining <= 0:
+            raise ResourceBound("backend_total_time_bound")
+        output = run_worker(program, remaining if fact_program is not None else timeout_seconds)
         annotations = output["annotations"]
         if not isinstance(annotations, dict) or set(annotations) != set(OUTCOMES):
             raise ValueError("missing activation outcomes")
@@ -149,9 +167,12 @@ def run_activation_backend(norms, context, *, timeout_seconds=60):
                 ],
             )
             return report
+        if time.monotonic() - started >= timeout_seconds:
+            raise ResourceBound("backend_total_time_bound")
         report.update(
             status="computed",
             backend_version=BACKEND_VERSION,
+            worker_mode=current_worker_mode(),
             independent_check="matched",
             activations={
                 key: {"norm_id": key, "status": value.status, "reasons": list(value.reasons)}

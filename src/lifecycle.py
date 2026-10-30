@@ -38,9 +38,15 @@ def run_lifecycle(
     interpretation_selections: Mapping[str, Mapping[str, str]] | None = None,
     reasoning_backend: str = "core",
     pyreason_timeout_seconds: int = 60,
+    pyreason_program: Mapping | None = None,
+    pyreason_worker_mode: str = "isolated",
 ) -> dict:
     if reasoning_backend not in {"core", "pyreason"}:
         raise ValueError("unsupported normative reasoning backend")
+    if pyreason_program is not None and reasoning_backend != "pyreason":
+        raise ValueError("graph inference requires the PyReason backend")
+    if pyreason_worker_mode not in {"isolated", "pooled"}:
+        raise ValueError("unsupported PyReason worker mode")
     formal_sets = formalize_candidates(candidates, authorities=authorities)
     selections = interpretation_selections or {}
     resolved_sets = []
@@ -64,7 +70,8 @@ def run_lifecycle(
                           "reasoning": {"unresolved_conflicts": [], "backend": unknown_report(
                               "approved_unambiguous_formalizations_required", pyreason_timeout_seconds)}}
         else:
-            compliance = evaluate(selected, context, backend="pyreason", pyreason_timeout_seconds=pyreason_timeout_seconds)
+            compliance = evaluate(selected, context, backend="pyreason", pyreason_timeout_seconds=pyreason_timeout_seconds,
+                                  pyreason_program=pyreason_program, pyreason_worker_mode=pyreason_worker_mode)
     else:
         compliance = evaluate(selected, context) if selected else {
             "status": "indeterminate", "findings": [], "violations": [],

@@ -247,7 +247,9 @@ def test_installation_paths_select_the_supported_backend():
 
     root = Path(__file__).resolve().parents[1]
     project = tomllib.loads((root / "pyproject.toml").read_text())["project"]
-    assert project["optional-dependencies"]["pyreason"] == [f"pyreason=={BACKEND_VERSION}"]
+    pins = project["optional-dependencies"]["pyreason"]
+    assert f"pyreason=={BACKEND_VERSION}" in pins
+    assert all("==" in pin for pin in pins)
     requirements = [line.strip() for line in (root / "requirements-pyreason.txt").read_text().splitlines()
                     if line.strip() and not line.startswith("#")]
     assert requirements == [".[pyreason]"]

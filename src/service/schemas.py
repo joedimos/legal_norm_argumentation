@@ -31,6 +31,7 @@ class InterpretationSelectionRequest(BaseModel):
 
 class EvaluateRequest(BaseModel):
     reasoning_backend: Literal["core", "pyreason"] = "core"
+    pyreason_program: dict[str, Any] | None = None
     reasoning_timeout_seconds: int = Field(default=60, ge=1, le=300, strict=True)
     facts: dict[str, bool] = Field(default_factory=dict)
     actor: str | None = Field(default=None, max_length=256)

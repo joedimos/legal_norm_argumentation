@@ -71,6 +71,7 @@ def main() -> None:
         "model-doctor",
         "annotation-verify",
         "norm-evaluate",
+        "pyreason-infer",
     ):
         command = subs.add_parser(name)
         command.add_argument("--input", required=True, help="Path to a versioned JSON research request")
@@ -78,6 +79,8 @@ def main() -> None:
         command.add_argument("--revision", help="Full Git SHA of the executing build")
     subs.choices["norm-evaluate"].add_argument("--backend", choices=("core", "pyreason"))
     subs.choices["norm-evaluate"].add_argument("--timeout-seconds", type=int)
+    subs.choices["pyreason-infer"].add_argument("--timeout-seconds", type=int, default=60)
+    subs.choices["pyreason-infer"].add_argument("--worker-mode", choices=("isolated", "pooled"), default="isolated")
     signed = subs.choices["annotation-verify"]
     signed.add_argument("--registry", required=True, help="Public reviewer registry checked outside this assessment")
     signed.add_argument("--expected-registry-sha256", required=True)
@@ -147,6 +150,7 @@ def main() -> None:
         "annotation-sign",
         "annotation-keygen",
         "norm-evaluate",
+        "pyreason-infer",
     }:
         raise SystemExit(_research_command(args))
     text = _read_text(args)
@@ -212,6 +216,8 @@ def _research_command(args) -> int:
     from .model_checking import verify_request
     from .model_runtime import model_doctor, strict_json
     from .normative_evaluation import evaluate_request
+    from .pyreason_connector import worker_transport
+    from .pyreason_graph import infer_graph
     from .research import run_research
     from .research_benchmark import run_benchmarks
     from .response_alignment import run_revision_sequence
@@ -281,7 +287,12 @@ def _research_command(args) -> int:
                     )
                     print(json.dumps(payload, indent=2, ensure_ascii=False, allow_nan=False))
                     return 0 if args.command == "family-review" or payload["all_passed"] else 1
+                def graph_inference(r):
+                    with worker_transport(args.worker_mode):
+                        return infer_graph(r, timeout_seconds=args.timeout_seconds)
+
                 runner = {
+                    "pyreason-infer": graph_inference,
                     "norm-evaluate": lambda r: evaluate_request(r, backend=args.backend, timeout_seconds=args.timeout_seconds),
                     "model-doctor": model_doctor,
                     "annotation-verify": lambda r: assess_signed_annotations(
@@ -306,6 +317,7 @@ def _research_command(args) -> int:
                     if payload.get("status", payload.get("annotation_status"))
                     in {
                         "model_available",
+                        "computed",
                         "awaiting_independent_annotations",
                         "annotations_collected",
                         "verified_bounded",
