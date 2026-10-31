@@ -2,13 +2,17 @@
 
 from __future__ import annotations
 
-import json
+import math
 import time
 from datetime import UTC, datetime
 from email.utils import parsedate_to_datetime
 
 import urllib3
 from urllib3.util import Timeout
+
+from .audit_bundle import canonical_json
+from .http_transport import BoundedHTTPClient, HTTPTransportError, seconds
+from .json_boundary import strict_json
 
 
 class ImportTransportError(RuntimeError):
@@ -28,7 +32,11 @@ def retry_delay(value, *, now=None):
 
 class LegalJSONTransport:
     def __init__(self, *, timeout=12, max_bytes=8_000_000, delay=0, deadline_seconds=120):
-        self.http = urllib3.PoolManager(num_pools=2, cert_reqs="CERT_REQUIRED")
+        seconds(timeout)
+        seconds(deadline_seconds, limit=600)
+        if type(delay) not in (int, float) or not 0 <= delay <= 60 or not math.isfinite(delay):
+            raise ValueError("import delay must be finite and between 0 and 60 seconds")
+        self.http = BoundedHTTPClient(max_bytes=max_bytes)
         self.timeout, self.max_bytes, self.delay = timeout, max_bytes, delay
         self.deadline = time.monotonic() + deadline_seconds
         self.last_request = None
@@ -37,13 +45,16 @@ class LegalJSONTransport:
         # URLs are constructed/allowlisted by each connector. Never follow redirects
         # with credentials, fetch binary download_url fields or request paid PACER data.
         remaining = self.deadline - time.monotonic()
-        wait = max(0, self.delay - (time.monotonic() - self.last_request)) if self.last_request else 0
+        wait = max(0, self.delay - (time.monotonic() - self.last_request)) if self.last_request is not None else 0
         if remaining <= wait:
             raise ImportTransportError("request_time_bound")
         if wait:
             time.sleep(wait)
         remaining = self.deadline - time.monotonic()
+        if remaining <= 0:
+            raise ImportTransportError("request_time_bound")
         self.last_request = time.monotonic()
+        request_deadline = min(self.deadline, self.last_request + self.timeout)
         response = None
         try:
             response = self.http.request(
@@ -67,16 +78,24 @@ class LegalJSONTransport:
             raw = response.read(self.max_bytes + 1)
             if len(raw) > self.max_bytes:
                 raise ImportTransportError("response_size_bound")
-            if time.monotonic() >= self.deadline:
+            if time.monotonic() >= request_deadline:
                 raise ImportTransportError("request_time_bound")
-            from .model_runtime import strict_json
-
             result = strict_json(raw)
             if not isinstance(result, dict):
                 raise ImportTransportError("invalid_response_shape")
+            if time.monotonic() >= request_deadline:
+                raise ImportTransportError("request_time_bound")
             return result
         except ImportTransportError:
             raise
+        except HTTPTransportError as exc:
+            raise ImportTransportError(
+                {
+                    "timeout": "request_time_bound",
+                    "response_size_bound": "response_size_bound",
+                    "capacity_bound": "transport_capacity_bound",
+                }.get(exc.code, "upstream_transport_or_json_error")
+            ) from exc
         except (urllib3.exceptions.HTTPError, OSError, ValueError, TypeError, RecursionError) as exc:
             raise ImportTransportError("upstream_transport_or_json_error") from exc
         finally:
@@ -86,5 +105,5 @@ class LegalJSONTransport:
 
     def post_json(self, url, body, headers):
         return self.request(
-            "POST", url, body=json.dumps(body).encode(), headers={"Content-Type": "application/json", **headers}
+            "POST", url, body=canonical_json(body), headers={"Content-Type": "application/json", **headers}
         )

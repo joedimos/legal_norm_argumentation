@@ -26,7 +26,7 @@ class Settings(BaseSettings):
 
     environment: Literal["development", "test", "production"] = "development"
     service_name: str = "legal-norm-argumentation"
-    service_version: str = "0.9.4"
+    service_version: str = "0.9.5"
     pyreason_enabled: bool = False
     pyreason_worker_mode: Literal["isolated", "pooled"] = "isolated"
     pyreason_warmup: bool = False

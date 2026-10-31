@@ -109,7 +109,7 @@ def test_timeouts_are_classified_without_sensitive_exception_text(monkeypatch):
 
         def clear(self):
             pass
-    monkeypatch.setattr(model_runtime.urllib3, 'PoolManager', Pool)
+    monkeypatch.setattr(model_runtime, 'BoundedHTTPClient', lambda **kw: Pool())
     with pytest.raises(ModelError, match='transport_timeout') as error:
         request_json('GET', 'http://localhost:11434/api/tags', timeout=1)
     assert 'secret' not in str(error.value)

@@ -15,10 +15,18 @@ from .verification import audit_extraction
 
 
 def _load_json(value: str) -> Any:
+    from .audit_bundle import MAX_BYTES
+    from .json_boundary import strict_json
+
     path = Path(value)
     if path.exists():
-        return json.loads(path.read_text(encoding="utf-8"))
-    return json.loads(value)
+        with path.open("rb") as handle:
+            raw = handle.read(MAX_BYTES + 1)
+    else:
+        raw = value.encode("utf-8")
+    if len(raw) > MAX_BYTES:
+        raise ValueError("input exceeds 16 MiB limit")
+    return strict_json(raw)
 
 
 def _read_text(args) -> str:
@@ -211,10 +219,11 @@ def _research_command(args) -> int:
     from .experiments import run_experiment, run_experiment_suite
     from .family_contract import record_family_review
     from .interpretation_family import analyze_family, run_family_benchmark
+    from .json_boundary import strict_json
     from .legal_annotation import annotation_template, assess_annotations, prepare_annotation
     from .live_generation import generate_candidate
     from .model_checking import verify_request
-    from .model_runtime import model_doctor, strict_json
+    from .model_runtime import model_doctor
     from .normative_evaluation import evaluate_request
     from .pyreason_connector import worker_transport
     from .pyreason_graph import infer_graph
@@ -244,15 +253,7 @@ def _research_command(args) -> int:
                 code = 0 if payload["valid"] else 1
             else:
 
-                def unique_keys(pairs):
-                    result = {}
-                    for key, value in pairs:
-                        if key in result:
-                            raise ValueError("duplicate JSON request key")
-                        result[key] = value
-                    return result
-
-                request = json.loads(raw, object_pairs_hook=unique_keys)
+                request = strict_json(raw)
                 registry = None
                 if args.command == "annotation-template":
                     payload = annotation_template(request, reviewer_id=args.reviewer, qualification=args.qualification)

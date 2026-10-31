@@ -528,3 +528,34 @@ def test_duplicate_api_key_tokens_are_rejected(tmp_path):
                {'token': OPERATOR_TOKEN, 'subject': 'b', 'roles': ['reviewer']}]
     with pytest.raises(ValidationError, match='tokens must be unique'):
         settings(tmp_path, api_keys_json=json.dumps(entries))
+
+
+def test_model_deadline_is_terminal_and_never_implicitly_replays(tmp_path, monkeypatch):
+    """Synthetic/unreviewed provider failure; existing fixture review gates apply."""
+    from src import model_runtime
+    from src.http_transport import HTTPTransportError
+
+    calls = []
+
+    class TimeoutClient:
+        def request(self, *_a, **_kw):
+            calls.append("one_provider_attempt")
+            raise HTTPTransportError("timeout")
+
+        def clear(self):
+            pass
+
+    monkeypatch.setattr(model_runtime, "BoundedHTTPClient", lambda **_: TimeoutClient())
+    cfg = settings(tmp_path, inference_enabled=True, model_name="test-model")
+    app = create_app(cfg)
+    with TestClient(app) as client:
+        family_id = base_family(client)
+        body = {"family_workflow_id": family_id, "prompt": "Synthetic deadline fixture."}
+        job_id = post(client, "/v1/workflows/generations", body).json()["id"]
+        assert process_one(app.state.db, cfg)["status"] == "generation_failed"
+        assert process_one(app.state.db, cfg)["status"] == "idle"
+        assert post(client, "/v1/workflows/generations", body).json()["id"] == job_id
+        result = client.get(f"/v1/workflows/{job_id}", headers=auth(OPERATOR_TOKEN)).json()["result"]
+        assert result["reason"] == "transport_timeout" and result["generation_calls"] == 1
+        assert not result["legal_certification"] and not result["deployment_authorized"]
+        assert calls == ["one_provider_attempt"]

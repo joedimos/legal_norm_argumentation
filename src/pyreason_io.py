@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from .audit_bundle import canonical_json as validate_json
-from .model_runtime import strict_json
+from .json_boundary import strict_json
 
 
 def read_json(path, limit, bound):
