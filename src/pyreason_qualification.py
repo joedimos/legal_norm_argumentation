@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 import json
-import math
 import re
+import subprocess  # nosec B404
 import time
 from dataclasses import replace
 
@@ -14,6 +14,7 @@ from .norm_codec import decode_norm
 from .normative_model import FactContext
 from .pyreason_connector import BACKEND_VERSION, ResourceBound, digest, run_worker, worker_transport
 from .pyreason_graph import infer_graph
+from .pyreason_metrics import latency_summary
 from .pyreason_normative import run_activation_backend
 from .pyreason_runtime import contract_sha256
 from .resources import resource_path
@@ -33,6 +34,8 @@ def qualify_native(*, iterations=32, timeout_seconds=600, worker_mode="pooled", 
         raise ValueError("qualification bounds: 1-128 iterations, 1-900 seconds")
     if revision is not None and (not isinstance(revision, str) or not re.fullmatch(r"[0-9a-f]{40}", revision)):
         raise ValueError("revision must be a full lowercase Git SHA")
+    if not isinstance(worker_mode,str) or worker_mode not in {"isolated","pooled"}:
+        raise ValueError("unsupported native worker mode")
     corpus = qualification_corpus()
     report = {
         "schema": "vle-pyreason-qualification/v2",
@@ -43,7 +46,7 @@ def qualify_native(*, iterations=32, timeout_seconds=600, worker_mode="pooled", 
         "build_revision": revision,
         "scope": "synthetic_unreviewed_implementation_and_performance_only",
         "worker_mode": worker_mode,
-        "bounds": {"timeout_seconds": timeout_seconds, "iterations": iterations, "max_cases": 256},
+        "bounds": {"timeout_seconds": timeout_seconds, "iterations": iterations, "max_cases": 256, "max_worker_seconds": 300},
         "checks": [],
         "decision_authorized": False,
         "legal_certification": False,
@@ -66,7 +69,7 @@ def qualify_native(*, iterations=32, timeout_seconds=600, worker_mode="pooled", 
         with worker_transport(worker_mode):
             stamp = time.monotonic()
             identity = run_worker({"mode": "runtime_probe"}, budget())["annotations"]
-            if identity.get("provider") != "native" or identity["packages"]["pyreason"] != BACKEND_VERSION:
+            if identity.get("provider") != "native" or identity["packages"]["pyreason"] != BACKEND_VERSION or identity.get("adapter_contract_sha256") != report["adapter_contract_sha256"]:
                 raise ValueError("not the native engine")
             report["runtime"] = identity
             report["startup_ms"] = (time.monotonic() - stamp) * 1000
@@ -145,28 +148,25 @@ def qualify_native(*, iterations=32, timeout_seconds=600, worker_mode="pooled", 
                     actual["status"] == expected["status"] and actual["reasoning"]["backend"]["status"] == "computed",
                 )
 
-            def summary(values):
-                ordered = sorted(values)
-                return {
-                    "count": len(values),
-                    "p50_ms": ordered[(len(values) - 1) // 2],
-                    "p95_ms": ordered[max(0, math.ceil(0.95 * len(values)) - 1)],
-                    "max_ms": max(values),
-                    "samples_ms": values,
-                }
-
             report["performance"] = {
                 "population": "after_explicit_startup_probe",
                 "norm_counts": [(1, 8, 32, 64)[i % 4] for i in range(iterations)],
-                "native": summary(latencies),
-                "core": summary(baseline),
+                "native": latency_summary(latencies),
+                "core": latency_summary(baseline),
                 "startup_included_in_samples": False,
                 "native_is_faster": sum(latencies) < sum(baseline),
             }
+            if time.monotonic() >= deadline:
+                raise ResourceBound("qualification_total_time_bound")
+            if contract_sha256() != report["adapter_contract_sha256"]:
+                raise ValueError("adapter changed during qualification")
             report["status"] = "passed"
             report["native_graph_cases"] = len(corpus["graph_cases"])
     except ResourceBound as exc:
-        report.update(reason=str(exc), truncated=True)
+        report.update(reason=str(exc), truncated=True, bound_hit=True)
+    except subprocess.TimeoutExpired as exc:
+        report.update(reason="qualification_worker_timeout", truncated=True, bound_hit=True,
+                      worker_timeout_seconds=exc.timeout)
     except Exception:
         # Full per-check failures remain reviewable; never claim partial qualification.
         report["reason"] = "native_qualification_failed_or_incomplete"

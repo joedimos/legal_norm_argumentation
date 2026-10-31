@@ -9,6 +9,7 @@ from fastapi.testclient import TestClient
 
 from src.audit_bundle import canonical_json, digest
 from src.pyreason_connector import digest as program_digest
+from src.pyreason_metrics import latency_summary
 from src.pyreason_qualification import qualification_corpus
 from src.service import pyreason_release as policy
 from src.service.app import create_app
@@ -30,8 +31,9 @@ def synthetic_backend_graph(tmp_path, monkeypatch):
               'checks':[{'name':name,'passed':True} for name in sorted(
                   {f'activation_{kind}_{i}' for kind in ('batch','values') for i in range(6)}
                   | {c['id'] for c in qualification_corpus()['graph_cases']}
-                  | {'derived_fact_controls_compliance'} | {f'performance_result_{i}' for i in range(32)})], 'bounds':{'iterations':32},
-              'performance':{'native':{'count':32,'samples_ms':[1]*32},'norm_counts':[1,8,32,64]*8}}
+                  | {'derived_fact_controls_compliance'} | {f'performance_result_{i}' for i in range(32)})], 'bounds':{'iterations':32,'timeout_seconds':600}, 'elapsed_ms':100.0, 'startup_ms':2.0,
+              'performance':{'native':latency_summary([1.0]*32),'core':latency_summary([.5]*32), 'norm_counts':[1,8,32,64]*8,
+                             'population':'after_explicit_startup_probe','startup_included_in_samples':False,'native_is_faster':False}}
     native_sha = write_json(tmp_path/'native.json', native)
     benchmark = json.loads((tmp_path/'benchmark.json').read_text())
     assessment = json.loads((tmp_path/'annotations.json').read_text())

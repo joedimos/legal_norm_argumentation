@@ -14,7 +14,7 @@ from src.pyreason_graph import reference
 
 
 def test_bounded_qualification_control_flow_with_explicit_standins(monkeypatch):
-    monkeypatch.setattr(qualification,'run_worker',lambda *a:{'annotations':{'provider':'native','packages':{'pyreason':'3.8.0'}}})
+    monkeypatch.setattr(qualification,'run_worker',lambda *a:{'annotations':{'provider':'native','packages':{'pyreason':'3.8.0'},'adapter_contract_sha256':qualification.contract_sha256()}})
     monkeypatch.setattr(qualification,'run_activation_backend',lambda norms,context,**kw:{'status':'computed',
                          'activations':{n.id:{'status':activation(n,context).status} for n in norms}})
     def graph(raw,**kwargs):
@@ -75,6 +75,7 @@ def test_native_identity_rejects_standins_and_fingerprints_actual_files(tmp_path
 
 
 def test_warmup_failures_block_ready_without_diagnostics(monkeypatch):
+    monkeypatch.setattr(warmup,'installed_identity',lambda:{'provider':'synthetic_test_only'})
     monkeypatch.setattr(warmup,'run_worker',lambda *a:{'annotations':{'provider':'synthetic_test_only'}})
     monkeypatch.setattr(warmup,'infer_graph',lambda *a,**k:{'status':'computed','derived_facts':{'licensed':True}})
     assert warmup.warm_native()['status'] == 'ready'

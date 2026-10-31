@@ -10,6 +10,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 from src.audit_bundle import canonical_json, digest
+from src.pyreason_metrics import milliseconds, validate_performance
 from src.pyreason_runtime import installed_identity
 
 from .ip_release import SCOPE
@@ -47,27 +48,37 @@ def pyreason_release_gate(settings):
         if not isinstance(approvers, list) or len(set(approvers)) < 2 or any(not isinstance(x, str) or not x.strip() for x in approvers):
             raise ValueError("two independent custodial approvals required")
         native = artifact(Path(settings.pyreason_release_path).resolve().parent, m["native"])
+        from src.pyreason_connector import digest as program_digest
+        from src.pyreason_qualification import qualification_corpus
+        corpus = qualification_corpus()
         identity = installed_identity()  # No import/JIT or provider calls in a policy check.
         if (native.get("schema") != "vle-pyreason-qualification/v2" or native.get("status") != "passed"
                 or native.get("provider") != "native" or native.get("runtime") != identity
                 or native.get("adapter_contract_sha256") != identity["adapter_contract_sha256"]
                 or native.get("build_revision") != settings.build_revision or native.get("worker_mode") != settings.pyreason_worker_mode
-                or native.get("native_activation_cases", 0) < 162 or native.get("native_graph_cases", 0) < 7
+                or type(native.get('native_activation_cases')) is not int
+                or native['native_activation_cases'] != len(corpus['activation_cases'])
+                or type(native.get('native_graph_cases')) is not int
+                or native['native_graph_cases'] != len(corpus['graph_cases'])
                 or not native.get("checks") or any(c.get("passed") is not True for c in native["checks"])
                 or native.get("truncated", False) is not False):
             raise ValueError("incomplete or incompatible native evidence")
-        from src.pyreason_connector import digest as program_digest
-        from src.pyreason_qualification import qualification_corpus
-        if native.get("corpus_sha256") != program_digest(qualification_corpus()):
+        if native.get("corpus_sha256") != program_digest(corpus):
             raise ValueError("different qualification corpus")
         perf = native["performance"]
         count = perf["native"]["count"]
-        if (type(count) is not int or count < 32 or count > 128 or count != native["bounds"]["iterations"]
-                or len(perf["native"]["samples_ms"]) != count
-                or perf["norm_counts"] != [(1, 8, 32, 64)[i % 4] for i in range(count)]):
+        if (type(count) is not int or count < 32 or count > 128
+                or type(native['bounds']['iterations']) is not int or count != native['bounds']['iterations']):
             raise ValueError("representative bounded workload is incomplete")
+        totals = validate_performance(perf, count)
+        timeout = native['bounds']['timeout_seconds']
+        if type(timeout) is not int or not 1 <= timeout <= 900:
+            raise ValueError('invalid qualification time bound')
+        elapsed, startup = milliseconds(native['elapsed_ms']), milliseconds(native['startup_ms'])
+        if elapsed >= timeout * 1000 or startup + sum(totals.values()) > elapsed + 1e-6:
+            raise ValueError('timings contradict the aggregate qualification bound')
         expected_checks = ({f"activation_{kind}_{i}" for kind in ("batch", "values") for i in range(6)}
-                           | {c["id"] for c in qualification_corpus()["graph_cases"]}
+                           | {c["id"] for c in corpus["graph_cases"]}
                            | {"derived_fact_controls_compliance"}
                            | {f"performance_result_{i}" for i in range(count)})
         if {c["name"] for c in native["checks"]} != expected_checks or len(native["checks"]) != len(expected_checks):
