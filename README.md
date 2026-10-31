@@ -439,3 +439,12 @@ The separate backend release gate accepts qualified native evidence and signed
 independent IP benchmarks; the legacy review override cannot substitute for them.
 Synthetic test success alone leaves high-stakes decisions blocked. See
 [native semantics, deployment and qualification](docs/PYREASON_NATIVE_INTEGRATION.md).
+
+### Robustness refinements (0.9.4)
+
+Worker I/O now rejects ambiguous or nonfinite JSON and enforces byte limits on
+the reads themselves. Deadlines include receipt parsing; idle retirement and
+shutdown cleanup are hardened. Native release evidence checks raw latency arrays,
+counts, summaries and aggregate time accounting. Observation-only graph queries
+preserve their intervals through an identity-rule adapter. See
+[the reproduced failure cases and fixes](docs/ROBUSTNESS_0_9_4.md).

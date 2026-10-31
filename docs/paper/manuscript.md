@@ -357,3 +357,12 @@ existing exact-case legal review gates. Content hashes do not establish experime
 truth. No independent real-IP qualification, legal accuracy, certification or
 Python formal-verification claim follows from these additions. The supported
 fragment deliberately excludes arbitrary upstream annotations/neural functions.
+
+
+The 0.9.4 maintenance revision strengthens worker JSON validation, resource
+bounds, cleanup and the internal accounting of native performance attestations.
+Its regression tests reproduce malformed receipts and inconsistent measurements;
+correct signatures do not establish truthful experiments. Observation-only native
+queries preserve open-world intervals through a tautological adapter rule. These
+engineering checks remain synthetic/unreviewed and establish no legal accuracy
+or certification.

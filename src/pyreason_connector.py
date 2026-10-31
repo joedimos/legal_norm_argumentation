@@ -8,14 +8,18 @@ import math
 import subprocess  # nosec B404
 import sys
 import tempfile
+import time
 from contextlib import contextmanager
 from contextvars import ContextVar
 from pathlib import Path
 from threading import BoundedSemaphore
 
+from .pyreason_io import read_json, validate_json
+
 PREDICATES = ("accepted", "defeated", "reinstated", "strengthened")
 BACKEND_VERSION = "3.8.0"
 MAX_OUTPUT_BYTES = 2_000_000
+MAX_INPUT_BYTES = 2_000_000
 MAX_PARALLEL_WORKERS = 1
 _WORKER_SLOT = BoundedSemaphore(MAX_PARALLEL_WORKERS)
 _TRANSPORT = ContextVar("pyreason_transport", default="isolated")
@@ -64,18 +68,31 @@ def run_worker(payload, timeout_seconds):
     if (type(timeout_seconds) not in {int, float} or not math.isfinite(timeout_seconds)
             or not 0 < timeout_seconds <= 300):
         raise ValueError("timeout must be positive and bounded by 300 seconds")
+    started = time.monotonic()
+    validate_json(payload)
+    if len(canonical_json(payload).encode('utf-8')) > MAX_INPUT_BYTES:
+        raise ResourceBound('input_bound')
     if not _WORKER_SLOT.acquire(blocking=False):
         raise ResourceBound("worker_concurrency_bound")
     try:
+        remaining = timeout_seconds - (time.monotonic() - started)
+        if remaining <= 0:
+            raise subprocess.TimeoutExpired("pyreason_worker", timeout_seconds)
         if _TRANSPORT.get() == "pooled":
             from .pyreason_pool import close_worker, invoke
 
             try:
-                return validate_receipt(invoke(payload, timeout_seconds), payload)
+                output = validate_receipt(invoke(payload, remaining), payload)
+                if time.monotonic() - started >= timeout_seconds:
+                    raise subprocess.TimeoutExpired('pyreason_worker', timeout_seconds)
+                return output
             except BaseException:
                 close_worker()
                 raise
-        return _invoke_worker(payload, timeout_seconds)
+        output = _invoke_worker(payload, remaining)
+        if time.monotonic() - started >= timeout_seconds:
+            raise subprocess.TimeoutExpired('pyreason_worker', timeout_seconds)
+        return output
     finally:
         _WORKER_SLOT.release()
 
@@ -94,20 +111,23 @@ def _invoke_worker(payload, timeout_seconds):
             timeout=timeout_seconds,
             check=True,
         )  # nosec B603
-        if target.stat().st_size > MAX_OUTPUT_BYTES:
-            raise ResourceBound("output_bound")
-        output = json.loads(target.read_text(encoding="utf-8"))
+        output = read_json(target, MAX_OUTPUT_BYTES, 'output_bound')
     return validate_receipt(output, payload)
 
 
 def validate_receipt(output, payload):
+    if not isinstance(output, dict):
+        raise WorkerFailure('pyreason_invalid_or_incompatible')
     if output.get("status") != "observed":
+        if output.get('error') in {'input_bound', 'output_bound'}:
+            raise ResourceBound(output['error'])
         raise WorkerFailure(
             "pyreason_unsupported_version"
             if output.get("error") == "unsupported_version"
             else "pyreason_unavailable_or_incompatible"
         )
-    if output.get("backend_version") != BACKEND_VERSION or output.get("input_sha256") != digest(payload):
+    if (output.get("backend_version") != BACKEND_VERSION or output.get("input_sha256") != digest(payload)
+            or not isinstance(output.get('annotations'), dict)):
         raise WorkerFailure("pyreason_invalid_or_incompatible")
     return output
 
@@ -193,6 +213,7 @@ class PyReasonConnector:
                 "max_timesteps": 100,
                 "max_timeout_seconds": 300,
                 "max_output_bytes": MAX_OUTPUT_BYTES,
+                "max_input_bytes": MAX_INPUT_BYTES,
                 "max_parallel_workers": MAX_PARALLEL_WORKERS,
             },
         )

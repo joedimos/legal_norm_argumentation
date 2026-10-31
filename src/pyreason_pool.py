@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import atexit
-import json
 import subprocess  # nosec B404
 import sys
 import tempfile
@@ -13,29 +12,45 @@ from pathlib import Path
 _PROCESS = None
 _DIRECTORY = None
 _COUNT = 0
+_LAST_USED = None
 MAX_REQUESTS = 128
 IDLE_SECONDS = 30
 
 
 def close_worker():
-    global _PROCESS, _DIRECTORY, _COUNT
-    if _PROCESS is not None:
-        if _PROCESS.poll() is None:
-            _PROCESS.kill()
-        _PROCESS.wait(timeout=5)
-        if _PROCESS.stdin:
-            _PROCESS.stdin.close()
-    if _DIRECTORY is not None:
-        _DIRECTORY.cleanup()
-    _PROCESS, _DIRECTORY, _COUNT = None, None, 0
+    global _PROCESS, _DIRECTORY, _COUNT, _LAST_USED
+    process, directory = _PROCESS, _DIRECTORY
+    # Drop references even if a concurrent child exit or failed reap raises.
+    _PROCESS, _DIRECTORY, _COUNT, _LAST_USED = None, None, 0, None
+    try:
+        if process is not None:
+            try:
+                if process.poll() is None:
+                    try:
+                        process.kill()
+                    except ProcessLookupError:
+                        pass
+                process.wait(timeout=5)
+            finally:
+                if process.stdin:
+                    process.stdin.close()
+    finally:
+        if directory is not None:
+            directory.cleanup()
 
 
 def invoke(payload, timeout_seconds):
-    from .pyreason_connector import MAX_OUTPUT_BYTES, ResourceBound, WorkerFailure, canonical_json
+    from .pyreason_connector import MAX_OUTPUT_BYTES, WorkerFailure, canonical_json
+    from .pyreason_io import read_json
 
-    global _PROCESS, _DIRECTORY, _COUNT
+    global _PROCESS, _DIRECTORY, _COUNT, _LAST_USED
     started = time.monotonic()
-    if _PROCESS is None or _PROCESS.poll() is not None or _COUNT >= MAX_REQUESTS:
+    if (
+        _PROCESS is None
+        or _PROCESS.poll() is not None
+        or _COUNT >= MAX_REQUESTS
+        or (_LAST_USED is not None and started - _LAST_USED >= max(0, IDLE_SECONDS - 1))
+    ):
         close_worker()
         _DIRECTORY = tempfile.TemporaryDirectory(prefix="vle-pyreason-pool-")
         _PROCESS = subprocess.Popen(  # nosec B603
@@ -60,9 +75,11 @@ def invoke(payload, timeout_seconds):
             time.sleep(0.01)
         if time.monotonic() - started >= timeout_seconds:
             raise subprocess.TimeoutExpired("pyreason_pool", timeout_seconds)
-        if target.stat().st_size > MAX_OUTPUT_BYTES:
-            raise ResourceBound("output_bound")
-        return json.loads(target.read_text(encoding="utf-8"))
+        output = read_json(target, MAX_OUTPUT_BYTES, "output_bound")
+        _LAST_USED = time.monotonic()
+        if _LAST_USED - started >= timeout_seconds:
+            raise subprocess.TimeoutExpired("pyreason_pool", timeout_seconds)
+        return output
     except BaseException:
         close_worker()
         raise

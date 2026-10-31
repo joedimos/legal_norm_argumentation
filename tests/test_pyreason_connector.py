@@ -59,6 +59,8 @@ def test_timeout_and_incomplete_results(monkeypatch):
 
 
 def test_recorded_output_is_only_advisory(monkeypatch):
+    import src.pyreason_connector as connector
+    monkeypatch.setattr(connector.time,"monotonic",lambda:0.0)
     def recorded(cmd, **kwargs):
         assert kwargs["timeout"] == 60
         Path(cmd[-1]).write_text(json.dumps({"status": "observed", "backend_version": BACKEND_VERSION,
@@ -200,6 +202,8 @@ def test_worker_rejects_unqualified_version_before_import(tmp_path, monkeypatch)
 
 
 def test_public_wrappers_preserve_symbolic_results_and_timeout(monkeypatch):
+    import src.pyreason_connector as connector
+    monkeypatch.setattr(connector.time,"monotonic",lambda:0.0)
     from src.argumentation import LegalArgument, OptimizedAAF
     from src.originality import LogicBasedLegalReasoner
     from src.originality_annotator import OriginalityAnnotator

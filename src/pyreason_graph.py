@@ -13,6 +13,8 @@ import time
 
 from .pyreason_connector import (
     BACKEND_VERSION,
+    MAX_INPUT_BYTES,
+    MAX_OUTPUT_BYTES,
     ResourceBound,
     WorkerFailure,
     current_worker_mode,
@@ -291,6 +293,13 @@ def execute_native(program, pr):
         body = ", ".join(text(b["atom"], variables) + ":" + str(b["interval"]) for b in r["body"])
         rule = text(r["head"], variables) + ":" + str(r["interval"]) + f" <-{r['delay']} " + body
         pr.add_rule(pr.Rule(rule, name=f"graph_rule_{i}", infer_edges=len(r["head"][1]) == 2))
+    if not program['rules']:
+        # Upstream requires a rule for observation-only queries. Identity cannot
+        # add information to false, soft or unobserved facts.
+        predicate = min(program['predicates'])
+        arity = program['predicates'][predicate]
+        atom = predicate + '(' + ','.join(f'x{i}' for i in range(arity)) + ')'
+        pr.add_rule(pr.Rule(atom + ':[1,1] <-0 ' + atom + ':[1,1]', name='observation_identity', infer_edges=arity == 2))
     data = pr.reason(timesteps=program["horizon"]).get_dict()
     if not isinstance(data, dict) or any(type(t) is not int or not 0 <= t <= program["horizon"] for t in data):
         raise ValueError("invalid graph trace")
@@ -309,7 +318,8 @@ def infer_graph(raw, *, timeout_seconds=60):
         "review_status": "unreviewed",
         "decision_authorized": False,
         "legal_certification": False,
-        "bounds": {**LIMITS, "timeout_seconds": timeout_seconds},
+        "bounds": {**LIMITS, "timeout_seconds": timeout_seconds if type(timeout_seconds) is int and 1 <= timeout_seconds <= 300 else None,
+                   "max_input_bytes": MAX_INPUT_BYTES, "max_output_bytes": MAX_OUTPUT_BYTES},
         "answers": {},
         "derived_facts": {},
     }

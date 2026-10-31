@@ -7,7 +7,17 @@ import sys
 from importlib.metadata import version
 from pathlib import Path
 
-from .pyreason_connector import BACKEND_VERSION, PREDICATES, RULES, digest, interval
+from .pyreason_connector import (
+    BACKEND_VERSION,
+    MAX_INPUT_BYTES,
+    MAX_OUTPUT_BYTES,
+    PREDICATES,
+    RULES,
+    ResourceBound,
+    digest,
+    interval,
+)
+from .pyreason_io import read_json
 
 
 def execute(payload, pr):
@@ -55,7 +65,7 @@ def process_request(source, target):
         else:
             import pyreason as pr
 
-            payload = json.loads(source.read_text(encoding="utf-8"))
+            payload = read_json(source, MAX_INPUT_BYTES, 'input_bound')
             if payload.get("mode") == "runtime_probe":
                 from .pyreason_runtime import native_identity
                 annotations = native_identity(pr)
@@ -75,10 +85,15 @@ def process_request(source, target):
                 "input_sha256": digest(payload),
                 "annotations": annotations,
             }
+    except ResourceBound as exc:
+        result = {'status':'unknown', 'error':str(exc)}
     except Exception:
         result = {"status": "unknown"}  # No dependency diagnostics/source text.
+    encoded = json.dumps(result, sort_keys=True, allow_nan=False)
+    if len(encoded.encode('utf-8')) > MAX_OUTPUT_BYTES:
+        encoded = json.dumps({'status':'unknown','error':'output_bound'})
     temporary = target.with_suffix(".pending")
-    temporary.write_text(json.dumps(result, sort_keys=True, allow_nan=False), encoding="utf-8")
+    temporary.write_text(encoded, encoding="utf-8")
     temporary.replace(target)
 
 
@@ -88,9 +103,11 @@ def main():
         return
     import select
 
+    from .pyreason_pool import IDLE_SECONDS, MAX_REQUESTS
+
     root = Path(sys.argv[2]).resolve()
-    for _ in range(128):
-        if not select.select([sys.stdin], [], [], 30)[0]:
+    for _ in range(MAX_REQUESTS):
+        if not select.select([sys.stdin], [], [], IDLE_SECONDS)[0]:
             return
         request_id = sys.stdin.readline(257).strip()
         if not request_id.isascii() or not request_id.isdigit() or len(request_id) > 3:

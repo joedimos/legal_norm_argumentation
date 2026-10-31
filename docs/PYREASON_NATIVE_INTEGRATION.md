@@ -170,3 +170,8 @@ The recorded local run is `PYREASON_NATIVE_QUALIFICATION.json`, with command and
 regression accounting in `RC_0_9_3_EVALUATION.json`. It binds source commit
 `98a5c7f19e28a38f0db0756b4e1cdc72fc76fb71`. Later CI artifacts bind their own
 exact build; the historical local report is not deployment release approval.
+
+
+For 0.9.4 strict I/O, lifetime, deadline, measurement-accounting and
+observation-only refinements, see [boundary hardening](ROBUSTNESS_0_9_4.md).
+The core-only and native deployment profiles retain their existing defaults.

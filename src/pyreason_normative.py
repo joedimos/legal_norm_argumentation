@@ -9,6 +9,7 @@ from dataclasses import replace
 from .defeasible import Activation, activation
 from .pyreason_connector import (
     BACKEND_VERSION,
+    MAX_INPUT_BYTES,
     MAX_OUTPUT_BYTES,
     MAX_PARALLEL_WORKERS,
     ResourceBound,
@@ -91,6 +92,7 @@ def unknown_report(reason, timeout_seconds=60):
             if type(timeout_seconds) is int and 1 <= timeout_seconds <= 300
             else None,
             "max_output_bytes": MAX_OUTPUT_BYTES,
+            "max_input_bytes": MAX_INPUT_BYTES,
             "max_parallel_workers": MAX_PARALLEL_WORKERS,
         },
         "activations": {},

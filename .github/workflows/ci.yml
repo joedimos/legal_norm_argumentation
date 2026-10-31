@@ -34,7 +34,7 @@ jobs:
           cache: pip
       - run: python -m pip install --upgrade pip
       - run: python -m pip install -e '.[dev]'
-      - run: python -m pytest -q tests/test_pyreason_connector.py tests/test_pyreason_normative.py tests/test_pyreason_graph.py tests/test_pyreason_pool.py tests/test_pyreason_qualification.py tests/test_pyreason_release.py --cov=src.pyreason_graph --cov=src.pyreason_pool --cov=src.pyreason_runtime --cov=src.pyreason_qualification --cov=src.pyreason_warmup --cov=src.service.pyreason_release --cov=src.pyreason_connector --cov=src.pyreason_worker --cov=src.pyreason_program --cov=src.pyreason_normative --cov=src.normative_evaluation --cov-fail-under=80 --cov-report=json:pyreason-coverage.json
+      - run: python -m pytest -q tests/test_pyreason_connector.py tests/test_pyreason_normative.py tests/test_pyreason_graph.py tests/test_pyreason_pool.py tests/test_pyreason_hardening.py tests/test_pyreason_qualification.py tests/test_pyreason_release.py --cov=src.pyreason_io --cov=src.pyreason_metrics --cov=src.pyreason_graph --cov=src.pyreason_pool --cov=src.pyreason_runtime --cov=src.pyreason_qualification --cov=src.pyreason_warmup --cov=src.service.pyreason_release --cov=src.pyreason_connector --cov=src.pyreason_worker --cov=src.pyreason_program --cov=src.pyreason_normative --cov=src.normative_evaluation --cov-fail-under=80 --cov-report=json:pyreason-coverage.json
       - name: Preserve coverage in each native integration module
         run: |
           python - <<'PYTHON'
@@ -43,8 +43,8 @@ jobs:
           low = {p:v['summary']['percent_covered'] for p,v in report['files'].items() if v['summary']['percent_covered'] < 80}
           if low: raise SystemExit(str(low))
           PYTHON
-      - run: ruff check src/pyreason_graph.py src/pyreason_pool.py src/pyreason_runtime.py src/pyreason_qualification.py src/pyreason_warmup.py tests/test_pyreason_*.py
-      - run: bandit -q -r src/pyreason_graph.py src/pyreason_pool.py src/pyreason_runtime.py src/pyreason_qualification.py src/pyreason_warmup.py
+      - run: ruff check src/pyreason_io.py src/pyreason_metrics.py src/pyreason_graph.py src/pyreason_pool.py src/pyreason_runtime.py src/pyreason_qualification.py src/pyreason_warmup.py tests/test_pyreason_*.py
+      - run: bandit -q -r src/pyreason_io.py src/pyreason_metrics.py src/pyreason_graph.py src/pyreason_pool.py src/pyreason_runtime.py src/pyreason_qualification.py src/pyreason_warmup.py
       - run: ruff check src/pyreason_program.py src/pyreason_normative.py src/normative_evaluation.py tests/test_pyreason_normative.py
       - run: bandit -q -r src/pyreason_program.py src/pyreason_normative.py src/normative_evaluation.py
       - run: python -m src.api_contract

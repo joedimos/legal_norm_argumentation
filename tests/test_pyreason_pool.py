@@ -83,7 +83,7 @@ def test_deadline_kills_worker_and_never_retries(processes, monkeypatch):
     with worker_transport("pooled"):
         run_worker({}, 1)
         processes[0].respond = False
-        clock = iter([0.0, 2.0])
+        clock = iter([0.0, 0.0, 0.0, 2.0])
         monkeypatch.setattr(pool.time, "monotonic", lambda: next(clock))
         with pytest.raises(subprocess.TimeoutExpired):
             run_worker({}, 1)
@@ -99,7 +99,7 @@ def test_late_or_oversized_reply_is_rejected(processes, monkeypatch):
             run_worker({}, 1)
         assert pool._PROCESS is None
         monkeypatch.setattr(connector, "MAX_OUTPUT_BYTES", 2_000_000)
-        clock = iter([0.0, 2.0])
+        clock = iter([0.0, 0.0, 0.0, 2.0])
         monkeypatch.setattr(pool.time, "monotonic", lambda: next(clock))
         with pytest.raises(subprocess.TimeoutExpired):
             run_worker({}, 1)
