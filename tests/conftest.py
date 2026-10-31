@@ -5,6 +5,8 @@ import socket
 import pytest
 import urllib3
 
+from src.http_transport import BoundedHTTPClient
+
 
 @pytest.fixture(autouse=True)
 def phase4_no_network(request, monkeypatch):
@@ -15,5 +17,6 @@ def phase4_no_network(request, monkeypatch):
         raise AssertionError("Research/import tests must remain offline; use recorded/fake providers")
 
     monkeypatch.setattr(urllib3.PoolManager, "request", blocked)
+    monkeypatch.setattr(BoundedHTTPClient, "request", blocked)
     monkeypatch.setattr(socket, "create_connection", blocked)
     monkeypatch.setattr(socket.socket, "connect", blocked)

@@ -491,3 +491,39 @@ def test_french_manifest_never_silently_ignores_an_unsupported_branch():
     client = LegifranceIPClient(client_id="synthetic", client_secret="synthetic", transport=transport)
     with pytest.raises(ImportTransportError, match="invalid_manifest_structure"):
         client.manifest("2026-10-29")
+
+
+def test_provider_deadline_discards_entire_hydration_batch_and_resumes_unreviewed(tmp_path, monkeypatch):
+    from src.http_transport import HTTPTransportError
+
+    s, clock = settings(tmp_path).model_copy(update={"import_batch_size": 2}), Clock()
+    db = Database(s)
+    db.create_schema_for_tests()
+    bounded = LegalJSONTransport(timeout=1)
+
+    def timeout(*_a, **_kw):
+        raise HTTPTransportError("timeout")
+
+    monkeypatch.setattr(bounded.http, "request", timeout)
+
+    class DeadlineFixture(FrenchFixture):
+        def article(self, item, **kwargs):
+            if item["id"] == "LEGIARTI2":
+                bounded.request("GET", API + "/search/")
+            return super().article(item, **kwargs)
+
+    result = imports.process_one(db, s, client_factory=lambda *_: DeadlineFixture(), clock=clock)
+    assert result["status"] == "retry_scheduled" and result["reason"] == "request_time_bound"
+    assert not result["decision_authorized"]
+    with db.session() as session:
+        record = session.get(ImportCursorRecord, "legifrance:ip")
+        assert record.position == {} and record.last_success_at is None
+        assert session.scalar(select(func.count()).select_from(SourceDocumentRecord)) == 0
+    clock.advance(61)
+    resumed = imports.process_one(db, s, client_factory=lambda *_: FrenchFixture(), clock=clock)
+    assert resumed["status"] == "query_cycle_completed" and resumed["summary"]["created"] == 2
+    with db.session() as session:
+        assert all(all(v == "unreviewed" for v in review_statuses(session, r))
+                   for r in session.scalars(select(SourceDocumentRecord)))
+        assert verify_audit_chain(session)["valid"]
+    db.dispose()

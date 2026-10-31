@@ -156,7 +156,7 @@ def test_transport_rejects_redirects_oversize_and_timeout_without_retry(monkeypa
 
         def clear(self):
             events.append('clear')
-    monkeypatch.setattr(model_runtime.urllib3, 'PoolManager', Pool)
+    monkeypatch.setattr(model_runtime, 'BoundedHTTPClient', lambda **kw: Pool())
     with pytest.raises(ValueError, match='provider_http_error'):
         ollama_chat({}, endpoint='http://localhost:11434/api/chat', timeout=1)
     response.status = 200

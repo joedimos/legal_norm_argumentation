@@ -18,6 +18,7 @@ def contract_sha256():
         "pyreason_worker.py",
         "pyreason_pool.py",
         "pyreason_io.py",
+        "json_boundary.py",
         "pyreason_metrics.py",
         "pyreason_warmup.py",
         "pyreason_program.py",

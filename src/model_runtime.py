@@ -2,11 +2,14 @@
 from __future__ import annotations
 
 import os
+import time
 from urllib.parse import urlsplit, urlunsplit
 
 import urllib3
 
 from .audit_bundle import canonical_json, digest
+from .http_transport import BoundedHTTPClient, HTTPTransportError, seconds
+from .json_boundary import strict_json as strict_json
 
 MAX_RESPONSE = 1024 * 1024
 PATHS = {"ollama": "/api/chat", "vllm": "/v1/chat/completions"}
@@ -16,22 +19,6 @@ class ModelError(ValueError):
     def __init__(self, code):
         super().__init__(code)
         self.code = code
-
-
-def strict_json(raw):
-    import json
-
-    def unique(pairs):
-        result = {}
-        for key, value in pairs:
-            if key in result:
-                raise ValueError("duplicate JSON key")
-            result[key] = value
-        return result
-
-    def nonfinite(_):
-        raise ValueError("nonfinite JSON")
-    return json.loads(raw, object_pairs_hook=unique, parse_constant=nonfinite)
 
 
 def validate_endpoint(endpoint, provider="ollama"):
@@ -63,13 +50,19 @@ def resolve_config(request):
 
 
 def request_json(method, endpoint, *, timeout, payload=None, api_key=None):
+    started = time.monotonic()
+    seconds(timeout)
     headers = {"Content-Type": "application/json", "Accept-Encoding": "identity"}
     if api_key:
         headers["Authorization"] = "Bearer " + api_key
-    pool = urllib3.PoolManager()
+    pool = BoundedHTTPClient(max_bytes=MAX_RESPONSE, identity_only=True)
     try:
-        response = pool.request(method, endpoint, body=canonical_json(payload) if payload is not None else None,
-                                headers=headers, timeout=urllib3.Timeout(total=timeout), retries=False,
+        body = canonical_json(payload) if payload is not None else None
+        remaining = timeout - (time.monotonic() - started)
+        if remaining <= 0:
+            raise ModelError("transport_timeout")
+        response = pool.request(method, endpoint, body=body,
+                                headers=headers, timeout=urllib3.Timeout(total=remaining), retries=False,
                                 redirect=False, preload_content=False)
         try:
             if response.status != 200:
@@ -86,9 +79,15 @@ def request_json(method, endpoint, *, timeout, payload=None, api_key=None):
                 raise ModelError("invalid_provider_json") from exc
             if not isinstance(value, dict):
                 raise ModelError("invalid_provider_envelope")
+            if time.monotonic() - started >= timeout:
+                raise ModelError("transport_timeout")
             return value
         finally:
             response.close()
+    except HTTPTransportError as exc:
+        raise ModelError({"timeout": "transport_timeout", "encoding": "unexpected_content_encoding",
+                          "response_size_bound": "response_exceeds_1_MiB", "capacity_bound": "runtime_capacity_bound",
+                          "request_size_bound": "request_size_bound"}.get(exc.code, "runtime_unreachable")) from exc
     except urllib3.exceptions.NewConnectionError as exc:
         raise ModelError("runtime_unreachable") from exc
     except urllib3.exceptions.TimeoutError as exc:

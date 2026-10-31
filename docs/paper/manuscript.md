@@ -366,3 +366,14 @@ correct signatures do not establish truthful experiments. Observation-only nativ
 queries preserve open-world intervals through a tautological adapter rule. These
 engineering checks remain synthetic/unreviewed and establish no legal accuracy
 or certification.
+
+The 0.9.5 maintenance revision isolates automatic IP-import and model-provider
+HTTP requests in bounded one-shot processes. Aggregate deadlines cover network
+startup, headers and response bodies, with acceptance checks after JSON decoding.
+The shared parser rejects exponent overflow and invalid Unicode as well as
+duplicates and excessive nesting. Local loopback fixtures and injected failures
+test deadline enforcement, import-cursor preservation and the absence of implicit
+generation retries. These synthetic, unreviewed engineering tests do not constitute
+live provider qualification, independent legal judgments, or evidence of legal
+accuracy. The earlier evaluated runtime snapshot and its reported results above
+remain a separate, historical record.

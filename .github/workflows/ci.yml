@@ -52,6 +52,23 @@ jobs:
       - run: bandit -q -r src/pyreason_connector.py src/pyreason_worker.py src/resources.py src/service/ip_release.py src/service/release_readiness.py src/service/migrate.py tools/verify_distribution.py setup.py
       - run: ruff check src/legal_transport.py src/courtlistener.py src/legifrance_ip.py tests/test_automatic_imports.py
       - run: bandit -q -r src/legal_transport.py src/courtlistener.py src/legifrance_ip.py
+      - name: Bounded provider I/O and strict JSON regressions
+        run: >-
+          python -m pytest -q tests/test_provider_io.py tests/test_json_boundary.py
+          tests/test_model_runtime.py tests/test_live_generation.py tests/test_automatic_imports.py
+          --cov=src.http_transport --cov=src.http_worker --cov=src.json_boundary
+          --cov=src.model_runtime --cov=src.legal_transport
+          --cov-fail-under=80 --cov-report=json:provider-coverage.json
+      - name: Preserve coverage in each provider boundary module
+        run: |
+          python - <<'PYTHON'
+          import json
+          report = json.load(open('provider-coverage.json'))
+          low = {p:v['summary']['percent_covered'] for p,v in report['files'].items() if v['summary']['percent_covered'] < 80}
+          if low: raise SystemExit(str(low))
+          PYTHON
+      - run: ruff check src/http_transport.py src/http_worker.py src/json_boundary.py tests/test_provider_io.py tests/test_json_boundary.py
+      - run: bandit -q -r src/http_transport.py src/http_worker.py src/json_boundary.py
       - run: ruff check src/checker src/certificates.py src/certificate_study.py src/obstruction.py src/obstruction_study.py src/metamorphic.py src/review_planning.py src/review_simulation.py src/geometry.py src/geometry_study.py src/persistence.py src/phase5_cli.py tests/test_phase5_*.py
       - run: ruff check src/phase4.py src/phase4_cli.py src/aspic.py src/assumptions.py src/assumptions_z3.py src/norm_codec.py src/redundancy src/ddl src/faithfulness.py src/certification.py tests/test_phase4_*.py tests/conftest.py
       - run: ruff check src/service src/legifrance.py src/legifrance_piste.py src/formalization.py src/lifecycle.py src/temporal.py src/temporal_deontic.py src/model_checking.py src/conflicts.py src/preferences.py src/audit_bundle.py src/research.py src/research_benchmark.py src/experiments.py src/evidence_planning.py src/family_contract.py src/interpretation_family.py src/observation_strategy.py src/response_alignment.py src/live_generation.py src/legal_annotation.py src/model_runtime.py src/signed_annotation.py src/priority.py src/defeasible.py src/compliance.py src/normative_model.py src/norm_extraction.py src/cli.py tests/test_service.py tests/test_production_workflows.py tests/test_legifrance.py tests/test_web_console_workflow.py tests/test_norm_extraction.py tests/test_research_logic.py tests/test_audit_bundle.py tests/test_research_benchmark.py tests/test_experiments.py tests/test_evidence_planning.py tests/test_interpretation_family.py tests/test_response_alignment.py tests/test_live_generation.py tests/test_legal_annotation.py tests/test_model_runtime.py tests/test_signed_annotation.py

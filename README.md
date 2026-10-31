@@ -448,3 +448,13 @@ shutdown cleanup are hardened. Native release evidence checks raw latency arrays
 counts, summaries and aggregate time accounting. Observation-only graph queries
 preserve their intervals through an identity-rule adapter. See
 [the reproduced failure cases and fixes](docs/ROBUSTNESS_0_9_4.md).
+
+### Provider I/O refinements (0.9.5)
+
+Automatic French/U.S. IP acquisition and configured model requests now run in
+one-shot network processes with aggregate deadlines and bounded responses. Slow
+headers, DNS or a trickling body cannot keep those processes alive indefinitely.
+Timeouts preserve import checkpoints and leave generation jobs failed without
+implicit replay. Shared JSON parsing rejects exponent overflow, invalid Unicode,
+duplicates and excessive nesting before analysis. Candidates and imported sources
+remain unreviewed. See [bounds, regressions and limitations](docs/ROBUSTNESS_0_9_5.md).
